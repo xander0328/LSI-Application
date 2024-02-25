@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SuperAdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,11 +17,22 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+})->name('home');
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/website', [SuperAdminController::class, 'website'])->name('website');
+
+    Route::prefix('courses')->group(function () {
+        Route::get('/offers', [SuperAdminController::class, 'courses_offers'])->name('courses');
+        Route::post('/add_course', [SuperAdminController::class, 'add_course'])->name('add_course');
+        Route::get('/edit_course/{id}', [SuperAdminController::class, 'edit_course'])->name('edit_course');
+        Route::delete('/delete_course/{id}', [SuperAdminController::class, 'delete_course'])->name('delete_course');
+        
+        Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
+    });
+    
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
