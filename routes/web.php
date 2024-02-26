@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,7 +20,12 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::get('/unavailable', function () {
+    return view('unauthorized');
+})->name('unauthorized');
+
+
+Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
     Route::get('/website', [SuperAdminController::class, 'website'])->name('website');
 
     Route::prefix('courses')->group(function () {
@@ -27,10 +33,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/add_course', [SuperAdminController::class, 'add_course'])->name('add_course');
         Route::get('/edit_course/{id}', [SuperAdminController::class, 'edit_course'])->name('edit_course');
         Route::delete('/delete_course/{id}', [SuperAdminController::class, 'delete_course'])->name('delete_course');
-        
-        Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
+        Route::post('/course_toggle',  [SuperAdminController::class, 'course_toggle'])->name('course_toggle');
+
+        Route::get('/{id}/enrollees', [SuperAdminController::class, 'enrollees'])->name('course_enrollees');
+        Route::get('/generate_batch_name', [SuperAdminController::class, 'generate_batch_name'])->name('generate_batch_name');
+        Route::post('/create_batch', [SuperAdminController::class, 'create_batch'])->name('create_batch');
+        Route::post('/add_to_batch', [SuperAdminController::class, 'add_to_batch'])->name('add_to_batch');
+
+
+        // Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
     });
     
+});
+
+Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
+    Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
 });
 
 

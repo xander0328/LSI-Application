@@ -8,7 +8,7 @@
                 <div class="flex shrink-0 items-center">
                     <a href="{{ route('home') }}" class="items-center">
                         <!-- <img src="images/icons/lsi-logo.png" alt="LSI" class="h-16 w-auto rounded-full dark:bg-gray-900" /> -->
-                        <img src="../images/icons/lsi-logo.png" alt="" class="h-9 w-auto">
+                        <img src="../../images/icons/lsi-logo.png" alt="" class="h-9 w-auto">
                     </a>
                 </div>
 
