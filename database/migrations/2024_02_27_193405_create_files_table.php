@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role', 255)->nullable()->after('password');
+        Schema::create('files', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained();
+            $table->text('path');
+            $table->string('file_type');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('files');
     }
 };

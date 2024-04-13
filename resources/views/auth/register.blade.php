@@ -111,7 +111,6 @@
         var lastName = document.getElementById('lname');
         var fnameError = document.getElementById('fnameError');
         var lnameError = document.getElementById('lnameError');
-        console.log(firstName);
 
         if (firstName.value.trim() === '') {
             fnameError.textContent = 'Please enter your first name.';

@@ -3,6 +3,8 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\StudentController;
+use App\Http\Controllers\InstructorController;
+use App\Models\Course;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +19,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    $courses = Course::where('available', true)->get();
+    return view('welcome', compact('courses'));
 })->name('home');
 
 Route::get('/unavailable', function () {
@@ -40,6 +43,8 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::post('/create_batch', [SuperAdminController::class, 'create_batch'])->name('create_batch');
         Route::post('/add_to_batch', [SuperAdminController::class, 'add_to_batch'])->name('add_to_batch');
 
+        Route::get('/text_input_post', [SuperAdminController::class, 'text_input_post'])->name('text_input_post');
+        Route::post('/post', [SuperAdminController::class, 'post'])->name('post');
 
         // Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
     });
@@ -47,9 +52,18 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
+    Route::get('/enroll/{id}', [StudentController::class, 'enroll'])->name('enroll');
+    Route::post('/enroll_save', [StudentController::class, 'enroll_save'])->name('enroll_save');
+
     Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
+    Route::get('/already_enrolled', [StudentController::class, 'already_enrolled'])->name('already_enrolled');
 });
 
+Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
+    Route::get('/batch_list', [InstructorController::class, 'batch_list'])->name('batch_list');
+    Route::get('/batch_posts/{id}', [InstructorController::class, 'batch_posts'])->name('batch_posts');
+    Route::get('/batch_members', [InstructorController::class, 'batch_members'])->name('batch_members');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

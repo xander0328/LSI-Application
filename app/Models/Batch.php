@@ -18,9 +18,19 @@ class Batch extends Model
         return $this->hasMany(Enrollee::class);
     }
 
+    public function post()
+    {
+        return $this->hasMany(Post::class);
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function instructor()
+    {
+        return $this->belongsTo(User::class, 'instructor_id');
     }
 
 }

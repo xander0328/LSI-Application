@@ -166,6 +166,13 @@
                                 class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 placeholder="Type course name" required="">
                         </div>
+                        <div class="col-span-2">
+                            <label for="code"
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Code</label>
+                            <input type="text" name="code" id="code" maxlength="5"
+                                class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                placeholder="Type course code (max: 5 characters)" required="">
+                        </div>
                         <div class="col-span-2 sm:col-span-1">
                             <label for="price"
                                 class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Training
@@ -247,6 +254,13 @@
                                 class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 placeholder="Type course name" required="">
                         </div>
+                        <div class="col-span-2">
+                            <label for="code"
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Code</label>
+                            <input type="text" name="code" id="edit_code" maxlength="5"
+                                class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                placeholder="Type course code (max: 5 characters)" required="">
+                        </div>
                         <div class="col-span-2 sm:col-span-1">
                             <label for="price"
                                 class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Training
@@ -305,6 +319,7 @@
                         console.log(course);
                         $('#edit-modal').show();
                         $('#course_id').val(data.id);
+                        $('#edit_code').val(data.code);
                         $('#edit_name').val(data.name);
                         $('#edit_training_hours').val(data.training_hours);
                         $('#edit_category').val(data.category);

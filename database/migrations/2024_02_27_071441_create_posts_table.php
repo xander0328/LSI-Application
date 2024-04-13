@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role', 255)->nullable()->after('password');
+        Schema::create('posts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('batch_id')->constrained();
+            $table->text('description')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -21,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('posts');
     }
 };

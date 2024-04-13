@@ -51,11 +51,46 @@
             @if (Route::has('login'))
                 <div class="flex items-center space-x-4">
                     @auth
-                        <a href="{{ url('/website') }}"
-                            class="font-semibold text-gray-600 hover:text-gray-900 focus:rounded-sm focus:outline-none dark:text-gray-400 dark:hover:text-white">
-                            <img src="images/icons/lsi-logo.png" alt="Profile"
-                                class="h-9 w-auto rounded-full border-2 border-sky-300">
+                        <a @if (Auth::user()->role == 'superadmin') href="{{ url('/website') }}" @endif
+                            @if (Auth::user()->role == 'student') href="{{ route('enrolled_course') }}" @endif
+                            @if (Auth::user()->role == 'instructor') href="{{ url('/batch_list') }}" @endif
+                            class="rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
+                            <img class="h-5 w-auto" src="../../images/icons/lsi-logo.png" alt="">
                         </a>
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button
+                                    class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                                    <div>{{ Auth::user()->fname }} {{ Auth::user()->lname }}</div>
+
+                                    <div class="ms-1">
+                                        <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('profile.edit')">
+                                    {{ __('Profile') }}
+                                </x-dropdown-link>
+
+                                <!-- Authentication -->
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+
+                                    <x-dropdown-link :href="route('logout')"
+                                        onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                        {{ __('Log Out') }}
+                                    </x-dropdown-link>
+                                </form>
+                            </x-slot>
+                        </x-dropdown>
                     @else
                         <a href="{{ route('login') }}"
                             class="rounded-md border border-cyan-500 px-3 py-2 font-semibold text-sky-300">Log in</a>
@@ -130,9 +165,9 @@
             <h2 class="my-4 mb-8 text-center text-4xl font-bold">Popular Offered Courses</h2>
 
             <div class="flex items-center justify-center">
-                <div class="grid grid-cols-3 gap-4 md:grid-cols-3">
+                <div class="grid-cols-{{ $courses->count() }} grid gap-4">
                     <!-- Course Item -->
-                    <div
+                    {{-- <div
                         class="max-w-xs rounded-xl border-8 border-gray-200 bg-white shadow dark:border-gray-800 dark:bg-gray-800">
                         <a href="#">
                             <img class="rounded-t-lg" src="/images/carousel/image1-test.jpg" alt="" />
@@ -142,7 +177,8 @@
                                 <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                                     Noteworthy technology acquisitions 2021</h5>
                             </a>
-                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest enterprise
+                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest
+                                enterprise
                                 technology acquisitions of 2021 so far, in reverse chronological order.</p>
                             <a href="#"
                                 class="inline-flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-2 text-center text-sm font-medium font-semibold text-black hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-sky-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
@@ -177,31 +213,34 @@
                                 </svg>
                             </a>
                         </div>
-                    </div>
+                    </div> --}}
 
-                    <div
-                        class="max-w-xs rounded-xl border-8 border-gray-200 bg-white shadow dark:border-gray-800 dark:bg-gray-800">
-                        <a href="#">
-                            <img class="rounded-t-lg" src="/images/carousel/image1.jpg" alt="" />
-                        </a>
-                        <div class="p-5">
+                    @foreach ($courses as $course)
+                        <div
+                            class="max-w-xs rounded-xl border-8 border-gray-200 bg-white shadow dark:border-gray-800 dark:bg-gray-800">
                             <a href="#">
-                                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                    Noteworthy technology acquisitions 2021</h5>
+                                <img class="rounded-t-lg" src="/images/carousel/image1.jpg" alt="" />
                             </a>
-                            <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Here are the biggest
-                                enterprise technology acquisitions of 2021 so far, in reverse chronological order.</p>
-                            <a href="#"
-                                class="inline-flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-2 text-center text-sm font-medium font-semibold text-black hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-sky-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                Read more
-                                <svg class="ms-2 h-3.5 w-3.5 rtl:rotate-180" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
-                                </svg>
-                            </a>
+                            <div class="p-5">
+                                <a href="#">
+                                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                                        {{ $course->name }}</h5>
+                                </a>
+                                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                                    {{ mb_strimwidth($course->description, 0, 100, '...') }}
+                                </p>
+                                <a href="{{ route('enroll', $course->id) }}"
+                                    class="inline-flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-2 text-center text-sm font-medium font-semibold text-black hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-sky-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    Read more
+                                    <svg class="ms-2 h-3.5 w-3.5 rtl:rotate-180" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+                                    </svg>
+                                </a>
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
             <div class="mt-5 text-center text-white">

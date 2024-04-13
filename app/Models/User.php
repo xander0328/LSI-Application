@@ -46,8 +46,13 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
-    public function enrolment()
+    public function enrollee()
     {
         return $this->hasOne(Enrollee::class);
+    }
+
+    public function batch()
+    {
+        return $this->hasMany(Batch::class, 'instructor_id');
     }
 }

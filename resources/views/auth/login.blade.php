@@ -27,10 +27,19 @@
         <!-- Password -->
         <div class="mt-4">
             <x-input-label for="password" :value="__('Password')" />
+            <div class="relative">
+                <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3.5">
+                    <svg class="h-5 w-5 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                            d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7c0-1.1.9-2 2-2h1Zm2-3a2 2 0 1 1 4 0v3h-4V7Zm2 6c.6 0 1 .4 1 1v3a1 1 0 1 1-2 0v-3c0-.6.4-1 1-1Z"
+                            clip-rule="evenodd" />
+                    </svg>
 
-            <x-text-input id="password" class="mt-1 block w-full" type="password" name="password" required
-                autocomplete="current-password" />
-
+                </div>
+                <x-text-input id="password" class="mt-1 block w-full ps-10" type="password" name="password" required
+                    autocomplete="current-password" />
+            </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 

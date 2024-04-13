@@ -10,7 +10,7 @@ class Course extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'training_hours', 'description', 'category'
+        'name', 'code', 'training_hours', 'description', 'category'
     ];
 
     public function enrollees()

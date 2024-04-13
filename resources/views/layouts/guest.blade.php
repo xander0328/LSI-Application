@@ -15,6 +15,8 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @laravelPWA
+
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
 </head>
 
 <body class="font-sans text-gray-900 antialiased">
@@ -28,10 +30,11 @@
         </div>
 
         <div
-            class="mt-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md dark:bg-gray-800 sm:max-w-md sm:rounded-lg">
+            class="my-6 w-full overflow-hidden bg-white px-6 py-4 shadow-md dark:bg-gray-800 sm:max-w-md sm:rounded-lg">
             {{ $slot }}
         </div>
     </div>
+    @yield('script')
 </body>
 
 </html>

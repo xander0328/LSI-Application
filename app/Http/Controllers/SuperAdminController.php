@@ -7,6 +7,8 @@ use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\Enrollee;
 use App\Models\Batch;
+use App\Models\Files;
+use App\Models\Post;
 
 class SuperAdminController extends Controller
 {
@@ -24,6 +26,7 @@ class SuperAdminController extends Controller
     public function add_course(Request $request){
         $data = $request->validate([
            'name' => 'required|string|max:255', 
+           'code' => 'required|string|max:255', 
            'training_hours' => 'required|integer',
            'description' => 'required' ,
            'category' => 'required|integer'
@@ -123,6 +126,47 @@ class SuperAdminController extends Controller
             // Return error response
             return response()->json(['success' => false, 'message' => 'An error occurred while saving to the batch.'], 500);
         }
+    }
+
+
+    // Test Input
+    public function text_input_post(){
+        return view('test_input_post');
+    }
+
+    public function post(Request $request){
+        // Validate the request data
+        $request->validate([
+            'message' => 'required|string',
+            'file' => 'required|file',
+        ]);
+
+        // Handle file upload
+        if ($request->file('file')->isValid()) {
+            $file = $request->file('file');
+            $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+            $filePath = $file->storeAs('uploads', $fileName, 'public'); // Change 'uploads' to your desired directory
+
+            // Get file type
+            $fileType = $file->getClientMimeType();
+        }
+
+        // Process other form data
+        $message = $request->input('message');
+        $post = new Post();
+        $post->batch_id = 3;
+        $post->description = $message;
+        $post->save();
+
+        // Save to database
+        $fileEntry = new Files();
+        $fileEntry->post_id = $post->id; // Assuming you have $postId available
+        $fileEntry->path = $filePath;
+        $fileEntry->file_type = $fileType;
+        $fileEntry->save();
+
+        // Redirect back with a success message
+        return redirect()->back()->with('success', 'Form submitted successfully.');
     }
 
     

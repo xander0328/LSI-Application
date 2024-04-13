@@ -17,6 +17,7 @@
     @laravelPWA
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+
 </head>
 
 <body class="font-sans antialiased">
@@ -107,7 +108,96 @@
             </aside>
         @endif
         @if (auth()->check() && auth()->user()->role === 'student')
-        
+            <aside id="logo-sidebar"
+                class="fixed left-0 top-0 z-40 h-screen w-60 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800 sm:translate-x-0"
+                aria-label="Sidebar">
+                <div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
+                    <ul class="space-y-2 font-medium">
+                        <li>
+                            <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 19V4c0-.6.4-1 1-1h12c.6 0 1 .4 1 1v13H7a2 2 0 0 0-2 2Zm0 0c0 1.1.9 2 2 2h12M9 3v14m7 0v4" />
+                                </svg>
+                                <span class="ms-3">Course</span>
+                            </x-nav-link>
+                        </li>
+                        <li>
+                            <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24">
+                                    <title>book-check-outline</title>
+                                    <path
+                                        d="M16.75 22.16L14 19.16L15.16 18L16.75 19.59L20.34 16L21.5 17.41L16.75 22.16M18 2C19.1 2 20 2.9 20 4V13.34C19.37 13.12 18.7 13 18 13V4H13V12L10.5 9.75L8 12V4H6V20H12.08C12.2 20.72 12.45 21.39 12.8 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2H18Z" />
+                                </svg>
+                                <span class="ms-3">Completed</span>
+                            </x-nav-link>
+                        </li>
+                        <li>
+                            <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24">
+                                    <title>message-processing-outline</title>
+                                    <path
+                                        d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2M20 16H5.2L4 17.2V4H20V16M17 11H15V9H17M13 11H11V9H13M9 11H7V9H9" />
+                                </svg>
+                                <span class="ms-3">Message</span>
+                            </x-nav-link>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        @endif
+        @if (auth()->check() && auth()->user()->role === 'instructor')
+            <aside id="logo-sidebar"
+                class="fixed left-0 top-0 z-40 h-screen w-60 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800 sm:translate-x-0"
+                aria-label="Sidebar">
+                <div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
+                    <ul class="space-y-2 font-medium">
+                        <li>
+                            <x-nav-link :href="route('batch_list')" :active="request()->routeIs('batch_list')"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M5 19V4c0-.6.4-1 1-1h12c.6 0 1 .4 1 1v13H7a2 2 0 0 0-2 2Zm0 0c0 1.1.9 2 2 2h12M9 3v14m7 0v4" />
+                                </svg>
+                                <span class="ms-3">Batches</span>
+                            </x-nav-link>
+                        </li>
+                        <li>
+                            <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24">
+                                    <title>book-check-outline</title>
+                                    <path
+                                        d="M16.75 22.16L14 19.16L15.16 18L16.75 19.59L20.34 16L21.5 17.41L16.75 22.16M18 2C19.1 2 20 2.9 20 4V13.34C19.37 13.12 18.7 13 18 13V4H13V12L10.5 9.75L8 12V4H6V20H12.08C12.2 20.72 12.45 21.39 12.8 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2H18Z" />
+                                </svg>
+                                <span class="ms-3">Completed</span>
+                            </x-nav-link>
+                        </li>
+                        <li>
+                            <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24">
+                                    <title>message-processing-outline</title>
+                                    <path
+                                        d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2M20 16H5.2L4 17.2V4H20V16M17 11H15V9H17M13 11H11V9H13M9 11H7V9H9" />
+                                </svg>
+                                <span class="ms-3">Message</span>
+                            </x-nav-link>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
         @endif
 
         <div class="py-4 sm:ml-60">
