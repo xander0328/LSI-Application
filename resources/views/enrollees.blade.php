@@ -82,17 +82,19 @@
                             </td>
                             <th scope="row"
                                 class="flex items-center whitespace-nowrap px-6 py-4 text-gray-900 dark:text-white">
-                                <img class="h-10 w-10 rounded-full" src="/docs/images/people/profile-picture-1.jpg"
-                                    alt="Jese image">
+                                @foreach ($enrollee->enrollee_files as $file)
+                                    <img class="h-10 w-10 rounded-full"
+                                        src="{{ asset('storage/' . $file->id_picture) }}" alt="profile">
+                                @endforeach
                                 <div class="ps-3">
                                     <div class="text-base font-semibold">{{ $enrollee->user->fname }}
                                         {{ $enrollee->user->lname }}</div>
                                     <div class="font-normal text-gray-500">{{ $enrollee->user->email }}</div>
                                 </div>
                             </th>
-                            <td class="px-6 py-4">
-                                {{ $enrollee->barangay }}, {{ $enrollee->city }},
-                                {{ $enrollee->province }}
+                            <td class="px-6 py-4">{{ ucwords(strtolower($enrollee->barangay)) }},
+                                {{ ucwords(strtolower($enrollee->city)) }},
+                                {{ ucwords(strtolower($enrollee->province)) }}
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center">
@@ -111,15 +113,16 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div>
-                                    Type: {{ $enrollee->employment_type }}
+                                    Type: {{ ucwords($enrollee->employment_type) }}
                                 </div>
                                 <div>
-                                    Status: {{ $enrollee->employment_status }}
+                                    Status:
+                                    {{ $enrollee->employment_type != 'Employed' ? '---' : $enrollee->employment_status }}
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 <div>
-                                    {{ $enrollee->preferred_schedule }}
+                                    {{ ucwords($enrollee->preferred_schedule) }}
                                 </div>
                                 <div>
                                     Start: {{ \Carbon\Carbon::parse($enrollee->preferred_start)->format('Y-m-d') }}
@@ -293,6 +296,55 @@
                     $('.row-checkbox').prop('checked', isChecked).change();
                 });
             });
+
+
+            window.onload = function() {
+                var elements = document.querySelectorAll('[id^="address_"]');
+                var barangay, city, province;
+                elements.forEach(function(element) {
+                    $.ajax({
+                        url: 'https://psgc.gitlab.io/api/barangays/{{ $enrollee->barangay ?? '' }}',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            barangay = data.name;
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching barangays:', error);
+                        }
+                    });
+
+                    $.ajax({
+                        url: 'https://psgc.gitlab.io/api/cities-municipalities/{{ $enrollee->city ?? '' }}',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            city = data.name;
+                            console.log(city);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching barangays:', error);
+                        }
+                    });
+
+                    $.ajax({
+                        url: 'https://psgc.gitlab.io/api/provinces/{{ $enrollee->province ?? '' }}',
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(data) {
+                            province = data.name;
+                            $('#address_{{ $enrollee->user_id ?? '' }}').text(barangay + ', ' + city +
+                                ', ' +
+                                province)
+                            console.log(province);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error fetching barangays:', error);
+                        }
+                    });
+
+                });
+            };
         </script>
     @endsection
 </x-app-layout>

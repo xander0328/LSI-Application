@@ -126,7 +126,7 @@
                             </x-nav-link>
                         </li>
                         <li>
-                            <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
+                            <x-nav-link :href="route('course_completed')" :active="request()->routeIs('course_completed')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24">

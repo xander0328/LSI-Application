@@ -30,4 +30,9 @@ class Enrollee extends Model
     {
         return $this->belongsTo(Batch::class);
     }
+
+    public function enrollee_files()
+    {
+        return $this->hasMany(EnrolleeFiles::class, 'enrollee_id');
+    }
 }

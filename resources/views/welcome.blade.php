@@ -165,7 +165,7 @@
             <h2 class="my-4 mb-8 text-center text-4xl font-bold">Popular Offered Courses</h2>
 
             <div class="flex items-center justify-center">
-                <div class="grid-cols-{{ $courses->count() }} grid gap-4">
+                <div class="grid-cols-{{ $courses->count() }} grid gap-2">
                     <!-- Course Item -->
                     {{-- <div
                         class="max-w-xs rounded-xl border-8 border-gray-200 bg-white shadow dark:border-gray-800 dark:bg-gray-800">
@@ -231,7 +231,7 @@
                                 </p>
                                 <a href="{{ route('enroll', $course->id) }}"
                                     class="inline-flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-2 text-center text-sm font-medium font-semibold text-black hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-sky-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                    Read more
+                                    Enroll Now
                                     <svg class="ms-2 h-3.5 w-3.5 rtl:rotate-180" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -243,11 +243,11 @@
                     @endforeach
                 </div>
             </div>
-            <div class="mt-5 text-center text-white">
+            {{-- <div class="mt-5 text-center text-white">
                 <a href="#"
                     class="rounded-md px-3 py-2 text-lg text-sky-500 hover:bg-gray-800 hover:text-sky-200">See All
                     Courses</a>
-            </div>
+            </div> --}}
         </div>
 
         <div>
@@ -271,8 +271,18 @@
             <li>
                 <a href="#" class="hover:underline">Contact</a>
             </li>
+            <li>
+                {{ isset($message) ? $message : '' }}
+            </li>
         </ul>
     </footer>
+    <script>
+        var message = "{{ isset($message) ? $message : '' }}";
+        if (message) {
+            alert(message);
+        }
+        console.log('hello');
+    </script>
 </body>
 
 </html>

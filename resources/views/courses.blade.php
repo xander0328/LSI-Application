@@ -83,7 +83,7 @@
                                                         action="{{ route('delete_course', $course->id) }}"
                                                         method="post">
                                                         @method('DELETE')
-                                                        <button type="submit"
+                                                        <button onclick="confirmDelete()" type="submit"
                                                             class="flex w-full items-center rounded-lg p-1 px-2 align-text-bottom hover:bg-gray-700">
                                                             <svg class="h-5 w-6 text-gray-800 dark:text-white"
                                                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -374,6 +374,12 @@
                     });
                 });
             })
+
+            function confirmDelete() {
+                if (confirm("Are you sure you want to delete this course?")) {
+                    document.getElementById('delete-course').submit();
+                }
+            }
         </script>
     @endsection
 </x-app-layout>

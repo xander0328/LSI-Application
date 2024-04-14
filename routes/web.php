@@ -44,7 +44,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::post('/add_to_batch', [SuperAdminController::class, 'add_to_batch'])->name('add_to_batch');
 
         Route::get('/text_input_post', [SuperAdminController::class, 'text_input_post'])->name('text_input_post');
-        Route::post('/post', [SuperAdminController::class, 'post'])->name('post');
+        
 
         // Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
     });
@@ -56,13 +56,17 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::post('/enroll_save', [StudentController::class, 'enroll_save'])->name('enroll_save');
 
     Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
+    Route::get('/enroll_requirements/{enrollee}', [StudentController::class, 'enroll_requirements'])->name('enroll_requirements');
+    Route::post('/enroll_requirements_save', [StudentController::class, 'enroll_requirements_save'])->name('enroll_requirements_save');
     Route::get('/already_enrolled', [StudentController::class, 'already_enrolled'])->name('already_enrolled');
+    Route::get('/course_completed', [StudentController::class, 'course_completed'])->name('course_completed');
 });
 
 Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::get('/batch_list', [InstructorController::class, 'batch_list'])->name('batch_list');
     Route::get('/batch_posts/{id}', [InstructorController::class, 'batch_posts'])->name('batch_posts');
     Route::get('/batch_members', [InstructorController::class, 'batch_members'])->name('batch_members');
+    Route::post('/post', [InstructorController::class, 'post'])->name('post');
 });
 
 Route::middleware('auth')->group(function () {

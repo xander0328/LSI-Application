@@ -10,6 +10,7 @@ use App\Models\Batch;
 use App\Models\Post;
 use App\Models\Files;
 use App\Models\Education;
+use App\Models\EnrolleeFiles;
 
 class StudentController extends Controller
 {
@@ -17,29 +18,46 @@ class StudentController extends Controller
     {
         $user = auth()->user();
         $user_id = $user->id;
-        $enrollee = Enrollee::findOrFail($user_id);
-        $course = $enrollee->course;
-        $batch = $enrollee->batch;
-        $posts = $batch->post;
-        $files = collect(); // Initialize an empty collection for files
+        $enrollee = Enrollee::where('user_id', $user_id)->first();
+        if($enrollee){
+            $course = $enrollee->course;
+            $batch = $enrollee->batch;
+            $posts = $batch->post;
+            $files = collect(); // Initialize an empty collection for files
 
-        // Retrieve files for each post
-        foreach ($posts as $post) {
-            $files = $files->merge($post->files);
+            // Retrieve files for each post
+            foreach ($posts as $post) {
+                $files = $files->merge($post->files);
+            }
+            // print_r('<pre>');
+            // print_r($user_id);
+
+            return view('student.enrolled_course', compact('enrollee', 'course', 'batch', 'posts', 'files'));
+        }else{
+            return redirect()->route('home');
         }
-
-        return view('student.enrolled-course', compact('enrollee', 'course', 'batch', 'posts', 'files'));
+        
     }
 
     public function enroll($id)
     {
         $hasBatchId = Enrollee::where('user_id', auth()->user()->id)
-            ->where('course_id', $id)
-            ->whereNotNull('batch_id')
-            ->first();
+        ->where('course_id', $id)
+        ->whereNotNull('batch_id')
+        ->first();
 
-        if ($hasBatchId) {
-            return view('student.already_enrolled');
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)
+        ->where('course_id', $id)
+        ->first();
+
+        if(isset($enrollee->id))
+        $hasRequirements = EnrolleeFiles::where('enrollee_id', $enrollee->id)->exists();
+
+        if ($enrollee) {
+            if(!$hasRequirements)
+                return view('student.enroll_requirements', compact('enrollee'));
+            else
+                return view('student.already_enrolled');
         } else {
             return view('student.enroll');
         }
@@ -53,6 +71,11 @@ class StudentController extends Controller
         $data['preferred_start'] = date('Y-m-d', strtotime($request->preferred_start));
         $data['height'] = str_replace(' kg', '', $request->height);
         $data['weight'] = str_replace(' cm', '', $request->weight);
+        $data['region'] = $request->region_name;
+        $data['province'] = $request->province_name;
+        $data['district'] = $request->district_name;
+        $data['city'] = $request->city_name;
+        $data['barangay'] = $request->barangay_name;
 
         // $data = $request->validate([
         //     'user_id' => 'required',
@@ -151,14 +174,53 @@ class StudentController extends Controller
 
             }
             // print_r($numberOfEduc);
+            $enrollee = $enrollee_id;
 
-            return redirect()->route('home');
+            return redirect()->route('enroll_requirements', compact('enrollee'));
         }
+    }
+
+    public function enroll_requirements($enrollee){
+        return view('student.enroll_requirements', compact('enrollee'));
     }
 
     public function already_enrolled()
     {
-        return view('already_enrolled');
+        return view('student.already_enrolled');
+    }
+
+    public function enroll_requirements_save(Request $request) {
+        $request->all();
+        $directory = 'enrollee_files/'. $request->enrollee_id;
+        $path = [];
+        foreach(['valid_id', 'diploma_tor', 'birth_certificate', 'id_picture'] as $name){
+            $file = $request->file($name);
+            $extension = $file->getClientOriginalExtension();
+            $path[$name] = $file->storeAs($directory, $name . '_' . $request->enrollee_id.'.'.$extension, 'public');
+            
+        }
+
+        // print_r('<pre>');
+        // print_r($request->enrollee_id);
+
+        $enrollee_files = new EnrolleeFiles();
+        $enrollee_files->enrollee_id = $request->enrollee_id;
+        $enrollee_files->valid_id = $path['valid_id'];
+        $enrollee_files->birth_certificate = $path['birth_certificate'];
+        $enrollee_files->diploma_tor = $path['diploma_tor'];
+        $enrollee_files->id_picture = $path['id_picture'];
+        // Add any additional information you want to store
+        $enrollee_files->save();
+        
+        return redirect()->route('home');
+    }
+
+    public function course_completed(){
+        $user = auth()->user();
+        $completed = Enrollee::where('user_id', $user->id)
+        ->whereNotNull('completed_at')
+        ->get();
+
+        return view('student.course_completed', compact('completed'));
     }
 }
- 

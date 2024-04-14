@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\Enrollee;
+use App\Models\EnrolleeFiles;
 use App\Models\Batch;
 use App\Models\Files;
 use App\Models\Post;
@@ -71,7 +72,17 @@ class SuperAdminController extends Controller
             return is_null($enrollee->batch_id) && is_null($enrollee->completed_at);
         });
         $batches = $course->batches;
-        return view('enrollees', compact('course', 'enrollees', 'batches'));
+        
+        $enrolleeFiles = collect();
+        
+        foreach ($enrollees as $enrollee) {
+            // Retrieve enrollee files for each filtered enrollee
+            $enrolleeFiles = $enrolleeFiles->merge($enrollee->enrollee_files);
+        }
+        
+        return view('enrollees', compact('course', 'enrollees', 'batches', 'enrolleeFiles'));
+        // print_r("<pre>");
+        // print_r($enrolleeFiles);
     }
 
     // Generate Name for New Batch
@@ -134,40 +145,7 @@ class SuperAdminController extends Controller
         return view('test_input_post');
     }
 
-    public function post(Request $request){
-        // Validate the request data
-        $request->validate([
-            'message' => 'required|string',
-            'file' => 'required|file',
-        ]);
-
-        // Handle file upload
-        if ($request->file('file')->isValid()) {
-            $file = $request->file('file');
-            $fileName = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
-            $filePath = $file->storeAs('uploads', $fileName, 'public'); // Change 'uploads' to your desired directory
-
-            // Get file type
-            $fileType = $file->getClientMimeType();
-        }
-
-        // Process other form data
-        $message = $request->input('message');
-        $post = new Post();
-        $post->batch_id = 3;
-        $post->description = $message;
-        $post->save();
-
-        // Save to database
-        $fileEntry = new Files();
-        $fileEntry->post_id = $post->id; // Assuming you have $postId available
-        $fileEntry->path = $filePath;
-        $fileEntry->file_type = $fileType;
-        $fileEntry->save();
-
-        // Redirect back with a success message
-        return redirect()->back()->with('success', 'Form submitted successfully.');
-    }
+    
 
     
 }

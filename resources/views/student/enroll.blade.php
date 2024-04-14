@@ -21,6 +21,8 @@
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     <option selected="">Select</option>
                 </select>
+                <input type="hidden" id="region_name" name="region_name" value="">
+
             </div>
 
             <div class="col-span-2">
@@ -31,6 +33,7 @@
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     <option selected="">Select</option>
                 </select>
+                <input type="hidden" id="province_name" name="province_name" value="">
             </div>
 
             <div class="col-span-2">
@@ -41,6 +44,8 @@
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     <option selected="">Select</option>
                 </select>
+                <input type="hidden" id="district_name" name="district_name" value="">
+
             </div>
 
             <div class="col-span-2">
@@ -51,6 +56,8 @@
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     <option selected="">Select</option>
                 </select>
+                <input type="hidden" id="city_name" name="city_name" value="">
+
             </div>
 
             <div class="col-span-2">
@@ -61,6 +68,8 @@
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     <option selected="">Select</option>
                 </select>
+                <input type="hidden" id="barangay_name" name="barangay_name" value="">
+
             </div>
 
             <div class="col-span-2">
@@ -103,7 +112,8 @@
             <div class="col-span-2 flex justify-between">
                 <x-primary-button id="step2_prev" onclick="prevStep(2)" class="col-span-1 text-white"
                     type="button">Previous</x-primary-button>
-                <x-primary-button id="step2_next" class="col-span-1 text-white" type="button">Next</x-primary-button>
+                <x-primary-button id="step2_next" class="col-span-1 text-white"
+                    type="button">Next</x-primary-button>
             </div>
 
             {{-- <button type="submit"
@@ -425,7 +435,8 @@
 
                 $('#region').on('change', function() {
                     var regionCode = $(this).val();
-                    console.log(regionCode);
+                    var regionName = $(this).find('option:selected').text();
+                    console.log(regionName);
 
                     // Change Provinces Options
                     $.ajax({
@@ -438,6 +449,7 @@
                             $('#province').append($('<option>', {
                                 text: 'Select'
                             }))
+                            $('#region_name').val(regionName);
 
                             // Append new options for provinces
                             $.each(data, function(index, province) {
@@ -481,6 +493,7 @@
                 // Change City Options
                 $('#province').on('change', function() {
                     var provCode = $(this).val();
+                    var provName = $(this).find('option:selected').text();
                     console.log(provCode);
 
                     $.ajax({
@@ -493,6 +506,7 @@
                             $('#city').append($('<option>', {
                                 text: 'Select'
                             }))
+                            $('#province_name').val(provName)
 
                             $.each(data, function(index, city) {
                                 $('#city').append($('<option>', {
@@ -511,6 +525,8 @@
                 // Change Barangay Options
                 $('#city').on('change', function() {
                     var cityCode = $(this).val();
+                    var cityName = $(this).find('option:selected').text();
+
                     console.log(cityCode);
 
                     $.ajax({
@@ -523,6 +539,7 @@
                             $('#barangay').append($('<option>', {
                                 text: 'Select'
                             }))
+                            $('#city_name').val(cityName)
 
                             $.each(data, function(index, barangay) {
                                 $('#barangay').append($('<option>', {
@@ -539,6 +556,16 @@
                 });
 
 
+            })
+            $('#barangay').on('change', function() {
+                var barangayName = $(this).find('option:selected').text();
+                $('#barangay_name').val(barangayName)
+
+            })
+
+            $('#district').on('change', function() {
+                var districtName = $(this).find('option:selected').text();
+                $('#district_name').val(districtName)
 
             });
 
@@ -559,7 +586,7 @@
                     //     return false;
                     // }
 
-                    var inputs = document.querySelectorAll("#step1 input, #step1 select");
+                    var inputs = document.querySelectorAll("#step1 input:not([type=hidden]), #step1 select");
                     var labels = document.querySelectorAll("#step1 label");
                     console.log(inputs);
                     for (var i = 0; i < inputs.length; i++) {
@@ -790,8 +817,6 @@
                 document.getElementById('step' + (step - 1)).classList.remove('hidden');
             }
 
-
-
             function dateChanged() {
                 let inputValue = event.target.value;
                 let inputName = event.target.name
@@ -804,19 +829,6 @@
                     event.target.value = inputValue.slice(0, -1);
                 }
             }
-
-            //End Date Validation
-            // function endDateChanged() {
-            //     console.log("Hello");
-            //     // var startDate = $("input[name='preferred_start']").val();
-            //     // var endDate = $("input[name='preferred_finish']");
-            //     // console.log(startDate);
-
-            //     // if (endDate < startDate) {
-            //     //     alert('End date cannot be less than start date');
-            //     //     $("input[name='preferred_finish']").val('');
-            //     // }
-            // }
 
             function heightChanged() {
                 let inputValue = event.target.value;

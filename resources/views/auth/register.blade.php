@@ -23,6 +23,7 @@
 
         <!-- Name -->
         <div id="step1" class="visible">
+            <input type="hidden" name="role" value="student">
             <div class="mt-4">
                 <x-input-label for="fname" :value="__('First Name')" />
                 <x-text-input id="fname" class="mt-1 block w-full border border-red-600" type="text" name="fname"
