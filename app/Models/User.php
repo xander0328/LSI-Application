@@ -23,7 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'lname',
         'email',
         'password',
-        'role'
+        'role',
+        'device_token'
     ];
 
     /**
@@ -48,11 +49,16 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function enrollee()
     {
-        return $this->hasOne(Enrollee::class);
+        return $this->hasMany(Enrollee::class);
     }
 
     public function batch()
     {
         return $this->hasMany(Batch::class, 'instructor_id');
+    }
+
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'conversations', 'user1_id', 'user2_id');
     }
 }

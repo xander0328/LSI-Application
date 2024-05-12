@@ -7,7 +7,7 @@
         </div>
 
     </x-slot>
-    <div id="course_list" class="mx-8 my-4">
+    <div id="course_list" class="mx-8 pt-36">
         <div class="">
             @foreach ($batch as $batch)
                 @php

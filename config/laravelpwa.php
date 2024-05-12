@@ -31,7 +31,7 @@ return [
         ],
         'shortcuts' => [
             [
-                'name' => 'Shortcut Link 1',
+                'name' => 'hdaddawd',
                 'description' => 'Shortcut Link 1 Description',
                 'url' => '/shortcutlink1',
                 'icons' => [
@@ -40,9 +40,9 @@ return [
                 ]
             ],
             [
-                'name' => 'Shortcut Link 2',
+                'name' => 'Course',
                 'description' => 'Shortcut Link 2 Description',
-                'url' => '/shortcutlink2'
+                'url' => '/enrolled_course'
             ]
         ],
         'custom' => []

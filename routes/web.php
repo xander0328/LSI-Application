@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\InstructorController;
+use App\Http\Controllers\NotificationSendController;
 use App\Models\Course;
 use Illuminate\Support\Facades\Route;
 
@@ -54,12 +55,24 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
 Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::get('/enroll/{id}', [StudentController::class, 'enroll'])->name('enroll');
     Route::post('/enroll_save', [StudentController::class, 'enroll_save'])->name('enroll_save');
-
-    Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
     Route::get('/enroll_requirements/{enrollee}', [StudentController::class, 'enroll_requirements'])->name('enroll_requirements');
     Route::post('/enroll_requirements_save', [StudentController::class, 'enroll_requirements_save'])->name('enroll_requirements_save');
     Route::get('/already_enrolled', [StudentController::class, 'already_enrolled'])->name('already_enrolled');
+
     Route::get('/course_completed', [StudentController::class, 'course_completed'])->name('course_completed');
+    
+    Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
+    Route::get('/enrolled_course_assignment', [StudentController::class, 'enrolled_course_assignment'])->name('enrolled_course_assignment');
+    Route::get('/view_assignment/{id}', [StudentController::class, 'view_assignment'])->name('view_assignment');
+    Route::post('/turn_in_assignment', [StudentController::class, 'turn_in_assignment'])->name('turn_in_assignment');
+
+    //Message
+    Route::get('/message/{id}', [StudentController::class, 'message'])->name('message');
+    Route::get('/get_messages/{id}', [StudentController::class, 'get_messages'])->name('get_messages');
+    Route::get('/message_list', [StudentController::class, 'message_list'])->name('message_list');
+    Route::post('/send_message', [StudentController::class, 'send_message'])->name('send_message');
+    Route::post('/store-token', [NotificationSendController::class, 'updateDeviceToken'])->name('store.token');
+    Route::post('/send-web-notification', [NotificationSendController::class, 'sendNotification'])->name('send.web-notification');
 });
 
 Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
@@ -67,6 +80,8 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::get('/batch_posts/{id}', [InstructorController::class, 'batch_posts'])->name('batch_posts');
     Route::get('/batch_members', [InstructorController::class, 'batch_members'])->name('batch_members');
     Route::post('/post', [InstructorController::class, 'post'])->name('post');
+    Route::post('/post_assignment', [InstructorController::class, 'post_assignment'])->name('post_assignment');
+    Route::post('batch_posts/{id}/temp_upload_assignment', [InstructorController::class, 'temp_upload_assignment'])->name('temp_upload_assignment');
 });
 
 Route::middleware('auth')->group(function () {

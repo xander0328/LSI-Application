@@ -3,7 +3,7 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <!-- Modal body -->
-    <form id="enroll_to_course" class="p-4 md:p-5" method="POSt" action="{{ route('enroll_save') }}">
+    <form id="enroll_to_course" class="p-4 md:p-5" method="POSt" action="{{ route('enroll_save', auth()->user()) }}">
         @csrf
         <?php
         $course_id = request()->segment(count(request()->segments()));
@@ -409,7 +409,6 @@
         </div>
     </form>
     @section('script')
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
 

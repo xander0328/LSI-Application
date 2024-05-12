@@ -16,7 +16,62 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @laravelPWA
 
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    {{-- PWA --}}
+    <!-- Web Application Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <!-- Chrome for Android theme color -->
+    <meta name="theme-color" content="#000000">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="PWA">
+    <link rel="icon" sizes="512x512" href="/images/icons/icon-512x512.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="PWA">
+    <link rel="apple-touch-icon" href="/images/icons/icon-512x512.png">
+
+    <link href="/images/icons/splash-640x1136.png"
+        media="(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="/images/icons/splash-750x1334.png"
+        media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="/images/icons/splash-1242x2208.png"
+        media="(device-width: 621px) and (device-height: 1104px) and (-webkit-device-pixel-ratio: 3)"
+        rel="apple-touch-startup-image" />
+    <link href="/images/icons/splash-1125x2436.png"
+        media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)"
+        rel="apple-touch-startup-image" />
+    <link href="/images/icons/splash-828x1792.png"
+        media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="/images/icons/splash-1242x2688.png"
+        media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)"
+        rel="apple-touch-startup-image" />
+    <link href="/images/icons/splash-1536x2048.png"
+        media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="/images/icons/splash-1668x2224.png"
+        media="(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="/images/icons/splash-1668x2388.png"
+        media="(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+    <link href="/images/icons/splash-2048x2732.png"
+        media="(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)"
+        rel="apple-touch-startup-image" />
+
+    <!-- Tile for Win8 -->
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/images/icons/icon-512x512.png">
+    {{-- END PWA --}}
+
+    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
+        rel="stylesheet">
 
 </head>
 
@@ -138,7 +193,7 @@
                             </x-nav-link>
                         </li>
                         <li>
-                            <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
+                            <x-nav-link :href="route('message_list')" :active="request()->routeIs('message_list')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24">
@@ -171,7 +226,7 @@
                                 <span class="ms-3">Batches</span>
                             </x-nav-link>
                         </li>
-                        <li>
+                        {{-- <li>
                             <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
@@ -194,18 +249,18 @@
                                 </svg>
                                 <span class="ms-3">Message</span>
                             </x-nav-link>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
             </aside>
         @endif
 
-        <div class="py-4 sm:ml-60">
+        <div class="ml-60">
             {{-- <div class="mt-14 rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700"> --}}
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="mt-14">
-                    <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+                <header class="fixed left-60 right-0 top-14 z-10">
+                    <div class="mx-auto max-w-7xl border-gray-600 bg-gray-800 px-4 py-6 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
@@ -220,7 +275,67 @@
         </div>
 
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
+    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>    
+
+    <script type="text/javascript">
+        if ('serviceWorker' in navigator) {
+            // Register the service worker
+            navigator.serviceWorker.register('/serviceworker.js')
+                .then(registration => {
+                    // Service worker registration success
+                    console.log('Service Worker registered:', registration);
+                })
+                .catch(error => {
+                    // Service worker registration failed
+                    console.error('Service Worker registration failed:', error);
+                });
+
+            // Listen for the beforeinstallprompt event
+            window.addEventListener('beforeinstallprompt', (event) => {
+                // Prevent the default browser prompt
+                console.log('being installed');
+                event.preventDefault();
+                // Store the event for later use
+                let deferredPrompt = event;
+                // Show your custom install prompt
+                showInstallPrompt();
+
+                // Example function to show a custom install prompt
+                function showInstallPrompt() {
+                    // Show a custom button or banner
+                    // Example: display a button with id "installButton"
+                    const installButton = document.getElementById('installButton');
+                    installButton.style.display = 'block';
+
+                    // Attach an event listener to the button
+                    installButton.addEventListener('click', () => {
+                        // Show the browser's install prompt
+                        deferredPrompt.prompt();
+                        // Wait for the user to respond to the prompt
+                        deferredPrompt.userChoice.then((choiceResult) => {
+                            if (choiceResult.outcome === 'accepted') {
+                                console.log('User accepted the install prompt');
+                            } else {
+                                console.log('User dismissed the install prompt');
+                            }
+                            // Reset the deferredPrompt variable
+                            deferredPrompt = null;
+                            // Hide the install button
+                            installButton.style.display = 'none';
+                        });
+                    });
+                }
+            });
+        }
+    </script>
     @yield('script')
+
 </body>
 
 </html>

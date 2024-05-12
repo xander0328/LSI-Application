@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use App\Models\Enrollee;
 use App\Models\Course;
 use App\Models\Batch;
@@ -11,6 +13,12 @@ use App\Models\Post;
 use App\Models\Files;
 use App\Models\Education;
 use App\Models\EnrolleeFiles;
+use App\Models\Conversation;
+use App\Models\Message;
+use App\Models\Assignment;
+use App\Models\AssignmentFile;
+
+use App\Http\Controllers\NotificationSendController;
 
 class StudentController extends Controller
 {
@@ -19,7 +27,7 @@ class StudentController extends Controller
         $user = auth()->user();
         $user_id = $user->id;
         $enrollee = Enrollee::where('user_id', $user_id)->first();
-        if($enrollee){
+        if ($enrollee) {
             $course = $enrollee->course;
             $batch = $enrollee->batch;
             $posts = $batch->post;
@@ -33,31 +41,71 @@ class StudentController extends Controller
             // print_r($user_id);
 
             return view('student.enrolled_course', compact('enrollee', 'course', 'batch', 'posts', 'files'));
-        }else{
+        } else {
             return redirect()->route('home');
         }
-        
+    }
+
+    public function enrolled_course_assignment()
+    {
+        $user = auth()->user();
+        $user_id = $user->id;
+        $enrollee = Enrollee::where('user_id', $user_id)->first();
+        if ($enrollee) {
+            $course = $enrollee->course;
+            $batch = $enrollee->batch;
+            $assignments = $batch->assignment;
+            $files = collect(); // Initialize an empty collection for files
+
+            // Retrieve files for each post
+            foreach ($assignments as $assignment) {
+                $files = $files->merge($assignment->assignment_files);
+            }
+            // print_r('<pre>');
+            // print_r($user_id);
+            // dd($files);
+            return view('student.enrolled_course_assignments', compact('enrollee', 'course', 'batch', 'assignments', 'files'));
+        } else {
+            return redirect()->route('home');
+        }
+    }
+
+    public function view_assignment($id){
+        $user = auth()->user();
+        $user_id = $user->id;
+        $enrollee = Enrollee::where('user_id', $user_id)->first();
+        $course = $enrollee->course;
+        $batch = $enrollee->batch;
+
+        $assignment = Assignment::where('id', $id)->first();
+        return view('student.view_assignment', compact('enrollee', 'course','batch', 'assignment'));
+    }
+
+    public function turn_in_assignment(Request $request) {
+        return $request->all();
     }
 
     public function enroll($id)
     {
         $hasBatchId = Enrollee::where('user_id', auth()->user()->id)
-        ->where('course_id', $id)
-        ->whereNotNull('batch_id')
-        ->first();
+            ->where('course_id', $id)
+            ->whereNotNull('batch_id')
+            ->first();
 
         $enrollee = Enrollee::where('user_id', auth()->user()->id)
-        ->where('course_id', $id)
-        ->first();
+            ->where('course_id', $id)
+            ->first();
 
-        if(isset($enrollee->id))
-        $hasRequirements = EnrolleeFiles::where('enrollee_id', $enrollee->id)->exists();
+        if (isset($enrollee->id)) {
+            $hasRequirements = EnrolleeFiles::where('enrollee_id', $enrollee->id)->exists();
+        }
 
         if ($enrollee) {
-            if(!$hasRequirements)
+            if (!$hasRequirements) {
                 return view('student.enroll_requirements', compact('enrollee'));
-            else
+            } else {
                 return view('student.already_enrolled');
+            }
         } else {
             return view('student.enroll');
         }
@@ -152,7 +200,7 @@ class StudentController extends Controller
                     // print_r('<pre>');
                     // print_r($edu);
 
-                    if(array_key_exists('educational_level', $edu) ){
+                    if (array_key_exists('educational_level', $edu)) {
                         if ($edu['educational_level'] === 'Tertiary') {
                             if ($parts[0] === 'degree' && $parts[1] == $i) {
                                 $edu['degree'] = $value;
@@ -171,16 +219,14 @@ class StudentController extends Controller
                 $edu['enrollee_id'] = $enrollee_id;
 
                 Education::create($edu);
-
             }
-            // print_r($numberOfEduc);
-            $enrollee = $enrollee_id;
 
             return redirect()->route('enroll_requirements', compact('enrollee'));
         }
     }
 
-    public function enroll_requirements($enrollee){
+    public function enroll_requirements($enrollee)
+    {
         return view('student.enroll_requirements', compact('enrollee'));
     }
 
@@ -189,15 +235,15 @@ class StudentController extends Controller
         return view('student.already_enrolled');
     }
 
-    public function enroll_requirements_save(Request $request) {
+    public function enroll_requirements_save(Request $request)
+    {
         $request->all();
-        $directory = 'enrollee_files/'. $request->enrollee_id;
+        $directory = 'enrollee_files/' . $request->enrollee_id;
         $path = [];
-        foreach(['valid_id', 'diploma_tor', 'birth_certificate', 'id_picture'] as $name){
+        foreach (['valid_id', 'diploma_tor', 'birth_certificate', 'id_picture'] as $name) {
             $file = $request->file($name);
             $extension = $file->getClientOriginalExtension();
-            $path[$name] = $file->storeAs($directory, $name . '_' . $request->enrollee_id.'.'.$extension, 'public');
-            
+            $path[$name] = $file->storeAs($directory, $name . '_' . $request->enrollee_id . '.' . $extension, 'public');
         }
 
         // print_r('<pre>');
@@ -211,16 +257,123 @@ class StudentController extends Controller
         $enrollee_files->id_picture = $path['id_picture'];
         // Add any additional information you want to store
         $enrollee_files->save();
-        
+
         return redirect()->route('home');
     }
 
-    public function course_completed(){
+    public function course_completed()
+    {
         $user = auth()->user();
         $completed = Enrollee::where('user_id', $user->id)
-        ->whereNotNull('completed_at')
-        ->get();
+            ->whereNotNull('completed_at')
+            ->get();
 
         return view('student.course_completed', compact('completed'));
+    }
+
+    public function message($id)
+    {
+        $user = User::where('id', $id)->get();
+        $userId1 = auth()->user()->id;
+        $userId2 = $id;
+
+        $conversation = Conversation::where(function ($query) use ($userId1, $userId2) {
+            $query->where('user1_id', $userId1)->where('user2_id', $userId2);
+        })
+            ->orWhere(function ($query) use ($userId1, $userId2) {
+                $query->where('user1_id', $userId2)->where('user2_id', $userId1);
+            })
+            ->first();
+
+        if ($conversation) {
+            $messages = $conversation->messages->reverse();
+            return view('student.message', compact('user', 'conversation', 'messages'));
+        } else {
+            return view('student.message', compact('user', 'conversation'));
+        }
+    }
+
+    public function message_list()
+    {
+        // $users = User::whereNot('id', auth()->user()->id)->get();
+
+        $currentUserId = auth()->user()->id;
+
+        $users = DB::select("SELECT DISTINCT *, users.id
+        FROM users
+        JOIN conversations ON users.id = conversations.user1_id OR users.id = conversations.user2_id
+        WHERE (? IN (conversations.user1_id, conversations.user2_id)) AND users.id != ?",
+            [$currentUserId, $currentUserId],
+        );
+
+        $all_users = User::whereNot('id', auth()->user()->id)->orderBy('fname')->orderBy('lname')->orderBy('role')->get();
+
+        // print_r('<pre>');
+        // print_r($users);
+        return view('student.message_list', compact('users', 'all_users'));
+    }
+
+    public function send_message(Request $request)
+    {
+        // Validate the request data
+        $validatedData = $request->all();
+
+        // // Determine the conversation participants' IDs
+        $userId1 = $validatedData['user1_id'];
+        $userId2 = $validatedData['user2_id'];
+
+        // Find or create the conversation
+        $conversation = Conversation::where(function ($query) use ($userId1, $userId2) {
+            $query->where('user1_id', $userId1)->where('user2_id', $userId2);
+        })
+            ->orWhere(function ($query) use ($userId1, $userId2) {
+                $query->where('user1_id', $userId2)->where('user2_id', $userId1);
+            })
+            ->first();
+
+        if (!$conversation) {
+            $conversation = Conversation::create([
+                'user1_id' => $userId1,
+                'user2_id' => $userId2,
+            ]);
+        }
+
+        // // Create a new message instance
+        $message = new Message();
+        $message->conversation_id = $conversation->id;
+        $message->sender_id = $userId1;
+        $message->message_content = $validatedData['message_content'];
+        // // Save the message
+        $message->save();
+
+        $receiver_name = User::where('id', $userId2)->first();
+        $token = User::whereNotNull('device_token')->pluck('device_token')->all();
+
+        $body = $message->message_content;
+        if (strlen($message->message_content) > 40) {
+            $body = substr($message->message_content, 0, 40) . "...";
+        }
+
+        NotificationSendController::sendNotification($token, $receiver_name, $body);
+
+        return response()->json(['message' => $token]);
+    }
+
+    public function get_messages($id)
+    {
+        $user = User::where('id', $id)->get();
+        $userId1 = auth()->user()->id;
+        $userId2 = $id;
+
+        $conversation = Conversation::where(function ($query) use ($userId1, $userId2) {
+            $query->where('user1_id', $userId1)->where('user2_id', $userId2);
+        })
+            ->orWhere(function ($query) use ($userId1, $userId2) {
+                $query->where('user1_id', $userId2)->where('user2_id', $userId1);
+            })
+            ->first();
+
+        $messages = $conversation->messages->reverse();
+        return response()->json(['message' => $messages]);
     }
 }
