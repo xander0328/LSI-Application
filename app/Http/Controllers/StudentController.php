@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Models\Enrollee;
 use App\Models\Course;
@@ -17,6 +20,8 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Models\Assignment;
 use App\Models\AssignmentFile;
+use App\Models\TurnIn;
+use App\Models\TurnInFile;
 
 use App\Http\Controllers\NotificationSendController;
 
@@ -70,21 +75,6 @@ class StudentController extends Controller
         }
     }
 
-    public function view_assignment($id){
-        $user = auth()->user();
-        $user_id = $user->id;
-        $enrollee = Enrollee::where('user_id', $user_id)->first();
-        $course = $enrollee->course;
-        $batch = $enrollee->batch;
-
-        $assignment = Assignment::where('id', $id)->first();
-        return view('student.view_assignment', compact('enrollee', 'course','batch', 'assignment'));
-    }
-
-    public function turn_in_assignment(Request $request) {
-        return $request->all();
-    }
-
     public function enroll($id)
     {
         $hasBatchId = Enrollee::where('user_id', auth()->user()->id)
@@ -93,8 +83,8 @@ class StudentController extends Controller
             ->first();
 
         $enrollee = Enrollee::where('user_id', auth()->user()->id)
-            ->where('course_id', $id)
-            ->first();
+        ->where('course_id', $id)
+        ->first();
 
         if (isset($enrollee->id)) {
             $hasRequirements = EnrolleeFiles::where('enrollee_id', $enrollee->id)->exists();
@@ -154,12 +144,12 @@ class StudentController extends Controller
         //     'preferred_start' => 'required',
         //     'preferred_finish',
         // ]);
-
+        
         $hasBatchId = Enrollee::where('user_id', $data['user_id'])
-            ->where('course_id', $data['course_id'])
-            ->whereNotNull('batch_id')
-            ->first();
-
+        ->where('course_id', $data['course_id'])
+        ->whereNotNull('batch_id')
+        ->first();
+        
         if ($hasBatchId) {
             return redirect()->route('already_enrolled');
         } else {
@@ -234,7 +224,7 @@ class StudentController extends Controller
     {
         return view('student.already_enrolled');
     }
-
+    
     public function enroll_requirements_save(Request $request)
     {
         $request->all();
@@ -267,7 +257,7 @@ class StudentController extends Controller
         $completed = Enrollee::where('user_id', $user->id)
             ->whereNotNull('completed_at')
             ->get();
-
+            
         return view('student.course_completed', compact('completed'));
     }
 
@@ -276,7 +266,7 @@ class StudentController extends Controller
         $user = User::where('id', $id)->get();
         $userId1 = auth()->user()->id;
         $userId2 = $id;
-
+        
         $conversation = Conversation::where(function ($query) use ($userId1, $userId2) {
             $query->where('user1_id', $userId1)->where('user2_id', $userId2);
         })
@@ -375,5 +365,233 @@ class StudentController extends Controller
 
         $messages = $conversation->messages->reverse();
         return response()->json(['message' => $messages]);
+    }
+    
+    public function view_assignment($id){
+        $user = auth()->user();
+        $user_id = $user->id;
+        $enrollee = Enrollee::where('user_id', $user_id)->first();
+        $course = $enrollee->course;
+        $batch = $enrollee->batch;
+
+        $assignment = Assignment::where('id', $id)->first();
+        return view('student.view_assignment', compact('enrollee', 'course','batch', 'assignment'));
+    }
+
+    public function turn_in_files(Request $request) {
+        $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
+        ->where('user_id', auth()->user()->id)
+        ->first();
+
+        if(!$turn_in){
+            $turn_in = new TurnIn();
+            $turn_in->assignment_id = $request->assignment_id;
+            $turn_in->user_id = auth()->user()->id;
+            $turn_in->save();
+        }
+
+        $attachments = $request->file('turn_in_attachments');
+
+        foreach ($attachments as $attachments) {
+            if($request->has('turn_in_attachments')){
+                $fileName = time(). '_' . auth()->user()->id . '_' . str_replace(' ', '_', $attachments->getClientOriginalName());
+                $folder = uniqid('ass', true);
+                $filePath = $attachments
+                ->storeAs('assignments/'.$request->batch_id . '/' . $request->assignment_id . '/'. auth()->user()->id .'/' . $folder, $fileName, 'public'); // Change 'uploads' to your desired directory
+                    
+                // Get file type
+                $fileType = $attachments->getClientMimeType();
+                        
+                // $temp_assignment = new TempTurnIn();
+                $temp_assignment = new TurnInFile();
+                $temp_assignment->turn_in_id = $turn_in->id;
+                $temp_assignment->folder = $folder;
+                $temp_assignment->filename = $fileName;
+                $temp_assignment->file_type = $fileType;
+                $temp_assignment->save();   
+                return $folder;
+            }
+        }
+            
+        return '';
+    }
+
+    public function turn_in_links(){
+        //to do
+    }
+
+    public function get_files($assignment_id){
+        $turn_in = TurnIn::where('user_id', auth()->user()->id)
+        ->where('assignment_id', $assignment_id)
+        ->first();
+
+        if($turn_in){
+            $files = TurnInFile::where('turn_in_id', $turn_in->id)
+            ->get();
+
+            return response()->json($files);
+        }
+
+        return response()->json('no turn in yet');
+        
+    }
+    
+    public function load_files($batch_id, $assignment_id, $file_id){
+        $file = TurnInFile::where('id', $file_id)->first();
+        
+        if ($file) {
+            $filePath = public_path('storage/assignments/'.$batch_id .'/' . $file->assignment_id.'/'. auth()->user()->id .'/'.  $file->folder.'/'. $file->filename);
+            return response()->file($filePath);
+        }
+
+        return response()->json($file);
+    }
+    
+    public function delete_file($batch_id, $assignment_id, $id){
+        // dd($batch_id. $assignment_id. $id);
+        $turn_in = TurnIn::where('assignment_id',$assignment_id)
+        ->where('user_id', auth()->user()->id)
+        ->first();
+        
+        $file = TurnInFile::where('turn_in_id',$turn_in->id)
+        ->where('id', $id)->first();        
+        
+        if ($file) {
+            $path = '/assignments'.'/'.$batch_id .'/' . $turn_in->assignment_id.'/'. auth()->user()->id .'/'.  $file->folder.'/'. $file->filename;
+            
+            if (Storage::exists($path)) {
+                Storage::delete($path);
+            } else {
+                Log::info('Directory deleted: ' . $path);
+
+                return response()->json(['error' => 'File does not exist'], 404);
+            }
+
+            $directoryPath = dirname($path);
+
+            if (count(Storage::allFiles($directoryPath)) === 0) {
+                Storage::deleteDirectory($directoryPath);
+            }
+            $file->delete();
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['error' => 'File not found'], 404);
+    }
+    
+    public function revert(Request $request){
+        $file = TurnInFile::where('folder', $request->getContent())->first();
+        $turn_in = TurnIn::find($file->turn_in_id);
+        $assignment = Assignment::find($turn_in->assignment_id);  
+        
+        if ($file) {
+            $path = '/assignments'.'/'.$assignment->batch_id .'/' . $turn_in->assignment_id.'/'. auth()->user()->id .'/'.  $file->folder.'/'. $file->filename;
+            
+            if (Storage::exists($path)) {
+                Storage::delete($path);
+            } else {
+                Log::info('Directory deleted: ' . $path);
+
+                return response()->json(['error' => 'File does not exist'], 404);
+            }
+
+            $directoryPath = dirname($path);
+
+            if (count(Storage::allFiles($directoryPath)) === 0) {
+                Storage::deleteDirectory($directoryPath);
+            }
+            $file->delete();
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['error' => 'File not found'], 404);
+    }
+
+    public function turn_in_status(Request $request){
+        $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
+        ->where('user_id', auth()->user()->id)
+        ->first();
+
+        $assignment = Assignment::find($request->assignment_id);
+        if($turn_in){
+            if(!$assignment->closed){
+                if($turn_in->turned_in){
+                    return response()->json(['status'=>'completed', 'assignment' => 'open']);
+                }
+                else{
+                    return response()->json(['status'=>'pending', 'assignment' => 'open']);
+                }
+            }else{
+                if($turn_in->turned_in){
+                    return response()->json(['status'=>'completed', 'assignment' => 'closed']);
+                }
+                else{
+                    return response()->json(['status'=>'pending', 'assignment' => 'closed']);
+                }
+            }
+        }else{
+            if(!$assignment->closed){
+                return response()->json(['status'=>'pending', 'assignment' => 'open']);
+            }else{
+                return response()->json(['status'=>'pending', 'assignment' => 'closed']);
+            }
+        }
+    }
+    
+    public function assignment_action(Request $request){
+        $currentDate = Carbon::today();     
+        $current = Carbon::now();     
+        $assignment = Assignment::find($request->assignment_id);
+        $turn_in = TurnIn::where('assignment_id', $assignment->id)
+        ->where('user_id', auth()->user()->id)
+        ->first();
+        // dd($assignment);
+
+        if($assignment->due_date != null){
+            if(($currentDate)->lte(Carbon::createFromFormat('Y-m-d', $assignment->due_date))){
+                if(($currentDate)->eq(Carbon::createFromFormat('Y-m-d', $assignment->due_date))){
+                    if($current->lte(Carbon::createFromFormat('H:i:s',  $assignment->due_hour))){
+                        $this->check_turn_in($request, $turn_in, $assignment);                        
+                        return response()->json(['action'=>'done']);
+
+                    }else{
+                        return response()->json(['assignment_status'=>'closed']);
+                    }
+                }elseif (($currentDate)->lessThan(Carbon::createFromFormat('Y-m-d', $assignment->due_date))){
+                    $this->check_turn_in($request, $turn_in, $assignment);
+                    return response()->json(['action'=>'done']);
+
+                }else{
+                    return response()->json(['assignment_status'=>'closed']);
+                }
+            }else{
+                return response()->json(['now'=> $current, 'today'=>Carbon::today()]);
+
+            }
+        }else{
+            $this->check_turn_in($request, $turn_in, $assignment);
+        }
+        
+    }
+
+    private function check_turn_in($request, $turn_in, $assignment){
+        if($turn_in){
+            if(!$turn_in->turned_in){
+            $turn_in->turned_in = true;
+            $turn_in->save();
+            }else{
+                $turn_in->turned_in = false;
+                $turn_in->save();
+            }
+        }else{
+            $data = [
+                'assignment_id' => $request->assignment_id,
+                'user_id' => auth()->user()->id,
+                'turned_in' => true,
+                'turned_in_date' => Carbon::now()
+            ];
+            TurnIn::create($data);
+            return response()->json(['created'=>'new turn in']);
+        }
     }
 }

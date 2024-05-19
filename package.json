@@ -17,6 +17,7 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
+        "filepond-plugin-get-file": "^1.1.0",
         "moment": "^2.30.1"
     }
 }

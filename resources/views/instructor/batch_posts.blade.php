@@ -28,13 +28,43 @@
                             <a data-modal-target="create-assignment-modal" data-modal-toggle="create-assignment-modal"
                                 class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Assignment</a>
                         </li>
+                        <li>
+                            <a data-modal-target="add_lesson_modal" data-modal-toggle="add_lesson_modal"
+                                class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Lesson</a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </div>
+        <div class="mt-2 flex items-center justify-start text-white">
+            <a href="{{ route('batch_posts', encrypt($batch->id)) }}">
+                <button
+                    class="flex items-center justify-center rounded-sm bg-sky-700 px-2 py-px text-white hover:bg-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mr-1 h-5 w-5">
+                        <title>post-outline</title>
+                        <path fill="white"
+                            d="M19 5V19H5V5H19M21 3H3V21H21V3M17 17H7V16H17V17M17 15H7V14H17V15M17 12H7V7H17V12Z" />
+                    </svg>
+                    Stream
+                </button>
+            </a>
+
+            <a href="{{ route('batch_assignments', $batch->id) }}">
+                <button
+                    class="ms-2 flex items-center justify-center rounded-sm px-2 py-px text-white hover:bg-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mr-1 h-5 w-5">
+                        <title>book-open-variant</title>
+                        <path fill="white"
+                            d="M13,12H20V13.5H13M13,9.5H20V11H13M13,14.5H20V16H13M21,4H3A2,2 0 0,0 1,6V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V6A2,2 0 0,0 21,4M21,19H12V6H21" />
+                    </svg>
+                    Assignments</button>
+            </a>
+
+        </div>
 
     </x-slot>
-    <div id="course_list" class="flex flex-col-reverse px-8 pt-36 text-white">
+
+    <div id="course_list" class="flex flex-col-reverse px-8 pb-4 pt-44 text-white">
         {{-- {{ $post }} --}}
         @foreach ($posts as $post)
             <div class="my-2 rounded-md bg-gray-800 p-3">
@@ -64,11 +94,10 @@
                                             alt="{{ str_replace('uploads/', '', $files->path) }}">
                                     </a>
                                 </div>
-                            @endif
-
-                            @if ($files->file_type == 'application/pdf')
+                            @elseif ($files->file_type == 'application/pdf')
                                 <div class="mb-2 mr-2">
-                                    <a target="_blank" class="flex rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-800"
+                                    <a target="_blank"
+                                        class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-800"
                                         href="{{ asset('storage/' . $files->path) }}">
                                         <svg class="mr-2 h-6 w-6" fill="rgb(185 28 28)"
                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -78,12 +107,10 @@
                                         </svg>
                                         {{ substr(str_replace('uploads/', '', $files->path), strpos(str_replace('uploads/', '', $files->path), '_') + 1) }}</a>
                                 </div>
-                            @endif
-
-                            @if (Str::endsWith($files->path, '.docx') || Str::endsWith($files->path, '.doc'))
+                            @elseif (Str::endsWith($files->path, '.docx') || Str::endsWith($files->path, '.doc'))
                                 <div class="mb-2 mr-2">
                                     <a target="_blank" download
-                                        class="flex rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-800"
+                                        class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-800"
                                         href="{{ asset('storage/' . $files->path) }}">
                                         <svg class="mr-2 h-6 w-6" fill="rgb(2 132 199)"
                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -94,11 +121,10 @@
 
                                         {{ substr(str_replace('uploads/', '', $files->path), strpos(str_replace('uploads/', '', $files->path), '_') + 1) }}</a>
                                 </div>
-                            @endif
-                            @if (Str::endsWith($files->path, '.xlsx') || Str::endsWith($files->path, '.xls') || Str::endsWith($files->path, '.csv'))
+                            @elseif (Str::endsWith($files->path, '.xlsx') || Str::endsWith($files->path, '.xls') || Str::endsWith($files->path, '.csv'))
                                 <div class="mb-2 mr-2">
                                     <a target="_blank" download
-                                        class="flex rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-800"
+                                        class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-800"
                                         href="{{ asset('storage/' . $files->path) }}">
                                         <svg class="mr-2 h-6 w-6" fill="rgb(22 163 74)"
                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -108,17 +134,29 @@
                                         </svg>
                                         {{ substr(str_replace('uploads/', '', $files->path), strpos(str_replace('uploads/', '', $files->path), '_') + 1) }}</a>
                                 </div>
-                            @endif
-                            @if (Str::endsWith($files->path, '.txt'))
+                            @elseif (Str::endsWith($files->path, '.txt'))
                                 <div class="mb-2 mr-2">
                                     <a target="_blank" download
-                                        class="flex rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-800"
+                                        class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-800"
                                         href="{{ asset('storage/' . $files->path) }}">
                                         <svg class="mr-2 h-6 w-6" fill="gray" xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 24 24">
                                             <title>text-box</title>
                                             <path
                                                 d="M14,17H7V15H14M17,13H7V11H17M17,9H7V7H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" />
+                                        </svg>
+                                        {{ substr(str_replace('uploads/', '', $files->path), strpos(str_replace('uploads/', '', $files->path), '_') + 1) }}</a>
+                                </div>
+                            @else
+                                <div class="mb-2 mr-2">
+                                    <a target="_blank" download
+                                        class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-800"
+                                        href="{{ asset('storage/' . $files->path) }}">
+                                        <svg class="mr-2 h-6 w-6" fill="gray" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 24 24">
+                                            <title>file-document</title>
+                                            <path
+                                                d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M15,18V16H6V18H15M18,14V12H6V14H18Z" />
                                         </svg>
                                         {{ substr(str_replace('uploads/', '', $files->path), strpos(str_replace('uploads/', '', $files->path), '_') + 1) }}</a>
                                 </div>
@@ -202,9 +240,9 @@
     </div>
 
     {{-- Create Assignment Modal --}}
-    <div id="create-assignment-modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+    <div id="create-assignment-modal" tabindex="-1" aria-hidden="true"
         class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
-        <div class="relative max-h-full w-full max-w-xl p-4">
+        <div class="relative max-h-full w-full max-w-2xl p-4">
             <!-- Modal content -->
             <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
                 <!-- Modal header -->
@@ -254,8 +292,8 @@
                                                 d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                         </svg>
                                     </div>
-                                    <input datepicker datepicker-buttons datepicker-autoselect-today id="due_date"
-                                        type="text" name="due_date"
+                                    <input datepicker datepicker-autohide datepicker-buttons datepicker-autoselect-today
+                                        id="due_date" type="text" name="due_date"
                                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                         placeholder="Select date">
                                 </div>
@@ -285,6 +323,19 @@
 
                         </div>
                         <div class="col-span-2">
+                            <label for="lesson"
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lesson</label>
+
+                            <select id="lesson" name="lesson"
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+                                <option selected>Select</option>
+                                @foreach ($lessons as $lesson)
+                                    <option value="{{ $lesson->id }}">{{ $lesson->title }}</option>
+                                @endforeach
+                            </select>
+
+                        </div>
+                        <div class="col-span-2">
                             <label for="title"
                                 class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Title</label>
                             <input type="text" id="title" name="title"
@@ -297,6 +348,15 @@
                             <textarea id="description" name="description" rows="2"
                                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                 placeholder="Assignment description"></textarea>
+                        </div>
+                        <div class="col-span-2">
+                            <label for="max_point"
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Maximum
+                                Point</label>
+                            <input type="number" name="max_point" required
+                                aria-describedby="helper-text-explanation"
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                placeholder="Points" required />
                         </div>
                         <div class="text-xs text-white">
                             <a class="flex cursor-pointer items-center"
@@ -355,10 +415,101 @@
                     </div>
 
                 </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    {{-- Add Lesson Modal --}}
+    <div id="add_lesson_modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
+        class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
+        <div class="relative max-h-full w-full max-w-lg p-4">
+            <!-- Modal content -->
+            <div class="relative rounded-lg bg-gray-700">
+                <!-- Modal header -->
+                <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        Add New Lesson
+                    </h3>
+                    <button type="button"
+                        class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-toggle="add_lesson_modal">
+                        <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close modal</span>
+                    </button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="p-4 md:p-5">
+                    <div class="mb-4 grid grid-cols-2 gap-4">
+                        <div class="col-span-2">
+                            <form id="add_lesson_form" method="post">
+                                <label for="lesson" class="mb-2 block text-sm font-medium text-white">New
+                                    Lesson</label>
+                                <div class="grid grid-cols-9">
+                                    <div class="col-span-8">
+                                        <input type="text" id="lesson_input" name="lesson"
+                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            placeholder="Lesson" required />
+                                    </div>
+                                    <button type="submit"
+                                        class="ms-2 flex w-full items-center justify-center rounded-md bg-sky-700 p-2 px-3"><svg
+                                            class="h-4 w-4 text-gray-800 dark:text-white" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <div class="mt-4 text-white">
+                                <div class="mb-2 text-sm font-medium">
+                                    List
+                                </div>
+                                <div id="list_lessons">
+                                    @foreach ($lessons as $lesson)
+                                        <div
+                                            class="flex items-center justify-between bg-gray-600 p-2 text-sm hover:bg-sky-800">
+                                            <span>{{ $lesson->title }}</span>
+                                            <div class="flex">
+                                                <button
+                                                    onclick="edit_lesson('{{ $lesson->title }}',{{ $lesson->id }})"
+                                                    class="me-1 h-7 w-7 rounded-md p-1 hover:bg-gray-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                        <title>Edit</title>
+                                                        <path fill="white"
+                                                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+                                                    </svg>
+                                                </button>
+                                                <form id="delete_lesson_form_{{ $lesson->id }}"
+                                                    action="{{ route('delete_lesson', $lesson->id) }}"
+                                                    class="h-7 w-7 rounded-md p-1 hover:bg-gray-600" method="post">
+                                                    @method('DELETE')
+                                                    <button onclick="confirmDelete({{ $lesson->id }})"
+                                                        class="h-full w-full" type="button">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <title>Delete</title>
+                                                            <path fill="white"
+                                                                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                                        </svg></button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
     @section('script')
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         {{-- File Pond --}}
@@ -376,33 +527,25 @@
                     // Regular expression to find URLs
                     const urlRegex = /(https?:\/\/\S+)/g;
 
-                    // Replace URLs with anchor tags
                     const replacedContent = content.replace(urlRegex,
                         '<a class="text-sky-500 hover:text-underlined" href="$1" target="_blank">$1</a>');
 
-                    // Update the description content
                     description.innerHTML = replacedContent;
                 });
 
                 $('.created_at').each(function() {
                     var createdAtText = $(this).text().trim();
-                    console.log(createdAtText.trim());
 
                     var createdAtMoment = moment(createdAtText, 'YYYY-MM-DD HH:mm');
 
-                    // Calculate the difference between the current date and the parsed date
                     var diffInMonths = moment().diff(createdAtMoment, 'weeks');
 
-                    // Format the date based on the difference
                     var formattedDate;
                     if (diffInMonths <= 1) {
-                        // If less than 1 month ago, format with relative time
                         formattedDate = createdAtMoment.calendar();
                     } else {
-                        // Otherwise, format with the desired full date format
                         formattedDate = createdAtMoment.format('MM/DD/YYYY hh:mm A');
                     }
-                    // Replace the content of the current element with the formatted date
                     $(this).text(formattedDate);
                 });
             })
@@ -414,13 +557,8 @@
                 if (messageValue.trim() === '' && fileValue === '') {
                     alert('Please provide a message or upload a file.');
                     return
-                    // console.log(fileValue);
+
                 }
-                // if (messageValue.trim() === '' && fileValue === '') {
-                //     // If both are empty, prevent form submission
-                //     alert('Please provide a message or upload a file.');
-                //     event.preventDefault();
-                // }
                 $('#post_form').submit()
             }
 
@@ -436,14 +574,12 @@
 
                 content.classList.toggle('hidden');
                 if (!content.classList.contains('hidden')) {
-                    // Change the SVG icon to the upward arrow
                     icon.innerHTML = `
                 <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
                 </svg>
             `;
                 } else {
-                    // Change the SVG icon to the downward arrow
                     icon.innerHTML = `
                 <svg class="h-3 w-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
@@ -452,58 +588,82 @@
                 }
             }
 
-            // $(document).ready(function() {
-            //     $.fn.filepond.registerPlugin(FilePondPluginImagePreview);
-            //     // Turn input element into a pond
-            //     $('.assignment_files').filepond();
+            document.addEventListener('DOMContentLoaded', function() {
+                const inputElement = document.querySelector('.assignment_files');
+                const pond = FilePond.create(inputElement)
+                FilePond.setOptions({
+                    allowMultiple: true,
+                    allowReorder: true,
+                    allowImagePreview: true,
+                    server: {
+                        process: {
+                            url: '{{ route('temp_upload_assignment') }}',
+                            ondata: (formData) => {
+                                formData.append('batch_id', '{{ $batch->id }}');
+                                return formData;
+                            },
+                        },
+                        load: '/load_files/{{ $batch->id }}',
+                        revert: {
+                            url: '{{ route('revert_assignment_file') }}',
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            ondata: (formData) => {
+                                formData.append('batch_id', '{{ $batch->id }}');
+                                return formData;
+                            }
+                        },
+                        remove: (source, load, error) => {
+                            fetch(`/delete_assignment_file/{{ $batch->id }}/${source}`, {
+                                method: 'DELETE',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            }).then(response => {
+                                if (response.ok) {
+                                    load();
+                                } else {
+                                    error('Could not delete file');
+                                }
+                            }).catch(() => {
+                                error('Could not delete file');
+                            });
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        }
+                    },
+                });
+
+                fetch(`/get_assignment_files/{{ $batch->id }}`)
+                    .then(response => response.json())
+                    .then(files => {
+                        const fileItems = files.map(file => ({
+                            source: file.id,
+                            options: {
+                                type: 'local',
+                                file: {
+                                    name: file.filename,
+                                    type: file
+                                        .file_type // You can fetch the actual file type if stored in the database
+                                },
+                                metadata: {
+                                    id: file.id,
+                                }
+                            }
+                        }));
+                        pond.files = fileItems;
+
+                        if (fileItems.length > 0)
+                            toggleShowAddFile('assigment')
+                    })
+                    .catch(error => console.error('Error loading files:', error));
+
+            })
 
 
-            //     // Turn input element into a pond with configuration options
-            //     $('.assignment_files').filepond({
-            //         allowMultiple: true,
-            //         allowReorder: true,
-            //         allowImagePreview: true,
-            //     });
-
-            //     FilePond.setOptions({
-            //         server: {
-            //             process: './{{ $batch->id }}/temp_upload_assignment',
-            //             // revert: './revert',
-            //             headers: {
-            //                 'X-CSRF_TOKEN': '{{ csrf_token() }}'
-            //             }
-            //         },
-            //     });
-
-            //     // Listen for addfile event
-            //     $('.assignment_files').on('FilePond:addfile', function(e) {
-            //         console.log('file added event', e);
-            //     });
-
-            // });
-
-            FilePond.registerPlugin(
-                FilePondPluginImagePreview
-            );
-
-            const inputElement = document.querySelector('.assignment_files');
-            const pond = FilePond.create(inputElement)
-            FilePond.setOptions({
-                allowMultiple: true,
-                allowReorder: true,
-                allowImagePreview: true,
-                server: {
-                    process: './{{ $batch->id }}/temp_upload_assignment',
-                    // load: '/files/',
-                    // revert: '/upload',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                },
-            });
-
-
-            // function due_date_toggle() {
             var toggle = $('#due_date_toggle')
             toggle.click(function() {
                 var due_inputs = $('#due_inputs')
@@ -534,14 +694,204 @@
                         type: $(this).attr('method'),
                         data: formData,
                         success: function(response) {
-                            console.log(formData);
+                            $('#create-assignment-modal').toggle()
+                            $('#post_assignment')[0].reset()
+                            pond.removeFiles();
                         },
                         error: function(xhr, status, error) {
                             console.error(xhr.responseText);
                         }
                     });
                 });
+
+                $('#due_date_toggle').on('change', function() {
+                    $('#due_date').val('')
+                })
+
+                function isDateBeforeToday(date) {
+                    var today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    return new Date(date) < today;
+                }
+
+                $('#due_date').on('change', function() {
+                    var selectedDate = $(this).val();
+                    if (isDateBeforeToday(selectedDate)) {
+                        alert('The selected date cannot be less than today.');
+                        $(this).val('');
+                    }
+                });
+
+                $('#add_lesson_button').on('click', function() {
+                    $('#create-assignment-modal').addClass('hidden')
+                    console.log($('#create-assignment-modal'));
+                })
+
             })
+
+            $('#due_date').on('keypress', function(e) {
+                e.preventDefault();
+            });
+
+            var initial_lesson_count = @json($lessons);
+
+            function get_lessons() {
+                $.ajax({
+                    url: `/get_lessons`,
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        batch_id: {{ $batch->id }},
+                    },
+                    success: function(data) {
+                        // console.log(data);
+                        var lesson = $('#lesson')
+                        var current_lesson_count = data.lessons
+                        if (JSON.stringify(current_lesson_count) != JSON.stringify(initial_lesson_count)) {
+                            initial_lesson_count = current_lesson_count
+                            lesson.empty();
+
+                            lesson.append($('<option>', {
+                                value: '',
+                                text: 'Select'
+                            }));
+
+                            let list_lessons = ''
+                            $.each(data.lessons, function(index, data) {
+                                lesson.append($('<option>', {
+                                    value: data.id,
+                                    text: data.title
+                                }));
+
+                                list_lessons += `<div
+                                            class="flex items-center justify-between bg-gray-600 p-2 text-sm hover:bg-sky-800">
+                                            <span>${data.title}</span>
+                                            <div class="flex">
+                                                <button onclick="edit_lesson('${data.title}', ${data.id})"
+                                                    class="me-1 h-7 w-7 rounded-md p-1 hover:bg-gray-600">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                        <title>Edit</title>
+                                                        <path fill="white"
+                                                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+                                                    </svg>
+                                                </button>
+                                                <form id="delete_lesson_form_${data.id}"
+                                                    action="/delete_lesson/${data.id}"
+                                                    class="h-7 w-7 rounded-md p-1 hover:bg-gray-600" method="post">
+                                                    @method('DELETE')
+                                                    <button onclick="confirmDelete(${data.id})"
+                                                        class="h-full w-full" type="button">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <title>Delete</title>
+                                                            <path fill="white"
+                                                                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                                        </svg></button>
+                                                </form>
+                                            </div>
+                                        </div>`
+                            });
+
+                            $('#list_lessons').html(list_lessons)
+                        }
+
+                    },
+                })
+            }
+
+            setInterval(() => {
+                get_lessons()
+            }, 2000);
+
+            $('#add_lesson_form').submit(function(event) {
+                event.preventDefault()
+                var lesson_input = $('#lesson_input')
+                $.ajax({
+                    url: `{{ route('add_lesson') }}`,
+                    method: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        batch_id: {{ $batch->id }},
+                        lesson: lesson_input.val()
+                    },
+                    success: function(data) {
+                        lesson_input.val('')
+                    },
+                })
+            })
+
+            function edit_lesson(title, id) {
+                var current_title = title;
+                console.log(current_title);
+                var new_title = prompt("Edit the lesson title:", current_title);
+
+                if (new_title !== null && new_title !== current_title) {
+                    $.ajax({
+                        url: '{{ route('edit_lesson') }}',
+                        type: 'POST',
+                        data: {
+                            id: id,
+                            title: new_title,
+                            _token: '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            alert('Title updated successfully');
+                        },
+                        error: function(xhr) {
+                            alert('Error updating title');
+                        }
+                    });
+                }
+            }
+
+            function confirmDelete(lesson_id) {
+                var confirmation = 'DELETE'
+                var user_input = prompt(
+                    "Deleting this lesson will also delete all related data. To confirm deletion, type the word '" +
+                    confirmation + "'."
+                )
+                if (user_input === confirmation) {
+                    // event.preventDefault();
+                    var form = $('#delete_lesson_form_' + lesson_id);
+
+                    $.ajax({
+                        url: form.attr('action'),
+                        type: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function(response) {
+                            console.log(response);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error(xhr.responseText);
+                        }
+                    });
+                } else {
+                    alert('Deletion cancelled.')
+                }
+
+            }
+
+            // $('#delete_lesson_form').submit(function(event) {
+            //     event.preventDefault();
+            //     var form = $('#delete_lesson_form');
+            //     var url = form.attr('action');
+            //     console.log(url);
+
+            //     $.ajax({
+            //         url: url,
+            //         type: 'DELETE',
+            //         headers: {
+            //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            //         },
+            //         success: function(response) {
+            //             console.log(response);
+            //         },
+            //         error: function(xhr, status, error) {
+            //             console.error(xhr.responseText);
+            //         }
+            //     });
+            // });
         </script>
     @endsection
 </x-app-layout>

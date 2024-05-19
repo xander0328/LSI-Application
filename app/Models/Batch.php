@@ -23,6 +23,11 @@ class Batch extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function lesson()
+    {
+        return $this->hasMany(Lesson::class);
+    }
+
     public function assignment()
     {
         return $this->hasMany(Assignment::class);

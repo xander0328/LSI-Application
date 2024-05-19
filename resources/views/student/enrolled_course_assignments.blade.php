@@ -61,11 +61,15 @@
                             <div class="w-full font-medium dark:text-white">
                                 <div>{{ $post->title }}</div>
                                 <div class="text-sm text-gray-500 dark:text-gray-400">
-                                    {{ $post->description }}</div>
+                                    {{ mb_strimwidth($post->description, 0, 70, '...') }}</div>
                             </div>
                         </div>
                         <div class="text-sm text-gray-500">
-                            Due {{ $post->due_date }}
+                            @if ($post->due_date != null)
+                                Due {{ $post->due_date }}
+                            @else
+                                No due
+                            @endif
                         </div>
                     </a>
 

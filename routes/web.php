@@ -61,10 +61,22 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
 
     Route::get('/course_completed', [StudentController::class, 'course_completed'])->name('course_completed');
     
+    // Stream / Posts
     Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
     Route::get('/enrolled_course_assignment', [StudentController::class, 'enrolled_course_assignment'])->name('enrolled_course_assignment');
+    
+    //Assignments
     Route::get('/view_assignment/{id}', [StudentController::class, 'view_assignment'])->name('view_assignment');
-    Route::post('/turn_in_assignment', [StudentController::class, 'turn_in_assignment'])->name('turn_in_assignment');
+    Route::post('/turn_in_status', [StudentController::class, 'turn_in_status'])->name('turn_in_status');
+    Route::post('/assignment_action', [StudentController::class, 'assignment_action'])->name('assignment_action');
+    
+    //Filepond Assignment
+    Route::post('/turn_in_files', [StudentController::class, 'turn_in_files'])->name('turn_in_files');
+    Route::post('/turn_in_links', [StudentController::class, 'turn_in_links'])->name('turn_in_links');
+    Route::get('/load_files/{batch_id}/{file_id}', [StudentController::class, 'load_files'])->name('load_files');
+    Route::get('/get_files/{assignment_id}', [StudentController::class, 'get_files'])->name('get_files');
+    Route::delete('/delete_file/{batch_id}/{assignment_id}/{id}', [StudentController::class, 'delete_file'])->name('delete_file');
+    Route::delete('/revert', [StudentController::class, 'revert'])->name('revert');
 
     //Message
     Route::get('/message/{id}', [StudentController::class, 'message'])->name('message');
@@ -79,9 +91,35 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::get('/batch_list', [InstructorController::class, 'batch_list'])->name('batch_list');
     Route::get('/batch_posts/{id}', [InstructorController::class, 'batch_posts'])->name('batch_posts');
     Route::get('/batch_members', [InstructorController::class, 'batch_members'])->name('batch_members');
+    Route::get('/batch_assignments/{batch_id}', [InstructorController::class, 'batch_assignments'])->name('batch_assignments');
+    //Route::get('/review_turn_ins/{assignment_id}', [InstructorController::class, 'review_turn_ins'])->name('review_turn_ins');
+    Route::get('/list_turn_ins/{assignment_id}', [InstructorController::class, 'list_turn_ins'])->name('list_turn_ins');
+    
+    //Post (for Stream)
     Route::post('/post', [InstructorController::class, 'post'])->name('post');
+    
+    // Assignment
     Route::post('/post_assignment', [InstructorController::class, 'post_assignment'])->name('post_assignment');
-    Route::post('batch_posts/{id}/temp_upload_assignment', [InstructorController::class, 'temp_upload_assignment'])->name('temp_upload_assignment');
+    Route::get('/get_assignment/{id}', [InstructorController::class, 'get_assignment'])->name('get_assignment');
+    // Route::post('/edit_assignment', [InstructorController::class, 'edit_assignment'])->name('edit_assignment');
+    Route::post('/assignment_toggle', [InstructorController::class, 'assignment_toggle'])->name('assignment_toggle');
+    
+    //Filepond Assignment (in batch_posts)
+    Route::post('/temp_upload_assignment', [InstructorController::class, 'temp_upload_assignment'])->name('temp_upload_assignment');
+    Route::get('/get_assignment_files/{batch_id}', [InstructorController::class, 'get_assignment_files'])->name('get_assignment_files');
+    Route::get('/load_assignment_files/{batch_id}/{file_id}', [InstructorController::class, 'load_assignment_files'])->name('load_assignment_files');
+    Route::delete('/revert_assignment_file', [InstructorController::class, 'revert_assignment_file'])->name('revert_assignment_file');
+    Route::delete('/delete_assignment_file/{batch_id}/{id}', [InstructorController::class, 'delete_assignment_file'])->name('delete_assignment_file');
+    
+    //Filepond Assignment for Editing (in list_turn_ins)
+    Route::get('/get_uploaded_assignment_files/{assignment_id}', [InstructorController::class, 'get_uploaded_assignment_files'])->name('get_uploaded_assignment_files');
+    Route::delete('/delete_uploaded_assignment_file/{assignment_id}/{id}', [InstructorController::class, 'delete_uploaded_assignment_file'])->name('delete_uploaded_assignment_file');
+
+    //Lesson (to be Learning Outcome)
+    Route::post('/add_lesson', [InstructorController::class, 'add_lesson'])->name('add_lesson');
+    Route::post('/edit_lesson', [InstructorController::class, 'edit_lesson'])->name('edit_lesson');
+    Route::post('/get_lessons', [InstructorController::class, 'get_lessons'])->name('get_lessons');
+    Route::delete('/delete_lesson/{lesson_id}', [InstructorController::class, 'delete_lesson'])->name('delete_lesson');
 });
 
 Route::middleware('auth')->group(function () {

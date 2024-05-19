@@ -18,7 +18,7 @@
         </div>
 
     </x-slot>
-    <div id="course_list" class="mx-8 my-4">
+    <div id="course_list" class="mx-8 pb-4 pt-40">
         <ul class="space-y-2 font-semibold text-white">
             @if ($courses->count() == 0)
                 <div>

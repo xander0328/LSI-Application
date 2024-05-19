@@ -8,11 +8,7 @@
         </div>
 
     </x-slot>
-    <div class="p-5">
-        <div id="success-alert" class="fixed left-0 top-0 hidden w-full bg-green-500 px-4 py-3 text-center text-white">
-            Success! Your action has been completed.
-        </div>
-
+    <div class="px-8 pt-36">
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
             <div
                 class="flex-column flex flex-wrap items-center justify-between space-y-4 bg-white py-4 dark:bg-gray-900 md:flex-row md:space-y-0">
@@ -27,7 +23,7 @@
                     </div>
                     <input type="text" id="table-search-users"
                         class="block w-80 rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        placeholder="Search for users">
+                        placeholder="Search">
                 </div>
                 <div>
                     <button id="add_to_batch_button" data-modal-toggle="batch-modal" data-modal-target="batch-modal"
@@ -70,71 +66,79 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($enrollees as $enrollee)
-                        <tr data-user-id={{ $enrollee->user_id }}
-                            class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
-                            <td class="w-4 p-4">
-                                <div class="flex items-center">
-                                    <input id="checkbox-table-search-1" type="checkbox"
-                                        class="row-checkbox h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
-                                    <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
-                                </div>
-                            </td>
-                            <th scope="row"
-                                class="flex items-center whitespace-nowrap px-6 py-4 text-gray-900 dark:text-white">
-                                @foreach ($enrollee->enrollee_files as $file)
-                                    <img class="h-10 w-10 rounded-full"
-                                        src="{{ asset('storage/' . $file->id_picture) }}" alt="profile">
-                                @endforeach
-                                <div class="ps-3">
-                                    <div class="text-base font-semibold">{{ $enrollee->user->fname }}
-                                        {{ $enrollee->user->lname }}</div>
-                                    <div class="font-normal text-gray-500">{{ $enrollee->user->email }}</div>
-                                </div>
-                            </th>
-                            <td class="px-6 py-4">{{ ucwords(strtolower($enrollee->barangay)) }},
-                                {{ ucwords(strtolower($enrollee->city)) }},
-                                {{ ucwords(strtolower($enrollee->province)) }}
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    @if ($enrollee->telephone)
-                                        {{ $enrollee->telephone }}
-                                    @endif
+                    @if ($enrollees->count() > 0)
+                        @foreach ($enrollees as $enrollee)
+                            <tr data-user-id={{ $enrollee->user_id }}
+                                class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+                                <td class="w-4 p-4">
+                                    <div class="flex items-center">
+                                        <input id="checkbox-table-search-1" type="checkbox"
+                                            class="row-checkbox h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
+                                        <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                                    </div>
+                                </td>
+                                <th scope="row"
+                                    class="flex items-center whitespace-nowrap px-6 py-4 text-gray-900 dark:text-white">
+                                    @foreach ($enrollee->enrollee_files as $file)
+                                        <img class="h-10 w-10 rounded-full"
+                                            src="{{ asset('storage/' . $file->id_picture) }}" alt="profile">
+                                    @endforeach
+                                    <div class="ps-3">
+                                        <div class="text-base font-semibold">{{ $enrollee->user->fname }}
+                                            {{ $enrollee->user->lname }}</div>
+                                        <div class="font-normal text-gray-500">{{ $enrollee->user->email }}</div>
+                                    </div>
+                                </th>
+                                <td class="px-6 py-4">{{ ucwords(strtolower($enrollee->barangay)) }},
+                                    {{ ucwords(strtolower($enrollee->city)) }},
+                                    {{ ucwords(strtolower($enrollee->province)) }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        @if ($enrollee->telephone)
+                                            {{ $enrollee->telephone }}
+                                        @endif
 
-                                    @if ($enrollee->cellular)
-                                        {{ $enrollee->cellular }}
-                                    @endif
+                                        @if ($enrollee->cellular)
+                                            {{ $enrollee->cellular }}
+                                        @endif
 
-                                    @if (!$enrollee->telephone && !$enrollee->cellular)
-                                        ---
-                                    @endif
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div>
-                                    Type: {{ ucwords($enrollee->employment_type) }}
-                                </div>
-                                <div>
-                                    Status:
-                                    {{ $enrollee->employment_type != 'Employed' ? '---' : $enrollee->employment_status }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div>
-                                    {{ ucwords($enrollee->preferred_schedule) }}
-                                </div>
-                                <div>
-                                    Start: {{ \Carbon\Carbon::parse($enrollee->preferred_start)->format('Y-m-d') }}
-                                </div>
-                                <div>
-                                    Finish: {{ \Carbon\Carbon::parse($enrollee->preferred_finish)->format('Y-m-d') }}
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
+                                        @if (!$enrollee->telephone && !$enrollee->cellular)
+                                            ---
+                                        @endif
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div>
+                                        Type: {{ ucwords($enrollee->employment_type) }}
+                                    </div>
+                                    <div>
+                                        Status:
+                                        {{ $enrollee->employment_type != 'Employed' ? '---' : $enrollee->employment_status }}
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div>
+                                        {{ ucwords($enrollee->preferred_schedule) }}
+                                    </div>
+                                    <div>
+                                        Start: {{ \Carbon\Carbon::parse($enrollee->preferred_start)->format('Y-m-d') }}
+                                    </div>
+                                    <div>
+                                        Finish:
+                                        {{ \Carbon\Carbon::parse($enrollee->preferred_finish)->format('Y-m-d') }}
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforeach
+                    @endif
                 </tbody>
             </table>
+        </div>
+        <div class="mt-4 text-center text-white">
+            @if ($enrollees->count() == 0)
+                No enrollees
+            @endif
         </div>
     </div>
     <div id="batch-modal" tabindex="-1" aria-hidden="true"
