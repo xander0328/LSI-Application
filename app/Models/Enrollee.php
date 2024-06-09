@@ -33,6 +33,11 @@ class Enrollee extends Model
 
     public function enrollee_files()
     {
-        return $this->hasMany(EnrolleeFiles::class, 'enrollee_id');
+        return $this->hasMany(EnrolleeFile::class, 'enrollee_id');
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(StudentGrade::class);
     }
 }

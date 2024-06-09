@@ -69,10 +69,21 @@
     <meta name="msapplication-TileImage" content="/images/icons/icon-512x512.png">
     {{-- END PWA --}}
 
+    {{-- filepond --}}
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
         rel="stylesheet">
 
+    {{-- Qr reader --}}
+    <style>
+        #qr-reader {
+            width: 500px;
+        }
+    </style>
+
+    {{-- Flatpickr --}}
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> --}}
 </head>
 
 <body class="font-sans antialiased">
@@ -118,7 +129,7 @@
                             </x-nav-link>
                         </li>
                         <li>
-                            <x-nav-link :href="route('courses')" :active="request()->routeIs('courses.*')"
+                            <x-nav-link :href="route('courses')" :active="request()->routeIs('courses')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -147,7 +158,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#"
+                            <a href="{{ route('all_users') }}"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -156,6 +167,19 @@
                                         d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z" />
                                 </svg>
                                 <span class="ms-3 flex-1 whitespace-nowrap">Users</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('scan_attendance') }}"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                    class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                    viewBox="0 0 24 24">
+
+                                    <path
+                                        d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H11V13H9V11M15,11H17V13H19V11H21V13H19V15H21V19H19V21H17V19H13V21H11V17H15V15H17V13H15V11M19,19V15H17V19H19M15,3H21V9H15V3M17,5V7H19V5H17M3,3H9V9H3V3M5,5V7H7V5H5M3,15H9V21H3V15M5,17V19H7V17H5Z" />
+                                </svg>
+                                <span class="ms-3 flex-1 whitespace-nowrap">Attendance</span>
                             </a>
                         </li>
                     </ul>
@@ -215,7 +239,10 @@
                 <div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
                     <ul class="space-y-2 font-medium">
                         <li>
-                            <x-nav-link :href="route('batch_list')" :active="request()->routeIs('batch_list')"
+                            <x-nav-link :href="route('batch_list')" :active="request()->routeIs('batch_posts') ||
+                                request()->routeIs('list_turn_ins') ||
+                                request()->routeIs('batch_assignments') ||
+                                request()->routeIs('batch_attendance')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -226,7 +253,7 @@
                                 <span class="ms-3">Batches</span>
                             </x-nav-link>
                         </li>
-                        {{-- <li>
+                        <li>
                             <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
@@ -249,7 +276,7 @@
                                 </svg>
                                 <span class="ms-3">Message</span>
                             </x-nav-link>
-                        </li> --}}
+                        </li>
                     </ul>
                 </div>
             </aside>
@@ -281,7 +308,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>    
+    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <script type="text/javascript">
         if ('serviceWorker' in navigator) {

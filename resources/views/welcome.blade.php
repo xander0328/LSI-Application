@@ -43,17 +43,17 @@
                 </nav>
             </div>
 
-            <!-- <div class="">
-                    <a href="#" class="hover:text-red text-gray-300">Sign In</a>
-                    <a href="#" class="text-gray-300 hover:text-black">Logout</a>
-                </div> -->
-
             @if (Route::has('login'))
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-4" x-data="actions">
                     @auth
-                        <a @if (Auth::user()->role == 'superadmin') href="{{ url('/website') }}" @endif
-                            @if (Auth::user()->role == 'student') href="{{ route('enrolled_course') }}" @endif
-                            @if (Auth::user()->role == 'instructor') href="{{ url('/batch_list') }}" @endif
+
+                        <a @if (Auth::user()->role == 'superadmin') href="{{ url('/website') }}" 
+                            @elseif (Auth::user()->role == 'student') 
+                            @if (!Auth::user()->batch)
+                                @click="createAlert('Enroll to a course first')"
+                            @else
+                                href="{{ route('enrolled_course') }}" @endif
+                        @elseif (Auth::user()->role == 'instructor') href="{{ url('/batch_list') }}" @endif
                             class="rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
                             <img class="h-5 w-auto" src="../../images/icons/lsi-logo.png" alt="">
                         </a>
@@ -282,6 +282,17 @@
             alert(message);
         }
         console.log('hello');
+
+        function actions() {
+            return {
+                createAlert(text) {
+                    let confirmed = confirm(text);
+                    if (confirmed) {
+                        window.location.href = "#courses"
+                    }
+                },
+            }
+        }
     </script>
 </body>
 

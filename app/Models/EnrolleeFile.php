@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EnrolleeFiles extends Model
+class EnrolleeFile extends Model
 {
     use HasFactory;
 
-    protected $table = 'enrollee_files';
-    protected $fillable = ['enrollee_id', 'valid_id', 'diploma_tor', 'birth_certificate', 'id_picture'];
+    protected $fillable = ['enrollee_id', 'credential_type', 'folder', 'filename', 'file_type'];
 
     public function enrollee()
     {

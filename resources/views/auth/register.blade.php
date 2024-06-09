@@ -20,93 +20,104 @@
 <x-guest-layout>
     <form id="registrationForm" method="POST" action="{{ route('register') }}">
         @csrf
+        <div x-data="formValidation()">
+            <!-- Name -->
+            <div id="step1" x-show="currentStep === 1">
+                <input type="hidden" name="role" value="student">
 
-        <!-- Name -->
-        <div id="step1" class="visible">
-            <input type="hidden" name="role" value="student">
-            <div class="mt-4">
-                <x-input-label for="fname" :value="__('First Name')" />
-                <x-text-input id="fname" class="mt-1 block w-full border border-red-600" type="text" name="fname"
-                    :value="old('fname')" required autofocus autocomplete="fname" />
-                <x-input-error :messages="$errors->get('fname')" class="mt-2" />
-            </div>
-            <div id="fnameError" class="error mt-2 hidden rounded-md bg-gray-700 p-1 text-red-400"></div>
+                <div class="mt-4">
+                    <x-input-label for="fname" :value="__('First Name')" />
+                    <x-text-input x-model="firstName" @input="validateName($event, 'first name')" id="fname"
+                        class="mt-1 block w-full border border-red-600" type="text" name="fname" :value="old('fname')"
+                        required autofocus autocomplete="fname" />
+                    {{-- <x-input-error :messages="$errors->get('fname')" class="mt-2" /> --}}
+                </div>
+                <div id="fnameError" x-show="fnameError" x-text="fnameError"
+                    class="error rounded-md p-1 text-sm text-red-500"></div>
 
-            <div class="mt-4">
-                <x-input-label for="mname" :value="__('Middle Name (Optional)')" />
-                <x-text-input id="mname" class="mt-1 block w-full" type="text" name="mname" :value="old('mname')"
-                    autocomplete="mname" />
-                <x-input-error :messages="$errors->get('mname')" class="mt-2" />
-            </div>
-
-            <div class="mt-4">
-                <x-input-label for="lname" :value="__('Last Name')" />
-                <x-text-input id="lname" class="mt-1 block w-full" type="text" name="lname" :value="old('lname')"
-                    required autocomplete="lname" />
-                <x-input-error :messages="$errors->get('lname')" class="mt-2" />
-            </div>
-            <div id="lnameError" class="error mt-2 hidden rounded-md bg-gray-700 p-1 text-red-400"></div>
-
-            <div class="mt-4 text-end">
-                <a class="mr-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                    href="{{ route('login') }}">
-                    {{ __('Already registered?') }}
-                </a>
-                <x-primary-button
-                    class="rounded-md from-cyan-500 to-blue-500 px-3 py-2 font-bold text-black hover:bg-gradient-to-r"
-                    type="button" onclick="validateName()">Next</x-primary-button>
-            </div>
-        </div>
-
-        <div id="step2" class="hidden">
-            <!-- Email Address -->
-            <div class="mt-4">
-                <x-input-label for="email" :value="__('Email')" />
-                <x-text-input id="email" class="mt-1 block w-full" type="email" name="email" :value="old('email')"
-                    required autocomplete="username" />
-                <x-input-error :messages="$errors->get('email')" class="mt-2" />
-            </div>
-
-            <!-- Password -->
-            <div class="mt-4">
-                <x-input-label for="password" :value="__('Password')" />
-
-                <x-text-input id="password" class="mt-1 block w-full" type="password" name="password" required
-                    autocomplete="new-password" />
-
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
-            </div>
-            <div id="passwordError" class="error m m-2 hidden rounded-md bg-gray-700 text-red-400"></div>
-
-            <!-- Confirm Password -->
-            <div class="mt-4">
-                <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-                <x-text-input id="password_confirmation" class="mt-1 block w-full" type="password"
-                    name="password_confirmation" required autocomplete="new-password" />
-
-                <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-            </div>
-            <div id="confirm_passwordError" class="error hidden rounded-md bg-gray-800 text-red-400"></div>
-
-            <div class="mt-4 flex items-center justify-between">
-                <x-primary-button type="button" class="bg-gray-800 text-black"
-                    onclick="prevStep(2)">{{ __('Previous') }}</x-primary-button>
-
-                <div>
-                    <x-primary-button type="button" onclick="validatePassword()"
-                        class="rounded-md from-cyan-500 to-blue-500 px-3 py-2 font-bold text-black hover:bg-gradient-to-r">
-                        {{ __('Register') }}
-                    </x-primary-button>
+                <div class="mt-4">
+                    <x-input-label for="mname" :value="__('Middle Name (Optional)')" />
+                    <x-text-input id="mname" class="mt-1 block w-full" type="text" name="mname"
+                        :value="old('mname')" autocomplete="mname" />
+                    <x-input-error :messages="$errors->get('mname')" class="mt-2" />
                 </div>
 
+                <div class="mt-4">
+                    <x-input-label for="lname" :value="__('Last Name')" />
+                    <x-text-input x-model="lastName" @input="validateName($event, 'last name')" id="lname"
+                        class="mt-1 block w-full" type="text" name="lname" :value="old('lname')" required
+                        autocomplete="lname" />
+                    {{-- <x-input-error :messages="$errors->get('lname')" class="mt-2" /> --}}
+                </div>
+                <div id="lnameError" x-show="lnameError" x-text="lnameError"
+                    class="error rounded-md p-1 text-sm text-red-500"></div>
+
+                <div class="mt-4 text-end">
+                    <a class="mr-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                        href="{{ route('login') }}">
+                        {{ __('Already registered?') }}
+                    </a>
+                    <x-primary-button
+                        class="rounded-md from-cyan-500 to-blue-500 px-3 py-2 font-bold text-black hover:bg-gradient-to-r"
+                        type="button" @click="checkForm1()">Next</x-primary-button>
+                </div>
+            </div>
+
+            <div id="step2" x-show="currentStep === 2">
+                <!-- Email Address -->
+                <div class="mt-4">
+                    <x-input-label for="email" :value="__('Email')" />
+                    <x-text-input x-model="email" @input="checkEmail" id="email" class="mt-1 block w-full"
+                        type="email" name="email" :value="old('email')" required autocomplete="username" />
+                    {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
+                </div>
+                <div id="lnameError" x-show="emailError" x-text="emailError"
+                    class="error rounded-md p-1 text-sm text-red-500"></div>
+
+                <!-- Password -->
+                <div class="mt-4">
+                    <x-input-label for="password" :value="__('Password')" />
+
+                    <x-text-input x-model="password" @input="validatePassword" id="password" class="mt-1 block w-full"
+                        type="password" name="password" required autocomplete="new-password" />
+
+                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                </div>
+                <div x-show="passwordError" x-text="passwordError" id="passwordError"
+                    class="error rounded-md p-1 text-sm text-red-500"></div>
+
+                <!-- Confirm Password -->
+                <div class="mt-4">
+                    <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+
+                    <x-text-input x-model="confirmPassword" @input="validateConfirmPassword" id="password_confirmation"
+                        class="mt-1 block w-full" type="password" name="password_confirmation" required
+                        autocomplete="new-password" />
+
+                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                </div>
+                <div x-show="confirmPasswordError" x-text="confirmPasswordError" id="confirm_passwordError"
+                    class="error rounded-md p-1 text-sm text-red-500"></div>
+
+                <div class="mt-4 flex items-center justify-between">
+                    <x-primary-button type="button" class="bg-gray-800 text-black"
+                        @click="prevStep(2)">{{ __('Previous') }}</x-primary-button>
+
+                    <div>
+                        <x-primary-button type="button" @click="submitForm"
+                            class="rounded-md from-cyan-500 to-blue-500 px-3 py-2 font-bold text-black hover:bg-gradient-to-r">
+                            {{ __('Register') }}
+                        </x-primary-button>
+                    </div>
+
+                </div>
             </div>
         </div>
     </form>
 
 </x-guest-layout>
 
-<script>
+{{-- <script>
     function validateName() {
         var firstName = document.getElementById('fname');
         var lastName = document.getElementById('lname');
@@ -158,7 +169,6 @@
         var confirm_passwordError = document.getElementById('confirm_passwordError');
 
         // Regular expressions for password validation
-        var uppercaseRegex = /[A-Z]/;
         var lowercaseRegex = /[a-z]/;
         var numberRegex = /[0-9]/;
         var symbolRegex = /[$@$!%*?&]/;
@@ -166,7 +176,6 @@
         // Check if password meets all criteria
         if (
             password.length < 8 ||
-            !uppercaseRegex.test(password) ||
             !lowercaseRegex.test(password) ||
             !numberRegex.test(password) ||
             !symbolRegex.test(password)
@@ -195,6 +204,106 @@
         ) {
             passwordError.textContent = '';
             passwordError.classList.add('hidden');
+        }
+    }
+</script> --}}
+
+<script>
+    function formValidation() {
+        return {
+            firstName: '',
+            lastName: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            fnameError: '',
+            lnameError: '',
+            emailError: '',
+            passwordError: '',
+            confirmPasswordError: '',
+            currentStep: 1,
+
+            errorShow(inputName, error) {
+                if (inputName === 'first name') {
+                    this.fnameError = error
+                }
+                if (inputName === 'last name') {
+                    this.lnameError = error
+                }
+            },
+            validateName(event, inputName) {
+                var error = event.target.value.trim() === '' ? 'Please enter your ' + inputName : '';
+                this.errorShow(inputName, error);
+            },
+            checkForm1() {
+                if (this.firstName.trim() && this.lastName.trim()) {
+                    if (!this.fnameError && !this.lnameError) {
+                        this.nextStep(1);
+                    }
+                }
+                var i = !this.firstName.trim() ? this.errorShow('first name', 'Please enter your first name') : '';
+                var j = !this.lastName.trim() ? this.errorShow('last name', 'Please enter your last name') : ''
+            },
+
+            async checkEmail() {
+                if (this.email.trim() === '') {
+                    this.emailError = 'Please enter your email.';
+                    return;
+                }
+
+                const response = await fetch(`/check_email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Ensure you have CSRF protection
+                    },
+                    body: JSON.stringify({
+                        email: this.email,
+                    })
+                });
+                const data = await response.json();
+
+                if (data.isRegistered) {
+                    this.emailError = 'Email is already registered.';
+                } else {
+                    this.emailError = '';
+                }
+            },
+
+            nextStep(step) {
+                this.currentStep = step + 1;
+            },
+
+            prevStep(step) {
+                this.currentStep = step - 1;
+            },
+
+            validatePassword() {
+                const lowercaseRegex = /[a-z]/;
+                const numberRegex = /[0-9]/;
+                const symbolRegex = /[$@$!%*?&]/;
+
+                this.passwordError = (this.password.length < 8 ||
+                        !lowercaseRegex.test(this.password) ||
+                        !numberRegex.test(this.password) ||
+                        !symbolRegex.test(this.password)) ?
+                    'Password must be at least 8 characters long and contain at least one lowercase letter, one number, and one symbol.' :
+                    '';
+
+
+            },
+
+            validateConfirmPassword() {
+                this.confirmPasswordError = this.password !== this.confirmPassword ?
+                    'Confirm Password does not match' :
+                    '';
+            },
+
+            submitForm() {
+                if (!this.passwordError && !this.confirmPasswordError && !this.emailError) {
+                    document.getElementById('registrationForm').submit();
+                }
+            }
         }
     }
 </script>

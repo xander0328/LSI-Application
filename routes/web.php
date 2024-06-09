@@ -44,22 +44,36 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::post('/create_batch', [SuperAdminController::class, 'create_batch'])->name('create_batch');
         Route::post('/add_to_batch', [SuperAdminController::class, 'add_to_batch'])->name('add_to_batch');
 
-        Route::get('/text_input_post', [SuperAdminController::class, 'text_input_post'])->name('text_input_post');
+        // Route::get('/text_input_post', [SuperAdminController::class, 'text_input_post'])->name('text_input_post');
         
-
+        
+        
         // Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
     });
+
+    Route::get('/scan_attendance', [SuperAdminController::class, 'scan_attendance'])->name('scan_attendance');
+    Route::post('/get_scan_data', [SuperAdminController::class, 'get_scan_data'])->name('get_scan_data');
+    Route::post('/submit_f2f_attendance', [SuperAdminController::class, 'submit_f2f_attendance'])->name('submit_f2f_attendance');
+    Route::get('/all_users', [SuperAdminController::class, 'all_users'])->name('all_users');
     
 });
 
 Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
+    // Enrollment
     Route::get('/enroll/{id}', [StudentController::class, 'enroll'])->name('enroll');
     Route::post('/enroll_save', [StudentController::class, 'enroll_save'])->name('enroll_save');
     Route::get('/enroll_requirements/{enrollee}', [StudentController::class, 'enroll_requirements'])->name('enroll_requirements');
-    Route::post('/enroll_requirements_save', [StudentController::class, 'enroll_requirements_save'])->name('enroll_requirements_save');
     Route::get('/already_enrolled', [StudentController::class, 'already_enrolled'])->name('already_enrolled');
+    Route::post('/upload_requirement', [StudentController::class, 'upload_requirement'])->name('upload_requirement');
+    Route::delete('/revert_requirement', [StudentController::class, 'revert_requirement'])->name('revert_requirement');
+    Route::get('/get_requirement/{enrolee_id}/{type}', [StudentController::class, 'get_requirement'])->name('get_requirement');
+    Route::get('/load_requirement/{enrollee_id}/{type}/{source}', [StudentController::class, 'load_requirement'])->name('load_requirement');
+    Route::delete('/delete_requirement/{enrollee_id}/{type}/{source}', [StudentController::class, 'delete_requirement'])->name('delete_requirement');
+    Route::post('/check_user_requirements', [StudentController::class, 'check_user_requirements'])->name('check_user_requirements');
+    Route::post('/enroll_requirements_save', [StudentController::class, 'enroll_requirements_save'])->name('enroll_requirements_save');
 
     Route::get('/course_completed', [StudentController::class, 'course_completed'])->name('course_completed');
+
     
     // Stream / Posts
     Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
@@ -85,6 +99,9 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::post('/send_message', [StudentController::class, 'send_message'])->name('send_message');
     Route::post('/store-token', [NotificationSendController::class, 'updateDeviceToken'])->name('store.token');
     Route::post('/send-web-notification', [NotificationSendController::class, 'sendNotification'])->name('send.web-notification');
+
+    //ID CARD
+    Route::get('/generateIDCard/{id}', [StudentController::class, 'generateIDCard'])->name('generateIDCard');
 });
 
 Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
@@ -94,6 +111,7 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::get('/batch_assignments/{batch_id}', [InstructorController::class, 'batch_assignments'])->name('batch_assignments');
     //Route::get('/review_turn_ins/{assignment_id}', [InstructorController::class, 'review_turn_ins'])->name('review_turn_ins');
     Route::get('/list_turn_ins/{assignment_id}', [InstructorController::class, 'list_turn_ins'])->name('list_turn_ins');
+    Route::get('/batch_attendance/{batch_id}', [InstructorController::class, 'batch_attendance'])->name('batch_attendance');
     
     //Post (for Stream)
     Route::post('/post', [InstructorController::class, 'post'])->name('post');
@@ -103,6 +121,9 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::get('/get_assignment/{id}', [InstructorController::class, 'get_assignment'])->name('get_assignment');
     // Route::post('/edit_assignment', [InstructorController::class, 'edit_assignment'])->name('edit_assignment');
     Route::post('/assignment_toggle', [InstructorController::class, 'assignment_toggle'])->name('assignment_toggle');
+    
+    //Grading
+    Route::post('/update_grade', [InstructorController::class, 'update_grade'])->name('update_grade');
     
     //Filepond Assignment (in batch_posts)
     Route::post('/temp_upload_assignment', [InstructorController::class, 'temp_upload_assignment'])->name('temp_upload_assignment');
@@ -120,6 +141,11 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::post('/edit_lesson', [InstructorController::class, 'edit_lesson'])->name('edit_lesson');
     Route::post('/get_lessons', [InstructorController::class, 'get_lessons'])->name('get_lessons');
     Route::delete('/delete_lesson/{lesson_id}', [InstructorController::class, 'delete_lesson'])->name('delete_lesson');
+
+    //Attendace
+    Route::post('/save_attendance', [InstructorController::class, 'save_attendance'])->name('save_attendance');
+    Route::post('/get_attendance_data', [InstructorController::class, 'get_attendance_data'])->name('get_attendance_data');
+
 });
 
 Route::middleware('auth')->group(function () {

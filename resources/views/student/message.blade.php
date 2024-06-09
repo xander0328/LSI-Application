@@ -78,10 +78,10 @@
             <input type="hidden" name="user2_id" value="{{ $user[0]->id }}">
             <label for="chat" class="sr-only">Your message</label>
             <div class="flex items-center bg-gray-50 px-3 py-2 dark:bg-gray-700">
-                <textarea name="message_content" id="chat" rows="1"
+                <textarea @keyup.enter="send_message()" name="message_content" id="chat" rows="1"
                     class="scroll-hide min-h-10 mx-4 block max-h-16 w-full resize-y rounded-lg border border-gray-300 bg-white p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                     placeholder="Your message..."></textarea>
-                <button type="submit"
+                <button type="button" onclick="send_message()"
                     class="inline-flex cursor-pointer justify-center rounded-full p-2 text-blue-600 hover:bg-blue-100 dark:text-blue-500 dark:hover:bg-gray-600">
                     <svg class="h-5 w-5 rotate-90 rtl:-rotate-90" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor" viewBox="0 0 18 20">
@@ -100,28 +100,24 @@
                 scrollContainer.scrollTop(scrollContainer.prop('scrollHeight'));
             });
 
-            $(function() {
-                $('#sendMessageForm').submit(function(event) {
-                    event.preventDefault();
-                    var formData = $(this).serialize();
-
-                    $.ajax({
-                        url: $(this).attr('action'),
-                        type: 'POST',
-                        data: formData,
-                        success: function(data) {
-                            // Handle success response
-                            console.log('token:' + data.message);
-                            $('#sendMessageForm')[0].reset();
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle errors
-                            // console.log($('#sendMessageForm').attr('action'));
-                            console.error('Error:', error);
-                        }
-                    });
+            function send_message() {
+                var formData = $('#sendMessageForm').serialize();
+                $('#chat').val('');
+                $.ajax({
+                    url: $('#sendMessageForm').attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(data) {
+                        // Handle success response
+                        console.log('token:' + data.message);
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle errors
+                        // console.log($('#sendMessageForm').attr('action'));
+                        console.error('Error:', error);
+                    }
                 });
-            })
+            }
 
             // $(document).ready(function() {
             //     $('#chat').keypress(function(event) {

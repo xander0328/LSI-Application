@@ -35,7 +35,7 @@ class RegisteredUserController extends Controller
             'mname' => ['max:255'],
             'lname' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::min(8)->mixedCase()->numbers() ],
+            'password' => ['required', 'confirmed', Rules\Password::min(8)->numbers() ],
         ]);
 
         $user = User::create([
@@ -52,5 +52,16 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);
+    }
+
+    public function check_email(Request $request){
+        $email = $request->email;
+        $res = User::where('email', $email)->first();
+        if($res){
+            return response()->json(['isRegistered' => true]);
+        }
+
+        return response()->json(['isRegistered' => false]);
+
     }
 }

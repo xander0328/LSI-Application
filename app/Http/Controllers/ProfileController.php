@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\Enrollee;
 
 class ProfileController extends Controller
 {
@@ -16,8 +17,13 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $enrollee= Enrollee::where('user_id', auth()->user()->id)
+        ->whereNotNull('batch_id')
+        ->whereNull('completed_at')
+        ->first();
+
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $request->user(), 'enrollee_id' => $enrollee->id
         ]);
     }
 

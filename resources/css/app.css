@@ -1,3 +1,5 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@import '~filepond-plugin-get-file/dist/filepond-plugin-get-file.min.css';

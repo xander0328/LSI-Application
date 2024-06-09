@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
 use App\Models\Batch;
@@ -15,6 +16,9 @@ use App\Models\AssignmentFile;
 use App\Models\TempAssignment;
 use App\Models\TurnInFile;
 use App\Models\Lesson;
+use App\Models\StudentGrade;
+use App\Models\StudentAttendance;
+use App\Models\Attendance;
 
 class InstructorController extends Controller
 {
@@ -44,7 +48,20 @@ class InstructorController extends Controller
     public function batch_assignments($batch_id){
         $batch = Batch::find($batch_id);
         $assignments = Assignment::where('batch_id', $batch_id)->get();
-        return view('instructor.batch_assignments', compact('batch', 'assignments'));
+        $lessons = $batch->lesson;
+
+        return view('instructor.batch_assignments', compact('batch', 'assignments', 'lessons'));
+    }
+
+    public function batch_attendance($batch_id){
+        $batch = Batch::find($batch_id);
+        $attendances = Attendance::where('batch_id', $batch_id)->get();
+        $batch_students = $batch->enrollee;
+        $students = $batch_students->sortBy(function($batch_student) {
+            return $batch_student->user->lname;
+        });
+        // dd($students);
+        return view('instructor.batch_attendance', compact('batch', 'attendances', 'students'));
     }
 
     //Replaced by list_turn_ins
@@ -57,17 +74,48 @@ class InstructorController extends Controller
         return view('instructor.review_turn_ins', compact('assignment', 'batch', 'students'));
     }
 
-    public function list_turn_ins($assignment_id){
+    public function list_turn_ins($assignment_id, Request $request){
+        $sort = 'lname';
+        $sort_by = 'users.'.$sort;
+
+        if($request->query('sort')){
+            $sort = $request->query('sort');
+
+            if($sort == 'lname' || $sort == 'fname'){
+                $sort_by = 'users.'.$sort;
+            }elseif($sort == 'turned_in'){
+                $sort_by = 'turn_ins.'.$sort;
+            }
+        }
+
         $assignment = Assignment::find($assignment_id);
         $batch = Batch::find($assignment->batch_id);
-        $students = Enrollee::where('batch_id', $assignment->batch_id)
-        ->whereNull('completed_at')->get();
+        $students = Enrollee::leftJoin('users', 'enrollees.user_id', '=', 'users.id')
+        ->leftJoin('turn_ins', function($join) use ($assignment) {
+            $join->on('enrollees.user_id', '=', 'turn_ins.user_id')
+                ->where('turn_ins.assignment_id', '=', $assignment->id);
+        })
+        ->leftJoin('student_grades', function($join) use ($assignment) {
+            $join->on('enrollees.id', '=', 'student_grades.enrollee_id')
+                ->where('student_grades.assignment_id', '=', $assignment->id);
+        })
+        ->where('enrollees.batch_id', $assignment->batch_id)
+        ->whereNull('enrollees.completed_at')
+        // ->select('enrollees.id as enrollee_id','enrollees.*', 'student_grades.*', 'users.*', DB::raw('IFNULL(turn_ins.id, 0) AS turn_in_id'), DB::raw('IFNULL(student_grades.id, 0) AS student_grades_id'))
+        ->select('enrollees.id as enrollee_id','enrollees.*', 'student_grades.grade as grade', 'users.*', DB::raw('IFNULL(turn_ins.id, 0) AS turn_in_id'), DB::raw('IFNULL(student_grades.id, 0) AS student_grades_id'))
+        ->orderBy($sort_by)
+        ->get();
 
         $turn_in_files = TurnInFile::join('turn_ins', 'turn_in_files.turn_in_id', '=', 'turn_ins.id')
         ->where('turn_ins.assignment_id', $assignment->id)
+        ->select('turn_ins.*', 'turn_in_files.*', 'turn_in_files.id as turn_in_files')
         ->get();
+        
         // dd($turn_in_files);
-        return view('instructor.list_turn_ins', compact('assignment', 'batch', 'students', 'turn_in_files'));
+
+        // foreach($students as $student)
+        //     dd($student->grades->where('enrollee_id', $student->id)->first());
+        return view('instructor.list_turn_ins', compact('assignment', 'batch', 'students', 'turn_in_files', 'sort'));
     }
 
     public function post(Request $request){
@@ -348,5 +396,102 @@ class InstructorController extends Controller
         $record->delete();
 
         return response()->json(['message' => $record]);
+    }
+
+    //Grading
+    public function update_grade(Request $request){
+        $student_grade = StudentGrade::where('enrollee_id', $request->enrollee_id)
+        ->where('assignment_id', $request->assignment_id)
+        ->where('batch_id', $request->batch_id)
+        ->first();
+
+        // dd($request);
+
+        if($request->grade != 0 && $request->grade != null){
+            if(!$student_grade){
+                $student_grade = new StudentGrade();
+                $student_grade->batch_id = $request->batch_id;
+                $student_grade->assignment_id = $request->assignment_id;
+                $student_grade->enrollee_id = $request->enrollee_id;
+                $student_grade->grade = $request->grade;
+                $student_grade->type = 'auto';
+                $student_grade->save();
+                return response()->json(['status' => 'update grade working']);
+            }elseif($student_grade){
+                $student_grade->grade = $request->grade;
+                $student_grade->save();
+            }
+        }elseif($request->grade == null || $request->grade == 0){
+            if($student_grade){
+                $student_grade->delete();
+            }
+        }
+        // return response()->json(['status' => $request->grade]);
+        // dd($request->grade);
+        
+    }
+
+    //Attendance
+    public function save_attendance(Request $request) {
+        // return response()->json($request->all());
+        if($request->selected_id){
+            $attendance = Attendance::where('id', $request->selected_id)->first();
+
+            foreach($request->students as $student){
+                $student_attendance = StudentAttendance::where('attendance_id', $attendance->id)
+                ->where('enrollee_id', $student['id'])
+                ->first();
+
+                if ($student_attendance->status !== $student['status']) {
+                    $student_attendance->status = $student['status'];
+                    $student_attendance->save();
+                }
+            }
+
+            return response()->json($attendance);
+        }
+
+        $attendance = new Attendance();
+        $attendance->date = Carbon::parse($request->date);
+        $attendance->batch_id = $request->batch_id;
+        $attendance->mode = $request->mode;
+        $attendance->save();
+
+        foreach($request->students as $student){
+            $student_attendance = new StudentAttendance();
+            $student_attendance->attendance_id = $attendance->id;
+            $student_attendance->enrollee_id = $student['id'];
+            $student_attendance->status = $student['status'];
+            $student_attendance->save();
+        }
+        return response()->json($attendance);
+    }
+
+    public function get_attendance_data(Request $request){
+        $record = Attendance::where('id', $request->id)->first();
+        $students = StudentAttendance::where('attendance_id', $record->id)->get();
+        $enrollee = collect();
+        $user = collect();
+
+        foreach($students as $student){
+            $enrollee = $enrollee->merge($student->enrollee);
+            $user = $user->merge($student->enrollee->user);
+        }
+
+        // dd($students);
+        $data;
+        $i = 0;
+        foreach ($students as $student) {
+            $i++;
+            $data[$i] = [
+                'id' => $student->enrollee_id,
+                'first_name' => $student->enrollee->user->fname,
+                'last_name' => $student->enrollee->user->lname,
+                'status' => $student->status,
+                'isChecked' => false
+            ];
+        }
+
+        return response()->json($data);
     }
 }
