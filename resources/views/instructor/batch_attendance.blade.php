@@ -35,7 +35,8 @@
 
                     <div class="my-2 w-full rounded-md bg-gray-800 px-3 py-px">
                         <a @click="getRecordData(record)" data-modal-target="create-attendance-modal"
-                            data-modal-toggle="create-attendance-modal" class="flex items-center justify-between">
+                            class="cursor-pointer" data-modal-toggle="create-attendance-modal"
+                            class="flex items-center justify-between">
                             <div class="flex items-center justify-start gap-4">
                                 <div>
                                     <div :class="record.mode == 'online' ? 'bg-sky-700' : 'bg-yellow-700'"
@@ -270,6 +271,17 @@
 
             function studentData() {
                 return {
+                    initialStudents: [
+                        @foreach ($students as $student)
+                            {
+                                id: {{ $student->id }},
+                                first_name: '{{ $student->user->fname }}',
+                                last_name: '{{ $student->user->lname }}',
+                                status: 'absent',
+                                isChecked: false,
+                            },
+                        @endforeach
+                    ],
                     students: [
                         @foreach ($students as $student)
                             {
@@ -302,8 +314,6 @@
                     init() {
                         this.originalStudents = this.students;
                         this.sortStudents();
-
-                        console.log(this.originalStudents);
 
                         this.filteredRecords = this.attendanceData;
                     },
@@ -378,8 +388,7 @@
                         this.selectedDate = '';
                         this.selectedID = '';
                         this.students = []
-                        this.students = this.originalStudents
-                        console.log(this.originalStudents);
+                        this.students = this.initialStudents
                     },
 
 
@@ -426,10 +435,7 @@
 
                                 // Update the studentData().students with the updated students array
                                 this.students = dataArray;
-                                // this.init();
-
-                                console.log(this.students);
-                                console.log(dataArray);
+                                this.init();
                             })
                             .catch(error => {
                                 console.error('Error fetching attendance data:', error);

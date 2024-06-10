@@ -19,6 +19,7 @@ use App\Models\Lesson;
 use App\Models\StudentGrade;
 use App\Models\StudentAttendance;
 use App\Models\Attendance;
+use App\Http\Controllers\NotificationSendController;
 
 class InstructorController extends Controller
 {
@@ -230,6 +231,10 @@ class InstructorController extends Controller
                 }
             }
         }
+
+        $token = 
+
+        NotificationSendController::sendMessageNotification($token, $receiver_name, $body);
         return redirect()->back()->with('success', 'Assigned successfully.');;
     }
 

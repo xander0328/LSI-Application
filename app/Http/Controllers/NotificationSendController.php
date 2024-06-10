@@ -17,7 +17,7 @@ class NotificationSendController extends Controller
         return response()->json(['Token successfully stored.']);
     }
 
-    public static function sendNotification($FcmToken, $title, $body)
+    public static function sendMessageNotification($FcmToken, $title, $body)
     {
         $url = 'https://fcm.googleapis.com/fcm/send';
 

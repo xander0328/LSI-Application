@@ -98,7 +98,7 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::get('/message_list', [StudentController::class, 'message_list'])->name('message_list');
     Route::post('/send_message', [StudentController::class, 'send_message'])->name('send_message');
     Route::post('/store-token', [NotificationSendController::class, 'updateDeviceToken'])->name('store.token');
-    Route::post('/send-web-notification', [NotificationSendController::class, 'sendNotification'])->name('send.web-notification');
+    Route::post('/send-web-notification', [NotificationSendController::class, 'sendMesssageNotification'])->name('send.web-notification');
 
     //ID CARD
     Route::get('/generateIDCard/{id}', [StudentController::class, 'generateIDCard'])->name('generateIDCard');

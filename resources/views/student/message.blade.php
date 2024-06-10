@@ -14,10 +14,10 @@
                             {{ $user[0]->role == 'superadmin' ? 'LSI Admin' : ucwords($user[0]->role) }}</div>
                     </div>
                 </div>
-                {{-- <div>
+                <div>
                     <button onclick="startFCM()" class="btn btn-danger btn-flat">Allow notification
                     </button>
-                </div> --}}
+                </div>
                 {{-- @php
                     print_r($user[0]->id);
                 @endphp --}}
@@ -94,6 +94,7 @@
         </form>
     </div>
     @section('script')
+        <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase.js"></script>
         <script>
             $(document).ready(function() {
                 var scrollContainer = $('#chatsHolder');

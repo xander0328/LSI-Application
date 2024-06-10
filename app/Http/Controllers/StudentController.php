@@ -441,15 +441,15 @@ class StudentController extends Controller
         // // Save the message
         $message->save();
 
-        $receiver_name = User::where('id', $userId2)->first();
-        $token = User::whereNotNull('device_token')->pluck('device_token')->all();
+        $receiver_name = User::where('id', $userId2)->first()->fname;
+        $token = User::whereNotNull('device_token')->where('id', $userId2)->pluck('device_token')->all();
 
         $body = $message->message_content;
         if (strlen($message->message_content) > 40) {
             $body = substr($message->message_content, 0, 40) . "...";
         }
 
-        NotificationSendController::sendNotification($token, $receiver_name, $body);
+        NotificationSendController::sendMessageNotification($token, $receiver_name, $body);
 
         return response()->json(['message' => $token]);
     }
