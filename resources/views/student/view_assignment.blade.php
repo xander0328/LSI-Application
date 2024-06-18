@@ -7,29 +7,9 @@
             </div>
             <div>Batch: {{ $enrollee->batch->name }}</div>
         </div>
-        <div class="mt-2 flex items-center justify-start text-white">
-            <a href="{{ route('enrolled_course') }}">
-                <button class="flex items-center justify-center rounded-sm px-2 py-px text-white hover:bg-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mr-1 h-5 w-5">
-                        <title>post-outline</title>
-                        <path fill="white"
-                            d="M19 5V19H5V5H19M21 3H3V21H21V3M17 17H7V16H17V17M17 15H7V14H17V15M17 12H7V7H17V12Z" />
-                    </svg>
-                    Stream
-                </button>
-            </a>
-
-            <a href="{{ route('enrolled_course_assignment') }}">
-                <button
-                    class="ms-2 flex items-center justify-center rounded-sm bg-sky-700 px-2 py-px text-white hover:bg-gray-700">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mr-1 h-5 w-5">
-                        <title>book-open-variant</title>
-                        <path fill="white"
-                            d="M13,12H20V13.5H13M13,9.5H20V11H13M13,14.5H20V16H13M21,4H3A2,2 0 0,0 1,6V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V6A2,2 0 0,0 21,4M21,19H12V6H21" />
-                    </svg>
-                    Assignments</button>
-            </a>
-        </div>
+        @if ($enrollee->batch)
+            <x-course-nav :selected="'assignment'"></x-course-nav>
+        @endif
 
     </x-slot>
     <div id="course_list" class="mx-8 pb-4 pt-44 text-white">
@@ -67,7 +47,6 @@
                 <span
                     class="relative mr-px inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <title>star</title>
                         <path fill="white"
                             d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
                     </svg>
@@ -76,7 +55,6 @@
                 <span
                     class="relative mx-px ml-2 inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <title>calendar-month</title>
                         <path fill="white"
                             d="M9,10V12H7V10H9M13,10V12H11V10H13M17,10V12H15V10H17M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H6V1H8V3H16V1H18V3H19M19,19V8H5V19H19M9,14V16H7V14H9M13,14V16H11V14H13M17,14V16H15V14H17Z" />
                     </svg>
@@ -177,7 +155,7 @@
                         <div class="space-y-8 p-4 md:p-5">
                             <form id="turn_in_form" action="" method="post">
                                 @csrf
-                                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                                <input type="hidden" name="user_id" value="{{ $enrollee->id }}">
                                 <input type="hidden" name="batch_id" value="{{ $batch->id }}">
 
                                 <input type="file" name="turn_in_attachments[]" id="turn_in_attachments">
@@ -195,7 +173,7 @@
             {{-- <form name="your_work" id="your_work" action="{{ route('turn_in_assignment') }}" method="post"
                 enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                <input type="hidden" name="user_id" value="{{ $enrollee->id }}">
                 <input type="hidden" name="batch_id" value="{{ $batch->id }}">
                 <div><input type="file" name="turn_in_attachment[]" id=""></div>
             </form> --}}
@@ -352,7 +330,7 @@
                                     const batchId = {{ $enrollee->batch->id }};
                                     const assignmentId = {{ $assignment->id }};
                                     const href =
-                                        `{{ asset('storage/assignments/${batchId}/${assignmentId}/' . auth()->user()->id . '/${data.folder}/${data.filename}') }}`;
+                                        `{{ asset('storage/assignments') }}/${batchId}/${assignmentId}/{{ $enrollee->id }}/${data.folder}/${data.filename}`;
                                     // console.log(href);
                                     if (data.file_type == 'application/pdf') {
                                         filesHtml += `<div class="mb-2">

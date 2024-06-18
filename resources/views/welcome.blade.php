@@ -61,7 +61,8 @@
                             <x-slot name="trigger">
                                 <button
                                     class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
-                                    <div>{{ Auth::user()->fname }} {{ Auth::user()->lname }}</div>
+                                    <div>{{ Auth::user()->role == 'instructor' ? 'Trainer ' : '' }}{{ Auth::user()->fname }}
+                                        {{ Auth::user()->lname }}</div>
 
                                     <div class="ms-1">
                                         <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"

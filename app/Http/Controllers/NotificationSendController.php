@@ -17,20 +17,24 @@ class NotificationSendController extends Controller
         return response()->json(['Token successfully stored.']);
     }
 
-    public static function sendMessageNotification($FcmToken, $title, $body)
+    public static function sendAppNotification($FcmToken, $title, $body, $click_action)
     {
         $url = 'https://fcm.googleapis.com/fcm/send';
-
-        // $FcmToken = User::whereNotNull('device_token')->pluck('device_token')->all();
             
         $serverKey = 'AAAArHotyRE:APA91bGrDl-TJzEZFgdsyYXtk7UE2QMl6-ckv-QfZlLMoVi_CQ7rnZafx31ISAzsmLU3qGFNMIe2pHYwQ7nqM6JP_X-cQUsOjiuRiDk0CioJMy-D2tokNtE7TsrW2WwSTM0pLEnI75Qk'; // ADD SERVER KEY HERE PROVIDED BY FCM
     
+        $notification = [
+            "title" => $title,
+            "body" => $body,
+        ];
+        
+        if ($click_action) {
+            $notification['click_action'] = $click_action;
+        }
+
         $data = [
             "registration_ids" => $FcmToken,
-            "notification" => [
-                "title" => $title,
-                "body" => $body,  
-            ]
+            "notification" => $notification,
         ];
         $encodedData = json_encode($data);
     
@@ -60,4 +64,28 @@ class NotificationSendController extends Controller
         // FCM response
         dd($result);
     }
+
+    public static function sendSmsNotification($receiver, $message){
+        $ch = curl_init();
+        $parameters = array(
+            'apikey' => 'df2d7961dc3c906937aec0642009d135',
+            'number' => $receiver,
+            'message' => $message,
+            'sendername' => 'SEMAPHORE'
+        );
+        curl_setopt( $ch, CURLOPT_URL,'https://semaphore.co/api/v4/messages' );
+        curl_setopt( $ch, CURLOPT_POST, 1 );
+
+        //Send the parameters set above with the request
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $parameters ) );
+
+        // Receive response from server
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+        $output = curl_exec( $ch );
+        curl_close ($ch);
+
+        //Show the server response
+        echo $output;
+    }
+
 }

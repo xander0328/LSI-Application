@@ -14,10 +14,10 @@
                             {{ $user[0]->role == 'superadmin' ? 'LSI Admin' : ucwords($user[0]->role) }}</div>
                     </div>
                 </div>
-                <div>
+                {{-- <div>
                     <button onclick="startFCM()" class="btn btn-danger btn-flat">Allow notification
                     </button>
-                </div>
+                </div> --}}
                 {{-- @php
                     print_r($user[0]->id);
                 @endphp --}}

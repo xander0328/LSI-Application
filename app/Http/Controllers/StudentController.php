@@ -33,20 +33,23 @@ class StudentController extends Controller
     {
         $user = auth()->user();
         $user_id = $user->id;
-        $enrollee = Enrollee::where('user_id', $user_id)->first();
+        $enrollee = Enrollee::where('user_id', $user_id)->whereNull('completed_at')->first();
         if ($enrollee) {
             $course = $enrollee->course;
             $batch = $enrollee->batch;
             $posts = $batch ? $batch->post : '';
             $files = collect(); // Initialize an empty collection for files
+            $instructor = collect();
 
             // Retrieve files for each post
             if($posts){
+                $instructor = $instructor->merge($batch->instructor);
                 foreach ($posts as $post) {
                     $files = $files->merge($post->files);
                 }
             }
 
+            // dd($posts);
             return view('student.enrolled_course', compact('enrollee', 'course', 'batch', 'posts', 'files'));
         } else {
             return redirect()->back()->with('error', 'not enrolled');
@@ -57,7 +60,7 @@ class StudentController extends Controller
     {
         $user = auth()->user();
         $user_id = $user->id;
-        $enrollee = Enrollee::where('user_id', $user_id)->first();
+        $enrollee = Enrollee::where('user_id', $user_id)->whereNull('completed_at')->first();
         if ($enrollee) {
             $course = $enrollee->course;
             $batch = $enrollee->batch;
@@ -441,7 +444,7 @@ class StudentController extends Controller
         // // Save the message
         $message->save();
 
-        $receiver_name = User::where('id', $userId2)->first()->fname;
+        $receiver_name = User::where('id', $userId1)->first()->fname;
         $token = User::whereNotNull('device_token')->where('id', $userId2)->pluck('device_token')->all();
 
         $body = $message->message_content;
@@ -449,8 +452,10 @@ class StudentController extends Controller
             $body = substr($message->message_content, 0, 40) . "...";
         }
 
-        NotificationSendController::sendMessageNotification($token, $receiver_name, $body);
+        NotificationSendController::sendAppNotification($token, $receiver_name, $body, null);
+        // NotificationSendController::sendSmsNotification('09911354287', $body);
 
+        // dd(route('message', $userId2));
         return response()->json(['message' => $token]);
     }
 
@@ -480,7 +485,7 @@ class StudentController extends Controller
     public function view_assignment($id){
         $user = auth()->user();
         $user_id = $user->id;
-        $enrollee = Enrollee::where('user_id', $user_id)->first();
+        $enrollee = Enrollee::where('user_id', $user_id)->whereNull('completed_at')->first();
         $course = $enrollee->course;
         $batch = $enrollee->batch;
 
@@ -490,14 +495,15 @@ class StudentController extends Controller
     }
 
     public function turn_in_files(Request $request) {
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)->whereNull('completed_at')->first();
         $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
-        ->where('user_id', auth()->user()->id)
+        ->where('enrollee_id', $enrollee->id)
         ->first();
 
         if(!$turn_in){
             $turn_in = new TurnIn();
             $turn_in->assignment_id = $request->assignment_id;
-            $turn_in->user_id = auth()->user()->id;
+            $turn_in->enrollee_id = $enrollee->id;
             $turn_in->save();
         }
 
@@ -505,10 +511,10 @@ class StudentController extends Controller
 
         foreach ($attachments as $attachments) {
             if($request->has('turn_in_attachments')){
-                $fileName = time(). '_' . auth()->user()->id . '_' . str_replace(' ', '_', $attachments->getClientOriginalName());
+                $fileName = time(). '_' . $enrollee->id . '_' . str_replace(' ', '_', $attachments->getClientOriginalName());
                 $folder = uniqid('ass', true);
                 $filePath = $attachments
-                ->storeAs('assignments/'.$request->batch_id . '/' . $request->assignment_id . '/'. auth()->user()->id .'/' . $folder, $fileName, 'public'); // Change 'uploads' to your desired directory
+                ->storeAs('assignments/'.$request->batch_id . '/' . $request->assignment_id . '/'. $enrollee->id .'/' . $folder, $fileName, 'public'); // Change 'uploads' to your desired directory
                     
                 // Get file type
                 $fileType = $attachments->getClientMimeType();
@@ -527,12 +533,14 @@ class StudentController extends Controller
         return '';
     }
 
+    //To be applied
     public function turn_in_links(){
         //to do
     }
 
     public function get_files($assignment_id){
-        $turn_in = TurnIn::where('user_id', auth()->user()->id)
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)->whereNull('completed_at')->first();
+        $turn_in = TurnIn::where('enrollee_id', $enrollee->id)
         ->where('assignment_id', $assignment_id)
         ->first();
 
@@ -544,7 +552,6 @@ class StudentController extends Controller
         }
 
         return response()->json('no turn in yet');
-        
     }
     
     public function load_files($batch_id, $assignment_id, $file_id){
@@ -619,8 +626,9 @@ class StudentController extends Controller
     }
 
     public function turn_in_status(Request $request){
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)->whereNull('completed_at')->first();
         $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
-        ->where('user_id', auth()->user()->id)
+        ->where('enrollee_id', $enrollee->id)
         ->first();
 
         $assignment = Assignment::find($request->assignment_id);
@@ -650,11 +658,12 @@ class StudentController extends Controller
     }
     
     public function assignment_action(Request $request){
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)->whereNull('completed_at')->first();
         $currentDate = Carbon::today();     
         $current = Carbon::now();     
         $assignment = Assignment::find($request->assignment_id);
         $turn_in = TurnIn::where('assignment_id', $assignment->id)
-        ->where('user_id', auth()->user()->id)
+        ->where('enrollee_id', $enrollee->id)
         ->first();
         // dd($assignment);
 
@@ -663,14 +672,14 @@ class StudentController extends Controller
                 if(($currentDate)->lte(Carbon::createFromFormat('Y-m-d', $assignment->due_date))){
                     if(($currentDate)->eq(Carbon::createFromFormat('Y-m-d', $assignment->due_date))){
                         if($current->lte(Carbon::createFromFormat('H:i:s',  $assignment->due_hour))){
-                            $this->check_turn_in($request, $turn_in, $assignment);                        
+                            $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);                        
                             return response()->json(['action'=>'done']);
     
                         }else{
                             return response()->json(['assignment_status'=>'closed']);
                         }
                     }elseif (($currentDate)->lessThan(Carbon::createFromFormat('Y-m-d', $assignment->due_date))){
-                        $this->check_turn_in($request, $turn_in, $assignment);
+                        $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);
                         return response()->json(['action'=>'done']);
     
                     }else{
@@ -681,15 +690,15 @@ class StudentController extends Controller
     
                 }
             }else{
-                $this->check_turn_in($request, $turn_in, $assignment);
+                $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);
             }
         }else{
-            $this->check_turn_in($request, $turn_in, $assignment);  
+            $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);  
         }
         
     }
 
-    private function check_turn_in($request, $turn_in, $assignment){
+    private function check_turn_in($request, $turn_in, $assignment, $enrollee_id){
         if($turn_in){
             if(!$turn_in->turned_in){
             $turn_in->turned_in = true;
@@ -701,7 +710,7 @@ class StudentController extends Controller
         }else{
             $data = [
                 'assignment_id' => $request->assignment_id,
-                'user_id' => auth()->user()->id,
+                'enrollee_id' => $enrollee_id,
                 'turned_in' => true,
                 'turned_in_date' => Carbon::now()
             ];

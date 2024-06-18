@@ -97,9 +97,7 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::get('/get_messages/{id}', [StudentController::class, 'get_messages'])->name('get_messages');
     Route::get('/message_list', [StudentController::class, 'message_list'])->name('message_list');
     Route::post('/send_message', [StudentController::class, 'send_message'])->name('send_message');
-    Route::post('/store-token', [NotificationSendController::class, 'updateDeviceToken'])->name('store.token');
-    Route::post('/send-web-notification', [NotificationSendController::class, 'sendMesssageNotification'])->name('send.web-notification');
-
+    
     //ID CARD
     Route::get('/generateIDCard/{id}', [StudentController::class, 'generateIDCard'])->name('generateIDCard');
 });
@@ -115,6 +113,11 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     
     //Post (for Stream)
     Route::post('/post', [InstructorController::class, 'post'])->name('post');
+    Route::post('/upload_temp_post_files', [InstructorController::class, 'upload_temp_post_files'])->name('upload_temp_post_files');
+    Route::delete('/revert_post_files', [InstructorController::class, 'revert_post_files'])->name('revert_post_files');
+    Route::get('/load_post_files/{batch_id}/{file_id}', [InstructorController::class, 'load_post_files'])->name('load_post_files');
+    Route::delete('/delete_post_files/{batch_id}/{id}', [InstructorController::class, 'delete_post_files'])->name('delete_post_files');
+
     
     // Assignment
     Route::post('/post_assignment', [InstructorController::class, 'post_assignment'])->name('post_assignment');
@@ -152,6 +155,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    Route::post('/store-token', [NotificationSendController::class, 'updateDeviceToken'])->name('store.token');
+    Route::post('/send-web-notification', [NotificationSendController::class, 'sendMesssageNotification'])->name('send.web-notification');
 });
 
 require __DIR__.'/auth.php';

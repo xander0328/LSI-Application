@@ -30,3 +30,24 @@ messaging.setBackgroundMessageHandler(function(payload) {
         options,
     );
 });
+
+// for click-action
+self.addEventListener('notificationclick', function(event) {
+    let url = event.notification.data.click_action || '/';
+    event.notification.close(); // Close the notification
+    event.waitUntil(
+        clients.matchAll({type: 'window'}).then(windowClients => {
+            // Check if there is already a window/tab open with the target URL
+            for (let i = 0; i < windowClients.length; i++) {
+                let client = windowClients[i];
+                if (client.url === url && 'focus' in client) {
+                    return client.focus();
+                }
+            }
+            // If not, then open a new window/tab to the target URL
+            if (clients.openWindow) {
+                return clients.openWindow(url);
+            }
+        })
+    );
+});

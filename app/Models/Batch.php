@@ -23,6 +23,12 @@ class Batch extends Model
         return $this->hasMany(Post::class);
     }
 
+    public function temp_post_files()
+    {
+        return $this->hasMany(TempFile::class);
+    }
+
+
     public function lesson()
     {
         return $this->hasMany(Lesson::class);

@@ -8,6 +8,10 @@
             <div>Batch: {{ $batch->name }}</div>
         </div>
         <x-course-nav :batch="$batch->id" :selected="'assignment'"></x-course-nav>
+        <div>
+            <button onclick="startFCM()" class="btn btn-danger btn-flat">Allow notification
+            </button>
+        </div>
 
     </x-slot>
     <div class="mx-8 mt-2 pt-44 text-white">
@@ -40,12 +44,11 @@
                         <a href="javascript:void(0)" id="edit_assignment"
                             data-action="{{ route('get_assignment', $assignment->id) }}"
                             data-modal-target="edit_assignment_modal" data-modal-toggle="edit_assignment_modal"
-                            class="m-1 flex items-center rounded-lg p-2 py-1 align-middle hover:bg-gray-700"><svg
-                                class="h-5 w-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="m10.8 17.8-6.4 2.1 2.1-6.4m4.3 4.3L19 9a3 3 0 0 0-4-4l-8.4 8.6m4.3 4.3-4.3-4.3m2.1 2.1L15 9.1m-2.1-2 4.2 4.2" />
+                            class="m-1 flex items-center rounded-lg p-2 py-1 align-middle hover:bg-gray-700">
+                            <svg class="h-5 w-6 text-gray-800 dark:text-white" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
                             </svg>Edit
                         </a>
                     </li>
@@ -143,8 +146,8 @@
                     <option value="desc">Descending</option>
                 </select>
             </div>
-            <div id="accordion-collapse" data-accordion="open" data-active-classes="bg-sky-800 text-white"
-                data-inactive-classes="text-white">
+            <div id="accordion-collapse" {{-- data-accordion="open" data-active-classes="bg-sky-800 text-white"
+                data-inactive-classes="text-white" --}}>
                 {{-- @foreach ($students as $student)
                 @php
                     $turnIn = $turn_in_files
@@ -154,19 +157,22 @@
                     $hasTurnedIn = $turnIn && $turnIn->turned_in;
                 @endphp --}}
                 <template x-for="student in filteredRecords " :key="student.id">
-                    <div>
-                        <h2 :id="`accordion-collapse-heading-${student.id}`">
-                            <button type="button"
-                                class="mt-2 flex w-full items-center justify-between gap-3 bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white"
+                    <div x-data="{ open: false }">
+                        <h2 :id="`accordion-collapse-heading-${student.id}`" x-transition>
+                            <button type="button" @click="open = !open"
+                                :class="open ? 'bg-sky-800' : 'bg-gray-700 rounded-b-md'"
+                                class="mt-2 flex w-full items-center justify-between gap-3 rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white"
                                 :data-accordion-target="`#accordion-collapse-body-${student.id}`" aria-expanded="false"
                                 :aria-controls="`accordion-collapse-body-${student.id}`">
                                 <div>
-                                    <div x-text="student.lname + ', ' + student.fname "></div>
+                                    <div x-text="student.user.lname + ', ' + student.user.fname "></div>
                                     <div class="flex justify-start" :id="`grade_status_${student.id}`">
                                         <span
-                                            :class="student.grade != 0 || student.grade == null ? 'bg-sky-600' : 'bg-yellow-600'"
+                                            :class="student.grades[0].grade != 0 || student.grades[0].grade == null ?
+                                                'bg-sky-600' :
+                                                'bg-yellow-600'"
                                             class="rounded-full p-1 px-2 text-xs"
-                                            x-text="student.grade == 0 || student.grade == null ? 'Not graded' : 'Graded'">
+                                            x-text="student.grades[0].grade == 0 || student.grades[0].grade == null ? 'Not graded' : 'Graded'">
                                             {{-- @if ($student->grade)
                                             Graded
                                         @else
@@ -177,14 +183,14 @@
                                 </div>
                                 <div class="flex items-center">
                                     <span class="me-2 text-sm italic"
-                                        x-text="student.turned_in ? 'Turned in' : 'Not turned in'">
+                                        x-text="student.turn_ins[0].turned_in ? 'Turned in' : 'Not turned in'">
                                         {{-- @if ($hasTurnedIn)
                                         Turned in
                                     @else
                                         Not turned in
                                     @endif --}}
                                     </span>
-                                    <svg data-accordion-icon class="h-3 w-3 shrink-0 rotate-180" aria-hidden="true"
+                                    <svg class="h-3 w-3 shrink-0 rotate-180" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="M9 5 5 1 1 5" />
@@ -193,16 +199,22 @@
 
                             </button>
                         </h2>
-                        <div :id="`accordion-collapse-body-${student.id}`" class="mb-2 hidden"
-                            :aria-labelledby="`accordion-collapse-heading-${student.id}`">
-                            <div class="bg-gray-800 p-3">
+                        <div x-show="open" x-transition {{-- :id="`accordion-collapse-body-${student.id}`" class="mb-2 hidden"
+                            :aria-labelledby="`accordion-collapse-heading-${student.id}`" --}}>
+                            <div class="rounded-b-md bg-gray-800 p-3">
                                 <div class="mb-2 text-sm">Submitted Files</div>
-                                <div class="text-sm text-gray-500" x-if="student.turned_in == false">None</div>
+                                <template
+                                    x-if="!student.turn_ins[0].turned_in || student.turn_ins[0].turned_in == false || student.turn_ins[0].turn_in_files.length == 0">
+                                    <div class="text-sm text-gray-500">
+                                        None
+                                    </div>
+                                </template>
 
-                                <template x-if="student.turned_in == true">
+                                <template x-if="student.turn_ins[0].turned_in == true">
                                     <div>
-                                        <template x-for="file in student['files']" :key="file.id">
-                                            <div x-data="{ path: `{{ asset('storage/assignments/') }}/${student.batch_id}/${assignment_id}/${student.user_id}/${file.folder}/${file.filename}` }">
+                                        <template x-for="file in student.turn_ins[0].turn_in_files"
+                                            :key="file.id">
+                                            <div x-data="{ path: `{{ asset('storage/assignments/') }}/${student.batch_id}/${assignment_id}/${student.id}/${file.folder}/${file.filename}` }">
                                                 <x-file-type-checker-alpine></x-file-type-checker-alpine>
                                             </div>
                                         </template>
@@ -298,13 +310,21 @@
                                     @endif
                                 @endif --}}
                                 <hr class="mt-2 border-t-2 border-gray-600">
-                                <div class="mt-2 flex items-center">
+                                <div x-data="{ initialGrade: student.grades[0].grade, currentGrade: student.grades[0].grade }" class="mt-2 flex items-center">
                                     {{-- {{ $student }} --}}
                                     <div class="me-2 text-sm">Grade:</div>
                                     <input
-                                        class="block w-full rounded-lg p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                        type="number" x-model="student.grade" @input="grade_changed(student.id)"
-                                        name="grade" :id="`grade_${student.id}`">
+                                        class="me-2 block w-full rounded-lg p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                        type="number" x-model="student.grades[0].grade"
+                                        @input="console.log(`${initialGrade} ${currentGrade}`)" name="grade"
+                                        :id="`grade_${student.id}`">
+                                    <div @click="grade_changed(student.id)"
+                                        class="cursor-pointer rounded-md p-2 hover:bg-sky-800">
+                                        <svg class="w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path fill="currentColor"
+                                                d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
 
@@ -488,6 +508,7 @@
 
     </div>
     @section('script')
+        <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase.js"></script>
         <script>
             $(document).ready(function() {
                 $('.assignment-toggle').change(function() {
@@ -679,35 +700,22 @@
                     sort_by: 'lname',
                     sort_direction: 'asc',
                     filteredRecords: [], // Store the filtered records
-                    students: [
-                        @foreach ($students as $student)
-                            @php
-                                $turnIn = $turn_in_files
-                                    ->where('user_id', $student->user->id)
-                                    ->where('assignment_id', $assignment->id)
-                                    ->first();
-                                $hasTurnedIn = $turnIn && $turnIn->turned_in;
-                            @endphp {
-                                id: {{ $student->enrollee_id }},
-                                fname: '{{ $student->user->fname }}',
-                                lname: '{{ $student->user->lname }}',
-                                batch_id: {{ $student->batch_id }},
-                                user_id: {{ $student->user_id }},
-                                grade: {{ $student->grade ? $student->grade : 0 }},
-                                turned_in: {{ $turnIn && $turnIn->turned_in != 0 ? 'true' : 'false' }},
-                                hasFile: {{ $hasTurnedIn ? 'true' : 'false' }},
-                                files: [
-                                    @foreach ($turn_in_files as $files)
-                                        @if ($files->user_id == $student->user->id)
-                                            {!! json_encode($files) !!},
-                                        @endif
-                                    @endforeach
-                                ]
-                            },
-                        @endforeach
-                    ],
+                    students: @json($students),
                     init() {
-                        console.log(this.students[0].files);
+                        console.log(this.students);
+                        this.students = this.students.map(student => {
+                            if (!student.grades || student.grades.length === 0) {
+                                student.grades = [{
+                                    grade: 0
+                                }];
+                            }
+                            if (!student.turn_ins || student.turn_ins.length === 0) {
+                                student.turn_ins = [{
+                                    turned_in: 0
+                                }];
+                            }
+                            return student;
+                        });
                         this.filteredRecords = this.students; // Initialize with all records
                     },
                     filterRecords() {
@@ -715,8 +723,16 @@
                         if (this.sort_by) {
                             sortedRecords.sort((a, b) => {
                                 let modifier = this.sort_direction === 'asc' ? 1 : -1;
-                                if (a[this.sort_by] < b[this.sort_by]) return -1 * modifier;
-                                if (a[this.sort_by] > b[this.sort_by]) return 1 * modifier;
+                                if (this.sort_by === 'turned_in') {
+                                    if (a.turn_ins[0][this.sort_by] < b.turn_ins[0][this.sort_by]) return -1 * modifier;
+                                    if (a.turn_ins[0][this.sort_by] > b.turn_ins[0][this.sort_by]) return 1 * modifier;
+                                } else if (this.sort_by === 'grade') {
+                                    if (a.grades[0][this.sort_by] < b.grades[0][this.sort_by]) return -1 * modifier;
+                                    if (a.grades[0][this.sort_by] > b.grades[0][this.sort_by]) return 1 * modifier;
+                                } else {
+                                    if (a.user[this.sort_by] < b.user[this.sort_by]) return -1 * modifier;
+                                    if (a.user[this.sort_by] > b.user[this.sort_by]) return 1 * modifier;
+                                }
                                 return 0;
                             });
 
@@ -728,13 +744,14 @@
                     },
                     grade_changed(enrollee_id) {
                         let student = this.students.find(s => s.id === enrollee_id);
-                        let grade = student.grade;
+                        console.log(student);
+                        let grade = student.grades[0].grade;
                         let desc = '';
                         let color = '';
 
                         if (grade > this.maxPoint) {
                             alert('You cannot rate more than maximum point!')
-                            student.grade = this.maxPoint
+                            // student.grades[0].grade = this.maxPoint
                         } else {
 
                             fetch('{{ route('update_grade') }}', {
@@ -759,22 +776,72 @@
                                     //     desc = 'Graded';
                                     //     color = 'sky';
                                     // }
-                                    // student.grade_status =
+                                    // student.grades.grade_status =
                                     //     `<span class="bg-${color}-600 rounded-full p-1 px-2 text-xs">${desc}</span>`;
                                 })
                                 .catch(error => console.error('Error:', error));
                         }
                     },
                     getGradeStatus(student) {
-                        if (student.grade == 0 || student.grade === null) {
+                        if (student.grades.grade == 0 || student.grades.grade === null) {
                             return '<span class="bg-yellow-600 rounded-full p-1 px-2 text-xs">Not graded</span>';
-                        } else if (student.grade > 0) {
+                        } else if (student.grades.grade > 0) {
                             return '<span class="bg-sky-600 rounded-full p-1 px-2 text-xs">Graded</span>';
                         }
                         return '';
                     }
                 }
             }
+
+            var firebaseConfig = {
+                apiKey: "AIzaSyBi4oNVlyHAk6hdk42V7XugS_eR8_ianVw",
+                authDomain: "lsi-app-541ad.firebaseapp.com",
+                projectId: "lsi-app-541ad",
+                storageBucket: "lsi-app-541ad.appspot.com",
+                messagingSenderId: "740784195857",
+                appId: "1:740784195857:web:01c322ecbcf6cc18bda4b0"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const messaging = firebase.messaging();
+
+            function startFCM() {
+                messaging
+                    .requestPermission()
+                    .then(function() {
+                        return messaging.getToken()
+                    })
+                    .then(function(response) {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                        $.ajax({
+                            url: '{{ route('store.token') }}',
+                            type: 'POST',
+                            data: {
+                                token: response
+                            },
+                            dataType: 'JSON',
+                            success: function(response) {
+                                alert('Token stored.');
+                            },
+                            error: function(error) {
+                                alert(error);
+                            },
+                        });
+                    }).catch(function(error) {
+                        alert(error);
+                    });
+            }
+            messaging.onMessage(function(payload) {
+                const title = payload.notification.title;
+                const options = {
+                    body: payload.notification.body,
+                    icon: payload.notification.icon,
+                };
+                new Notification(title, options);
+            });
         </script>
     @endsection
 </x-app-layout>

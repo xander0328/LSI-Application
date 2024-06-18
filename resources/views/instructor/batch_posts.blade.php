@@ -196,7 +196,7 @@
                             {{-- <label for="name"
                                 class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Attach
                                 File/s</label> --}}
-                            <input
+                            <input id="file"
                                 class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
                                 type="file" name="file[]" accept=".jpg, .png, .xlsx, .docx, .txt" multiple>
                         </div>
@@ -522,26 +522,62 @@
 
             }
 
-            // $('#delete_lesson_form').submit(function(event) {
-            //     event.preventDefault();
-            //     var form = $('#delete_lesson_form');
-            //     var url = form.attr('action');
-            //     console.log(url);
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+            const diploma = document.querySelector('#file');
+            var diploma_pond = FilePond.create(diploma, {
+                labelIdle: `Drag & Drop files or <span class="filepond--label-action">Browse</span>`,
+                allowReorder: true,
+                allowImagePreview: true,
+                @if ($temp_files)
+                    files: [
+                        @foreach ($temp_files as $file)
+                            {
+                                source: {{ $file->id }},
+                                options: {
+                                    type: 'local',
+                                },
+                            },
+                        @endforeach
+                    ],
+                @endif
+                server: {
+                    process: {
+                        url: '{{ route('upload_temp_post_files') }}',
+                        ondata: (formData) => {
+                            formData.append('batch_id', '{{ $batch->id }}');
+                            return formData;
+                        },
+                    },
+                    revert: {
+                        url: '{{ route('revert_post_files') }}',
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                    },
+                    load: '/load_post_files/{{ encrypt($batch->id) }}/',
+                    remove: (source, load, error) => {
+                        fetch(`/delete_post_files/{{ encrypt($batch->id) }}/${source}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        }).then(response => {
+                            if (response.ok) {
+                                load();
+                            } else {
+                                error('Could not delete file');
+                            }
+                        }).catch(() => {
+                            error('Could not delete file');
+                        });
+                    },
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                },
 
-            //     $.ajax({
-            //         url: url,
-            //         type: 'DELETE',
-            //         headers: {
-            //             'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //         },
-            //         success: function(response) {
-            //             console.log(response);
-            //         },
-            //         error: function(xhr, status, error) {
-            //             console.error(xhr.responseText);
-            //         }
-            //     });
-            // });
+            });
         </script>
     @endsection
 </x-app-layout>

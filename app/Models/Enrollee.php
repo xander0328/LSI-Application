@@ -40,4 +40,8 @@ class Enrollee extends Model
     {
         return $this->hasMany(StudentGrade::class);
     }
+
+    public function turn_ins() {
+        return $this->hasMany(TurnIn::class);
+    }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class TurnIn extends Model
 {
     protected $fillable = [
-        'user_id', 'assignment_id', 'turned_in', 'turned_in_date'
+        'enrollee_id', 'assignment_id', 'turned_in', 'turned_in_date'
     ];
     
     public function assignment()
@@ -19,5 +19,13 @@ class TurnIn extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function enrollee(){
+        return $this->belongsTo(Enrollee::class);
+    }
+
+    public function turn_in_files(){
+        return $this->hasMany(TurnInFile::class);
     }
 }
