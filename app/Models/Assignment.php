@@ -16,7 +16,6 @@ class Assignment extends Model
         'due_date',
         'due_hour',
         'closing',
-        'hello'
     ];
 
     protected $casts = [
