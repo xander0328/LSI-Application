@@ -24,6 +24,8 @@ use App\Models\AssignmentFile;
 use App\Models\TurnIn;
 use App\Models\TurnInFile;
 use App\Models\StudentGrade;
+use App\Models\StudentAttendance;
+use App\Models\Attendance;
 use PDF;
 use App\Http\Controllers\NotificationSendController;
 
@@ -45,6 +47,7 @@ class StudentController extends Controller
             if($posts){
                 $instructor = $instructor->merge($batch->instructor);
                 foreach ($posts as $post) {
+                    $post->formatted_created_at = Carbon::parse($post->created_at)->timezone('Asia/Manila')->format('Y-m-d H:i:s');
                     $files = $files->merge($post->files);
                 }
             }
@@ -78,6 +81,25 @@ class StudentController extends Controller
         } else {
             return redirect()->route('home');
         }
+    }
+
+    public function enrolled_course_attendance(){
+        $user = auth()->user();
+        $user_id = $user->id;
+        $enrollee = Enrollee::where('user_id', $user_id)->whereNull('completed_at')->first();
+        $attendance_records = Attendance::where('batch_id', $enrollee->batch_id)->get();
+        $student_attendance = StudentAttendance::whereHas('enrollee', function ($query) use ($enrollee) {
+            $query->where('id', $enrollee->id);
+        })->get();
+
+        $attendance_records->map( function ($record) use ($student_attendance) {
+            $record->student_attendance = $student_attendance->where('attendance_id', $record->id)->values();
+            return $record;
+        });
+
+        // dd($attendance_records);    
+        return view('student.enrolled_course_attendance', compact('attendance_records', 'enrollee'));
+        
     }
 
     // Enrollment

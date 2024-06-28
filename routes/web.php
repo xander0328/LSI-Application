@@ -92,6 +92,11 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::delete('/delete_file/{batch_id}/{assignment_id}/{id}', [StudentController::class, 'delete_file'])->name('delete_file');
     Route::delete('/revert', [StudentController::class, 'revert'])->name('revert');
 
+    // Attendance
+    Route::get('/enrolled_course_attendance', [StudentController::class, 'enrolled_course_attendance'])->name('enrolled_course_attendance');
+
+
+
     //Message
     Route::get('/message/{id}', [StudentController::class, 'message'])->name('message');
     Route::get('/get_messages/{id}', [StudentController::class, 'get_messages'])->name('get_messages');
@@ -115,8 +120,9 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::post('/post', [InstructorController::class, 'post'])->name('post');
     Route::post('/upload_temp_post_files', [InstructorController::class, 'upload_temp_post_files'])->name('upload_temp_post_files');
     Route::delete('/revert_post_files', [InstructorController::class, 'revert_post_files'])->name('revert_post_files');
-    Route::get('/load_post_files/{batch_id}/{file_id}', [InstructorController::class, 'load_post_files'])->name('load_post_files');
+    Route::get('/load_post_files/{action}/{batch_id}/{file_id}', [InstructorController::class, 'load_post_files'])->name('load_post_files');
     Route::delete('/delete_post_files/{batch_id}/{id}', [InstructorController::class, 'delete_post_files'])->name('delete_post_files');
+    Route::post('/delete_post', [InstructorController::class, 'delete_post'])->name('delete_post');
 
     
     // Assignment

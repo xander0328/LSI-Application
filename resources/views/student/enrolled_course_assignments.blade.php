@@ -11,19 +11,8 @@
 
     </x-slot>
     <div id="course_list" class="mx-8 mt-2 flex flex-col-reverse pt-44 text-white">
-        {{-- {{ $post }} --}}
         @foreach ($assignments as $post)
             <div class="mb-2 rounded-md bg-gray-800 p-px">
-                {{-- <div class="align-center mb-px flex px-2 text-xs">
-                    <svg class="mr-1 h-3 w-3 self-center text-gray-800 dark:text-white" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                    </svg>
-                    <div>
-                        {{ \Carbon\Carbon::parse($post->created_at)->format('Y-m-d h:m') }}
-                    </div>
-                </div> --}}
                 <div class="my-2 w-full rounded-md bg-gray-800 px-3 py-px">
                     <a href="{{ route('view_assignment', $post->id) }}" class="flex items-center justify-between">
                         <div class="flex items-center justify-start gap-4">

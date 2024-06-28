@@ -20,7 +20,7 @@
                 </svg>
                 Assignments</button>
         </a>
-        <a href="{{ route('enrolled_course') }}">
+        <a href="{{ route('enrolled_course_attendance') }}">
             <button
                 class="{{ $selected == 'attendance' ? 'bg-sky-700' : '' }} ms-2 flex items-center justify-center rounded-sm px-3 py-1.5 text-sm text-white hover:bg-gray-700">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mr-1 h-5 w-5">

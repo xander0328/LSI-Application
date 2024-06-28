@@ -62,7 +62,7 @@ class NotificationSendController extends Controller
         // Close connection
         curl_close($ch);
         // FCM response
-        dd($result);
+        // dd($result);
     }
 
     public static function sendSmsNotification($receiver, $message){

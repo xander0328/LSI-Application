@@ -82,10 +82,14 @@
 
         @yield('style')
     </style>
+    @yield('style-links')
 
     {{-- Flatpickr --}}
     <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
     {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> --}}
+
+    {{-- Alerts --}}
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 </head>
 
 <body class="font-sans antialiased">
@@ -287,7 +291,7 @@
             {{-- <div class="mt-14 rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700"> --}}
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="fixed left-60 right-0 top-14 z-10">
+                <header class="fixed left-60 shadow-lg right-0 top-14 z-10">
                     <div class="mx-auto max-w-7xl border-gray-600 bg-gray-800 px-4 py-6 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
@@ -304,8 +308,6 @@
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    /*
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> */
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
@@ -313,6 +315,10 @@
     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    {{-- Alerts --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
     <script type="text/javascript">
         if ('serviceWorker' in navigator) {

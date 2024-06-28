@@ -1,4 +1,7 @@
 <x-app-layout>
+    @section('style')
+        [x-cloak] { display: none !important; }
+    @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
             <div class="text-2xl font-semibold text-white">
@@ -12,8 +15,7 @@
     </x-slot>
     <div x-data="studentData()" id="course_list" class="mx-8 mt-2 pb-4 pt-44 text-white">
         <div class="mb-2 flex">
-            <a @click="createNew()" data-modal-target="create-attendance-modal"
-                data-modal-toggle="create-attendance-modal"
+            <a @click="createNew()"
                 class="block cursor-pointer rounded-md bg-sky-700 px-4 py-2 text-sm hover:bg-sky-800 hover:text-white">Create
                 New</a>
         </div>
@@ -31,11 +33,10 @@
         </div>
         <div x-show="filteredRecords.length > 0">
             <template x-for="record in filteredRecords" :key="record.id">
-                <div class="mb-2 rounded-md bg-gray-800 p-px">
+                <div class="mb-2 rounded-md bg-gray-800 hover:bg-gray-800/75 p-px">
 
-                    <div class="my-2 w-full rounded-md bg-gray-800 px-3 py-px">
-                        <a @click="getRecordData(record)" data-modal-target="create-attendance-modal"
-                            class="cursor-pointer" data-modal-toggle="create-attendance-modal"
+                    <div class="my-2 w-full rounded-md px-3 py-px">
+                        <a @click="getRecordData(record)" class="cursor-pointer"
                             class="flex items-center justify-between">
                             <div class="flex items-center justify-start gap-4">
                                 <div>
@@ -79,9 +80,12 @@
         </div>
 
         {{-- Create Modal --}}
-        <div id="create-attendance-modal" tabindex="-1" aria-hidden="true"
-            class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
-            <div class="relative max-h-full w-full max-w-2xl p-4">
+        <div x-cloak x-show="openModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1" aria-hidden="true"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            <div @click.away="openModal = false" class="relative max-h-full w-full max-w-2xl p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
                     <!-- Modal header -->
@@ -96,7 +100,7 @@
                         </div>
                         <button type="button"
                             class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-toggle="create-attendance-modal">
+                            @click="triggerModal()">
                             <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                 viewBox="0 0 14 14">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -184,8 +188,7 @@
                                         </tr>
                                     </template>
                                     <template x-for="students in sortedStudents" :key="students.id">
-                                        <tr
-                                            class="border-b bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-600">
+                                        <tr class="  border-gray-700 bg-gray-800 hover:bg-gray-800/50">
                                             <td @click="students.isChecked = !students.isChecked" class="w-4 p-4">
                                                 <div class="flex items-center">
                                                     <input x-model="students.isChecked" id="checkbox-table-search-1"
@@ -271,6 +274,7 @@
 
             function studentData() {
                 return {
+                    openModal: false,
                     initialStudents: [
                         @foreach ($students as $student)
                             {
@@ -315,7 +319,8 @@
                         this.originalStudents = this.students;
                         this.sortStudents();
 
-                        this.filteredRecords = this.attendanceData;
+                        // this.filteredRecords = this.attendanceData;
+                        this.filterRecords();
                     },
                     get sortedStudents() {
                         return this.students;
@@ -340,8 +345,6 @@
                         // console.log(this.students);
                     },
                     searchStudent(event) {
-                        console.log(this.originalStudents);
-                        console.log(this.students);
                         const searchTerm = event.target.value.toLowerCase();
                         if (searchTerm) {
                             this.students = this.originalStudents.filter(student => {
@@ -389,19 +392,21 @@
                         this.selectedID = '';
                         this.students = []
                         this.students = this.initialStudents
+                        this.triggerModal()
                     },
-
 
                     filterMode: '',
                     attendanceData: [
-                        @foreach ($attendances as $attendance)
-                            {
-                                id: {{ $attendance->id }},
-                                batch_id: {{ $attendance->batch_id }},
-                                date: '{{ $attendance->date }}',
-                                mode: '{{ $attendance->mode }}',
-                            },
-                        @endforeach
+                        @if ($attendances)
+                            @foreach ($attendances as $attendance)
+                                {
+                                    id: {{ $attendance->id }},
+                                    batch_id: {{ $attendance->batch_id }},
+                                    date: '{{ $attendance->date }}',
+                                    mode: '{{ $attendance->mode }}',
+                                },
+                            @endforeach
+                        @endif
                     ],
                     filteredRecords: [], // Store the filtered records
                     selectedDate: '',
@@ -435,12 +440,17 @@
 
                                 // Update the studentData().students with the updated students array
                                 this.students = dataArray;
-                                this.init();
+                                // this.init();
                             })
                             .catch(error => {
                                 console.error('Error fetching attendance data:', error);
                             });
+                        this.triggerModal();
                     },
+                    triggerModal() {
+                        this.openModal = !this.openModal;
+                        // console.log(this.openModal);
+                    }
                 }
             }
         </script>

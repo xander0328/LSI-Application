@@ -16,6 +16,7 @@ use App\Models\AssignmentFile;
 use App\Models\TempAssignment;
 use App\Models\TempFile;
 use App\Models\TurnInFile;
+use App\Models\TurnIn;
 use App\Models\Lesson;
 use App\Models\StudentGrade;
 use App\Models\StudentAttendance;
@@ -41,6 +42,7 @@ class InstructorController extends Controller
         $files = collect(); 
 
         foreach ($posts as $post) {
+            $post->formatted_created_at = Carbon::parse($post->created_at)->timezone('Asia/Manila')->format('Y-m-d H:i:s');
             $files = $files->merge($post->files);
         }
 
@@ -82,44 +84,35 @@ class InstructorController extends Controller
         $assignment = Assignment::where('id', $assignment_id)->first();
         $batch = Batch::where('id', $assignment->batch_id)->first();
 
-        // $students = Enrollee::leftJoin('users', 'enrollees.user_id', '=', 'users.id')
-        // ->leftJoin('turn_ins', function($join) use ($assignment) {
-        //     $join->on('enrollees.user_id', '=', 'turn_ins.user_id')
-        //         ->where('turn_ins.assignment_id', '=', $assignment->id);
-        // })
-        // ->leftJoin('student_grades', function($join) use ($assignment) {
-        //     $join->on('enrollees.id', '=', 'student_grades.enrollee_id')
-        //         ->where('student_grades.assignment_id', '=', $assignment->id);
-        // })
-        // ->where('enrollees.batch_id', $assignment->batch_id)
-        // ->whereNull('enrollees.completed_at')
-        // // ->select('enrollees.id as enrollee_id','enrollees.*', 'student_grades.*', 'users.*', DB::raw('IFNULL(turn_ins.id, 0) AS turn_in_id'), DB::raw('IFNULL(student_grades.id, 0) AS student_grades_id'))
-        // ->select('enrollees.id as enrollee_id','enrollees.*', 'student_grades.grade as grade', 'users.*', DB::raw('IFNULL(turn_ins.id, 0) AS turn_in_id'), DB::raw('IFNULL(student_grades.id, 0) AS student_grades_id'))
-        // ->get();
+        $students = Enrollee::where('batch_id', '=', $batch->id)->get();
+        
+        $turn_ins = TurnIn::whereIn('enrollee_id', $students->pluck('id')->filter())
+        ->where('assignment_id', $assignment_id)->get();
+        $turn_in_files = TurnInFile::whereIn('turn_in_id', $turn_ins->pluck('id')->filter())->get();
+        
+        $student_grades = StudentGrade::whereIn('enrollee_id', $students->pluck('id')->filter())
+        ->where('assignment_id', $assignment_id)->get();
 
-        // $turn_in_files = TurnInFile::join('turn_ins', 'turn_in_files.turn_in_id', '=', 'turn_ins.id')
-        // ->where('turn_ins.assignment_id', $assignment->id)
-        // ->select('turn_ins.*', 'turn_in_files.*', 'turn_in_files.id as turn_in_files')
-        // ->get();
+        $turn_ins->map(function ($turn_in) use ($turn_in_files) {
+            $turn_in->turn_in_files = $turn_in_files->where('turn_in_id', $turn_in->id)->values();
+            return $turn_in;
+        });
 
-        $students = Enrollee::where('batch_id', $batch->id)->get();
-        $turn_in = collect();
+        $students->map(function ($student) use ($turn_ins, $student_grades) {
+            $student->turn_ins = $turn_ins->where('enrollee_id', $student->id)->values();
+            $student->grades = $student_grades->where('enrollee_id', $student->id)->values();
+            return $student;
+        });
+
+        $turn_ins = TurnIn::where('assignment_id', $assignment_id)->get();
         $user = collect();
         $files = collect();
         $grade = collect();
 
         foreach($students as $student){
-            $turn_in = $turn_in->merge($student->turn_ins);
-            $user = $user->merge($student->user);
-            $grade = $grade->merge($student->grades);
-            
-            foreach ($student->turn_ins as $turn_ins) {
-                if ($turn_ins->turn_in_files) {
-                    $files = $files->merge($turn_ins->turn_in_files);
-                }
-            }
+            $user = $user->merge([$student->user]);
         }
-        // dd($students);
+        // dd($students->toArray());
 
         return view('instructor.list_turn_ins', compact('assignment', 'batch', 'students'));
     }
@@ -128,17 +121,35 @@ class InstructorController extends Controller
     public function post(Request $request){
 
         $message = $request->input('message');
-        $post = new Post();
-        $post->batch_id = $request->input('batch_id');
-        $post->description = $message;
-        $post->save();
+        $post_id = $request->post_id;
+        $Messagecontent = strip_tags(html_entity_decode($message));
+
+        // dd($Messagecontent);
+        if($Messagecontent == ''){
+            $message = null;
+        }
+
+        if(!$post_id){
+            $post = new Post();
+            $post->batch_id = $request->input('batch_id');
+            $post->description = $message;
+            $post->save();
+            $statusMessage = ['status' => 'success', 'message' => 'The post has been uploaded successfully.', 'title' => 'Post Upload'];
+        }else{
+            $post = Post::find($post_id);
+            $post->description = $message;
+            $post->touch();
+            $statusMessage = ['status' => 'success', 'message' => 'The post has been updated successfully.', 'title' => 'Post Update'];
+
+        }
 
         $files = $request->file;
-
+        $uploadedFileIds = array();
         if($files){
-                foreach ($files as $file) {
-                    $temp_file = TempFile::where('folder', $file)->first();
-                    
+            foreach ($files as $file) {
+                $temp_file = TempFile::where('folder', $file)->first();
+                
+                if($temp_file){
                     Storage::copy(
                         'uploads/'. $request->batch_id .'/'.'temp/' . $file . '/' . $temp_file->filename,
                         'uploads/' . $request->batch_id . '/' . $post->id . '/' . $temp_file->filename
@@ -150,6 +161,7 @@ class InstructorController extends Controller
                     $fileEntry->filename = $temp_file->filename;
                     $fileEntry->file_type = $temp_file->file_type;
                     $fileEntry->save();
+                    array_push($uploadedFileIds, $fileEntry->id);
 
                     $file_path = 'uploads/'. $request->batch_id .'/'.'temp/' . $file . '/' . $temp_file->filename;
                     $directory = dirname($file_path);
@@ -157,17 +169,28 @@ class InstructorController extends Controller
                     Storage::deleteDirectory($directory);
                     
                     $temp_file->delete();
+                }else{
+                    // $file = Files::where('folder', $file)->first();
+                    array_push($uploadedFileIds, $file);
                 }
             }
             
+            
+            $currentFileIds = Files::where('post_id', $post->id)->pluck('id')->toArray();
+            $fileIdsToDelete = array_diff($currentFileIds, $uploadedFileIds);
 
-        // Redirect back with a success message
-        return redirect()->back()->with('success', 'Form submitted successfully.');
+            if (!empty($fileIdsToDelete)) {
+                Files::whereIn('id', $fileIdsToDelete)->delete();
+            }
+        }
+
+        return back()->with($statusMessage);
+
     }
 
     public function upload_temp_post_files(Request $request){
+        // return $request->file('filepond');
         $attachments = $request->file('file');
-
         foreach ($attachments as $attachment) {
             if($request->has('file')){
                 $fileName = time(). '_' . auth()->user()->id . '_' . str_replace(' ', '_', $attachment->getClientOriginalName());
@@ -186,6 +209,7 @@ class InstructorController extends Controller
                 return $folder;
             }
         }
+        
     }
 
     public function revert_post_files(Request $request){
@@ -212,17 +236,32 @@ class InstructorController extends Controller
         return response()->json(['error' => 'File not found'], 404);
     }
 
-    public function load_post_files($batch_id, $source) {
-        $file = TempFile::where('id', $source)->first();
+    public function load_post_files($action, $batch_id, $source) {
         $batch = Batch::where('id', decrypt($batch_id))->first();
-        if($file){
-            $path = public_path('storage/uploads/'. $batch->id . '/' . 'temp/' . $file->folder .'/' . $file->filename);
-            $headers = [
-                'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
-            ];
-            return response()->file($path, $headers);
-        }
 
+        if($action == 'create'){
+            $file = TempFile::where('id', $source)->first();
+
+            if($file){
+                $path = public_path('storage/uploads/'. $batch->id . '/' . 'temp/' . $file->folder .'/' . $file->filename);
+                $headers = [
+                    'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
+                ];
+                return response()->file($path, $headers);
+            }
+        }else{
+
+            $file = Files::where('id', $source)->first();
+
+            if($file){
+                $path = public_path('storage/uploads/'. $batch->id . '/' . $file->post_id  .'/' . $file->filename);
+                $headers = [
+                    'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
+                ];
+                return response()->file($path, $headers);
+            }
+        }
+        
         return response()->json('no file');   
         // dd($source);
     }
@@ -247,8 +286,46 @@ class InstructorController extends Controller
             $file->delete();
             return response()->json(['success' => true]);
         }
-    
+        
+        // Removal of uploaded files
+        $file = Files::find($id);  
+
+        if($file){
+            return response()->json(['success temporary remove' => true]);
+        }
+        
+        // if($file){
+        //     $path = 'uploads/'. decrypt($batch_id) . '/' . $file->post_id .'/' . $file->filename;
+            
+        //     if (Storage::exists($path)) {
+        //         Storage::delete($path);
+        //     } else {
+        //         return response()->json(['error' => 'File does not exist'], 404);
+        //     }
+
+        //     $directoryPath = dirname($path);
+
+        //     if (count(Storage::allFiles($directoryPath)) === 0) {
+        //         Storage::deleteDirectory($directoryPath);
+        //     }
+        //     $file->delete();
+        //     return response()->json(['success' => true]);
+        // }
+        
         return response()->json(['error' => 'File not found'], 404);
+    }
+
+    public function delete_post(Request $request){
+        $post_id = $request->post_id;
+        $post = Post::find($post_id);
+
+        if($post){
+            $post->delete();
+            return back()->with(['status' => 'success', 'message' => 'The post has been deleted successfully.', 'title' => 'Post Deletion']);
+        }else{
+            return back()->with(['status' => 'error', 'message' => 'There was an error deleting the post.', 'title' => 'Post Deletion Error']);
+        }
+
     }
 
     // Assignment File Upload (FilePond)

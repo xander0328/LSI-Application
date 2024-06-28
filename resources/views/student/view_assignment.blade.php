@@ -1,4 +1,7 @@
 <x-app-layout>
+    @section('style')
+        [x-cloak] { display: none !important; }
+    @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
             <div class="text-2xl font-semibold text-white">
@@ -12,7 +15,7 @@
         @endif
 
     </x-slot>
-    <div id="course_list" class="mx-8 pb-4 pt-44 text-white">
+    <div x-data="assignmentComponent()" id="course_list" class="mx-8 pb-4 pt-44 text-white">
         {{-- <div>
             <a href="{{ route('enrolled_course_assignment') }}">
                 <button class="flex items-center justify-center rounded-full p-2 text-white hover:bg-gray-700">
@@ -26,18 +29,44 @@
         </div> --}}
 
         <div class="my-4">
-            <div id="status" class="flex items-center justify-between rounded-sm p-2 text-white">
-                <div id="turn_in_status" class="text-md flex items-center">
-
+            <div x-cloak id="status" class="flex items-center justify-between rounded-sm p-2 text-white"
+                :class="statusColor">
+                {{-- <div id="turn_in_status" class="text-md flex items-center" x-html="status"></div> --}}
+                <div x-show="status === 'completed'"
+                    class="relative mr-2 inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <title>book-check-outline</title>
+                        <path fill="#0369a1"
+                            d="M16.75 22.16L14 19.16L15.16 18L16.75 19.59L20.34 16L21.5 17.41L16.75 22.16M18 2C19.1 2 20 2.9 20 4V13.34C19.37 13.12 18.7 13 18 13V4H13V12L10.5 9.75L8 12V4H6V20H12.08C12.2 20.72 12.45 21.39 12.8 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2H18Z" />
+                    </svg>
                 </div>
+                <div x-show="status === 'pending' && assignment === 'closed'"
+                    class="relative mr-2 inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <title>book-cancel-outline</title>
+                        <path fill="#b91c1c"
+                            d="M12.18 20C12.36 20.72 12.65 21.39 13.04 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H18C19.11 2 20 2.9 20 4V12.18C19.5 12.07 19 12 18.5 12C18.33 12 18.17 12 18 12.03V4H13V12L10.5 9.75L8 12V4H6V20H12.18M23 18.5C23 21 21 23 18.5 23S14 21 14 18.5 16 14 18.5 14 23 16 23 18.5M20 21.08L15.92 17C15.65 17.42 15.5 17.94 15.5 18.5C15.5 20.16 16.84 21.5 18.5 21.5C19.06 21.5 19.58 21.35 20 21.08M21.5 18.5C21.5 16.84 20.16 15.5 18.5 15.5C17.94 15.5 17.42 15.65 17 15.92L21.08 20C21.35 19.58 21.5 19.06 21.5 18.5Z" />
+                    </svg>
+                </div>
+                <div x-show="status === 'pending'"
+                    class="relative mr-2 inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-white p-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <title>book-clock-outline</title>
+                        <path fill="#a16207"
+                            d="M20 11.26V4C20 2.9 19.11 2 18 2H6C4.89 2 4 2.9 4 4V20C4 21.11 4.89 22 6 22H11.11C12.37 23.24 14.09 24 16 24C19.87 24 23 20.87 23 17C23 14.62 21.81 12.53 20 11.26M18 4V10.29C17.37 10.11 16.7 10 16 10C14.93 10 13.91 10.25 13 10.68V4H18M6 4H8V12L10.5 9.75L12.1 11.19C10.23 12.45 9 14.58 9 17C9 18.08 9.25 19.09 9.68 20H6V4M16 22C13.24 22 11 19.76 11 17S13.24 12 16 12 21 14.24 21 17 18.76 22 16 22M16.5 17.25L19.36 18.94L18.61 20.16L15 18V13H16.5V17.25Z" />
+                    </svg>
+                </div>
+                <button id="turn_in_button" :class="buttonColor" :disabled="isButtonDisabled"
+                    @click="assignmentAction()">
+                    <span x-text="buttonText"></span>
+                </button>
+                <div id="assignment_info" x-show="info !== ''" x-text="info"></div>
                 <div>
-                    <button onclick="assignment_action()" id="turn_in_button" class="p-2 px-4 text-sm hover:bg-gray-700"
-                        disabled>Turn in</button>
+                    <button @click="assignmentAction()" id="turn_in_button" class="p-2 px-4 text-sm hover:bg-gray-700"
+                        :class="buttonColor" :disabled="isButtonDisabled" x-text="buttonText"></button>
                 </div>
             </div>
-            <div class="flex justify-end italic" id="assignment_info">
-
-            </div>
+            <div class="flex justify-end italic" id="assignment_info" x-text="info"></div>
             <div>
                 <div class="text-2xl font-semibold text-white"> {{ $assignment->title }}
                 </div>
@@ -112,79 +141,79 @@
         <div>
             <div>Your work</div>
             <div id="works_container">
-
+                <template x-for="file in submittedFiles" :key="file.id">
+                    <div class="mb-1.5" x-data="{ path: `{{ asset('storage/assignments/' . $batch->id . '/' . $assignment->id . '/' . $enrollee->id) }}/${file.folder}/${file.filename}`, imageShow: false }">
+                        <x-file-type-checker-alpine></x-file-type-checker-alpine>
+                    </div>
+                </template>
             </div>
 
             <div>
-                <button type="button" id="attach_button" data-modal-target="temp-upload-modal"
-                    data-modal-toggle="temp-upload-modal"
-                    class="inline-flex items-center rounded-lg p-2 text-center text-xs font-medium text-white hover:bg-blue-700 hover:bg-blue-800 focus:outline-none">
+                <button type="button" id="attach_button" @click="openModal = true"
+                    class="inline-flex items-center rounded-lg p-2 text-center text-xs font-medium text-white hover:bg-blue-700  focus:outline-none">
                     <svg class="me-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <title>attachment</title>
                         <path fill="currentColor"
                             d="M7.5,18A5.5,5.5 0 0,1 2,12.5A5.5,5.5 0 0,1 7.5,7H18A4,4 0 0,1 22,11A4,4 0 0,1 18,15H9.5A2.5,2.5 0 0,1 7,12.5A2.5,2.5 0 0,1 9.5,10H17V11.5H9.5A1,1 0 0,0 8.5,12.5A1,1 0 0,0 9.5,13.5H18A2.5,2.5 0 0,0 20.5,11A2.5,2.5 0 0,0 18,8.5H7.5A4,4 0 0,0 3.5,12.5A4,4 0 0,0 7.5,16.5H17V18H7.5Z" />
                     </svg>
                     Attach
                 </button>
             </div>
+        </div>
 
-            {{-- Turn In Attachment Modal --}}
-            <div data-modal-backdrop="static" id="temp-upload-modal" tabindex="-1" aria-hidden="true"
-                class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
-                <div class="relative max-h-full w-full max-w-2xl p-4">
-                    <!-- Modal content -->
-                    <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
-                        <!-- Modal header -->
-                        <div
-                            class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-                            <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                                Upload files
-                            </h3>
-                            <button type="button"
-                                class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-                                data-modal-hide="temp-upload-modal">
-                                <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                </svg>
-                                <span class="sr-only">Close modal</span>
+
+        {{-- Turn In Attachment Modal --}}
+        <div x-cloak x-show="openModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" id="temp-upload-modal" tabindex="-1" aria-hidden="true"
+            class="absolute inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            <div class="relative max-h-full w-full max-w-2xl p-4">
+                <!-- Modal content -->
+                <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                            Upload files
+                        </h3>
+                        {{-- <button type="button" 
+                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                            <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button> --}}
+                    </div>
+                    <!-- Modal body -->
+                    <div class="space-y-8 p-4 md:p-5">
+                        <form id="turn_in_form" action="" method="post">
+                            @csrf
+                            <input type="hidden" name="user_id" value="{{ $enrollee->id }}">
+                            <input type="hidden" name="batch_id" value="{{ $batch->id }}">
+
+                            <input type="file" name="turn_in_attachments[]" id="turn_in_attachments">
+                        </form>
+                        <div>
+                            <button @click="openModal = false" type="button"
+                                class="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none">
+                                Done
                             </button>
-                        </div>
-                        <!-- Modal body -->
-                        <div class="space-y-8 p-4 md:p-5">
-                            <form id="turn_in_form" action="" method="post">
-                                @csrf
-                                <input type="hidden" name="user_id" value="{{ $enrollee->id }}">
-                                <input type="hidden" name="batch_id" value="{{ $batch->id }}">
-
-                                <input type="file" name="turn_in_attachments[]" id="turn_in_attachments">
-                            </form>
-                            <div>
-                                <button data-modal-hide="default-modal" type="button"
-                                    class="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none">
-                                    Done
-                                </button>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {{-- <form name="your_work" id="your_work" action="{{ route('turn_in_assignment') }}" method="post"
+        </div>
+        {{-- <form name="your_work" id="your_work" action="{{ route('turn_in_assignment') }}" method="post"
                 enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="user_id" value="{{ $enrollee->id }}">
                 <input type="hidden" name="batch_id" value="{{ $batch->id }}">
                 <div><input type="file" name="turn_in_attachment[]" id=""></div>
             </form> --}}
-        </div>
     </div>
     @section('script')
-        <script>
-            // import * as FilePond from 'filepond';
-            // import 'filepond/dist/filepond.min.css';
-            // import FilePondPluginGetFile from 'filepond-plugin-get-file';
-
+        {{-- <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const posts = document.querySelectorAll('.post');
 
@@ -586,6 +615,162 @@
                 }
 
             }, 100)
+        </script> --}}
+        <script>
+            function assignmentComponent() {
+                return {
+                    openModal: false,
+                    status: '',
+                    info: '',
+                    statusColor: '',
+                    buttonText: '',
+                    buttonColor: '',
+                    isButtonDisabled: false,
+                    filesHtml: '',
+                    isPending: false,
+                    pond: '',
+                    pondFiles: '',
+                    submittedFiles: [],
+
+                    init() {
+                        this.getTurnInFiles();
+                        this.turnInStatus();
+                        setInterval(() => this.getTurnInFiles(), 3000);
+                        setInterval(() => this.turnInStatus(), 2000);
+
+                        this.$nextTick(() => {
+                            this.filepondInit();
+                            console.log(this.status);
+                        })
+
+                    },
+
+                    getTurnInFiles() {
+                        fetch("{{ route('get_files', $assignment->id) }}")
+                            .then(response => response.json())
+                            .then(data => {
+                                this.submittedFiles = data;
+                                this.pondFiles = data.map(file => {
+                                    return {
+                                        source: file.id,
+                                        options: {
+                                            type: 'local',
+                                        },
+                                    }
+                                });
+                                console.log(data);
+                            })
+                            .catch(error => console.error('Error fetching files:', error));
+                    },
+
+                    processFiles(data) {
+                        // Process files and return HTML string
+                        // ... (implement file processing logic here)
+                    },
+
+                    turnInStatus() {
+                        fetch('/turn_in_status', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    assignment_id: {{ $assignment->id }}
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                this.updateStatus(data);
+                            })
+                            .catch(error => console.error('Error fetching status:', error));
+                    },
+
+                    updateStatus(data) {
+                        // Update status, info, colors, and button text based on data
+                        // ... (implement status update logic here)
+                    },
+
+                    assignmentAction() {
+                        this.isPending = true;
+                        fetch('/assignment_action', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    batch_id: {{ $enrollee->batch->id }},
+                                    assignment_id: {{ $assignment->id }}
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Handle response
+                            })
+                            .catch(error => console.error('Error:', error))
+                            .finally(() => {
+                                this.isPending = false;
+                            });
+                    },
+
+                    filepondInit() {
+                        const input_element = document.querySelector('#turn_in_attachments');
+                        this.pond = FilePond.create(input_element)
+                        FilePond.setOptions({
+                            allowMultiple: true,
+                            allowReorder: true,
+                            allowImagePreview: true,
+                            files: this.pondFiles,
+                            server: {
+                                process: {
+                                    url: '{{ route('turn_in_files') }}',
+                                    ondata: (formData) => {
+                                        formData.append('assignment_id', '{{ $assignment->id }}');
+                                        formData.append('batch_id', '{{ $enrollee->batch->id }}');
+                                        return formData;
+                                    },
+                                },
+                                load: '/load_files/{{ $enrollee->batch->id }}/{{ $assignment->id }}/',
+                                revert: {
+                                    url: '{{ route('revert') }}',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                    ondata: (formData) => {
+                                        formData.append('assignment_id', '{{ $assignment->id }}');
+                                        formData.append('batch_id', '{{ $enrollee->batch->id }}');
+                                        return formData;
+                                    }
+                                },
+                                remove: (source, load, error) => {
+                                    fetch(`/delete_file/{{ $enrollee->batch->id }}/{{ $assignment->id }}/${source}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            load();
+                                        } else {
+                                            error('Could not delete file');
+                                        }
+                                    }).catch(() => {
+                                        error('Could not delete file');
+                                    });
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            },
+                        });
+                    },
+                    updateFiles() {
+                        // this.submittedFiles =
+                    }
+                }
+            }
         </script>
     @endsection
 </x-app-layout>

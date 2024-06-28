@@ -45,15 +45,29 @@
     </a>
 </template>
 
-<template x-if=" ['jpeg', 'jpg', 'png', 'jfif'].some(ext => file.filename.endsWith(ext)) && imageShow == true">
-    <a :href="path" target="_blank">
-        <img class="" :src="path" :class="{ 'landscape': $el.naturalWidth > $el.naturalHeight }">
-    </a>
+<template x-data="{ 'show_icon': false }"
+    x-if=" ['jpeg', 'jpg', 'png', 'jfif'].some(ext => file.filename.endsWith(ext)) && imageShow == true">
+    <div @mouseenter="show_icon = true" @mouseleave="show_icon = false">
+        <a :href="path" target="_blank">
+            <img class="" :src="path" :class="{ 'landscape': $el.naturalWidth > $el.naturalHeight }">
+        </a>
+        <a :href="path" download x-show="show_icon" x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-90"
+            class="absolute flex top-2 right-2 items-center justify-center w-8 h-8 text-gray-600 hover:text-white bg-white hover:bg-sky-600  rounded-full shadow-md"
+            title="Download">
+            <!-- SVG download icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-inherit" viewBox="0 0 24 24">
+                <title>Download</title>
+                <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
+            </svg>
+        </a>
+    </div>
 </template>
 
 <template x-if=" ['jpeg', 'jpg', 'png', 'jfif'].some(ext => file.filename.endsWith(ext)) && imageShow == false">
-    <a :href="path" target="_blank" download
-        class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+    <a :href="path" target="_blank" class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
         <svg class="mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path fill="currentColor"
                 d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />

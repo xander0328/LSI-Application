@@ -8,10 +8,10 @@
             <div>Batch: {{ $batch->name }}</div>
         </div>
         <x-course-nav :batch="$batch->id" :selected="'assignment'"></x-course-nav>
-        <div>
+        {{-- <div>
             <button onclick="startFCM()" class="btn btn-danger btn-flat">Allow notification
             </button>
-        </div>
+        </div> --}}
 
     </x-slot>
     <div class="mx-8 mt-2 pt-44 text-white">
@@ -108,7 +108,7 @@
                 @endif
             </div>
             <div>
-                <div class="mt-4 text-sm">Instructions</div>
+                <div class="mt-4 text-sm font-bold">Instructions</div>
                 @if ($assignment->description == null)
                     <div class="mb-2 p-px text-sm text-gray-500">None</div>
                 @else
@@ -214,7 +214,7 @@
                                     <div>
                                         <template x-for="file in student.turn_ins[0].turn_in_files"
                                             :key="file.id">
-                                            <div x-data="{ path: `{{ asset('storage/assignments/') }}/${student.batch_id}/${assignment_id}/${student.id}/${file.folder}/${file.filename}` }">
+                                            <div class="mb-2" x-data="{ path: `{{ asset('storage/assignments/') }}/${student.batch_id}/${assignment_id}/${student.id}/${file.folder}/${file.filename}`, 'imageShow':false}">
                                                 <x-file-type-checker-alpine></x-file-type-checker-alpine>
                                             </div>
                                         </template>
