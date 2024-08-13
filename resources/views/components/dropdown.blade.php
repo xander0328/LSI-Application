@@ -15,8 +15,7 @@
     }
 @endphp
 
-<div class="relative" x-data="{ open: false }" @click.outside="open = false" @scroll.window.throttle="open = false"
-    @close.stop="open = false">
+<div class="relative" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
     <div @click="open = ! open">
         {{ $trigger }}
     </div>
@@ -26,7 +25,7 @@
         x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
         class="w-{{ $width }} {{ $alignmentClasses }} absolute z-50 mt-1.5 rounded-md shadow-lg"
         style="display: none;" @click="open = false">
-        <div class="{{ $contentClasses }} rounded-md ring-1 ring-black ring-opacity-5">
+        <div class="w-{{ $width }} {{ $contentClasses }} rounded-md ring-1 ring-black ring-opacity-5">
             {{ $content }}
         </div>
     </div>

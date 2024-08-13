@@ -33,6 +33,10 @@ class Assignment extends Model
         return $this->hasMany(AssignmentFile::class);
     }
 
+    public function lesson(){
+        return $this->belongsTo(Lesson::class);
+    }
+
     public function temp_turn_in(){
         return $this->hasMany(TempTurnIn::class);
     }

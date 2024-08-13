@@ -229,8 +229,9 @@
                     },
                     formatLinks() {
                         $('.description a').addClass(
-                            'bg-gray-700 hover:bg-gray-700/75 hover:underline underline-offset-1 text-white py-1 px-4 rounded-md')
-                        $('.description p').addClass('my-1')
+                            "text-sky-400 hover:underline underline-offset-2"
+                        )
+                        $('.description p').addClass(' break-words')
                     }
                 }
             }

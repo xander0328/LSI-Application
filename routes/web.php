@@ -36,18 +36,23 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::get('/offers', [SuperAdminController::class, 'courses_offers'])->name('courses');
         Route::post('/add_course', [SuperAdminController::class, 'add_course'])->name('add_course');
         Route::get('/edit_course/{id}', [SuperAdminController::class, 'edit_course'])->name('edit_course');
-        Route::delete('/delete_course/{id}', [SuperAdminController::class, 'delete_course'])->name('delete_course');
+        Route::post('/delete_course', [SuperAdminController::class, 'delete_course'])->name('delete_course');
         Route::post('/course_toggle',  [SuperAdminController::class, 'course_toggle'])->name('course_toggle');
 
         Route::get('/{id}/enrollees', [SuperAdminController::class, 'enrollees'])->name('course_enrollees');
-        Route::get('/generate_batch_name', [SuperAdminController::class, 'generate_batch_name'])->name('generate_batch_name');
+        Route::post('/create_new_batch', [SuperAdminController::class, 'create_new_batch'])->name('create_new_batch');
         Route::post('/create_batch', [SuperAdminController::class, 'create_batch'])->name('create_batch');
+        Route::post('/delete_batch', [SuperAdminController::class, 'delete_batch'])->name('delete_batch');
         Route::post('/add_to_batch', [SuperAdminController::class, 'add_to_batch'])->name('add_to_batch');
 
+        // Upload Course Image (FilePond)
+        Route::post('/upload_course_image', [SuperAdminController::class, 'upload_course_image'])->name('upload_course_image');
+        Route::delete('/revert_course_image', [SuperAdminController::class, 'revert_course_image'])->name('revert_course_image');
+        Route::get('/load_course_image/{action}/{source}', [SuperAdminController::class, 'load_course_image'])->name('load_course_image');
+        Route::delete('/delete_course_image/{action}/{file_id}', [SuperAdminController::class, 'delete_course_image'])->name('delete_course_image');
+
+
         // Route::get('/text_input_post', [SuperAdminController::class, 'text_input_post'])->name('text_input_post');
-        
-        
-        
         // Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
     });
 
@@ -87,7 +92,7 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     //Filepond Assignment
     Route::post('/turn_in_files', [StudentController::class, 'turn_in_files'])->name('turn_in_files');
     Route::post('/turn_in_links', [StudentController::class, 'turn_in_links'])->name('turn_in_links');
-    Route::get('/load_files/{batch_id}/{file_id}', [StudentController::class, 'load_files'])->name('load_files');
+    Route::get('/load_files/{batch_id}/{assignment_id}/{file_id}', [StudentController::class, 'load_files'])->name('load_files');
     Route::get('/get_files/{assignment_id}', [StudentController::class, 'get_files'])->name('get_files');
     Route::delete('/delete_file/{batch_id}/{assignment_id}/{id}', [StudentController::class, 'delete_file'])->name('delete_file');
     Route::delete('/revert', [StudentController::class, 'revert'])->name('revert');
@@ -127,6 +132,7 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     
     // Assignment
     Route::post('/post_assignment', [InstructorController::class, 'post_assignment'])->name('post_assignment');
+    Route::post('/delete_assignment', [InstructorController::class, 'delete_assignment'])->name('delete_assignment');
     Route::get('/get_assignment/{id}', [InstructorController::class, 'get_assignment'])->name('get_assignment');
     // Route::post('/edit_assignment', [InstructorController::class, 'edit_assignment'])->name('edit_assignment');
     Route::post('/assignment_toggle', [InstructorController::class, 'assignment_toggle'])->name('assignment_toggle');
@@ -142,14 +148,19 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::delete('/delete_assignment_file/{batch_id}/{id}', [InstructorController::class, 'delete_assignment_file'])->name('delete_assignment_file');
     
     //Filepond Assignment for Editing (in list_turn_ins)
-    Route::get('/get_uploaded_assignment_files/{assignment_id}', [InstructorController::class, 'get_uploaded_assignment_files'])->name('get_uploaded_assignment_files');
+    Route::get('/get_uploaded_assignment_files/{assignment_id}/{file_id}', [InstructorController::class, 'get_uploaded_assignment_files'])->name('get_uploaded_assignment_files');
     Route::delete('/delete_uploaded_assignment_file/{assignment_id}/{id}', [InstructorController::class, 'delete_uploaded_assignment_file'])->name('delete_uploaded_assignment_file');
 
     //Lesson (to be Learning Outcome)
     Route::post('/add_lesson', [InstructorController::class, 'add_lesson'])->name('add_lesson');
     Route::post('/edit_lesson', [InstructorController::class, 'edit_lesson'])->name('edit_lesson');
     Route::post('/get_lessons', [InstructorController::class, 'get_lessons'])->name('get_lessons');
-    Route::delete('/delete_lesson/{lesson_id}', [InstructorController::class, 'delete_lesson'])->name('delete_lesson');
+    Route::post('/delete_lesson', [InstructorController::class, 'delete_lesson'])->name('delete_lesson');
+
+    // Unit of Competency
+    Route::post('/add_uc', [InstructorController::class, 'add_uc'])->name('add_uc');
+    Route::post('edit_uc', [InstructorController::class, 'edit_uc'])->name('edit_uc');
+    Route::post('/delete_uc', [InstructorController::class, 'delete_uc'])->name('delete_uc');
 
     //Attendace
     Route::post('/save_attendance', [InstructorController::class, 'save_attendance'])->name('save_attendance');

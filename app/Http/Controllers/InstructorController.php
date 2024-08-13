@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Carbon;
 use App\Models\Batch;
+use App\Models\Course;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\Enrollee;
@@ -18,6 +19,7 @@ use App\Models\TempFile;
 use App\Models\TurnInFile;
 use App\Models\TurnIn;
 use App\Models\Lesson;
+use App\Models\UnitOfCompetency;
 use App\Models\StudentGrade;
 use App\Models\StudentAttendance;
 use App\Models\Attendance;
@@ -37,7 +39,7 @@ class InstructorController extends Controller
         $batch = Batch::findOrFail(decrypt($id));
         $posts = $batch->post;
         $course = $batch->course;
-        $lessons = $batch->lesson;
+        // $lessons = $batch->lesson;
 
         $files = collect(); 
 
@@ -48,15 +50,52 @@ class InstructorController extends Controller
 
         $temp_files = TempFile::where('batch_id', $batch->id)->get();
 
-        return view('instructor.batch_posts', compact('batch', 'posts', 'files', 'lessons', 'temp_files'));
+        return view('instructor.batch_posts', compact('batch', 'posts', 'files', 'temp_files'));
     }
 
     public function batch_assignments($batch_id){
-        $batch = Batch::find($batch_id);
+        // $batch = Batch::find($batch_id);
         $assignments = Assignment::where('batch_id', $batch_id)->get();
-        $lessons = $batch->lesson;
+        // $course = $batch->course;
+        $batch = Batch::with('unit_of_competency.lesson.assignment')->where('id', $batch_id)->first();
+        // dd($batch->id);
+        
+        // Get all lessons
+        $all_lessons = Course::findOrFail($batch->course->id)
+        ->batches()
+        ->join('unit_of_competencies', 'batches.id', '=', 'unit_of_competencies.batch_id')
+        ->join('lessons', 'unit_of_competencies.id', '=', 'lessons.unit_of_competency_id')
+        ->select('lessons.title')
+        ->distinct()
+        ->get()
+        ->groupBy(function($item) {
+            return strtolower($item->title);
+        })
+        ->map(function($items) {
+            return $items->first()->title; 
+        })
+        ->values(); 
 
-        return view('instructor.batch_assignments', compact('batch', 'assignments', 'lessons'));
+        // Get all UC
+        $all_ucs = Course::findOrFail($batch->course->id)
+            ->batches()
+            ->join('unit_of_competencies', 'batches.id', '=', 'unit_of_competencies.batch_id')
+            ->select('unit_of_competencies.title')
+            ->distinct()
+            ->get()
+            ->groupBy(function($item) {
+                return strtolower($item->title);
+            })
+            ->map(function($items) {
+                return $items->first()->title; 
+            })
+            ->values(); 
+
+        // dd($all_lessons);
+
+        $temp_files = TempAssignment::where('batch_id',$batch_id)->get();
+
+        return view('instructor.batch_assignments', compact('batch', 'assignments', 'all_lessons', 'all_ucs', 'temp_files'));
     }
 
     public function batch_attendance($batch_id){
@@ -82,7 +121,7 @@ class InstructorController extends Controller
 
     public function list_turn_ins($assignment_id){
         $assignment = Assignment::where('id', $assignment_id)->first();
-        $batch = Batch::where('id', $assignment->batch_id)->first();
+        $batch = Batch::with('unit_of_competency.lesson.assignment.assignment_files')->where('id', $assignment->batch_id)->first();
 
         $students = Enrollee::where('batch_id', '=', $batch->id)->get();
         
@@ -112,9 +151,19 @@ class InstructorController extends Controller
         foreach($students as $student){
             $user = $user->merge([$student->user]);
         }
-        // dd($students->toArray());
+        // $course = $batch->course;
+        
+        // if($course->structure == 'big'){
+        //     $batch->unit_of_competency;
+        // }else if($course->structure == 'medium'){
+        //     $uc = $batch->unit_of_competency;
+        //     $batch->lesson;
+        // }
 
-        return view('instructor.list_turn_ins', compact('assignment', 'batch', 'students'));
+        // $batch = Batch::with('unit_of_competency.lesson.assignment')->where('id', $assignment->batch_id)->get()->toArray();
+        $assignment->unit_of_competency_id = $assignment->lesson->unit_of_competency_id;
+
+        return view('instructor.list_turn_ins', compact('assignment', 'batch', 'students' ,'assignment'));
     }
 
     // Posting
@@ -357,6 +406,7 @@ class InstructorController extends Controller
     
     public function post_assignment(Request $request){
         
+        // dd($request->assignment_files);
         $assignment_details = $request->only([
             'batch_id',
             'title',
@@ -436,12 +486,15 @@ class InstructorController extends Controller
         return response()->json('no turn in yet');
     }
 
-    public function load_assignment_files($batch_id,  $file_id){
-        $file = AssignmentFile::where('id', $file_id)->first();
+    public function load_assignment_files($batch_id,  $source){
+        $file = TempAssignment::where('id', $source)->first();
         
         if ($file) {
             $filePath = public_path('storage/assignments/' . $batch_id . '/' . 'temp/'. $file->folder .'/'. $file->filename);
-            return response()->file($filePath);
+            $headers = [
+                'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
+            ];
+            return response()->file($filePath, $headers);
         }
 
         return response()->json($file);
@@ -507,11 +560,15 @@ class InstructorController extends Controller
         return response()->json($assignment);
     }
 
-    public function get_uploaded_assignment_files($assignment_id){
-        $files = AssignmentFile::where('assignment_id',$assignment_id)->get();
+    public function get_uploaded_assignment_files($assignment_id, $file_id){
+        $file = AssignmentFile::where('id',$file_id)->first();
         
-        if($files){
-            return response()->json($files);
+        if($file){
+            $filePath = public_path('storage/assignments/' . $file->assignment->batch_id . '/'. $assignment_id .'/' . 'assignment_files/'. $file->filename);
+            $headers = [
+                'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
+            ];
+            return response()->file($filePath, $headers);
         }
 
         return response()->json('no turn in yet');
@@ -558,11 +615,18 @@ class InstructorController extends Controller
         return response()->json(['status' => 'success', 'available' => $assignment->available]);
     }
 
+    // Lesson
     public function add_lesson(Request $request) {
         $lessons = new Lesson();
-        $lessons->batch_id = $request->batch_id;
-        $lessons->title = $request->lesson;
+        $lessons->unit_of_competency_id = $request->uc_id;
+        $lessons->title = $request->lesson_title;
         $lessons->save();
+
+        if($lessons){
+            return back()->with(['status' => 'success', 'message' => 'The lesson '.$lessons->title.' has been added.' , 'title' => 'Add Lesson']);
+        }
+
+        return back()->with(['status' => 'error', 'message' => 'Unable to add the lesson '.$lessons->title.'. Please try again later.' , 'title' => 'Add Lesson']);
     }
 
     public function get_lessons(Request $request){
@@ -575,19 +639,67 @@ class InstructorController extends Controller
     }
 
     public function edit_lesson(Request $request){
-        $lesson = Lesson::where('id', $request->id)->first();
-        $lesson->title = $request->title;
+        $lesson = Lesson::where('id', $request->lesson_id)->first();
+        $lesson->title = $request->new_lesson_name;
         $lesson->save();
 
-        return response()->json(['status' => 'success', 'i' => $lesson]);
+        if($lesson){
+            return back()->with(['status' => 'success', 'message' => 'The lesson title has been successfully updated to: '.$lesson->title, 'title' => 'Change Lesson Name']);
+        }
+
+        return back()->with(['status' => 'error', 'message' => 'An error occurred while updating the lesson title. The title '.$lesson->title.' was not applied.','title' => 'Change Lesson Name']);
 
     }
 
-    public function delete_lesson($lesson_id){
-        $record = Lesson::where('id', $lesson_id)->first();
+    public function delete_lesson(Request $request){
+        $record = Lesson::where('id', $request->lesson_id)->first();
         $record->delete();
 
-        return response()->json(['message' => $record]);
+        if($record){
+            return back()->with(['status' => 'success', 'message' => 'The lesson '.$record->title.' has been deleted.' , 'title' => 'Delete Lesson']);
+        }
+
+        return back()->with(['status' => 'error', 'message' => 'Unable to delete the lesson '.$record->title.'. Please try again later.' , 'title' => 'Delete Lesson']);
+
+    }
+
+    // Unit of Competency
+    public function add_uc(Request $request){
+        $uc = new UnitOfCompetency();
+        $uc->batch_id = $request->batch_id;
+        $uc->title = $request->uc_title;
+        $uc->save();
+
+        if($uc){
+            return back()->with(['status' => 'success', 'message' => $uc->title.' has been added.' , 'title' => 'Add Unit of Competency']);
+        }
+
+        return back()->with(['status' => 'error', 'message' => 'Unable to add '.$uc->title.'. Please try again later.' , 'title' => 'Add Unit of Competency']);
+    }
+
+    public function delete_uc(Request $request){
+        $record = UnitOfCompetency::where('id', $request->uc_id)->first();
+        $record->delete();
+
+        if($record){
+            return back()->with(['status' => 'success', 'message' => $record->title.' has been deleted.' , 'title' => 'Delete Unit of Competency']);
+        }
+
+        return back()->with(['status' => 'error', 'message' => 'Unable to delete '.$record->title.'. Please try again later.' , 'title' => 'Delete Unit of Competency']);
+
+    }
+
+    public function edit_uc(Request $request){
+        $lesson = UnitOfCompetency::where('id', $request->uc_id)->first();
+        $lesson->title = $request->new_uc_title;
+        $lesson->save();
+
+        if($lesson){
+            return back()->with(['status' => 'success', 'message' => 'The lesson title has been successfully updated to: '.$lesson->title, 'title' => 'Change Lesson Name']);
+        }
+
+        return back()->with(['status' => 'error', 'message' => 'An error occurred while updating the lesson title. The title '.$lesson->title.' was not applied.','title' => 'Change Lesson Name']);
+
     }
 
     //Grading
@@ -697,4 +809,5 @@ class InstructorController extends Controller
 
         return response()->json($data);
     }
+
 }

@@ -79,6 +79,8 @@
         list-style-type: disc; /* Or circle, square, etc. for different bullet styles */
         padding-left: 20px; /* Adjust the indentation as needed */
         }
+
+        [x-cloak] { display: none !important; }
     @endsection
     @section('style-links')
         <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
@@ -104,29 +106,9 @@
         </button> --}}
 
         <div class="flex pt-2">
-            <a id="dropdownDefaultButton" data-dropdown-toggle="dropdown"
+            <a @click="edit = false; createPost()"
                 class="block cursor-pointer rounded-md bg-sky-700 px-4 py-2 text-sm hover:bg-sky-800 hover:text-white">Create
                 New</a>
-        </div>
-
-        <!-- Dropdown menu -->
-        <div id="dropdown"
-            class="z-10 hidden w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700">
-            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
-                <li>
-                    <a @click="edit = false; createPost()" data-modal-target="create-post-modal"
-                        data-modal-toggle="create-post-modal"
-                        class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Post</a>
-                </li>
-                <li>
-                    <a data-modal-target="create-assignment-modal" data-modal-toggle="create-assignment-modal"
-                        class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Assignment</a>
-                </li>
-                <li>
-                    <a data-modal-target="add_lesson_modal" data-modal-toggle="add_lesson_modal"
-                        class="block cursor-pointer px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Lesson</a>
-                </li>
-            </ul>
         </div>
 
         <div class="flex flex-col-reverse">
@@ -170,8 +152,7 @@
 
                                         <x-slot name="content">
                                             <div class="m-1.5">
-                                                <a @click="editPost(post.id)" data-modal-target="create-post-modal"
-                                                    data-modal-toggle="create-post-modal"
+                                                <a @click="editPost(post.id)"
                                                     class=" w-full hover:bg-gray-800 py-2 text-start text-sm leading-5 text-gray-300 focus:outline-none focus:bg-gray-800 transition duration-150 ease-in-out flex px-4 items-center space-x-1.5 rounded-md">
                                                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                         viewBox="0 0 24 24">
@@ -256,19 +237,22 @@
         </div>
 
         {{-- Create Post Modal --}}
-        <div id="create-post-modal" tabindex="-1" aria-hidden="true"
-            class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
+        <div x-cloak x-show="postModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1" aria-hidden="true"
+            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
             <div class="relative max-h-full w-full max-w-xl p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white" x-text="modalTitle">
                             Create New Post
                         </h3>
                         <button type="button"
                             class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-toggle="create-post-modal">
+                            @click="triggerPostModal(); showAddFile = false;">
                             <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 14 14">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -302,8 +286,15 @@
                                     placeholder="Write post description here"></textarea>
                             </div> --}}
                             <div class="rounded-full text-xs text-white">
-                                <a class="flex cursor-pointer items-center" onclick="toggleShowAddFile('post')">Attach
-                                    File/s<svg id="icon_post" class="ml-2 h-4 w-4 text-gray-800 dark:text-white"
+                                <a class="flex cursor-pointer items-center" @click="toggleShowAddFile()">Attach
+                                    File/s
+                                    <svg x-show="showAddFile" class="ml-2 w-4 h-4 text-white"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m5 15 7-7 7 7" />
+                                    </svg>
+                                    <svg x-show="!showAddFile" class="ml-2 w-4 h-4 text-gray-800 dark:text-white"
                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                                         height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -312,7 +303,13 @@
                                 </a>
                             </div>
 
-                            <div id="show_addFile_post" class="col-span-2 hidden">
+                            <div x-show="showAddFile" x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-75"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95" id="show_addFile_post"
+                                class="col-span-2">
                                 {{-- <label for="name"
                             class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Attach
                             File/s</label> --}}
@@ -335,98 +332,6 @@
             </div>
         </div>
 
-        {{-- Add Lesson Modal --}}
-        <div id="add_lesson_modal" tabindex="-1" aria-hidden="true" data-modal-backdrop="static"
-            class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
-            <div class="relative max-h-full w-full max-w-lg p-4">
-                <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
-                    <!-- Modal header -->
-                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Add New Lesson
-                        </h3>
-                        <button type="button"
-                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-                            data-modal-toggle="add_lesson_modal">
-                            <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
-                    </div>
-
-                    <!-- Modal body -->
-                    <div class="p-4 md:p-5">
-                        <div class="mb-4 grid grid-cols-2 gap-4">
-                            <div class="col-span-2">
-                                <form id="add_lesson_form" method="post">
-                                    <label for="lesson" class="mb-2 block text-sm font-medium text-white">New
-                                        Lesson</label>
-                                    <div class="grid grid-cols-9">
-                                        <div class="col-span-8">
-                                            <input type="text" id="lesson_input" name="lesson"
-                                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                                placeholder="Lesson" required />
-                                        </div>
-                                        <button type="submit"
-                                            class="ms-2 flex w-full items-center justify-center rounded-md bg-sky-700 p-2 px-3"><svg
-                                                class="h-4 w-4 text-gray-800 dark:text-white" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 24 24">
-                                                <path stroke="currentColor" stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
-                                            </svg>
-                                        </button>
-                                    </div>
-                                </form>
-
-                                <div class="mt-4 text-white">
-                                    <div class="mb-2 text-sm font-medium">
-                                        List
-                                    </div>
-                                    <div id="list_lessons">
-                                        @foreach ($lessons as $lesson)
-                                            <div
-                                                class="flex items-center justify-between bg-gray-600 p-2 text-sm hover:bg-sky-800">
-                                                <span>{{ $lesson->title }}</span>
-                                                <div class="flex">
-                                                    <button
-                                                        onclick="edit_lesson('{{ $lesson->title }}',{{ $lesson->id }})"
-                                                        class="me-1 h-7 w-7 rounded-md p-1 hover:bg-gray-600">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                            <title>Edit</title>
-                                                            <path fill="white"
-                                                                d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                                                        </svg>
-                                                    </button>
-                                                    <form id="delete_lesson_form_{{ $lesson->id }}"
-                                                        action="{{ route('delete_lesson', $lesson->id) }}"
-                                                        class="h-7 w-7 rounded-md p-1 hover:bg-gray-600"
-                                                        method="post">
-                                                        @method('DELETE')
-                                                        <button onclick="confirmDelete({{ $lesson->id }})"
-                                                            class="h-full w-full" type="button">
-                                                            <svg xmlns="http://www.w3.org/2000/svg"
-                                                                viewBox="0 0 24 24">
-                                                                <title>Delete</title>
-                                                                <path fill="white"
-                                                                    d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                                                            </svg></button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
 
@@ -435,106 +340,100 @@
         <script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         {{-- File Pond --}}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+        {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script> --}}
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js"
             integrity="sha512-JatFEe90fJU2nrgf27fUz2hWRvdYrSlTEV8esFuqCtfiqWN8phkS1fUl/xCfYyrLDQcNf3YyS0V9hG7U4RHNmQ=="
             crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
         <script type="text/javascript">
-            var initial_lesson_count = @json($lessons);
+            var initial_lesson_count
 
-            function get_lessons() {
-                $.ajax({
-                    url: `/get_lessons`,
-                    method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        batch_id: {{ $batch->id }},
-                    },
-                    success: function(data) {
-                        // console.log(data);
-                        var lesson = $('#lesson')
-                        var current_lesson_count = data.lessons
-                        if (JSON.stringify(current_lesson_count) != JSON.stringify(initial_lesson_count)) {
-                            initial_lesson_count = current_lesson_count
-                            lesson.empty();
+            // function get_lessons() {
+            //     $.ajax({
+            //         url: `/get_lessons`,
+            //         method: 'POST',
+            //         data: {
+            //             _token: '{{ csrf_token() }}',
+            //             batch_id: {{ $batch->id }},
+            //         },
+            //         success: function(data) {
+            //             // console.log(data);
+            //             var lesson = $('#lesson')
+            //             var current_lesson_count = data.lessons
+            //             if (JSON.stringify(current_lesson_count) != JSON.stringify(initial_lesson_count)) {
+            //                 initial_lesson_count = current_lesson_count
+            //                 lesson.empty();
 
-                            lesson.append($('<option>', {
-                                value: '',
-                                text: 'Select'
-                            }));
+            //                 lesson.append($('<option>', {
+            //                     value: '',
+            //                     text: 'Select'
+            //                 }));
 
-                            let list_lessons = ''
-                            $.each(data.lessons, function(index, data) {
-                                lesson.append($('<option>', {
-                                    value: data.id,
-                                    text: data.title
-                                }));
+            //                 let list_lessons = ''
+            //                 $.each(data.lessons, function(index, data) {
+            //                     lesson.append($('<option>', {
+            //                         value: data.id,
+            //                         text: data.title
+            //                     }));
 
-                                list_lessons += `<div
-                                            class="flex items-center justify-between bg-gray-600 p-2 text-sm hover:bg-sky-800">
-                                            <span>${data.title}</span>
-                                            <div class="flex">
-                                                <button onclick="edit_lesson('${data.title}', ${data.id})"
-                                                    class="me-1 h-7 w-7 rounded-md p-1 hover:bg-gray-600">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                        <title>Edit</title>
-                                                        <path fill="white"
-                                                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                                                    </svg>
-                                                </button>
-                                                <form id="delete_lesson_form_${data.id}"
-                                                    action="/delete_lesson/${data.id}"
-                                                    class="h-7 w-7 rounded-md p-1 hover:bg-gray-600" method="post">
-                                                    @method('DELETE')
-                                                    <button onclick="confirmDelete(${data.id})"
-                                                        class="h-full w-full" type="button">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                            <title>Delete</title>
-                                                            <path fill="white"
-                                                                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                                                        </svg></button>
-                                                </form>
-                                            </div>
-                                        </div>`
-                            });
+            //                     list_lessons += `<div
+    //                                 class="flex items-center justify-between bg-gray-600 p-2 text-sm hover:bg-sky-800">
+    //                                 <span>${data.title}</span>
+    //                                 <div class="flex">
+    //                                     <button onclick="edit_lesson('${data.title}', ${data.id})"
+    //                                         class="me-1 h-7 w-7 rounded-md p-1 hover:bg-gray-600">
+    //                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    //                                             <title>Edit</title>
+    //                                             <path fill="white"
+    //                                                 d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+    //                                         </svg>
+    //                                     </button>
+    //                                     <form id="delete_lesson_form_${data.id}"
+    //                                         action="/delete_lesson/${data.id}"
+    //                                         class="h-7 w-7 rounded-md p-1 hover:bg-gray-600" method="post">
+    //                                         @method('DELETE')
+    //                                         <button onclick="confirmDelete(${data.id})"
+    //                                             class="h-full w-full" type="button">
+    //                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    //                                                 <title>Delete</title>
+    //                                                 <path fill="white"
+    //                                                     d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+    //                                             </svg></button>
+    //                                     </form>
+    //                                 </div>
+    //                             </div>`
+            //                 });
 
-                            $('#list_lessons').html(list_lessons)
-                        }
+            //                 $('#list_lessons').html(list_lessons)
+            //             }
 
-                    },
-                })
-            }
+            //         },
+            //     })
+            // }
 
-            setInterval(() => {
-                get_lessons()
-            }, 2000);
+            // setInterval(() => {
+            //     get_lessons()
+            // }, 2000);
 
-            function toggleShowAddFile(type) {
-                if (type === 'post') {
-                    var content = document.getElementById('show_addFile_post');
-                    var icon = document.getElementById('icon_post');
-                } else {
-                    var content = document.getElementById('show_addFile_assignment');
-                    var icon = document.getElementById('icon_assignment');
-                }
-                console.log(icon);
+            // function toggleShowAddFile(type) {
+            //     var content = document.getElementById('show_addFile_post');
+            //     var icon = document.getElementById('icon_post');
 
-                content.classList.toggle('hidden');
-                if (!content.classList.contains('hidden')) {
-                    icon.innerHTML = `
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
-                </svg>
-            `;
-                } else {
-                    icon.innerHTML = `
-                <svg class="h-3 w-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
-                </svg>
-            `;
-                }
-            }
+            //     content.classList.toggle('hidden');
+            //     if (!content.classList.contains('hidden')) {
+            //         icon.innerHTML = `
+    //     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+    //         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
+    //     </svg>
+    // `;
+            //     } else {
+            //         icon.innerHTML = `
+    //     <svg class="h-3 w-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+    //         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
+    //     </svg>
+    // `;
+            //     }
+            // }
 
 
             $('#add_lesson_form').submit(function(event) {
@@ -578,34 +477,34 @@
                 }
             }
 
-            function confirmDelete(lesson_id) {
-                var confirmation = 'DELETE'
-                var user_input = prompt(
-                    "Deleting this lesson will also delete all related data. To confirm deletion, type the word '" +
-                    confirmation + "'."
-                )
-                if (user_input === confirmation) {
-                    // event.preventDefault();
-                    var form = $('#delete_lesson_form_' + lesson_id);
+            // function confirmDelete(lesson_id) {
+            //     var confirmation = 'DELETE'
+            //     var user_input = prompt(
+            //         "Deleting this lesson will also delete all related data. To confirm deletion, type the word '" +
+            //         confirmation + "'."
+            //     )
+            //     if (user_input === confirmation) {
+            //         // event.preventDefault();
+            //         var form = $('#delete_lesson_form_' + lesson_id);
 
-                    $.ajax({
-                        url: form.attr('action'),
-                        type: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            console.log(response);
-                        },
-                        error: function(xhr, status, error) {
-                            console.error(xhr.responseText);
-                        }
-                    });
-                } else {
-                    alert('Deletion cancelled.')
-                }
+            //         $.ajax({
+            //             url: form.attr('action'),
+            //             type: 'DELETE',
+            //             headers: {
+            //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            //             },
+            //             success: function(response) {
+            //                 console.log(response);
+            //             },
+            //             error: function(xhr, status, error) {
+            //                 console.error(xhr.responseText);
+            //             }
+            //         });
+            //     } else {
+            //         alert('Deletion cancelled.')
+            //     }
 
-            }
+            // }
 
 
 
@@ -624,6 +523,9 @@
                     imageExtensions: ['jpeg', 'jpg', 'png', 'jfif'],
                     quill: null,
                     filepondInstance: null,
+                    postModal: false,
+                    modalTitle: '',
+                    showAddFile: false,
                     init() {
                         this.posts.forEach(post => {
                             post.formattedDate = this.formatDate(post.formatted_created_at);
@@ -750,13 +652,14 @@
                         return DOMPurify.sanitize(content);
                     },
                     filePond_config() {
-                        var stream = this
                         FilePond.registerPlugin(FilePondPluginImagePreview);
                         const input_element = document.querySelector('#file');
                         this.filepondInstance = FilePond.create(input_element);
                     },
                     editPost(postId) {
                         this.edit = true;
+                        this.triggerPostModal();
+                        this.modalTitle = 'Edit Post'
 
                         this.selectedPost = this.posts.filter(post => post.id === postId);
                         this.selectedFiles = this.selectedPost[0].files.map(file => {
@@ -812,22 +715,25 @@
                             }
                         });
 
+                        if (this.selectedFiles.length > 0) {
+                            this.toggleShowAddFile();
+                        }
+
                         this.$nextTick(() => {
                             try {
                                 this.quill.root.innerHTML = this.selectedPost[0].description;
-                                // this.quill.clipboard.dangerouslyPasteHTML(0, this.selectedPost[0].description);
-                                // this.quill.setSelection(0, 5);
                             } catch (error) {
                                 console.error(error);
                             }
                         })
 
-                        // this.quill.clipboard.dangerouslyPasteHTML(this.selectedPost[0].description);
-
                         console.log(this.quill);
                     },
                     createPost() {
                         this.edit = false;
+                        this.triggerPostModal();
+                        this.modalTitle = 'Create New Post'
+
                         this.quill.root.innerHTML = '';
                         this.filepondInstance.setOptions({
                             labelIdle: `Drag & Drop files or <span class="filepond--label-action">Browse</span>`,
@@ -873,6 +779,13 @@
                                 }
                             },
                         });
+
+                        if (this.tempFiles.length > 0) {
+                            this.toggleShowAddFile();
+                        }
+                    },
+                    triggerPostModal() {
+                        this.postModal = !this.postModal;
                     },
                     notification(status, message, title) {
                         status === 'success' ? toastr.success(message, title ?? title) : toastr.error(message,
@@ -908,22 +821,16 @@
                                 form.submit();
                             }
                         });
-
                     },
                     formatLinks() {
-                        $('.description a').addClass('bg-gray-700 hover:bg-gray-700/75 text-white py-1.5 px-3 rounded-sm')
-                        $('.description p').addClass('my-1')
+                        $('.description a').addClass(
+                            "text-sky-400 hover:underline underline-offset-2"
+                        )
+                        $('.description p').addClass(' break-words')
 
-                        // $('.description p').each(function() {
-                        //     var text = $(this).text();
-                        //     var urlRegex = /(https?:\/\/[^\s]+)/g;
-                        //     var formattedText = text.replace(urlRegex, function(url) {
-                        //         return '<a href="' + url +
-                        //             '" target="_blank" rel="noopener noreferrer" class="bg-gray-700 hover:bg-gray-700/75 text-white py-1.5 px-3 rounded-sm">' +
-                        //             url + '</a>';
-                        //     });
-                        //     $(this).html(formattedText);
-                        // });
+                    },
+                    toggleShowAddFile() {
+                        this.showAddFile = !this.showAddFile
                     }
                 }
             }

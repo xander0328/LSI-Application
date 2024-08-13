@@ -9,11 +9,16 @@ class Lesson extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['batch_id', 'title'];
+    protected $fillable = ['unit_of_competency_id', 'title'];
 
-    public function batch()
+    // public function batch()
+    // {
+    //     return $this->belongsTo(Batch::class);
+    // }
+
+    public function unit_of_competency()
     {
-        return $this->belongsTo(Batch::class);
+        return $this->belongsTo(UnitOfCompetency::class);
     }
 
     public function assignment()

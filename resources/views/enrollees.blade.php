@@ -1,4 +1,11 @@
 <x-app-layout>
+    @section('style')
+        [x-cloak] { display: none !important; }
+
+        .no-scroll {
+        overflow: hidden;
+        }
+    @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
             <div class="text-2xl font-semibold text-white">
@@ -140,7 +147,7 @@
                 No enrollees
             @endif
         </div> --}}
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg" x-data="batchManager({{ $enrollees->toJson() }})">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg" x-data="batchManager({{ $course['enrollees']->toJson() }})">
             <div
                 class="flex flex-col items-center justify-between space-y-4 bg-white py-4 dark:bg-gray-900 md:flex-row md:space-y-0">
                 <label for="table-search" class="sr-only">Search</label>
@@ -157,8 +164,7 @@
                         placeholder="Search">
                 </div>
                 <div>
-                    <button id="add_to_batch_button" data-modal-toggle="batch-modal" data-modal-target="batch-modal"
-                        :disabled="selectedUserIds.length === 0"
+                    <button @click="triggerBatchesModal()" :disabled="selectedUserIds.length === 0"
                         class="flex items-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none enabled:hover:bg-blue-800 disabled:opacity-50">
                         <svg class="mr-2 h-5 w-5 text-gray-800 dark:text-white" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -188,9 +194,8 @@
                     </tr>
                 </thead>
                 <tbody class="text-xs">
-                    {{-- <template x-if="users.length > 0"> --}}
-                    <template x-for="user in users" :key="user.id">
-                        <tr @click="toggleUser(user.id)" class="border-gray-700 bg-gray-800 hover:bg-sky-800">
+                    <template x-for="user in course.enrollees" :key="user.id">
+                        <tr @click="toggleUser(user.id)" class="border-gray-700 bg-gray-800 hover:bg-gray-800/75">
                             <td class="w-4 p-4">
                                 <div class="flex items-center">
                                     <input type="checkbox" @click.stop @change="toggleUser(user.id)"
@@ -206,6 +211,11 @@
                                             <img :src="`{{ asset('storage/enrollee_files') }}/${user.course_id}/${user.id}/id_picture/${file.folder}/${file.filename}`"
                                                 class="h-10 w-10 rounded-full" alt="profile">
                                         </template>
+                                    </template>
+
+                                    <template
+                                        x-if="!user.enrollee_files.some(file => file.credential_type === 'id_picture')">
+                                        <img src="sample.jpg" class="h-10 w-10 rounded-full" alt="profile">
                                     </template>
                                     <div class="pl-3">
                                         <div class="text-base font-semibold"
@@ -229,7 +239,7 @@
                             <td class="px-6 py-4">
                                 <div>Type: <span x-text="capitalize(user.employment_type)"></span></div>
                                 <div>Status: <span
-                                        x-text="user.employment_type !== 'Employed' ? '---' : user.employment_status"></span>
+                                        x-text="user.employment_type !== 'employed' ? '---' : capitalize(user.employment_status)"></span>
                                 </div>
                             </td>
                             <td class="px-6 py-4">
@@ -244,10 +254,10 @@
                     {{-- </template> --}}
                 </tbody>
             </table>
-            <div class="mt-4 text-center text-white" x-show="users.length === 0">
+            <div class="my-4 text-sm text-center text-white/75" x-show="users.length === 0">
                 No enrollees
             </div>
-            <div id="batch-modal" tabindex="-1" aria-hidden="true"
+            {{-- <div id="batch-modal" tabindex="-1" aria-hidden="true"
                 class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
                 <div class="relative max-h-full w-full max-w-md p-4">
                     <!-- Modal content -->
@@ -299,6 +309,80 @@
 
                     </div>
                 </div>
+            </div> --}}
+
+            {{-- List of Batches Modal --}}
+            <div x-cloak x-show="showBatchesModal" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
+                class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+                <div class="relative max-h-full w-full max-w-lg p-4">
+                    <!-- Modal content -->
+                    <div class="relative rounded-lg bg-gray-700">
+                        <!-- Modal header -->
+                        <div
+                            class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                                Batches | <span class="text-xs" x-text="course.name"></span>
+                            </h3>
+                            <button type="button" @click="showBatchesModal = !showBatchesModal"
+                                class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                                <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 14 14">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                </svg>
+                                <span class="sr-only">Close modal</span>
+                            </button>
+                        </div>
+
+                        <!-- Modal body -->
+                        <div class="p-4 md:p-5">
+                            <div class="mb-4 grid grid-cols-2 gap-4">
+                                <div class="col-span-2">
+
+                                    <div class="text-white">
+                                        <div>
+                                            <button @click="create_new_batch(course.id)"
+                                                class=" w-full text-sm mb-1.5 rounded-md p-2 bg-sky-700 hover:bg-sky-800">Create
+                                                New Batch</button>
+                                        </div>
+                                        <div id="list_uc">
+                                            <template x-if="course.batches.length < 1">
+                                                <div class="p-2 text-sm text-gray-400  text-center">No batches</div>
+                                            </template>
+
+                                            <template x-for="batch in course.batches" :key="batch.id">
+                                                <div
+                                                    class="flex items-center justify-between bg-gray-700 p-2 text-sm hover:bg-gray-800/75 rounded-md">
+                                                    <span x-text="course.code +'-'+ batch.name"></span>
+                                                    <div class="flex">
+                                                        <form action="{{ route('delete_batch') }}"
+                                                            class="h-7 w-7 rounded-md p-1 hover:bg-gray-600"
+                                                            method="post">
+                                                            @csrf
+                                                            <input type="hidden" name="batch_id"
+                                                                :value="batch.id">
+
+                                                            <button @click.prevent="confirmDelete()"
+                                                                class="h-full w-full" type="button">
+                                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24">
+                                                                    <title>Delete</title>
+                                                                    <path fill="white"
+                                                                        d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                                                </svg></button>
+                                                        </form>
+                                                    </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -306,11 +390,13 @@
         <script>
             function batchManager(enrollees) {
                 return {
+                    course: @json($course),
                     users: [],
                     selectedUserIds: [],
                     allChecked: false,
                     batchId: null,
                     courseId: null,
+                    showBatchesModal: false,
                     init() {
                         this.users = Object.values(enrollees);
                         this.fetchUserLocations(); // Call method to fetch user locations
@@ -385,11 +471,13 @@
                     capitalize(str) {
                         return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
                     },
+                    triggerBatchesModal() {
+                        this.showBatchesModal = !this.showBatchesModal;
+                    },
 
 
 
                     courseId: {{ $course->id }},
-                    batches: @json($batches),
                     createBatch() {
                         // Implement create batch functionality here
                         console.log('Creating new batch for course ID: ' + this.courseId);

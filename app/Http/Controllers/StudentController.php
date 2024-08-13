@@ -72,11 +72,8 @@ class StudentController extends Controller
 
             // Retrieve files for each post
             foreach ($assignments as $assignment) {
-                $files = $files->merge($assignment->assignment_files);
-            }
-            // print_r('<pre>');
-            // print_r($user_id);
-            // dd($files);
+                $files = $files->merge($assignment->assignment_files);            }
+            
             return view('student.enrolled_course_assignments', compact('enrollee', 'course', 'batch', 'assignments', 'files'));
         } else {
             return redirect()->route('home');
@@ -573,37 +570,36 @@ class StudentController extends Controller
             return response()->json($files);
         }
 
-        return response()->json('no turn in yet');
+        return response()->json('no turn in');
     }
     
     public function load_files($batch_id, $assignment_id, $file_id){
         $file = TurnInFile::where('id', $file_id)->first();
+        $turn_in = TurnIn::find($file->turn_in_id);
         
         if ($file) {
-            $filePath = public_path('storage/assignments/'.$batch_id .'/' . $file->assignment_id.'/'. auth()->user()->id .'/'.  $file->folder.'/'. $file->filename);
-            return response()->file($filePath);
+            $filePath = public_path('storage/assignments/'.$batch_id .'/' . $turn_in->assignment_id.'/'. $turn_in->enrollee_id .'/'.  $file->folder.'/'. $file->filename);
+            $headers = [
+                'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
+            ];
+            return response()->file($filePath, $headers);
+            // return response()->json($enrollee->id);
         }
 
-        return response()->json($file);
+        return response()->json('no file');
     }
     
     public function delete_file($batch_id, $assignment_id, $id){
         // dd($batch_id. $assignment_id. $id);
-        $turn_in = TurnIn::where('assignment_id',$assignment_id)
-        ->where('user_id', auth()->user()->id)
-        ->first();
-        
-        $file = TurnInFile::where('turn_in_id',$turn_in->id)
-        ->where('id', $id)->first();        
+        $file = TurnInFile::where('id', $id)->first();
+        $turn_in = TurnIn::find($file->turn_in_id);
         
         if ($file) {
-            $path = '/assignments'.'/'.$batch_id .'/' . $turn_in->assignment_id.'/'. auth()->user()->id .'/'.  $file->folder.'/'. $file->filename;
+            $path = '/assignments'.'/'.$batch_id .'/' . $assignment_id.'/'. $turn_in->enrollee_id .'/'.  $file->folder.'/'. $file->filename;
             
             if (Storage::exists($path)) {
                 Storage::delete($path);
             } else {
-                Log::info('Directory deleted: ' . $path);
-
                 return response()->json(['error' => 'File does not exist'], 404);
             }
 
@@ -620,18 +616,17 @@ class StudentController extends Controller
     }
     
     public function revert(Request $request){
+        // return $request->getContent();
         $file = TurnInFile::where('folder', $request->getContent())->first();
         $turn_in = TurnIn::find($file->turn_in_id);
-        $assignment = Assignment::find($turn_in->assignment_id);  
+        $batch_id = Enrollee::where('id',  $turn_in->enrollee_id)->pluck('batch_id')->first();
         
         if ($file) {
-            $path = '/assignments'.'/'.$assignment->batch_id .'/' . $turn_in->assignment_id.'/'. auth()->user()->id .'/'.  $file->folder.'/'. $file->filename;
+            $path = '/assignments'.'/'.$batch_id .'/' . $turn_in->assignment_id.'/'. $turn_in->enrollee_id .'/'.  $file->folder.'/'. $file->filename;
             
             if (Storage::exists($path)) {
                 Storage::delete($path);
             } else {
-                Log::info('Directory deleted: ' . $path);
-
                 return response()->json(['error' => 'File does not exist'], 404);
             }
 
