@@ -114,7 +114,7 @@
         <div class="flex flex-col-reverse">
             <template x-if="posts.length > 0">
                 <template x-for="post in posts" :key="post.id">
-                    <div class="my-1.5 shadow-md rounded-md bg-gray-800 p-3">
+                    <div class="my-1.5 rounded-md bg-gray-800 p-3 shadow-md">
                         <div class="mb-1.5 flex items-center justify-between px-2 text-xs">
                             <div>
                                 <div>
@@ -129,7 +129,7 @@
                                 </div>
                             </div>
                             <div class="flex justify-between">
-                                <div class="flex items-center me-2">
+                                <div class="me-2 flex items-center">
                                     <svg class="mr-1 h-3 w-3 self-center text-white" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -137,7 +137,7 @@
                                     </svg>
                                     <div x-text="post.formattedDate"></div>
                                 </div>
-                                <div class=" cursor-pointer">
+                                <div class="relative cursor-pointer">
                                     <x-dropdown width="40" align="right">
                                         <x-slot name="trigger">
                                             <button
@@ -153,7 +153,7 @@
                                         <x-slot name="content">
                                             <div class="m-1.5">
                                                 <a @click="editPost(post.id)"
-                                                    class=" w-full hover:bg-gray-800 py-2 text-start text-sm leading-5 text-gray-300 focus:outline-none focus:bg-gray-800 transition duration-150 ease-in-out flex px-4 items-center space-x-1.5 rounded-md">
+                                                    class="flex w-full items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                         viewBox="0 0 24 24">
                                                         <path fill="currentColor"
@@ -162,14 +162,13 @@
                                                     <div>Edit</div>
                                                 </a>
 
-
                                                 <!-- Authentication -->
                                                 <form method="POST" action="{{ route('delete_post') }}">
                                                     @csrf
                                                     <input type="hidden" name="post_id" :value="post.id">
 
                                                     <x-dropdown-link hover_bg="hover:bg-red-900"
-                                                        class="flex px-1.5  items-center space-x-1.5 rounded-md"
+                                                        class="flex items-center space-x-1.5 rounded-md px-1.5"
                                                         :href="route('delete_post')" @click.prevent="deletePostConfirmation">
                                                         <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                             viewBox="0 0 24 24">
@@ -209,7 +208,11 @@
                                                     <template
                                                         x-if="imageExtensions.some(ext => file.filename.endsWith(ext))">
                                                         <div class="image-item rounded-md border border-transparent hover:border-2 hover:border-solid hover:border-sky-700"
-                                                            x-data="{ path: `{{ asset('storage/uploads/') }}/${batch.id}/${post.id}/${file.filename}`, imageShow: true }">
+                                                            x-data="{
+                                                                path: `{{ asset('storage/uploads/') }}/${batch.id}/${post.id}/${file.filename}`,
+                                                                imageShow: true,
+                                                                lightbox: `statis-id`,
+                                                            }">
                                                             <x-file-type-checker-alpine></x-file-type-checker-alpine>
                                                         </div>
                                                     </template>
@@ -241,7 +244,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1" aria-hidden="true"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-xl p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
@@ -288,13 +291,13 @@
                             <div class="rounded-full text-xs text-white">
                                 <a class="flex cursor-pointer items-center" @click="toggleShowAddFile()">Attach
                                     File/s
-                                    <svg x-show="showAddFile" class="ml-2 w-4 h-4 text-white"
+                                    <svg x-show="showAddFile" class="ml-2 h-4 w-4 text-white"
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="m5 15 7-7 7 7" />
                                     </svg>
-                                    <svg x-show="!showAddFile" class="ml-2 w-4 h-4 text-gray-800 dark:text-white"
+                                    <svg x-show="!showAddFile" class="ml-2 h-4 w-4 text-gray-800 dark:text-white"
                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                                         height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -333,7 +336,6 @@
         </div>
 
     </div>
-
 
     @section('script')
         <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.js"></script>

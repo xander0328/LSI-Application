@@ -48,17 +48,17 @@
 <template x-data="{ 'show_icon': false }"
     x-if=" ['jpeg', 'jpg', 'png', 'jfif'].some(ext => file.filename.endsWith(ext)) && imageShow == true">
     <div @mouseenter="show_icon = true" @mouseleave="show_icon = false">
-        <a :href="path" target="_blank">
+        <a :href="path" :data-lightbox="lightbox" target="_blank">
             <img class="" :src="path" :class="{ 'landscape': $el.naturalWidth > $el.naturalHeight }">
         </a>
         <a :href="path" download x-show="show_icon" x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-90"
-            class="absolute flex top-2 right-2 items-center justify-center w-8 h-8 text-gray-600 hover:text-white bg-white hover:bg-sky-600  rounded-full shadow-md"
+            class="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white text-gray-600 shadow-md hover:bg-sky-600 hover:text-white"
             title="Download">
             <!-- SVG download icon -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-inherit" viewBox="0 0 24 24">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-inherit" viewBox="0 0 24 24">
                 <title>Download</title>
                 <path fill="currentColor" d="M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z" />
             </svg>

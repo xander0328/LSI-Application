@@ -1,181 +1,1206 @@
 <x-app-layout>
+    @section('style')
+        [x-cloak] { display: none !important; }
+    @endsection
     <x-slot name="header">
-        <div class="flex items-center justify-between text-white">
+        <div class="flex items-center justify-between pr-4 text-white">
             <div class="text-2xl font-semibold text-white">
-                {{ __('All users') }} <span class="text-slate-600">|</span>
+                {{ __('Users') }}
+            </div>
+            <div class="flex items-center">
+                <div class="w-full pr-2 text-sm text-gray-400">
+                    Role
+                </div>
+                <div class="w-full flex-shrink-0">
+                    <select id="role_select"
+                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
+                        <option {{ $role == 'all' ? 'selected' : '' }} value="all">All</option>
+                        <option {{ $role == 'guest' ? 'selected' : '' }} value="guest">Guest</option>
+                        <option {{ $role == 'student' ? 'selected' : '' }} value="student">Student</option>
+                        <option {{ $role == 'instructor' ? 'selected' : '' }} value="instructor">Instructor</option>
+                    </select>
+                </div>
             </div>
         </div>
 
     </x-slot>
-    <div class="px-8 pt-36">
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg" x-data="batchManager({{ $enrollees->toJson() }})">
+    <div x-data="manageUsers" class="p-2 px-8 pb-16 pt-40">
+        <div class="overflow-hidden bg-gray-800 shadow-md sm:rounded-lg">
             <div
-                class="flex flex-col items-center justify-between space-y-4 bg-white py-4 dark:bg-gray-900 md:flex-row md:space-y-0">
-                <label for="table-search" class="sr-only">Search</label>
-                <div class="relative">
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                        <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                        </svg>
-                    </div>
-                    <input type="text" id="table-search-users"
-                        class="block w-80 rounded-lg border border-gray-300 bg-gray-50 pl-10 pt-2 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                        placeholder="Search">
+                class="flex flex-col space-y-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
+                <div class="flex flex-1 items-center space-x-4">
+                    <h5>
+                        <span class="text-gray-400">All Users:</span>
+                        <span class="text-white" x-text="`{{ $all_user_count }}`"></span>
+                    </h5>
+                    {{-- <h5>
+                        <span class="text-gray-400">Total sales:</span>
+                        <span class="text-white">$88.4k</span>
+                    </h5> --}}
                 </div>
-                <div>
-                    <button id="add_to_batch_button" data-modal-toggle="batch-modal" data-modal-target="batch-modal"
-                        :disabled="selectedUserIds.length === 0"
-                        class="flex items-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none enabled:hover:bg-blue-800 disabled:opacity-50">
-                        <svg class="mr-2 h-5 w-5 text-gray-800 dark:text-white" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 21a9 9 0 1 1 3-17.5m-8 6 4 4L19.3 5M17 14v6m-3-3h6" />
+                <div
+                    class="flex flex-shrink-0 flex-col space-y-3 md:flex-row md:items-center md:space-x-3 md:space-y-0 lg:justify-end">
+
+                    <button type="button"
+                        class="hover:text-primary-700 flex flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
+                        <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24"
+                            stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                         </svg>
-                        Add to batch
+                        Export as PDF
+                    </button>
+                    <button type="button"
+                        class="hover:text-primary-700 flex flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
+                        <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24"
+                            stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                        </svg>
+                        Export as Excel
                     </button>
                 </div>
             </div>
-            <table class="w-full text-left text-sm text-white rtl:text-right">
-                <thead class="bg-gray-700 text-xs uppercase text-slate-100">
-                    <tr>
-                        <th scope="col" class="p-4">
-                            <div class="flex items-center">
-                                <input id="checkbox-all-search" type="checkbox" @change="toggleAllCheckboxes"
-                                    :disabled="users.length === 0":checked="allChecked"
-                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
-                                <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3">Name</th>
-                        <th scope="col" class="px-6 py-3">Address</th>
-                        <th scope="col" class="px-6 py-3">Contacts</th>
-                        <th scope="col" class="px-6 py-3">Employment</th>
-                        <th scope="col" class="px-6 py-3">Preferred Schedule</th>
-                    </tr>
-                </thead>
-                <tbody class="text-xs">
-                    {{-- <template x-if="users.length > 0"> --}}
-                    <template x-for="user in users" :key="user.id">
-                        <tr @click="toggleUser(user.id)" class="border-gray-700 bg-gray-800 hover:bg-sky-800">
-                            <td class="w-4 p-4">
+            <div class="px-2">
+                <hr class="border border-gray-700">
+            </div>
+            <div class="items-center justify-between space-y-4 bg-gray-800 px-4 py-4 md:flex-row md:space-y-0">
+                <div class="relative pr-2">
+                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                        <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M10 4C12.2 4 14 5.8 14 8S12.2 12 10 12 6 10.2 6 8 7.8 4 10 4M17 21L18.8 22.77C19.3 23.27 20 22.87 20 22.28V18L22.8 14.6C23.3 13.9 22.8 13 22 13H15C14.2 13 13.7 14 14.2 14.6L17 18V21M15 18.7L12.7 15.9C12.3 15.4 12.1 14.8 12.1 14.2C11.4 14 10.7 14 10 14C5.6 14 2 15.8 2 18V20H15V18.7Z" />
+                        </svg>
+                    </div>
+                    <input autocomplete="off" type="text" id="table-search-users" x-model="searchQuery"
+                        @keyup.enter="searchUsers" @input="$el.value ==  '' ? searchUsers() : ''"
+                        class="block w-full rounded-lg border border-gray-300 bg-gray-50 pl-10 pt-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                        placeholder="Name or Email">
+                </div>
+            </div>
+            <div class="overflow-x-auto rounded-b-lg shadow-md">
+                <table class="w-full text-left text-sm text-white rtl:text-right">
+                    <thead class="bg-gray-700 text-xs uppercase text-gray-400">
+                        <tr>
+                            <th scope="col" class="p-4">
                                 <div class="flex items-center">
-                                    <input type="checkbox" @click.stop @change="toggleUser(user.id)"
-                                        :checked="isSelected(user.id)"
-                                        class="row-checkbox h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
-                                    <label class="sr-only">checkbox</label>
-                                </div>
-                            </td>
-                            <th scope="row" class="px-6 py-4">
-                                <div class="flex items-center whitespace-nowrap text-white">
-                                    <template x-for="file in user.enrollee_files" :key="file.id">
-                                        <template x-if="file.credential_type === 'id_picture'">
-                                            <img :src="`{{ asset('storage/enrollee_files') }}/${user.course_id}/${user.id}/id_picture/${file.folder}/${file.filename}`"
-                                                class="h-10 w-10 rounded-full" alt="profile">
-                                        </template>
-                                    </template>
-                                    <div class="pl-3">
-                                        <div class="text-base font-semibold"
-                                            x-text="user.user.fname + ' ' + user.user.lname"></div>
-                                        <div class="font-normal text-gray-500" x-text="user.user.email"></div>
-                                    </div>
+                                    <input id="checkbox-all-search" type="checkbox" @change="toggleAllCheckboxes"
+                                        :disabled="users.length === 0":checked="allChecked"
+                                        class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
+                                    <label for="checkbox-all-search" class="sr-only">checkbox</label>
                                 </div>
                             </th>
-                            <td class="px-6 py-4"
-                                x-text="user.barangayName + ', ' + user.cityName + ', ' + user.provinceName">
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <span x-text="user.telephone ?? ''"></span>
-                                    <span x-text="user.cellular ?? ''"></span>
-                                    <template x-if="!user.telephone && !user.cellular">
-                                        <span>---</span>
-                                    </template>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div>Type: <span x-text="capitalize(user.employment_type)"></span></div>
-                                <div>Status: <span
-                                        x-text="user.employment_type !== 'Employed' ? '---' : user.employment_status"></span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div x-text="capitalize(user.preferred_schedule)"></div>
-                                <div>Start: <span x-text="moment(user.preferred_start).format('MMM D, YYYY')"></span>
-                                </div>
-                                <div>Finish: <span x-text="moment(user.preferred_finish).format('MMM D, YYYY')"></span>
-                                </div>
-                            </td>
+                            <th scope="col" class="px-6 py-3">Name</th>
+                            <th scope="col" class="px-6 py-3">Contact</th>
+                            <th scope="col" class="px-6 py-3">Role</th>
+                            <th scope="col" class="px-6 py-3"></th>
                         </tr>
-                    </template>
-                    {{-- </template> --}}
-                </tbody>
-            </table>
-            <div class="mt-4 text-center text-white" x-show="users.length === 0">
-                No enrollees
+                    </thead>
+                    <tbody class="text-xs">
+                        {{-- <template x-if="users.length > 0"> --}}
+                        <template x-for="user in users" :key="user.id">
+                            <tr class="border-b border-gray-700 bg-gray-800 hover:bg-gray-800/50">
+                                <td class="w-4 p-4" @click="toggleUser(user.id)">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" @click.stop @change="toggleUser(user.id)"
+                                            :checked="isSelected(user.id)"
+                                            class="row-checkbox h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
+                                        <label class="sr-only">checkbox</label>
+                                    </div>
+                                </td>
+                                <th scope="row" @click="toggleUser(user.id)" class="px-6 py-4">
+                                    <div class="flex items-center whitespace-nowrap text-white">
+                                        <img src="{{ asset('images/temporary/profile.png') }}"
+                                            class="h-10 w-10 rounded-full" alt="profile">
+                                        <div class="pl-3">
+                                            <div class="text-base font-semibold"
+                                                x-text="`${user.lname}, ${user.fname} ${user.mname || ''}`"></div>
+                                            <div class="font-normal text-gray-500" x-text="user.email"></div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <td class="px-6 py-4" @click="toggleUser(user.id)">
+                                    <div class="flex items-center">
+                                        <span x-text="user.contact_number ?? '---'"></span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4" @click="toggleUser(user.id)">
+                                    <div class="flex items-center">
+                                        <span
+                                            :class="{
+                                                'bg-sky-900 text-sky-300': user.role == 'student',
+                                                'bg-yellow-900 text-yellow-300': user.role == 'guest',
+                                                'bg-green-900 text-green-300': user.role == 'instructor',
+                                            }"
+                                            class="rounded px-2 py-0.5 text-xs font-medium"
+                                            x-text="capitalize(user.role) ?? ''"></span>
+                                    </div>
+                                </td>
+                                <td class="flex items-center justify-end px-6 py-4">
+                                    <div class="cursor-pointer">
+                                        <x-dropdown width="40" align="right">
+                                            <x-slot name="trigger">
+                                                <button
+                                                    class="inline-flex items-center rounded-md border border-transparent bg-white text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                                                    <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24">
+                                                        <path fill="currentColor"
+                                                            d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" />
+                                                    </svg>
+                                                </button>
+                                            </x-slot>
+
+                                            <x-slot name="content">
+                                                <div class="m-1.5">
+
+                                                    <template x-if="user.role === 'guest'">
+                                                        <form method="POST" action="{{ route('promote_user') }}">
+                                                            @csrf
+                                                            <input type="hidden" name="user_id"
+                                                                :value="user.id">
+
+                                                            <x-dropdown-link hover_bg="hover:bg-gray-800"
+                                                                class="flex items-center space-x-1.5 rounded-md px-1.5"
+                                                                @click.prevent="promoteUser">
+                                                                <svg class="h-4 w-4"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path fill="currentColor"
+                                                                        d="M12,3L1,9L12,15L21,10.09V17H23V9M5,13.18V17.18L12,21L19,17.18V13.18L12,17L5,13.18Z" />
+                                                                </svg>
+                                                                <div>
+                                                                    Promote
+                                                                </div>
+                                                            </x-dropdown-link>
+                                                        </form>
+                                                    </template>
+
+                                                    <template x-if="user.role === 'instructor'">
+                                                        <div>
+                                                            <form method="POST" action="{{ route('disable_user') }}">
+                                                                @csrf
+                                                                <input type="hidden" name="user_id"
+                                                                    :value="user.id">
+
+                                                                <x-dropdown-link hover_bg="hover:bg-gray-800"
+                                                                    class="flex items-center space-x-1.5 rounded-md px-1.5"
+                                                                    :href="route('delete_post')" @click.prevent="disableUser">
+                                                                    <svg class="h-4 w-4"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 24 24">
+                                                                        <path fill="currentColor"
+                                                                            d="M12 0L11.34 .03L15.15 3.84L16.5 2.5C19.75 4.07 22.09 7.24 22.45 11H23.95C23.44 4.84 18.29 0 12 0M12 4C10.07 4 8.5 5.57 8.5 7.5C8.5 9.43 10.07 11 12 11C13.93 11 15.5 9.43 15.5 7.5C15.5 5.57 13.93 4 12 4M.05 13C.56 19.16 5.71 24 12 24L12.66 23.97L8.85 20.16L7.5 21.5C4.25 19.94 1.91 16.76 1.55 13H.05M12 13C8.13 13 5 14.57 5 16.5V18H19V16.5C19 14.57 15.87 13 12 13Z" />
+                                                                    </svg>
+                                                                    <div>
+                                                                        Demote
+                                                                    </div>
+                                                                </x-dropdown-link>
+                                                            </form>
+                                                            <a
+                                                                class="flex w-full items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                                <svg class="h-4 w-4"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path fill="currentColor"
+                                                                        d="M23,2H1A1,1 0 0,0 0,3V21A1,1 0 0,0 1,22H23A1,1 0 0,0 24,21V3A1,1 0 0,0 23,2M22,20H20V19H15V20H2V4H22V20M10.29,9.71A1.71,1.71 0 0,1 12,8C12.95,8 13.71,8.77 13.71,9.71C13.71,10.66 12.95,11.43 12,11.43C11.05,11.43 10.29,10.66 10.29,9.71M5.71,11.29C5.71,10.58 6.29,10 7,10A1.29,1.29 0 0,1 8.29,11.29C8.29,12 7.71,12.57 7,12.57C6.29,12.57 5.71,12 5.71,11.29M15.71,11.29A1.29,1.29 0 0,1 17,10A1.29,1.29 0 0,1 18.29,11.29C18.29,12 17.71,12.57 17,12.57C16.29,12.57 15.71,12 15.71,11.29M20,15.14V16H16L14,16H10L8,16H4V15.14C4,14.2 5.55,13.43 7,13.43C7.55,13.43 8.11,13.54 8.6,13.73C9.35,13.04 10.7,12.57 12,12.57C13.3,12.57 14.65,13.04 15.4,13.73C15.89,13.54 16.45,13.43 17,13.43C18.45,13.43 20,14.2 20,15.14Z" />
+                                                                </svg>
+                                                                <div>Classes</div>
+                                                            </a>
+                                                        </div>
+                                                    </template>
+
+                                                    <template x-if="user.role === 'student'">
+                                                        <a @click="getUserRecord(user.id)"
+                                                            class="flex w-full items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 24 24">
+                                                                <path fill="currentColor"
+                                                                    d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+                                                            </svg>
+                                                            <div>Records</div>
+                                                        </a>
+                                                    </template>
+
+                                                    <form method="POST" action="{{ route('disable_user') }}">
+                                                        @csrf
+                                                        <input type="hidden" name="user_id" :value="user.id">
+
+                                                        <x-dropdown-link hover_bg="hover:bg-red-900"
+                                                            class="flex items-center space-x-1.5 rounded-md px-1.5"
+                                                            :href="route('delete_post')" @click.prevent="disableUser">
+                                                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 24 24">
+                                                                <path fill="currentColor"
+                                                                    d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                                            </svg>
+                                                            <div>
+                                                                Disable
+                                                            </div>
+                                                        </x-dropdown-link>
+                                                    </form>
+
+                                                </div>
+                                            </x-slot>
+                                        </x-dropdown>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                        {{-- </template> --}}
+                    </tbody>
+                </table>
+
+                <div class="border-b border-gray-700 py-4 text-center text-sm text-white/75"
+                    x-show="users.length === 0"
+                    x-text="'No '+ (
+                        '{{ $role }}' === 'all' ? 'Users' :
+                        '{{ $role }}' === 'student' ? 'Students' :
+                        '{{ $role }}' === 'guest' ? 'Guests' :
+                        '{{ $role }}' === 'instructor' ? 'Instructors' : '' )">
+                    No Users
+                </div>
+
             </div>
-            <div id="batch-modal" tabindex="-1" aria-hidden="true"
-                class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
-                <div class="relative max-h-full w-full max-w-md p-4">
+            <div class="rounded-b-lg">
+                <nav class="flex flex-col items-start justify-between space-y-3 p-4 md:flex-row md:items-center md:space-y-0"
+                    aria-label="Table navigation">
+                    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+                        Showing
+                        <span class="font-semibold text-gray-900 dark:text-white" x-text="users.length"></span>
+                        of
+                        <span class="font-semibold text-gray-900 dark:text-white" x-text="usersRoleCount"></span>
+                    </span>
+                </nav>
+
+            </div>
+
+            {{-- Records Modal --}}
+            <div x-cloak x-show="recordsModal" x-transition:enter="transition ease-out duration-200"
+                x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
+                class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
+                <div class="relative max-h-full w-full max-w-xl p-4">
                     <!-- Modal content -->
-                    <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+                    <div class="relative rounded-lg bg-gray-700">
                         <!-- Modal header -->
                         <div
                             class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                Select Batch
-                            </h3>
-                            <button type="button"
-                                class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-                                data-modal-toggle="batch-modal">
-                                <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 14 14">
+                            <div class="flex items-center whitespace-nowrap text-white">
+                                <template x-if="latestEnrollment?.enrollee_files?.length < 1">
+                                    <img src="{{ asset('images/temporary/profile.png') }}"
+                                        class="h-12 w-12 rounded-full" alt="profile">
+                                </template>
+                                <template x-if="latestEnrollment">
+                                    <template x-for="file in latestEnrollment.enrollee_files" :key="file.id">
+                                        <template x-if="file.credential_type === 'id_picture'">
+                                            <img :src="'{{ asset('storage/enrollee_files/') }}/' +
+                                            latestEnrollment?.course_id + '/' + latestEnrollment?.id + '/id_picture' +
+                                                '/' + file.folder + '/' + file.filename"
+                                                class="h-12 w-12 rounded-full" alt="profile">
+                                        </template>
+                                    </template>
+                                </template>
+                                <div class="pl-3">
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white"
+                                        x-text="`${userRecords.fname ?? ''} ${userRecords.lname ?? ''}`">
+                                    </h3>
+                                    <div class="font-normal text-gray-400" x-text="userRecords.email"></div>
+                                </div>
+                            </div>
+                            <button type="button" @click="triggerModal('records'); showEnrolleeData = false;"
+                                class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                                <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 14 14">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                                 </svg>
                                 <span class="sr-only">Close modal</span>
                             </button>
                         </div>
-                        <!-- Modal body -->
-                        <div class="p-2">
-                            <button @click="createBatch"
-                                class="block flex w-full items-center justify-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none">
-                                <svg class="mr-2 h-5 w-5 text-gray-800 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M5 12h14m-7 7V5" />
-                                </svg><span>Create New</span></button>
-                            <ul class="mt-2 rounded-md bg-gray-800 p-2">
-                                <div class="py-3 text-center font-bold text-white">List of Batches</div>
-                                <template x-for="batch in batches" :key="batch.id">
-                                    <li class="cursor-pointer rounded-md px-2 py-1 text-white hover:bg-gray-900">
-                                        <button @click="addToBatch(batch.id)" class="flex items-center">
-                                            <svg class="mr-2 h-3 w-3 text-gray-800 dark:text-white" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path fill-rule="evenodd"
-                                                    d="M10.3 5.6A2 2 0 0 0 7 7v10a2 2 0 0 0 3.3 1.5l5.9-4.9a2 2 0 0 0 0-3l-6-5Z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            <div class="font-normal" x-text="batch.name"></div>
-                                        </button>
-                                    </li>
-                                </template>
-                            </ul>
-                        </div>
 
+                        <!-- Modal body -->
+                        <div class="p-4 md:p-5">
+                            <div class="mb-4 grid grid-cols-2 gap-4">
+                                <div class="col-span-2">
+
+                                    <div class="relative mt-4 rounded-md bg-gray-800/75 text-white">
+                                        {{-- <div>
+                                        <button @click="create_new_batch(course.id)"
+                                            class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm hover:bg-sky-800">Create
+                                            New Batch</button>
+                                        </div> --}}
+                                        <div
+                                            class="absolute -top-4 left-2 mb-2 flex w-1/3 items-center justify-center rounded-md bg-sky-700 py-2 text-white shadow-md">
+                                            <svg class="h-7 w-7 pr-1.5" xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24">
+                                                <title>clipboard-outline</title>
+                                                <path fill="currentColor"
+                                                    d="M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7Z" />
+                                            </svg>
+                                            <div>
+                                                Enrollment
+                                            </div>
+                                        </div>
+                                        <div class="px-2 pb-4 pt-10">
+                                            <template
+                                                x-if="userRecords?.enrollee?.every(record => record.batch === null && record.batch_id != null);">
+                                                <div class="p-2 text-center text-sm text-gray-400">No Records</div>
+                                            </template>
+
+                                            <template
+                                                x-if="userRecords?.enrollee?.some(record => record.batch !== null || record.batch_id == null)">
+                                                <ol
+                                                    class="relative ms-5 border-s border-gray-700 p-2 text-sm text-gray-300">
+                                                    <template x-for="enrollee in userRecords.enrollee"
+                                                        :key="enrollee.id">
+                                                        <template
+                                                            x-if="enrollee.batch != null || enrollee.batch_id == null">
+                                                            <li @click="showData(enrollee.id)"
+                                                                class="mb-2 ms-4 flex cursor-pointer items-center justify-between rounded-md bg-gray-800 p-2 hover:bg-gray-800/75">
+                                                                <span
+                                                                    :class="enrollee.completed_at != null && enrollee
+                                                                        .batch_id !=
+                                                                        null ? 'bg-sky-300' : 'bg-sky-700'"
+                                                                    class="absolute -start-2 flex h-4 w-4 items-center justify-center rounded-full">
+
+                                                                </span>
+                                                                <span
+                                                                    x-text="enrollee.batch_id == null ? enrollee.course.code : `${enrollee.course.code}-${enrollee.batch.name}`"></span>
+
+                                                                <div class="flex items-center">
+                                                                    <div class="flex items-center">
+                                                                        <div :class="{
+                                                                            'bg-red-900 text-red-300': enrollee
+                                                                                .batch_id ==
+                                                                                null,
+                                                                            'bg-yellow-900 text-yellow-300': enrollee
+                                                                                .completed_at ==
+                                                                                null && enrollee.batch_id != null,
+                                                                            'bg-sky-900 text-sky-300': enrollee
+                                                                                .completed_at !=
+                                                                                null && enrollee.batch_id != null,
+                                                                        }"
+                                                                            class="rounded px-2 py-0.5 text-sm"
+                                                                            x-text="enrollee.batch_id == null ? 'Not Enrolled' : enrollee.completed_at != null ? 'Completed' : 'Ongoing'">
+                                                                        </div>
+                                                                    </div>
+                                                            </li>
+
+                                                        </template>
+                                                    </template>
+                                                </ol>
+                                            </template>
+
+                                        </div>
+                                    </div>
+
+                                    <div x-cloak x-show="showEnrolleeData"
+                                        x-transition:enter="transition ease-out duration-200"
+                                        x-transition:enter-start="opacity-0 scale-95"
+                                        x-transition:enter-end="opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-75"
+                                        x-transition:leave-start="opacity-100 scale-100"
+                                        x-transition:leave-end="opacity-0 scale-95"
+                                        class="relative mt-4 rounded-md bg-gray-800/75 p-4 text-white">
+                                        <div class="mb-2 flex items-center justify-between">
+                                            <div class="text-xl">Enrollee Data</div>
+                                            <button type="button" @click="showEnrolleeData = false"
+                                                class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                                                <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2"
+                                                        d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="ps-4">
+                                            <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <span
+                                                    class="absolute -left-4 top-4 rounded-md bg-yellow-700 p-2 shadow-md"><svg
+                                                        class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24">
+                                                        <path fill="currentColor"
+                                                            d="M20,6C20.58,6 21.05,6.2 21.42,6.59C21.8,7 22,7.45 22,8V19C22,19.55 21.8,20 21.42,20.41C21.05,20.8 20.58,21 20,21H4C3.42,21 2.95,20.8 2.58,20.41C2.2,20 2,19.55 2,19V8C2,7.45 2.2,7 2.58,6.59C2.95,6.2 3.42,6 4,6H8V4C8,3.42 8.2,2.95 8.58,2.58C8.95,2.2 9.42,2 10,2H14C14.58,2 15.05,2.2 15.42,2.58C15.8,2.95 16,3.42 16,4V6H20M4,8V19H20V8H4M14,6V4H10V6H14Z" />
+                                                    </svg></span>
+                                                <div class="mb-2 text-gray-300">MANPOWER PROFILE</div>
+                                                <div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">First Name:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="userRecords.fname"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Middle Name:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="userRecords.mname ?? '---'"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Last Name:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="userRecords.lname">
+                                                            Salvador</span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Address:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="`${enrolleeData?.barangayName}, ${enrolleeData?.cityName}, ${enrolleeData?.provinceName}, ${enrolleeData?.regionName}, ${enrolleeData?.zip}`"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Sex:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.sex ? capitalize(enrolleeData?.sex) : '---'"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Civil Status:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.civil_status != null ? capitalize(enrolleeData?.civil_status) : '---'"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Employment Type:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.employment_type ? capitalize(enrolleeData?.employment_type) : '---'"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Employment Status:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.employment_status ? capitalize(enrolleeData?.employment_status) : '---'"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <span
+                                                    class="absolute -left-4 top-4 rounded-md bg-green-700 p-2 shadow-md">
+                                                    <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24">
+                                                        <path fill="currentColor"
+                                                            d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
+                                                    </svg></span>
+                                                <div class="mb-2 text-gray-300">PERSONAL INFORMATION</div>
+                                                <div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Birth Date:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="moment(enrolleeData?.birth_data).format('ll');"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Birth Place:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.birth_place"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Citizenship:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.citizenship"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Religion:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.religion"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Height:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.height + ' cm'"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Weight:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.weight + ' kg'"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Blood Type:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.blood_type ? formatBloodType(enrolleeData?.blood_type) : ''"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">SSS Number:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.sss ?? '---'"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">GSIS Number:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.gsis ?? '---'"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">TIN Number:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.tin ?? '---'"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Distinguishing
+                                                            Marks:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.disting_marks ?? '---'"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <span
+                                                    class="absolute -left-4 top-4 rounded-md bg-blue-700 p-2 shadow-md">
+                                                    <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24">
+                                                        <title>school-outline</title>
+                                                        <path fill="currentColor"
+                                                            d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3M18.82 9L12 12.72L5.18 9L12 5.28L18.82 9M17 16L12 18.72L7 16V12.27L12 15L17 12.27V16Z" />
+                                                    </svg></span>
+                                                <div class="mb-2 text-gray-300">EDUCATIONAL BACKGROUND</div>
+                                                <template x-for="education in enrolleeData?.enrollee_education"
+                                                    :key="education.id">
+                                                    <div class="mb-1.5 rounded-md bg-gray-700/50 p-4">
+                                                        <div
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                            <span class="basis-1/2 text-gray-300">School:</span>
+                                                            <span class="basis-1/2 font-medium"
+                                                                x-text="education?.school_name"></span>
+                                                        </div>
+                                                        <div
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                            <span class="basis-1/2 text-gray-300">Educational
+                                                                Level:</span>
+                                                            <span class="basis-1/2 font-medium"
+                                                                x-text="education?.educational_level"></span>
+                                                        </div>
+                                                        <div
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                            <span class="basis-1/2 text-gray-300">School Year:</span>
+                                                            <span class="basis-1/2 font-medium"
+                                                                x-text="education?.school_year"></span>
+                                                        </div>
+                                                        <template x-if="education?.educational_level == 'Tertiary'">
+                                                            <div
+                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                                <span class="basis-1/2 text-gray-300">Degree:</span>
+                                                                <span class="basis-1/2 font-medium"
+                                                                    x-text="education?.degree ?? '---'"></span>
+                                                            </div>
+                                                            <div
+                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                                <span class="basis-1/2 text-gray-300">Minor:</span>
+                                                                <span class="basis-1/2 font-medium"
+                                                                    x-text="education?.minor ?? '---'"></span>
+                                                            </div>
+                                                            <div
+                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                                <span class="basis-1/2 text-gray-300">Major:</span>
+                                                                <span class="basis-1/2 font-medium"
+                                                                    x-text="education?.major ?? '---'"></span>
+                                                            </div>
+                                                            <div
+                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                                <span class="basis-1/2 text-gray-300">Units
+                                                                    Earned:</span>
+                                                                <span class="basis-1/2 font-medium"
+                                                                    x-text="education?.units_earned ?? '---' "></span>
+                                                            </div>
+                                                            <div
+                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                                <span class="basis-1/2 text-gray-300">Honors
+                                                                    Received:</span>
+                                                                <span class="basis-1/2 font-medium"
+                                                                    x-text="education?.honors_received ?? '---'"></span>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <span
+                                                    class="absolute -left-4 top-4 rounded-md bg-sky-700 p-2 shadow-md">
+                                                    <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24">
+                                                        <path fill="currentColor"
+                                                            d="M6 20H13V22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H18C19.11 2 20 2.9 20 4V12.54L18.5 11.72L18 12V4H13V12L10.5 9.75L8 12V4H6V20M24 17L18.5 14L13 17L18.5 20L24 17M15 19.09V21.09L18.5 23L22 21.09V19.09L18.5 21L15 19.09Z" />
+                                                    </svg></span>
+                                                <div class="mb-2 text-gray-300">COURSE / TRAINING PROGRAM</div>
+                                                <div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Title:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="enrolleeData?.course.name"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Preffered
+                                                            Schedule:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="moment(enrolleeData?.preferred_start).format('ll')"></span>
+                                                    </div>
+                                                    <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                        <span class="basis-1/2 text-gray-300">Preffered Date:</span>
+                                                        <span class="basis-1/2 font-medium"
+                                                            x-text="moment(enrolleeData?.preferred_finish).format('ll')"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="relative mt-8 rounded-md bg-gray-800/75 text-white">
+                                        <div
+                                            class="absolute -top-4 left-2 mb-2 flex w-1/3 items-center justify-center rounded-md bg-sky-700 py-2 text-white shadow-md">
+                                            <svg class="h-7 w-7 pr-1.5" xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24">
+                                                <path fill="currentColor"
+                                                    d="M22,17H18V10H22M23,8H17A1,1 0 0,0 16,9V19A1,1 0 0,0 17,20H23A1,1 0 0,0 24,19V9A1,1 0 0,0 23,8M4,6H22V4H4A2,2 0 0,0 2,6V17H0V20H14V17H4V6Z" />
+                                            </svg>
+                                            <div>
+                                                Sessions
+                                            </div>
+                                        </div>
+                                        <div class="px-2 pb-4 pt-10">
+                                            <template
+                                                x-if="userRecords?.user_session?.length < 1 || userRecords?.user_session == null">
+                                                <div class="p-2 text-center text-sm text-gray-400">No Records</div>
+                                            </template>
+
+                                            <template x-if="userRecords?.user_session?.length > 0">
+                                                <ol class="relative px-2 pt-2 text-sm text-gray-300">
+                                                    <template x-for="session in userRecords.user_session"
+                                                        :key="session.id">
+                                                        <li
+                                                            class="mb-2 flex cursor-pointer justify-between rounded-md bg-gray-800 p-2 hover:bg-gray-800/75">
+
+                                                            <div class="flex">
+                                                                <div
+                                                                    class="mr-2.5 flex items-center justify-center rounded-md">
+                                                                    {{-- Mobile Icon --}}
+                                                                    <template
+                                                                        x-if="session.parsedUa.device.type == 'mobile' && session.parsedUa.device.os == 'Android'">
+                                                                        <svg class="h-8 w-8 text-white"
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24">
+
+                                                                            {{-- <path fill="currentColor" d="M19,18H5V6H19M21,4H3C1.89,4 1,4.89 1,6V18A2,2 0 0,0 3,20H21A2,2 0 0,0 23,18V6C23,4.89 22.1,4 21,4Z" /> --}}
+                                                                            <path fill="currentColor"
+                                                                                d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1Z" />
+                                                                        </svg>
+                                                                    </template>
+
+                                                                    {{-- Tablet --}}
+                                                                    <template
+                                                                        x-if="session.parsedUa.device.type == 'tablet'">
+                                                                        <svg class="h-8 w-8 text-white"
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24">
+
+                                                                            <path fill="currentColor"
+                                                                                d="M19,18H5V6H19M21,4H3C1.89,4 1,4.89 1,6V18A2,2 0 0,0 3,20H21A2,2 0 0,0 23,18V6C23,4.89 22.1,4 21,4Z" />
+
+                                                                        </svg>
+                                                                    </template>
+
+                                                                    {{-- Windows --}}
+                                                                    <template
+                                                                        x-if="session.parsedUa.device.type == 'Unknown' && session.parsedUa.os == 'Windows'">
+                                                                        <svg class="h-8 w-8 text-white"
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24">
+                                                                            <path fill="currentColor"
+                                                                                d="M21,16H3V4H21M21,2H3C1.89,2 1,2.89 1,4V16A2,2 0 0,0 3,18H10V20H8V22H16V20H14V18H21A2,2 0 0,0 23,16V4C23,2.89 22.1,2 21,2Z" />
+                                                                        </svg>
+                                                                    </template>
+
+                                                                    {{-- macOS --}}
+                                                                    <template
+                                                                        x-if="session.parsedUa.device.os == 'Mac OS'">
+                                                                        <svg class="h-8 w-8 text-white"
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24">
+                                                                            <path fill="currentColor"
+                                                                                d="M4,6H20V16H4M20,18A2,2 0 0,0 22,16V6C22,4.89 21.1,4 20,4H4C2.89,4 2,4.89 2,6V16A2,2 0 0,0 4,18H0V20H24V18H20Z" />
+                                                                        </svg>
+                                                                    </template>
+
+                                                                    {{-- iOS --}}
+                                                                    <template
+                                                                        x-if="session.parsedUa.device.os == 'iOS'">
+                                                                        <svg class="h-8 w-8 text-white"
+                                                                            xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24">
+                                                                            <path fill="currentColor"
+                                                                                d="M2.09 16.8H3.75V9.76H2.09M2.92 8.84C3.44 8.84 3.84 8.44 3.84 7.94C3.84 7.44 3.44 7.04 2.92 7.04C2.4 7.04 2 7.44 2 7.94C2 8.44 2.4 8.84 2.92 8.84M9.25 7.06C6.46 7.06 4.7 8.96 4.7 12C4.7 15.06 6.46 16.96 9.25 16.96C12.04 16.96 13.8 15.06 13.8 12C13.8 8.96 12.04 7.06 9.25 7.06M9.25 8.5C10.96 8.5 12.05 9.87 12.05 12C12.05 14.15 10.96 15.5 9.25 15.5C7.54 15.5 6.46 14.15 6.46 12C6.46 9.87 7.54 8.5 9.25 8.5M14.5 14.11C14.57 15.87 16 16.96 18.22 16.96C20.54 16.96 22 15.82 22 14C22 12.57 21.18 11.77 19.23 11.32L18.13 11.07C16.95 10.79 16.47 10.42 16.47 9.78C16.47 9 17.2 8.45 18.28 8.45C19.38 8.45 20.13 9 20.21 9.89H21.84C21.8 8.2 20.41 7.06 18.29 7.06C16.21 7.06 14.73 8.21 14.73 9.91C14.73 11.28 15.56 12.13 17.33 12.53L18.57 12.82C19.78 13.11 20.27 13.5 20.27 14.2C20.27 15 19.47 15.57 18.31 15.57C17.15 15.57 16.26 15 16.16 14.11H14.5Z" />
+                                                                        </svg>
+                                                                    </template>
+                                                                </div>
+                                                                <div>
+                                                                    <div class="font-bold capitalize"
+                                                                        x-text="session.parsedUa.device.type == 'Unknown' && session.parsedUa.os == 'Windows' ? 
+                                                                        'PC | Laptop' :  session.parsedUa.device.type == 'mobile' && session.parsedUa.device.os == 'android' ?
+                                                                        'Android' : session.parsedUa.device.type == 'Unknown' && session.parsedUa.os == 'Mac OS' ? 'MacOS' : session.parsedUa.device.type">
+                                                                    </div>
+                                                                    <div class="text-xs"
+                                                                        x-text="session.parsedUa.device.model == 'Unknown' ? session.parsedUa.os : session.parsedUa.device.vendor != 'Unknown' ? session.parsedUa.device.vendor +' - '+session.parsedUa.device.model : session.parsedUa.device.model">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="justify-cent er flex items-center">
+
+                                                                <button @click="removeSession(session.id)"
+                                                                    :disabled="removeSessionLoading"
+                                                                    class="rounded-md bg-gray-800/75 p-2 hover:bg-red-900">
+                                                                    <svg x-cloak x-show="removeSessionLoading"
+                                                                        aria-hidden="true"
+                                                                        class="inline h-4 w-4 animate-spin fill-gray-600 text-gray-200 dark:fill-gray-300 dark:text-gray-600"
+                                                                        viewBox="0 0 100 101" fill="none"
+                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                        <path
+                                                                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                                            fill="currentColor" />
+                                                                        <path
+                                                                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                                            fill="currentFill" />
+                                                                    </svg>
+                                                                    <span class="sr-only">Loading...</span>
+
+                                                                    <svg x-cloak x-show="!removeSessionLoading"
+                                                                        class="h-4 w-4 text-white"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 24 24">
+                                                                        <path fill="currentColor"
+                                                                            d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                                                                    </svg>
+                                                                </button>
+                                                            </div>
+                                                        </li>
+
+                                                    </template>
+                                                </ol>
+                                            </template>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div x-cloak x-show="recordsLoading" role="status"
+                                class="absolute left-1/2 top-2/4 -translate-x-1/2 -translate-y-1/2">
+                                <svg aria-hidden="true"
+                                    class="h-8 w-8 animate-spin fill-white text-gray-200 dark:text-gray-600"
+                                    viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                        fill="currentColor" />
+                                    <path
+                                        d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                        fill="currentFill" />
+                                </svg>
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
         </div>
+        <template x-if="users.length < usersRoleCount">
+            <div class="flex items-center justify-end pt-2">
+                <div x-cloak x-show="loadingFetch" class="p-2" role="status">
+                    <svg aria-hidden="true"
+                        class="inline h-6 w-6 animate-spin fill-gray-600 text-gray-200 dark:fill-gray-300 dark:text-gray-600"
+                        viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor" />
+                        <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill" />
+                    </svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <button type="button" id="load_more_button" @click="loadMoreUsers" :disabled="loadingFetch"
+                    class="hover:text-primary-700 flex flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
+                    <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M2 12C2 16.97 6.03 21 11 21C13.39 21 15.68 20.06 17.4 18.4L15.9 16.9C14.63 18.25 12.86 19 11 19C4.76 19 1.64 11.46 6.05 7.05C10.46 2.64 18 5.77 18 12H15L19 16H19.1L23 12H20C20 7.03 15.97 3 11 3C6.03 3 2 7.03 2 12Z" />
+                    </svg>
+                    Load More
+                </button>
+            </div>
+        </template>
     </div>
     @section('script')
         <script>
-            function usersData() {
-                return{
-                    users:[],
-                    
+            function manageUsers() {
+                return {
+                    // Data Containers
+                    users: @json($users),
+                    originalUsers: @json($users),
+                    originalData: {
+                        users: @json($users),
+                        usersRoleCount: {{ $users_role_count }},
+                        offset: 4,
+                    },
+                    usersRoleCount: {{ $users_role_count }},
+                    selectedUserIds: [],
+                    userRecords: [],
+                    latestEnrollment: null,
+                    allChecked: false,
+                    searchQuery: '',
+                    enrolleeData: null,
+
+                    // Loading 
+                    loadingFetch: false,
+                    recordsLoading: false,
+                    removeSessionLoading: false,
+
+                    // Modal Triggers
+                    recordsModal: false,
+                    showEnrolleeData: false,
+
+                    // Data Chunking
+                    offset: 0,
+                    chunkSize: 4,
+
+                    // Preventing Multiple Requests
+                    controller: null,
+                    xhr: null,
+
+                    init() {
+                        this.offset = this.users ? this.users.length : 0
+                        console.log(this.offset);
+
+                        const role_select = $('#role_select');
+                        role_select.on('change', () => {
+                            this.roleChanged(role_select.val());
+                        });
+
+                    },
+                    // Checkbox
+                    toggleUser(userId) {
+                        if (this.selectedUserIds.includes(userId)) {
+                            this.selectedUserIds = this.selectedUserIds.filter(id => id !== userId);
+                        } else {
+                            this.selectedUserIds.push(userId);
+                        }
+                        this.allChecked = this.selectedUserIds.length === this.originalUsers.length;
+                        console.log(this.selectedUserIds);
+                    },
+                    toggleAllCheckboxes(event) {
+                        this.allChecked = !this.allChecked;
+                        this.selectedUserIds = this.allChecked ? this.originalUsers.map(user => user.id) : [];
+                    },
+                    isSelected(userId) {
+                        return this.selectedUserIds.includes(userId);
+                    },
+
+                    // Utility
+                    capitalize(str) {
+                        return str.toLowerCase().replace(/\b\w/g, char => char.toUpperCase());
+                    },
+                    roleChanged(role) {
+                        window.location.href = '/users?role=' + role;
+                    },
+                    triggerModal(modal) {
+                        if (modal == 'records') {
+                            this.recordsModal = !this.recordsModal;
+                        }
+                    },
+                    formatBloodType(bloodType) {
+                        if (!bloodType) return '';
+
+                        let formatted = bloodType.replace('_plus', '+').replace('_minus', '-');
+                        return formatted.charAt(0).toUpperCase() + formatted.slice(1);
+                    },
+
+
+                    // Searching
+                    searchStudent(event) {
+                        const searchTerm = event.target.value.toLowerCase().trim();
+                        if (searchTerm) {
+                            this.users = this.originalUsers.filter(user => {
+                                const fullName = `${user.fname} ${user.lname}`.toLowerCase();
+                                return fullName.includes(searchTerm);
+                            });
+                        } else {
+                            this.users = this.originalUsers;
+                        }
+                    },
+
+                    // Table Actions
+                    promoteUser() {
+                        var form = event.target.closest('form');
+
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "Promote user's role to Instructor Role",
+                            icon: "question",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Continue"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            }
+                        });
+                    },
+                    disableUser() {
+                        var form = event.target.closest('form');
+
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "The user will not be able to access their account until it is re-enabled.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Continue"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            }
+                        });
+                    },
+                    loadMoreUsers() {
+                        this.loadingFetch = true
+                        this.abortFetch('fetch')
+                        this.controller = new AbortController();
+                        const signal = this.controller.signal
+                        var role = "{{ $role }}";
+                        fetch(`/users/load_more_users?role=${role}&chunkSize=${this.chunkSize}&offset=${this.offset}&searchTerm=${this.searchQuery}`, {
+                                signal
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+
+                                const newUsers = data.users.filter(newUser =>
+                                    !this.users.some(existingUser => existingUser.id === newUser.id)
+                                );
+
+                                this.users = this.users.concat(newUsers);
+                                this.originalData.users = this.users;
+
+                                this.usersRoleCount = data.count
+                                this.originalData.usersRoleCount = this.usersRoleCount
+
+                                this.offset += this.chunkSize;
+                                this.originalData.offset = this.offset;
+
+                                this.loadingFetch = false
+                            })
+                            .catch(error => {
+                                if (error.name === 'AbortError') {
+                                    console.log('Please do not make multiple request');
+                                    this.loadingFetch = false
+
+                                } else {
+                                    // handle other errors
+                                }
+                            });
+                        console.log(this.users);
+                    },
+
+                    // Records Modal
+                    getUserRecord(userId) {
+                        this.recordsLoading = true
+                        this.latestEnrollment = null
+                        this.abortFetch('ajax')
+                        var thisFunction = this;
+                        this.userRecords = [];
+                        this.xhr = $.ajax({
+                            url: '{{ route('get_user_records') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                user_id: userId
+                            },
+                            success: function(response) {
+                                thisFunction.userRecords = response.user_records;
+
+                                if (thisFunction.userRecords.user_session && Array.isArray(thisFunction.userRecords
+                                        .user_session)) {
+                                    thisFunction.userRecords.user_session.forEach(session => {
+                                        session.parsedUa = thisFunction.ua_parser(session.user_agent);
+                                    });
+                                }
+
+                                console.log(thisFunction.userRecords.user_session);
+
+                                if (thisFunction.userRecords.enrollee || thisFunction.userRecords.enrollee.length >
+                                    0) {
+                                    thisFunction.latestEnrollment = thisFunction.userRecords.enrollee.reduce((
+                                        latest, enrollee) => {
+                                        return new Date(enrollee.created_at) > new Date(latest.created_at) ?
+                                            enrollee : latest;
+                                    }, thisFunction.userRecords.enrollee[0])
+                                }
+
+                                console.log(thisFunction.userRecords);
+                                thisFunction.recordsLoading = false;
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                            }
+                        });
+                        this.triggerModal('records');
+                        // console.log(this.userRecords.enrollee.length);
+                    },
+                    ua_parser(userAgent) {
+                        const parser = new UAParser(userAgent);
+                        // const parser = new UAParser(
+                        //     `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11`
+                        // );
+                        const result = parser.getResult();
+                        console.log(result);
+
+                        return {
+                            device: {
+                                type: result.device.type || 'Unknown',
+                                model: result.device.model || 'Unknown',
+                                vendor: result.device.vendor || 'Unknown'
+                                // type: 'mobile',
+                                // model: result.device.model || 'iPhone',
+                                // vendor: result.device.vendor || 'Unknown'
+                            },
+                            os: result.os.name || 'Unknown',
+                            browser: result.browser.name || 'Unknown'
+                        };
+                    },
+                    removeSession(sessionId) {
+                        this.removeSessionLoading = true
+                        this.abortFetch('ajax')
+                        var thisFunction = this;
+
+                        this.xhr = $.ajax({
+                            url: '{{ route('remove_session') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                session_id: sessionId
+                            },
+                            success: function(response) {
+                                var index = thisFunction.userRecords.user_session.findIndex(session => session
+                                    .id === sessionId)
+                                thisFunction.userRecords.user_session.splice(index, 1);
+                                thisFunction.removeSessionLoading = false;
+
+                                alert(`${response.status}: ${response.message}`)
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                            }
+                        });
+                    },
+
+                    // Records Modal - Address
+                    async fetchUserLocations() {
+
+                        const enrollee = this.enrolleeData;
+
+                        await Promise.all([
+                            this.fetchRegionName(enrollee.region),
+                            this.fetchProvinceName(enrollee.province),
+                            this.fetchCityName(enrollee.city),
+                            this.fetchBarangayName(enrollee.city, enrollee.barangay)
+                        ]);
+                    },
+                    async fetchRegionName(regionCode) {
+                        try {
+                            const response = await fetch(`https://psgc.gitlab.io/api/regions/${regionCode}`);
+                            const data = await response.json();
+                            this.enrolleeData.regionName = this.capitalize(data.name);
+                            console.log(data.name);
+                        } catch (error) {
+                            console.error('Error fetching region name:', error);
+                        }
+                    },
+                    async fetchProvinceName(provinceCode) {
+                        try {
+                            const response = await fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}`);
+                            const data = await response.json();
+                            this.enrolleeData.provinceName = this.capitalize(data.name);
+                        } catch (error) {
+                            console.error('Error fetching province name:', error);
+                        }
+                    },
+                    async fetchCityName(cityCode) {
+                        try {
+                            const response = await fetch(`https://psgc.gitlab.io/api/cities-municipalities/${cityCode}`);
+                            const data = await response.json();
+                            this.enrolleeData.cityName = this.capitalize(data.name);
+                        } catch (error) {
+                            console.error('Error fetching city name:', error);
+                        }
+                    },
+                    async fetchBarangayName(cityCode, barangayCode) {
+                        try {
+                            const response = await fetch(
+                                `https://psgc.gitlab.io/api/cities-municipalities/${cityCode}/barangays`);
+                            const data = await response.json();
+                            const barangay = data.find(barangay => barangay.code === barangayCode);
+                            this.enrolleeData.barangayName = barangay ? this.capitalize(barangay.name) : '';
+                        } catch (error) {
+                            console.error('Error fetching barangay name:', error);
+                        }
+                    },
+
+                    searchUsers() {
+                        this.abortFetch('fetch')
+                        this.controller = new AbortController();
+                        const signal = this.controller.signal
+                        var role = "{{ $role }}";
+
+                        if (this.searchQuery.trim() == '') {
+                            this.users = this.originalData.users;
+                            this.usersRoleCount = this.originalData.usersRoleCount
+                            this.offset = this.originalData.offset
+                        } else {
+                            fetch(`/users/search_user?role=${role}&searchTerm=${this.searchQuery}`, {
+                                    signal
+                                })
+                                .then(response => response.json())
+                                .then(data => {
+                                    this.users = data.users;
+                                    this.usersRoleCount = data.count
+                                    // Reset the offset since we’re showing search results
+                                    this.offset = 4;
+                                });
+                        }
+                    },
+                    abortFetch(type) {
+                        // Abort the current fetch request if there's an ongoing one
+                        if (type == 'fetch') {
+                            if (this.controller) {
+                                this.controller.abort();
+                            }
+                        }
+
+                        if (type == 'ajax') {
+                            if (this.xhr) {
+                                this.xhr.abort();
+                            }
+                        }
+                    },
+
+                    showData(enrolleeId) {
+                        this.recordsLoading = true
+                        this.enrolleeData = null
+                        this.abortFetch('ajax')
+                        var thisFunction = this;
+                        this.xhr = $.ajax({
+                            url: '{{ route('get_enrollee_data') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                enrollee_id: enrolleeId
+                            },
+                            success: function(response) {
+                                thisFunction.enrolleeData = response.enrollee_data;
+
+                                console.log(thisFunction.enrolleeData);
+                                thisFunction.fetchUserLocations();
+                                thisFunction.recordsLoading = false;
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                            }
+                        });
+                        this.showEnrolleeData = true
+                    }
+
+
+
                 }
             }
         </script>

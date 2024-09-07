@@ -43,10 +43,10 @@
         @endif
 
     </x-slot>
-    <div x-data="stream" id="course_list" class="mx-8  flex flex-col-reverse pt-44 text-white">
+    <div x-data="stream" id="course_list" class="mx-8 flex flex-col-reverse pb-4 pt-48 text-white">
         <template x-if="posts.length > 0">
             <template x-for="post in posts" :key="post.id">
-                <div class="my-1.5 shadow-md rounded-md bg-gray-800 p-3">
+                <div class="my-1.5 rounded-md bg-gray-800 p-3 shadow-md">
                     <div class="mb-1.5 flex items-center justify-between px-2 text-xs">
                         <div>
                             <div>

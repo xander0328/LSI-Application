@@ -13,12 +13,12 @@
         <x-course-nav :selected="'assignment'" :batch="$batch->id"></x-course-nav>
 
     </x-slot>
-    <div x-data="assignmentList" id="course_list" class="mx-8 pb-4 pt-44 text-white">
-        <div class="pt-2 flex">
+    <div x-data="assignmentList" id="course_list" class="mx-8 pb-4 pt-48 text-white">
+        <div class="relative flex pt-2">
             <x-dropdown width="lg" align="left">
                 <x-slot name="trigger">
                     <button
-                        class=" rounded-md flex bg-sky-700 hover:bg-sky-800 px-4 py-2 cursor-pointer text-sm  transition duration-150 ease-in-out focus:outline-none text-white ">
+                        class="flex cursor-pointer rounded-md bg-sky-700 px-4 py-2 text-sm text-white transition duration-150 ease-in-out hover:bg-sky-800 focus:outline-none">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mr-1 h-5 w-5">
                             <path fill="currentColor"
                                 d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
@@ -30,7 +30,7 @@
                 <x-slot name="content">
                     <div class="m-1.5">
                         <a @click="triggerModal('assignment')"
-                            class=" w-full cursor-pointer hover:bg-gray-800 py-2 text-start text-sm leading-5 text-gray-300 focus:outline-none focus:bg-gray-800 transition duration-150 ease-in-out flex px-4 items-center space-x-1.5 rounded-md">
+                            class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path fill="currentColor"
                                     d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
@@ -40,7 +40,7 @@
 
                         <template x-if="course.structure != 'small'">
                             <a @click="triggerModal('lesson')"
-                                class=" w-full cursor-pointer hover:bg-gray-800 py-2 text-start text-sm leading-5 text-gray-300 focus:outline-none focus:bg-gray-800 transition duration-150 ease-in-out flex px-4 items-center space-x-1.5 rounded-md">
+                                class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                 <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path fill="currentColor"
                                         d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
@@ -51,7 +51,7 @@
 
                         <template x-if="course.structure == 'big'">
                             <a @click="triggerModal('uc')"
-                                class=" w-full cursor-pointer hover:bg-gray-800 py-2 text-start text-sm leading-5 text-gray-300 focus:outline-none focus:bg-gray-800 transition duration-150 ease-in-out flex px-4 items-center space-x-1.5 rounded-md">
+                                class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                 <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path fill="currentColor"
                                         d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
@@ -65,161 +65,172 @@
             </x-dropdown>
         </div>
         <template x-if="course.structure == 'big'">
-            <template x-for="uc in uc" :key="uc.id">
-                <div x-data="{ open: false }">
-                    <h2 :id="`accordion-collapse-heading-${uc.id}`" x-transition>
-                        <button type="button" @click="open = !open" :class="open ? 'bg-sky-800' : 'bg-gray-700 '"
-                            class="mt-2 flex w-full items-center rounded-b-md justify-between gap-3 rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white">
-                            <div>
-                                <div x-text="uc.title"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <svg class="h-3 w-3 shrink-0 rotate-180" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M9 5 5 1 1 5" />
-                                </svg>
-                            </div>
-
-                        </button>
-                    </h2>
-                    <div x-show="open" x-transition>
-                        <template x-if="uc.lesson.length < 1">
-                            <div class="my-2 rounded-md bg-gray-800 p-1.5 text-sm text-white/75 text-center">No
-                                Lesson
-                            </div>
-                        </template>
-                        <template x-for="lesson in uc.lesson" :key="lesson.id">
-                            <div class="px-2 py-1.5">
-                                <div class=" text-md bg-sky-700 p-1.5 rounded-md my-1.5" x-text="lesson.title">
+            <div>
+                <template x-for="uc in uc" :key="uc.id">
+                    <div x-data="{ open: false }">
+                        <h2 :id="`accordion-collapse-heading-${uc.id}`" x-transition>
+                            <button type="button" @click="open = !open" :class="open ? 'bg-sky-800' : 'bg-gray-700 '"
+                                class="mt-2 flex w-full items-center justify-between gap-3 rounded-b-md rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white">
+                                <div>
+                                    <div x-text="uc.title"></div>
                                 </div>
-                                <template x-if="lesson.assignment.length < 1">
-                                    <div class="mb-2 rounded-md bg-gray-800 p-1.5 text-sm text-white/75 text-center">No
-                                        Assignment
+                                <div class="flex items-center">
+                                    <svg class="h-3 w-3 shrink-0 rotate-180" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 10 6">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M9 5 5 1 1 5" />
+                                    </svg>
+                                </div>
+
+                            </button>
+                        </h2>
+                        <div x-show="open" x-transition>
+                            <template x-if="uc.lesson.length < 1">
+                                <div class="my-2 rounded-md bg-gray-800 p-1.5 text-center text-sm text-white/75">No
+                                    Lesson
+                                </div>
+                            </template>
+                            <template x-for="lesson in uc.lesson" :key="lesson.id">
+                                <div class="px-2 py-1.5">
+                                    <div class="text-md my-1.5 rounded-md bg-sky-700 p-1.5" x-text="lesson.title">
                                     </div>
-                                </template>
-                                <template x-for="assignment in lesson.assignment" :key="assignment.id">
-                                    <div class="mb-2 rounded-md bg-gray-800 p-px">
-                                        <div class="my-2 w-full rounded-md bg-gray-800 px-3 py-px">
-                                            <a :href=`/list_turn_ins/${assignment.id}`
-                                                class="flex items-center justify-between">
-                                                <div class="flex items-center justify-start gap-4">
-                                                    <div>
-                                                        <div class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full p-2"
-                                                            :class="{
-                                                                'bg-sky-700': !assignment.closed,
-                                                                'bg-red-700': assignment.closed,
-                                                            }">
-                                                            <svg x-show="assignment.closed"
-                                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                                <title>book-cancel-outline</title>
-                                                                <path fill="white"
-                                                                    d="M12.18 20C12.36 20.72 12.65 21.39 13.04 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H18C19.11 2 20 2.9 20 4V12.18C19.5 12.07 19 12 18.5 12C18.33 12 18.17 12 18 12.03V4H13V12L10.5 9.75L8 12V4H6V20H12.18M23 18.5C23 21 21 23 18.5 23S14 21 14 18.5 16 14 18.5 14 23 16 23 18.5M20 21.08L15.92 17C15.65 17.42 15.5 17.94 15.5 18.5C15.5 20.16 16.84 21.5 18.5 21.5C19.06 21.5 19.58 21.35 20 21.08M21.5 18.5C21.5 16.84 20.16 15.5 18.5 15.5C17.94 15.5 17.42 15.65 17 15.92L21.08 20C21.35 19.58 21.5 19.06 21.5 18.5Z" />
-                                                            </svg>
-                                                            <svg x-show="!assignment.closed"
-                                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                                <title>book-clock-outline</title>
-                                                                <path fill="white"
-                                                                    d="M20 11.26V4C20 2.9 19.11 2 18 2H6C4.89 2 4 2.9 4 4V20C4 21.11 4.89 22 6 22H11.11C12.37 23.24 14.09 24 16 24C19.87 24 23 20.87 23 17C23 14.62 21.81 12.53 20 11.26M18 4V10.29C17.37 10.11 16.7 10 16 10C14.93 10 13.91 10.25 13 10.68V4H18M6 4H8V12L10.5 9.75L12.1 11.19C10.23 12.45 9 14.58 9 17C9 18.08 9.25 19.09 9.68 20H6V4M16 22C13.24 22 11 19.76 11 17S13.24 12 16 12 21 14.24 21 17 18.76 22 16 22M16.5 17.25L19.36 18.94L18.61 20.16L15 18V13H16.5V17.25Z" />
-                                                            </svg>
+                                    <template x-if="lesson.assignment.length < 1">
+                                        <div
+                                            class="mb-2 rounded-md bg-gray-800 p-1.5 text-center text-sm text-white/75">
+                                            No
+                                            Assignment
+                                        </div>
+                                    </template>
+                                    <template x-for="assignment in lesson.assignment" :key="assignment.id">
+                                        <div class="mb-2 rounded-md bg-gray-800 p-px">
+                                            <div class="my-2 w-full rounded-md bg-gray-800 px-3 py-px">
+                                                <a :href=`/list_turn_ins/${assignment.id}`
+                                                    class="flex items-center justify-between">
+                                                    <div class="flex items-center justify-start gap-4">
+                                                        <div>
+                                                            <div class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full p-2"
+                                                                :class="{
+                                                                    'bg-sky-700': !assignment.closed,
+                                                                    'bg-red-700': assignment.closed,
+                                                                }">
+                                                                <svg x-show="assignment.closed"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24">
+                                                                    <title>book-cancel-outline</title>
+                                                                    <path fill="white"
+                                                                        d="M12.18 20C12.36 20.72 12.65 21.39 13.04 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H18C19.11 2 20 2.9 20 4V12.18C19.5 12.07 19 12 18.5 12C18.33 12 18.17 12 18 12.03V4H13V12L10.5 9.75L8 12V4H6V20H12.18M23 18.5C23 21 21 23 18.5 23S14 21 14 18.5 16 14 18.5 14 23 16 23 18.5M20 21.08L15.92 17C15.65 17.42 15.5 17.94 15.5 18.5C15.5 20.16 16.84 21.5 18.5 21.5C19.06 21.5 19.58 21.35 20 21.08M21.5 18.5C21.5 16.84 20.16 15.5 18.5 15.5C17.94 15.5 17.42 15.65 17 15.92L21.08 20C21.35 19.58 21.5 19.06 21.5 18.5Z" />
+                                                                </svg>
+                                                                <svg x-show="!assignment.closed"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24">
+                                                                    <title>book-clock-outline</title>
+                                                                    <path fill="white"
+                                                                        d="M20 11.26V4C20 2.9 19.11 2 18 2H6C4.89 2 4 2.9 4 4V20C4 21.11 4.89 22 6 22H11.11C12.37 23.24 14.09 24 16 24C19.87 24 23 20.87 23 17C23 14.62 21.81 12.53 20 11.26M18 4V10.29C17.37 10.11 16.7 10 16 10C14.93 10 13.91 10.25 13 10.68V4H18M6 4H8V12L10.5 9.75L12.1 11.19C10.23 12.45 9 14.58 9 17C9 18.08 9.25 19.09 9.68 20H6V4M16 22C13.24 22 11 19.76 11 17S13.24 12 16 12 21 14.24 21 17 18.76 22 16 22M16.5 17.25L19.36 18.94L18.61 20.16L15 18V13H16.5V17.25Z" />
+                                                                </svg>
+                                                            </div>
+                                                        </div>
+                                                        <div class="w-full font-medium dark:text-white">
+                                                            <div x-text="assignment.title"></div>
+                                                            {{-- <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                                {{ mb_strimwidth($assignment->description, 0, 70, '...') }}
+                                                            </div> --}}
                                                         </div>
                                                     </div>
-                                                    <div class="w-full font-medium dark:text-white">
-                                                        <div x-text="assignment.title"></div>
-                                                        {{-- <div class="text-sm text-gray-500 dark:text-gray-400">
-                                                            {{ mb_strimwidth($assignment->description, 0, 70, '...') }}
-                                                        </div> --}}
+                                                    <div class="text-sm text-gray-500"
+                                                        x-text=" assignment.due_date != null ? 'Due ' + moment(assignment.due_date).format('ll') : 'No due'">
                                                     </div>
-                                                </div>
-                                                <div class="text-sm text-gray-500"
-                                                    x-text=" assignment.due_date != null ? 'Due ' + moment(assignment.due_date).format('ll') : 'No due'">
-                                                </div>
-                                            </a>
+                                                </a>
+
+                                            </div>
 
                                         </div>
-
-                                    </div>
-                                </template>
-                            </div>
-                        </template>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
                     </div>
-                </div>
-            </template>
+                </template>
+                <template x-if="uc.length < 1">
+                    <div>No Assignments</div>
+                </template>
+            </div>
 
         </template>
         <template x-if="course.structure == 'medium'">
-            <template x-for="lesson in uc[0].lesson" :key="lesson.id">
-                <div x-data="{ open: false }">
-                    <h2 :id="`accordion-collapse-heading-${uc.id}`" x-transition>
-                        <button type="button" @click="open = !open" :class="open ? 'bg-sky-800' : 'bg-gray-700 '"
-                            class="mt-2 flex w-full items-center rounded-b-md justify-between gap-3 rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white"
-                            :data-accordion-target="`#accordion-collapse-body-${uc.id}`" aria-expanded="false"
-                            :aria-controls="`accordion-collapse-body-${uc.id}`">
-                            <div>
-                                <div x-text="lesson.title"></div>
-                            </div>
-                            <div class="flex items-center">
-                                <svg class="h-3 w-3 shrink-0 rotate-180" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 10 6">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M9 5 5 1 1 5" />
-                                </svg>
-                            </div>
-
-                        </button>
-                    </h2>
-                    <div x-show="open" x-transition>
-                        <template x-if="lesson.assignment.length < 1">
-                            <div class="my-2 mx-1 rounded-md bg-gray-800 p-1.5 text-sm text-white/75 text-center">No
-                                Assignment
-                            </div>
-                        </template>
-                        <template x-for="assignment in lesson.assignment" :key="assignment.id">
-                            <div class="my-2 mx-1 rounded-md bg-gray-800 p-px">
-                                <div class="my-2 w-full rounded-md bg-gray-800 px-3 py-px">
-                                    <a :href=`/list_turn_ins/${assignment.id}`
-                                        class="flex items-center justify-between">
-                                        <div class="flex items-center justify-start gap-4">
-                                            <div>
-                                                <div class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full p-2"
-                                                    :class="{
-                                                        'bg-sky-700': !assignment.closed,
-                                                        'bg-red-700': assignment.closed,
-                                                    }">
-                                                    <svg x-show="assignment.closed" xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24">
-                                                        <title>book-cancel-outline</title>
-                                                        <path fill="white"
-                                                            d="M12.18 20C12.36 20.72 12.65 21.39 13.04 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H18C19.11 2 20 2.9 20 4V12.18C19.5 12.07 19 12 18.5 12C18.33 12 18.17 12 18 12.03V4H13V12L10.5 9.75L8 12V4H6V20H12.18M23 18.5C23 21 21 23 18.5 23S14 21 14 18.5 16 14 18.5 14 23 16 23 18.5M20 21.08L15.92 17C15.65 17.42 15.5 17.94 15.5 18.5C15.5 20.16 16.84 21.5 18.5 21.5C19.06 21.5 19.58 21.35 20 21.08M21.5 18.5C21.5 16.84 20.16 15.5 18.5 15.5C17.94 15.5 17.42 15.65 17 15.92L21.08 20C21.35 19.58 21.5 19.06 21.5 18.5Z" />
-                                                    </svg>
-                                                    <svg x-show="!assignment.closed"
-                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                        <title>book-clock-outline</title>
-                                                        <path fill="white"
-                                                            d="M20 11.26V4C20 2.9 19.11 2 18 2H6C4.89 2 4 2.9 4 4V20C4 21.11 4.89 22 6 22H11.11C12.37 23.24 14.09 24 16 24C19.87 24 23 20.87 23 17C23 14.62 21.81 12.53 20 11.26M18 4V10.29C17.37 10.11 16.7 10 16 10C14.93 10 13.91 10.25 13 10.68V4H18M6 4H8V12L10.5 9.75L12.1 11.19C10.23 12.45 9 14.58 9 17C9 18.08 9.25 19.09 9.68 20H6V4M16 22C13.24 22 11 19.76 11 17S13.24 12 16 12 21 14.24 21 17 18.76 22 16 22M16.5 17.25L19.36 18.94L18.61 20.16L15 18V13H16.5V17.25Z" />
-                                                    </svg>
-                                                </div>
-                                            </div>
-                                            <div class="w-full font-medium dark:text-white">
-                                                <div x-text="assignment.title"></div>
-                                                {{-- <div class="text-sm text-gray-500 dark:text-gray-400">
-                                                            {{ mb_strimwidth($assignment->description, 0, 70, '...') }}
-                                                        </div> --}}
-                                            </div>
-                                        </div>
-                                        <div class="text-sm text-gray-500"
-                                            x-text=" assignment.due_date != null ? 'Due ' + moment(assignment.due_date).format('ll') : 'No due'">
-                                        </div>
-                                    </a>
-
+            <template x-if="uc != null">
+                <template x-for="lesson in uc[0].lesson" :key="lesson.id">
+                    <div x-data="{ open: false }">
+                        <h2 :id="`accordion-collapse-heading-${uc.id}`" x-transition>
+                            <button type="button" @click="open = !open" :class="open ? 'bg-sky-800' : 'bg-gray-700 '"
+                                class="mt-2 flex w-full items-center justify-between gap-3 rounded-b-md rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white"
+                                :data-accordion-target="`#accordion-collapse-body-${uc.id}`" aria-expanded="false"
+                                :aria-controls="`accordion-collapse-body-${uc.id}`">
+                                <div>
+                                    <div x-text="lesson.title"></div>
+                                </div>
+                                <div class="flex items-center">
+                                    <svg class="h-3 w-3 shrink-0 rotate-180" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 10 6">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M9 5 5 1 1 5" />
+                                    </svg>
                                 </div>
 
-                            </div>
-                        </template>
-                    </div>
-                </div>
-            </template>
+                            </button>
+                        </h2>
+                        <div x-show="open" x-transition>
+                            <template x-if="lesson.assignment.length < 1">
+                                <div class="mx-1 my-2 rounded-md bg-gray-800 p-1.5 text-center text-sm text-white/75">
+                                    No
+                                    Assignment
+                                </div>
+                            </template>
+                            <template x-for="assignment in lesson.assignment" :key="assignment.id">
+                                <div class="mx-1 my-2 rounded-md bg-gray-800 p-px">
+                                    <div class="my-2 w-full rounded-md bg-gray-800 px-3 py-px">
+                                        <a :href=`/list_turn_ins/${assignment.id}`
+                                            class="flex items-center justify-between">
+                                            <div class="flex items-center justify-start gap-4">
+                                                <div>
+                                                    <div class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full p-2"
+                                                        :class="{
+                                                            'bg-sky-700': !assignment.closed,
+                                                            'bg-red-700': assignment.closed,
+                                                        }">
+                                                        <svg x-show="assignment.closed"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <title>book-cancel-outline</title>
+                                                            <path fill="white"
+                                                                d="M12.18 20C12.36 20.72 12.65 21.39 13.04 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H18C19.11 2 20 2.9 20 4V12.18C19.5 12.07 19 12 18.5 12C18.33 12 18.17 12 18 12.03V4H13V12L10.5 9.75L8 12V4H6V20H12.18M23 18.5C23 21 21 23 18.5 23S14 21 14 18.5 16 14 18.5 14 23 16 23 18.5M20 21.08L15.92 17C15.65 17.42 15.5 17.94 15.5 18.5C15.5 20.16 16.84 21.5 18.5 21.5C19.06 21.5 19.58 21.35 20 21.08M21.5 18.5C21.5 16.84 20.16 15.5 18.5 15.5C17.94 15.5 17.42 15.65 17 15.92L21.08 20C21.35 19.58 21.5 19.06 21.5 18.5Z" />
+                                                        </svg>
+                                                        <svg x-show="!assignment.closed"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <title>book-clock-outline</title>
+                                                            <path fill="white"
+                                                                d="M20 11.26V4C20 2.9 19.11 2 18 2H6C4.89 2 4 2.9 4 4V20C4 21.11 4.89 22 6 22H11.11C12.37 23.24 14.09 24 16 24C19.87 24 23 20.87 23 17C23 14.62 21.81 12.53 20 11.26M18 4V10.29C17.37 10.11 16.7 10 16 10C14.93 10 13.91 10.25 13 10.68V4H18M6 4H8V12L10.5 9.75L12.1 11.19C10.23 12.45 9 14.58 9 17C9 18.08 9.25 19.09 9.68 20H6V4M16 22C13.24 22 11 19.76 11 17S13.24 12 16 12 21 14.24 21 17 18.76 22 16 22M16.5 17.25L19.36 18.94L18.61 20.16L15 18V13H16.5V17.25Z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div class="w-full font-medium dark:text-white">
+                                                    <div x-text="assignment.title"></div>
+                                                    {{-- <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                                {{ mb_strimwidth($assignment->description, 0, 70, '...') }}
+                                                            </div> --}}
+                                                </div>
+                                            </div>
+                                            <div class="text-sm text-gray-500"
+                                                x-text=" assignment.due_date != null ? 'Due ' + moment(assignment.due_date).format('ll') : 'No due'">
+                                            </div>
+                                        </a>
 
+                                    </div>
+
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </template>
         </template>
         <template x-if="course.structure == 'small'">
             <template x-for="lesson in uc[0].lesson" :key="lesson.id">
@@ -274,7 +285,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-2xl p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
@@ -327,6 +338,7 @@
                                         </div>
                                         <input datepicker datepicker-autohide datepicker-buttons
                                             datepicker-autoselect-today id="due_date" type="text" name="due_date"
+                                            autocomplete="off"
                                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                             placeholder="Select date">
                                     </div>
@@ -355,38 +367,45 @@
                                 </div>
 
                             </div>
-                            <div class="col-span-2">
-                                <label for="uc"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Unit of
-                                    Competency</label>
+                            <template x-if="course.structure != 'small'">
+                                <div class="col-span-2">
+                                    <template x-if="course.structure != 'medium'">
+                                        <div class="col-span-2">
+                                            <label for="uc"
+                                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Unit
+                                                of
+                                                Competency</label>
 
-                                <select id="uc" name="uc" required x-model="selectedAssUc"
-                                    @change="ucChanged()"
-                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
-                                    <option selected>Select</option>
+                                            <select id="uc" name="uc" required x-model="selectedAssUc"
+                                                @change="ucChanged()"
+                                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+                                                <option selected>Select</option>
 
-                                    <template x-for="uc in uc" :key="uc.id">
-                                        <option :value="uc.id" x-text="uc.title"></option>
+                                                <template x-for="uc in uc" :key="uc.id">
+                                                    <option :value="uc.id" x-text="uc.title"></option>
+                                                </template>
+
+                                            </select>
+
+                                        </div>
                                     </template>
+                                    <div class="col-span-2">
+                                        <label for="lesson"
+                                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lesson</label>
 
-                                </select>
+                                        <select id="lesson" name="lesson" required
+                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+                                            <option selected>Select</option>
 
-                            </div>
-                            <div class="col-span-2">
-                                <label for="lesson"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lesson</label>
+                                            <template x-for="lesson in lessonOptions.lesson" :key="lesson.id">
+                                                <option :value="lesson.id" x-text="lesson.title"></option>
+                                            </template>
 
-                                <select id="lesson" name="lesson" required
-                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
-                                    <option selected>Select</option>
+                                        </select>
 
-                                    <template x-for="lesson in lessonOptions.lesson" :key="lesson.id">
-                                        <option :value="lesson.id" x-text="lesson.title"></option>
-                                    </template>
-
-                                </select>
-
-                            </div>
+                                    </div>
+                                </div>
+                            </template>
                             <div class="col-span-2">
                                 <label for="title"
                                     class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Title</label>
@@ -497,7 +516,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-gray-700">
@@ -523,28 +542,82 @@
                             <div class="col-span-2">
 
                                 <div class="text-white">
-                                    <div id="list_lessons">
-                                        <template x-for="uc in uc" :key="uc.id">
-                                            <div>
-                                                <div
-                                                    class="flex justify-between items-center my-2 p-1.5 bg-gradient-to-r from-sky-700">
-                                                    <span x-text="uc.title"></span>
-                                                    <button @click="addLesson(uc.id)"
-                                                        class="hover:bg-sky-700 p-2 rounded-md">
-                                                        <svg class="h-4 w-4 text-white"
-                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                            <path fill="currentColor"
-                                                                d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                                <template x-if="uc.lesson.length < 1">
-                                                    <div class="p-2 text-sm text-gray-400">No lesson</div>
-                                                </template>
-
-                                                <template x-for="lesson in uc.lesson" :key="lesson.id">
+                                    <template x-if="course.structure == 'big'">
+                                        <div id="">
+                                            <template x-for="uc in uc" :key="uc.id">
+                                                <div>
                                                     <div
-                                                        class="flex items-center justify-between bg-gray-700 p-2 text-sm hover:bg-gray-800/75 rounded-md">
+                                                        class="my-2 flex items-center justify-between bg-gradient-to-r from-sky-700 p-1.5">
+                                                        <span x-text="uc.title"></span>
+                                                        <button @click="addLesson(uc.id)"
+                                                            class="rounded-md p-2 hover:bg-sky-700">
+                                                            <svg class="h-4 w-4 text-white"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 24 24">
+                                                                <path fill="currentColor"
+                                                                    d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                    <template x-if="uc.lesson.length < 1">
+                                                        <div class="p-2 text-sm text-gray-400">No lesson</div>
+                                                    </template>
+
+                                                    <template x-for="lesson in uc.lesson" :key="lesson.id">
+                                                        <div
+                                                            class="flex items-center justify-between rounded-md bg-gray-700 p-2 text-sm hover:bg-gray-800/75">
+                                                            <span x-text="lesson.title"></span>
+                                                            <div class="flex">
+                                                                <button @click="editModal('lesson', uc.id, lesson.id)"
+                                                                    class="me-1 h-7 w-7 rounded-md p-1 hover:bg-gray-600">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 24 24">
+                                                                        <title>Edit</title>
+                                                                        <path fill="white"
+                                                                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+                                                                    </svg>
+                                                                </button>
+                                                                <form action="{{ route('delete_lesson') }}"
+                                                                    class="h-7 w-7 rounded-md p-1 hover:bg-gray-600"
+                                                                    method="post">
+                                                                    @csrf
+                                                                    <input type="hidden" name="lesson_id"
+                                                                        :value="lesson.id">
+
+                                                                    <button @click.prevent="confirmDelete()"
+                                                                        class="h-full w-full" type="button">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                                            viewBox="0 0 24 24">
+                                                                            <title>Delete</title>
+                                                                            <path fill="white"
+                                                                                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                                                        </svg></button>
+                                                                </form>
+                                                            </div>
+                                                    </template>
+                                                </div>
+                                            </template>
+                                            <template x-if="uc.length < 1">
+                                                <div class="p-2 text-center text-sm text-gray-400">
+                                                    No lessons yet. Create a unit of competency first before adding a
+                                                    lesson.
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+
+                                    <template x-if="course.structure == 'medium'">
+                                        <div>
+                                            <div>
+                                                <button
+                                                    @click="showAddLesson = !showAddLesson; showLessonModal = !showLessonModal"
+                                                    class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm hover:bg-sky-800">Add
+                                                    Lesson</button>
+                                            </div>
+                                            <template x-if="lesson.length > 0">
+                                                <template x-for="lesson in lesson" :key="lesson.id">
+                                                    <div
+                                                        class="flex items-center justify-between rounded-md bg-gray-700 p-2 text-sm hover:bg-gray-800/75">
                                                         <span x-text="lesson.title"></span>
                                                         <div class="flex">
                                                             <button @click="editModal('lesson', uc.id, lesson.id)"
@@ -574,13 +647,14 @@
                                                             </form>
                                                         </div>
                                                 </template>
-                                            </div>
-                                        </template>
-                                        <template x-if="uc.length == 0">
-                                            No lessons yet. Create a unit of competency first before adding a
-                                            lesson.
-                                        </template>
-                                    </div>
+                                            </template>
+                                            <template x-if="lesson.length < 1">
+                                                <div class="p-2 text-center text-sm text-gray-400">
+                                                    No lessons
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
                         </div>
@@ -594,7 +668,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-gray-700">
@@ -622,18 +696,19 @@
                                 <div class="text-white">
                                     <div>
                                         <button @click="showAddUc = !showAddUc; showUCModal = !showUCModal"
-                                            class=" w-full text-sm mb-1.5 rounded-md p-2 bg-sky-700 hover:bg-sky-800">Add
+                                            class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm hover:bg-sky-800">Add
                                             Unit of
                                             Competency</button>
                                     </div>
                                     <div id="list_uc">
                                         <template x-if="uc.length < 1">
-                                            <div class="p-2 text-sm text-gray-400">No lesson</div>
+                                            <div class="p-2 text-center text-sm text-gray-400">No Unit of Competency
+                                            </div>
                                         </template>
 
                                         <template x-for="uc in uc" :key="uc.id">
                                             <div
-                                                class="flex items-center justify-between bg-gray-700 p-2 text-sm hover:bg-gray-800/75 rounded-md">
+                                                class="flex items-center justify-between rounded-md bg-gray-700 p-2 text-sm hover:bg-gray-800/75">
                                                 <span x-text="uc.title"></span>
                                                 <div class="flex">
                                                     <button @click="editModal('uc', uc.id, '')"
@@ -675,7 +750,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-gray-700">
@@ -702,7 +777,7 @@
                             <div class="col-span-2">
                                 <form action="{{ route('edit_lesson') }}" method="post">
                                     <div class="mb-2 block text-sm font-medium text-white">Current
-                                        name: <span class=" font-bold" x-text="selectedLesson.title"></span></div>
+                                        name: <span class="font-bold" x-text="selectedLesson.title"></span></div>
                                     <label for="lesson" class="mb-2 block text-sm font-medium text-white">Change
                                         to:</label>
                                     <div class="grid grid-cols-9">
@@ -736,7 +811,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-gray-700">
@@ -762,7 +837,7 @@
                             <div class="col-span-2">
                                 <form action="{{ route('edit_uc') }}" method="post">
                                     <div class="mb-2 block text-sm font-medium text-white">Current
-                                        name: <span class=" font-bold" x-text="selectedUc.title"></span></div>
+                                        name: <span class="font-bold" x-text="selectedUc.title"></span></div>
                                     <label for="lesson" class="mb-2 block text-sm font-medium text-white">Change
                                         to:</label>
                                     <div class="grid grid-cols-9">
@@ -796,7 +871,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-gray-700">
@@ -822,10 +897,13 @@
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
                                 <form action="{{ route('add_lesson') }}" method="post">
-                                    <div class="mb-2 block text-sm font-medium text-white">Add a lesson to: <span
-                                            class=" font-bold" x-text="selectedUc.title"></span></div>
+                                    <template x-if="course.structure == 'big'">
+                                        <div class="mb-2 block text-sm font-medium text-white">Add a lesson to: <span
+                                                class="font-bold" x-text="selectedUc.title"></span></div>
+                                    </template>
                                     <div class="grid grid-cols-9">
                                         @csrf
+                                        <input type="hidden" name="batch_id" :value="batch.id">
                                         <input type="hidden" name="uc_id" :value="selectedUc.id">
                                         <input autocomplete="on" list="options" id="lesson_title"
                                             name="lesson_title"
@@ -838,9 +916,8 @@
                                             <!-- Add more options as needed -->
                                         </datalist>
 
-
                                         <button type="submit"
-                                            class="ms-2  w-full flex items-center justify-center rounded-md bg-sky-700 p-2 px-3"><svg
+                                            class="ms-2 flex w-full items-center justify-center rounded-md bg-sky-700 p-2 px-3"><svg
                                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white"
                                                 viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -861,7 +938,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-gray-700">
@@ -901,9 +978,8 @@
                                             </template>
                                         </datalist>
 
-
                                         <button type="submit"
-                                            class="ms-2  w-full flex items-center justify-center rounded-md bg-sky-700 p-2 px-3"><svg
+                                            class="ms-2 flex w-full items-center justify-center rounded-md bg-sky-700 p-2 px-3"><svg
                                                 xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white"
                                                 viewBox="0 0 24 24">
                                                 <path fill="currentColor"
@@ -921,7 +997,6 @@
 
     </div>
     </div>
-
 
     {{-- Add UC Modal --}}
     </div>
@@ -972,82 +1047,6 @@
             `;
                 }
             }
-
-            // document.addEventListener('DOMContentLoaded', function() {
-            //     const inputElement = document.querySelector('.assignment_files');
-            //     const pond = FilePond.create(inputElement)
-            //     FilePond.setOptions({
-            //         allowMultiple: true,
-            //         allowReorder: true,
-            //         allowImagePreview: true,
-            //         server: {
-            //             process: {
-            //                 url: '{{ route('temp_upload_assignment') }}',
-            //                 ondata: (formData) => {
-            //                     formData.append('batch_id', '{{ $batch->id }}');
-            //                     return formData;
-            //                 },
-            //             },
-            //             load: '/load_files/{{ $batch->id }}',
-            //             revert: {
-            //                 url: '{{ route('revert_assignment_file') }}',
-            //                 method: 'DELETE',
-            //                 headers: {
-            //                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //                 },
-            //                 ondata: (formData) => {
-            //                     formData.append('batch_id', '{{ $batch->id }}');
-            //                     return formData;
-            //                 }
-            //             },
-            //             remove: (source, load, error) => {
-            //                 fetch(`/delete_assignment_file/{{ $batch->id }}/${source}`, {
-            //                     method: 'DELETE',
-            //                     headers: {
-            //                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //                     }
-            //                 }).then(response => {
-            //                     if (response.ok) {
-            //                         load();
-            //                     } else {
-            //                         error('Could not delete file');
-            //                     }
-            //                 }).catch(() => {
-            //                     error('Could not delete file');
-            //                 });
-            //             },
-            //             headers: {
-            //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //             }
-            //         },
-            //     });
-
-            //     fetch(`/get_assignment_files/{{ $batch->id }}`)
-            //         .then(response => response.json())
-            //         .then(files => {
-            //             const fileItems = files.map(file => ({
-            //                 source: file.id,
-            //                 options: {
-            //                     type: 'local',
-            //                     file: {
-            //                         name: file.filename,
-            //                         type: file
-            //                             .file_type // You can fetch the actual file type if stored in the database
-            //                     },
-            //                     metadata: {
-            //                         id: file.id,
-            //                     }
-            //                 }
-            //             }));
-            //             pond.files = fileItems;
-
-            //             if (fileItems.length > 0)
-            //                 toggleShowAddFile('assigment')
-            //         })
-            //         .catch(error => console.error('Error loading files:', error));
-
-            // })
-
 
             var toggle = $('#due_date_toggle')
             toggle.click(function() {
@@ -1112,8 +1111,9 @@
 
             function assignmentList() {
                 return {
-                    uc: @json($batch['unit_of_competency']),
-                    lesson: @json($batch->unit_of_competency[0]['lesson']),
+                    batch: @json($batch),
+                    uc: @json($batch['unit_of_competency']) ?? [],
+                    lesson: @json(isset($batch->unit_of_competency[0]['lesson']) ? $batch->unit_of_competency[0]['lesson'] : []),
                     all_lessons: @json($all_lessons),
                     all_ucs: @json($all_ucs),
                     course: @json($batch['course']),
@@ -1138,7 +1138,7 @@
                     assignmentFiles: @json($temp_files),
                     filepondFiles: [],
                     init() {
-                        console.log(this.all_ucs);
+                        console.log(this.batch);
 
                         if (this.assignmentFiles) {
                             this.filepondFiles = this.assignmentFiles.map(file => {
@@ -1161,6 +1161,10 @@
                     },
                     triggerModal(type) {
                         if (type === "assignment") {
+                            if (this.course.structure == 'medium') {
+                                this.lessonOptions = this.uc[0]
+                            }
+
                             this.showAssignmentModal = true;
 
                         } else if (type === "lesson") {
@@ -1173,8 +1177,13 @@
                         if (type == 'lesson') {
                             this.showEditLesson = !this.showEditLesson
                             this.showLessonModal = !this.showLessonModal
+                            // console.log(this.uc[0]);
 
-                            this.selectedLesson = this.uc.lesson.find(lesson => lesson.id === lessonId)
+                            if (this.course.structure == 'big') {
+                                this.selectedLesson = this.uc.lesson.find(lesson => lesson.id === lessonId)
+                            } else {
+                                this.selectedLesson = this.uc[0].lesson.find(lesson => lesson.id === lessonId)
+                            }
                         } else if (type == 'uc') {
                             this.showEditUc = !this.showEditUc
                             this.showUCModal = !this.showUCModal

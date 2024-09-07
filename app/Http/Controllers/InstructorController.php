@@ -23,13 +23,14 @@ use App\Models\UnitOfCompetency;
 use App\Models\StudentGrade;
 use App\Models\StudentAttendance;
 use App\Models\Attendance;
+use App\Models\Instructor;
 use App\Http\Controllers\NotificationSendController;
 
 class InstructorController extends Controller
 {
     public function batch_list(){
-        $user = auth()->user();
-        $batch = $user->batch()->get();
+        $instructor = Instructor::where('user_id', auth()->user()->id)->first();
+        $batch = $instructor->batches()->get();
 
         return view('instructor.batch_list', compact('batch'));
     }
@@ -58,7 +59,6 @@ class InstructorController extends Controller
         $assignments = Assignment::where('batch_id', $batch_id)->get();
         // $course = $batch->course;
         $batch = Batch::with('unit_of_competency.lesson.assignment')->where('id', $batch_id)->first();
-        // dd($batch->id);
         
         // Get all lessons
         $all_lessons = Course::findOrFail($batch->course->id)
@@ -94,7 +94,7 @@ class InstructorController extends Controller
         // dd($all_lessons);
 
         $temp_files = TempAssignment::where('batch_id',$batch_id)->get();
-
+            // dd($batch);
         return view('instructor.batch_assignments', compact('batch', 'assignments', 'all_lessons', 'all_ucs', 'temp_files'));
     }
 
@@ -113,7 +113,9 @@ class InstructorController extends Controller
     public function review_turn_ins($assignment_id){
         $assignment = Assignment::find($assignment_id);
         $batch = Batch::find($assignment->batch_id);
-        $students = Enrollee::whereNull('completed_at')
+        $students = Enrollee::whereHas('batch', function($query) {
+            $query->whereNull('completed_at');
+        })
         ->where('batch_id', $batch->id)
         ->get();
         return view('instructor.review_turn_ins', compact('assignment', 'batch', 'students'));
@@ -151,19 +153,130 @@ class InstructorController extends Controller
         foreach($students as $student){
             $user = $user->merge([$student->user]);
         }
-        // $course = $batch->course;
-        
-        // if($course->structure == 'big'){
-        //     $batch->unit_of_competency;
-        // }else if($course->structure == 'medium'){
-        //     $uc = $batch->unit_of_competency;
-        //     $batch->lesson;
-        // }
-
-        // $batch = Batch::with('unit_of_competency.lesson.assignment')->where('id', $assignment->batch_id)->get()->toArray();
         $assignment->unit_of_competency_id = $assignment->lesson->unit_of_competency_id;
 
         return view('instructor.list_turn_ins', compact('assignment', 'batch', 'students' ,'assignment'));
+    }
+
+    // Information Recording
+    public function record_instructor(Request $request){
+        $user = User::find(auth()->user()->id);
+
+        if($user){
+            $instructor = Instructor::where('user_id', $user->id)->first();
+            $instructor->sex = $request->sex;
+            $instructor->street = $request->street;
+            $instructor->barangay = $request->barangay;
+            $instructor->city = $request->city;
+            $instructor->province = $request->province;
+            $instructor->region = $request->region;
+            $instructor->submitted = Carbon::now();
+            $instructor->update();
+            
+            if($instructor)
+                return back()->with(['status' => 'success','message' => ($user->sex == 'male' ? 'Mr. ' : 'Ms.').$user->lname.', your information successfully saved.', 'title' => 'Welcome to LSI eKonek']);
+            
+            return back()->with(['status' => 'error','message' => 'Error saving your informaation. Please try again.']);
+        }else{
+            return back()->with(['status' => 'error','message' => 'User not found']);
+        }
+    }
+
+    public function upload_instructor_picture(Request $request){
+        $attachments = $request->file($request->credential_type);
+        $user = User::find(auth()->user()->id);
+        // dd($attachments);
+        if($request->has($request->credential_type)){
+            $fileName = time(). '_' .  str_replace(' ', '_', $attachments->getClientOriginalName());
+            $folder = uniqid('ass', true);
+            $filePath = $attachments
+            ->storeAs('instructor_files/'. $user->id .'/'.$folder , $fileName, 'public'); // Change 'uploads' to your desired directory
+                
+            // Get file type
+            $fileType = $attachments->getClientMimeType();
+                    
+            // $temp_assignment = new TempTurnIn();
+            $enrollee_file = Instructor::where('user_id', $user->id)->first();
+            if(!$enrollee_file){
+                $enrollee_file = new Instructor();
+                $enrollee_file->user_id = $user->id;
+                $enrollee_file->folder = $folder;
+                $enrollee_file->id_picture = $fileName;
+                $enrollee_file->save();
+            }else{
+                $enrollee_file->user_id = $user->id;
+                $enrollee_file->folder = $folder;
+                $enrollee_file->id_picture = $fileName;
+                $enrollee_file->update();
+            }
+            return $folder;
+        }
+    }
+
+    public function revert_instructor_picture(Request $request) {
+        $instructor = Instructor::where('folder', $request->getContent())->first();
+        $instructor_id = $instructor->id;
+
+        if ($instructor) {
+            $path = 'instructor_files/'. $instructor->user_id .'/'.$instructor->folder .'/' . $instructor->id_picture;
+            if (Storage::exists($path)) {
+                Storage::delete($path);
+            } else {
+                return response()->json(['error' => 'File does not exist'], 404);
+            }
+
+            $directoryPath = dirname($path);
+
+            if (count(Storage::allFiles($directoryPath)) === 0) {
+                Storage::deleteDirectory($directoryPath);
+            }
+            $instructor->folder = null;
+            $instructor->id_picture = null;
+            $instructor->update();
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['error' => 'File not found'], 404);
+    }
+
+    public function load_instructor_picture($source) {
+        $instructor = Instructor::where('id', $source)->first();
+        $path = public_path('storage/instructor_files/'. $instructor->user_id.'/'.$instructor->folder.'/'. $instructor->id_picture);
+        $headers = [
+            // 'Content-Type' => 'image/jpeg',
+            'Content-Disposition' => 'inline; filename="'.$instructor->id_picture.'"',
+        ];
+        if($instructor){
+            return response()->file($path, $headers);
+        }
+
+        return response()->json('no file');   
+    }
+
+    public function delete_instructor_picture($source){
+        $instructor = Instructor::where('id', $source)->first();
+        
+        if ($instructor) {
+            $path = 'instructor_files/'. $instructor->user_id.'/'.$instructor->folder.'/'. $instructor->id_picture;
+            
+            if (Storage::exists($path)) {
+                Storage::delete($path);
+            } else {
+                return response()->json(['error' => 'File does not exist'], 404);
+            }
+
+            $directoryPath = dirname($path);
+
+            if (count(Storage::allFiles($directoryPath)) === 0) {
+                Storage::deleteDirectory($directoryPath);
+            }
+            $instructor->folder = null;
+            $instructor->id_picture = null;
+            $instructor->update();
+            return response()->json(['success' => true]);
+        }
+    
+        return response()->json(['error' => 'File not found'], 404);
     }
 
     // Posting
@@ -196,7 +309,12 @@ class InstructorController extends Controller
         $uploadedFileIds = array();
         if($files){
             foreach ($files as $file) {
-                $temp_file = TempFile::where('folder', $file)->first();
+                $query = TempFile::query();
+                if(is_numeric($file))
+                    $temp_file = $query->find($file);
+                else
+                    $temp_file = $query->where('folder', $file)->first();
+
                 
                 if($temp_file){
                     Storage::copy(
@@ -406,7 +524,6 @@ class InstructorController extends Controller
     
     public function post_assignment(Request $request){
         
-        // dd($request->assignment_files);
         $assignment_details = $request->only([
             'batch_id',
             'title',
@@ -421,7 +538,27 @@ class InstructorController extends Controller
 
         $assignment_details['closing'] = $request->input('closing') ? 1 : 0;
         $assignment_details['points'] = $request->max_point;
-        $assignment_details['lesson_id'] = $request->lesson;
+        
+        if($request->lesson != null){
+            $assignment_details['lesson_id'] = $request->lesson;
+        }else{
+            $uc = UnitOfCompetency::where('batch_id', $request->batch_id)->first();
+            if(!$uc){
+                $uc = new UnitOfCompetency();
+                $uc->batch_id = $request->batch_id;
+                $uc->title = $request->batch_id;
+                $uc->save();
+
+                $lesson = new Lesson();
+                $lesson->unit_of_competency_id = $uc->id;
+                $lesson->title = $uc->id;
+                $lesson->save();
+            }else{
+                $lesson = Lesson::where('unit_of_competency_id', $uc->id)->first();
+            }
+
+            $assignment_details['lesson_id'] = $lesson->id;        
+        }
 
         $batch_id = $request->batch_id;
         $batch_name = Batch::where('id', $batch_id)->pluck('name')->first();
@@ -465,14 +602,73 @@ class InstructorController extends Controller
             }
         }
 
-        $token = User::whereNotNull('device_token')
-        ->whereHas('enrollee', function ($query) use ($batch_id) {
-            $query->where('batch_id', $batch_id);
-        })->pluck('device_token');
-        $body = $request->title .': '. $request->description;
+        // $token = User::whereNotNull('device_token')
+        // ->whereHas('enrollee', function ($query) use ($batch_id) {
+        //     $query->where('batch_id', $batch_id);
+        // })->pluck('device_token');
+        // $body = $request->title .': '. $request->description;
 
-        NotificationSendController::sendAppNotification($token, $title, $body, null);
+        // NotificationSendController::sendAppNotification($token, $title, $body, null);
         return redirect()->back()->with('success', 'Assigned successfully.');;
+    }
+
+    public function delete_assignment(Request $request){
+        $assignment = Assignment::find($request->assignment_id);
+        
+        if($assignment){
+            $assignment->delete();
+            $batch_id = $assignment->batch_id;
+            $assignments = Assignment::where('batch_id', $batch_id)->get();
+            // $course = $batch->course;
+            $batch = Batch::with('unit_of_competency.lesson.assignment')->where('id', $batch_id)->first();
+            
+            // Get all lessons
+            $all_lessons = Course::findOrFail($batch->course->id)
+            ->batches()
+            ->join('unit_of_competencies', 'batches.id', '=', 'unit_of_competencies.batch_id')
+            ->join('lessons', 'unit_of_competencies.id', '=', 'lessons.unit_of_competency_id')
+            ->select('lessons.title')
+            ->distinct()
+            ->get()
+            ->groupBy(function($item) {
+                return strtolower($item->title);
+            })
+            ->map(function($items) {
+                return $items->first()->title; 
+            })
+            ->values(); 
+    
+            // Get all UC
+            $all_ucs = Course::findOrFail($batch->course->id)
+                ->batches()
+                ->join('unit_of_competencies', 'batches.id', '=', 'unit_of_competencies.batch_id')
+                ->select('unit_of_competencies.title')
+                ->distinct()
+                ->get()
+                ->groupBy(function($item) {
+                    return strtolower($item->title);
+                })
+                ->map(function($items) {
+                    return $items->first()->title; 
+                })
+                ->values(); 
+    
+            // dd($all_lessons);
+    
+            $temp_files = TempAssignment::where('batch_id',$batch_id)->get();
+                // dd($batch);
+                $notif = [
+                    'status' => 'success',
+                    'message' => 'Assignment deleted successfully'
+                ];
+            return redirect()->route('batch_assignments', ['batch_id' => $assignment->batch_id])->with($notif);
+        }
+        $notif = [
+            'status' => 'error',
+            'message' => 'Assignment not found'
+        ];
+        return back()->with($notif);
+            
     }
 
     public function get_assignment_files($batch_id) {
@@ -617,8 +813,38 @@ class InstructorController extends Controller
 
     // Lesson
     public function add_lesson(Request $request) {
+        $batch = Batch::findOrFail($request->batch_id);
+        $course_structure = $batch->course->structure;
         $lessons = new Lesson();
-        $lessons->unit_of_competency_id = $request->uc_id;
+
+        if($course_structure == "big"){
+            $lessons->unit_of_competency_id = $request->uc_id;
+        }else{
+            $uc = UnitOfCompetency::where('batch_id', $batch->id)->first();
+
+            if(!$uc){
+                $uc = new UnitOfCompetency();
+                $uc->batch_id = $batch->id;
+                $uc->title = $batch->id;
+                $uc->save();
+            }
+
+            $lessons->unit_of_competency_id = $uc->id;
+
+            // if($course_structure == "small") {
+            //     $lesson = Lesson::where('unit_of_competency_id', $uc->id)->first();
+
+            //     if($lesson){
+            //         $lesson = new Lesson();
+            //         $lesson->unit_of_competency_id = $uc->id;
+            //         $lesson->title = $uc->id;
+            //         $lesson->save();
+            //     }else{
+
+            //     }
+            // }
+        } 
+
         $lessons->title = $request->lesson_title;
         $lessons->save();
 

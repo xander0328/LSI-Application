@@ -11,4 +11,8 @@ class Education extends Model
 
     protected $fillable = ['enrollee_id', 'school_name', 'educational_level', 'school_year', 'degree', 'minor', 'major', 'units_earned', 'honors_received'];
 
+    public function enrollee()
+    {
+        return $this->belongsTo(Enrollee::class);
+    }
 }

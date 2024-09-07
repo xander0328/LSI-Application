@@ -6,11 +6,12 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -21,10 +22,10 @@ class User extends Authenticatable implements MustVerifyEmail
         'fname',
         'mname',
         'lname',
+        'contact_number',
         'email',
         'password',
         'role',
-        'device_token'
     ];
 
     /**
@@ -52,13 +53,17 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Enrollee::class);
     }
 
-    public function batch()
+    public function user_session()
     {
-        return $this->hasMany(Batch::class, 'instructor_id');
+        return $this->hasMany(UserSession::class);
     }
 
     public function conversations()
     {
         return $this->belongsToMany(Conversation::class, 'conversations', 'user1_id', 'user2_id');
+    }
+    
+    public function instructor_info(){
+        return $this->hasOne(Instructor::class);
     }
 }

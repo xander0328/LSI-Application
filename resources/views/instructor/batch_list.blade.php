@@ -15,7 +15,7 @@
                 @endphp
                 <a href="{{ route('batch_posts', $id) }}" data-batch-id="{{ $batch->id }}"
                     class="batch-button mb-2 flex w-full justify-between rounded-md bg-gray-700 p-2 text-start text-white hover:bg-sky-600">
-                    {{ $batch->name }}
+                    {{ $batch->course->code . '-' . $batch->name }}
                 </a>
             @endforeach
         </div>

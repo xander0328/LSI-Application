@@ -74,6 +74,9 @@
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
         rel="stylesheet">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/css/lightbox.css"
+        integrity="sha512-Woz+DqWYJ51bpVk5Fv0yES/edIMXjj3Ynda+KWTIkGoynAMHrqTcDUQltbipuiaD5ymEo9520lyoVOo9jCQOCA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     {{-- Qr reader --}}
     <style>
         #qr-reader {
@@ -110,21 +113,13 @@
 
         @if (auth()->check() && auth()->user()->role === 'superadmin')
             <aside id="logo-sidebar"
-                class="fixed left-0 top-0 z-40 h-screen w-60 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800 sm:translate-x-0"
+                class="fixed left-0 top-0 z-40 h-screen w-60 -translate-x-full border-r border-gray-200 bg-white pt-20 transition-transform dark:border-gray-700 dark:bg-gray-800 md:translate-x-0"
                 aria-label="Sidebar">
                 <div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
                     <ul class="space-y-2 font-medium">
                         <li>
-                            <x-nav-link :href="route('website')" :active="request()->routeIs('website')"
+                            <x-nav-link :href="route('website')" :active="request()->is('website*')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                {{-- <svg class="h-5 w-5 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                viewBox="0 0 22 21">
-                                <path
-                                    d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z" />
-                                <path
-                                    d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z" />
-                            </svg> --}}
                                 <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                     viewBox="0 0 24 24">
@@ -135,7 +130,7 @@
                             </x-nav-link>
                         </li>
                         <li>
-                            <x-nav-link :href="route('courses')" :active="request()->routeIs('courses')"
+                            <x-nav-link :href="route('courses')" :active="request()->is('courses*')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -150,7 +145,21 @@
                             </x-nav-link>
                         </li>
                         <li>
-                            <a href="#"
+                            <x-nav-link :href="route('instructors')" :active="request()->is('instructors*')"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <title>school-outline</title>
+                                    <path fill="currentColor"
+                                        d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3M18.82 9L12 12.72L5.18 9L12 5.28L18.82 9M17 16L12 18.72L7 16V12.27L12 15L17 12.27V16Z" />
+                                </svg>
+                                <span class="ms-3 flex-1 whitespace-nowrap">Instructors</span>
+                                {{-- <span
+                                class="ms-3 inline-flex items-center justify-center rounded-full bg-gray-100 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">Pro</span> --}}
+                            </x-nav-link>
+                        </li>
+                        {{-- <li>
+                            <x-nav-link :href="route('instructors')" :active="request()->is('instructors*')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -161,10 +170,10 @@
                                 <span class="ms-3 flex-1 whitespace-nowrap">Inbox</span>
                                 <span
                                     class="ms-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-blue-100 p-3 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">3</span>
-                            </a>
-                        </li>
+                            </x-nav-link>
+                        </li> --}}
                         <li>
-                            <a href="{{ route('all_users') }}"
+                            <x-nav-link :href="route('users')" :active="request()->is('users*')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                     aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -172,10 +181,21 @@
                                         d="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 4.59A5 5 0 0 1 13.07 10.41A3.39 3.39 0 0 0 15 11A3.5 3.5 0 0 0 15 4Z" />
                                 </svg>
                                 <span class="ms-3 flex-1 whitespace-nowrap">Users</span>
-                            </a>
+                            </x-nav-link>
                         </li>
                         <li>
-                            <a href="{{ route('scan_attendance') }}"
+                            <x-nav-link :href="route('payments')" :active="request()->is('payments*')"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="M5,6H23V18H5V6M14,9A3,3 0 0,1 17,12A3,3 0 0,1 14,15A3,3 0 0,1 11,12A3,3 0 0,1 14,9M9,8A2,2 0 0,1 7,10V14A2,2 0 0,1 9,16H19A2,2 0 0,1 21,14V10A2,2 0 0,1 19,8H9M1,10H3V20H19V22H1V10Z" />
+                                </svg>
+                                <span class="ms-3 flex-1 whitespace-nowrap">Payments</span>
+                            </x-nav-link>
+                        </li>
+                        <li>
+                            <x-nav-link :href="route('scan_attendance')" :active="request()->is('scan_attendance*')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                     class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
@@ -185,7 +205,7 @@
                                         d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H11V13H9V11M15,11H17V13H19V11H21V13H19V15H21V19H19V21H17V19H13V21H11V17H15V15H17V13H15V11M19,19V15H17V19H19M15,3H21V9H15V3M17,5V7H19V5H17M3,3H9V9H3V3M5,5V7H7V5H5M3,15H9V21H3V15M5,17V19H7V17H5Z" />
                                 </svg>
                                 <span class="ms-3 flex-1 whitespace-nowrap">Attendance</span>
-                            </a>
+                            </x-nav-link>
                         </li>
                     </ul>
                 </div>
@@ -198,7 +218,7 @@
                 <div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
                     <ul class="space-y-2 font-medium">
                         <li>
-                            <x-nav-link :href="route('enrolled_course')" :active="request()->routeIs('enrolled_course')"
+                            <x-nav-link :href="route('enrolled_course')" :active="request()->is('course*')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -287,11 +307,11 @@
             </aside>
         @endif
 
-        <div class="ml-60">
+        <div class="md:ml-60">
             {{-- <div class="mt-14 rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700"> --}}
             <!-- Page Heading -->
             @if (isset($header))
-                <header class="fixed left-60 shadow-lg right-0 top-14 z-10">
+                <header class="fixed left-0 right-0 top-14 z-10 shadow-lg md:left-60">
                     <div class="mx-auto max-w-7xl border-gray-600 bg-gray-800 px-4 py-6 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
@@ -317,9 +337,44 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     {{-- Alerts --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"
+        integrity="sha512-Ixzuzfxv1EqafeQlTCufWfaC6ful6WFqIz4G+dWvK0beHw0NVJwvCKSgafpy5gwNqKmgUfIBraVwkKI+Cz0SEQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        function sessionChecker() {
+            return {
+                sessionMessage: '',
+                init() {
+                    this.checkSession();
+                    setInterval(() => this.checkSession(), 60000); // Check every 60 seconds
+                },
+                checkSession() {
+                    $.ajax({
+                        url: '/check-session',
+                        method: 'GET',
+                        success: (data) => {
+                            if (!data.session_exists) {
+                                window.location.href = '/login';
+                            } else {
+                                this.sessionMessage = 'Session is active';
+                            }
+                        },
+                        error: (jqXHR) => {
+                            if (jqXHR.status === 401) {
+                                window.location.href = '/login';
+                            } else {
+                                this.sessionMessage = 'Error checking session';
+                                console.error('Error:', jqXHR);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    </script>
     <script type="text/javascript">
         if ('serviceWorker' in navigator) {
             // Register the service worker

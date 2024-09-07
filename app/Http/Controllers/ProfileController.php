@@ -19,7 +19,9 @@ class ProfileController extends Controller
     {
         $enrollee= Enrollee::where('user_id', auth()->user()->id)
         ->whereNotNull('batch_id')
-        ->whereNull('completed_at')
+        ->whereHas('batch', function($query) {
+            $query->whereNull('completed_at');
+        })
         ->first();
 
         return view('profile.edit', [

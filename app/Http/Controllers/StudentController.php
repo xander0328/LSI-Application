@@ -26,8 +26,11 @@ use App\Models\TurnInFile;
 use App\Models\StudentGrade;
 use App\Models\StudentAttendance;
 use App\Models\Attendance;
-use PDF;
+
 use App\Http\Controllers\NotificationSendController;
+
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class StudentController extends Controller
 {
@@ -35,7 +38,12 @@ class StudentController extends Controller
     {
         $user = auth()->user();
         $user_id = $user->id;
-        $enrollee = Enrollee::where('user_id', $user_id)->whereNull('completed_at')->first();
+        $enrollee = Enrollee::where('user_id', $user_id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })
+            ->first();
+
         if ($enrollee) {
             $course = $enrollee->course;
             $batch = $enrollee->batch;
@@ -63,7 +71,11 @@ class StudentController extends Controller
     {
         $user = auth()->user();
         $user_id = $user->id;
-        $enrollee = Enrollee::where('user_id', $user_id)->whereNull('completed_at')->first();
+        $enrollee = Enrollee::where('user_id', $user_id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })->first();
+
         if ($enrollee) {
             $course = $enrollee->course;
             $batch = $enrollee->batch;
@@ -83,7 +95,11 @@ class StudentController extends Controller
     public function enrolled_course_attendance(){
         $user = auth()->user();
         $user_id = $user->id;
-        $enrollee = Enrollee::where('user_id', $user_id)->whereNull('completed_at')->first();
+        $enrollee = Enrollee::where('user_id', $user_id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })->first();
+
         $attendance_records = Attendance::where('batch_id', $enrollee->batch_id)->get();
         $student_attendance = StudentAttendance::whereHas('enrollee', function ($query) use ($enrollee) {
             $query->where('id', $enrollee->id);
@@ -382,7 +398,9 @@ class StudentController extends Controller
     {
         $user = auth()->user();
         $completed = Enrollee::where('user_id', $user->id)
-            ->whereNotNull('completed_at')
+            ->whereHas('batch', function($query) {
+                $query->whereNotNull('completed_at');
+            })
             ->get();
             
         return view('student.course_completed', compact('completed'));
@@ -504,7 +522,11 @@ class StudentController extends Controller
     public function view_assignment($id){
         $user = auth()->user();
         $user_id = $user->id;
-        $enrollee = Enrollee::where('user_id', $user_id)->whereNull('completed_at')->first();
+        $enrollee = Enrollee::where('user_id', $user_id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })->first();
+
         $course = $enrollee->course;
         $batch = $enrollee->batch;
 
@@ -514,7 +536,12 @@ class StudentController extends Controller
     }
 
     public function turn_in_files(Request $request) {
-        $enrollee = Enrollee::where('user_id', auth()->user()->id)->whereNull('completed_at')->first();
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })
+            ->first();
+
         $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
         ->where('enrollee_id', $enrollee->id)
         ->first();
@@ -558,7 +585,12 @@ class StudentController extends Controller
     }
 
     public function get_files($assignment_id){
-        $enrollee = Enrollee::where('user_id', auth()->user()->id)->whereNull('completed_at')->first();
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })
+            ->first();
+
         $turn_in = TurnIn::where('enrollee_id', $enrollee->id)
         ->where('assignment_id', $assignment_id)
         ->first();
@@ -643,7 +675,12 @@ class StudentController extends Controller
     }
 
     public function turn_in_status(Request $request){
-        $enrollee = Enrollee::where('user_id', auth()->user()->id)->whereNull('completed_at')->first();
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })
+            ->first();
+        
         $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
         ->where('enrollee_id', $enrollee->id)
         ->first();
@@ -675,7 +712,12 @@ class StudentController extends Controller
     }
     
     public function assignment_action(Request $request){
-        $enrollee = Enrollee::where('user_id', auth()->user()->id)->whereNull('completed_at')->first();
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })
+            ->first();
+        
         $currentDate = Carbon::today();     
         $current = Carbon::now();     
         $assignment = Assignment::find($request->assignment_id);
@@ -739,31 +781,98 @@ class StudentController extends Controller
 
 
     //TCPDF idcard
-    public function generateIDCard($id)
-    {
+    // public function generateIDCard($id)
+    // {
+    //     $enrollee = Enrollee::where('user_id', auth()->user()->id)
+    //     ->whereNotNull('batch_id')
+    //     ->whereNull('completed_at')
+    //     ->first();
+
+    //     $qr_code = EnrolleeQrcode::where('enrollee_id', $enrollee->id)->first();
+
+    //     $id_pic = EnrolleeFile::where('enrollee_id', $id)->where('credential_type', 'id_picture') ->first();
+
+    //     $id_pic_path = asset('storage/enrollee_files/'. $enrollee->course_id . '/'. $enrollee->id .'/id_picture'.'/' . $id_pic->folder . '/'. $id_pic->filename, 'public');
+    //     // dd($id_pic_url);
+    //     $filename = 'idcard.pdf';
+    //     // $html = view('idcard', compact('id_pic_url', 'qr_code'))->render();
+    //     $lsi_main_logo = public_path("images/icons/lsi-main-logo.png");
+    //     $lsi_logo = public_path("images/icons/lsi-logo.png");
+    //     $qr_code_image = 'data:image/png;base64,' . base64_encode($qr_code->qr_code);
+        
+    //     $html = '
+    //     <table style="width: 100%; height: 100%;">
+    //         <tr>
+    //             <td align="center" style="width: 50%; vertical-align: middle; padding: 5px;">
+    //                 <img src="' . $lsi_main_logo . '" alt="LSI" width="30px">
+    //             </td>
+    //             <td align="start" style="width: 50%; vertical-align: middle; padding: 5px;">
+    //                 <img src="' . $lsi_logo . '" alt="Ekonek" width="110px">
+    //             </td>
+    //         </tr>
+    //         <tr>
+    //             <td colspan="2" style="text-align: center;padding-top: 500px;">
+    //                 <img style="border-radius: 100%;" src="' . $id_pic_path . '" alt="Student Picture" width="100">
+    //             </td>
+    //         </tr>
+    //         <tr>
+    //             <td colspan="2" style="text-align: center; padding: 5px; font-weight: bold;">
+    //                 ' . auth()->user()->fname . ' ' . auth()->user()->lname . '
+    //             </td>
+    //         </tr>
+    //         <tr>
+    //             <td colspan="2" style="text-align: center; padding: 5px;">
+    //                 Batch Name: COMP-0001
+    //             </td>
+    //         </tr>
+    //         <tr>
+    //             <td colspan="2" style="text-align: center; padding: 10px;">
+    //                 <img src="{!!' . $qr_code_image . '!!}" alt="QR Code" width="150" height="150">
+    //             </td>
+    //         </tr>
+    //     </table>';
+
+    //     $pdf = new PDF;
+    //     PDF::SetTitle(auth()->user()->fname.'_'.auth()->user()->lname.'_IdCard');
+    //     PDF::AddPage();
+    //     PDF::writeHTML($html, true, false, true, false, '');
+    //     PDF::Output(public_path($filename), 'F');
+
+    //     return response()->file(public_path($filename), [
+    //         'Content-Type' => 'application/pdf',
+    //         'Content-Disposition' => 'inline; filename="' . $filename . '"',
+    //     ]);
+    // }
+
+    public function id_card($id){
+        return view('student.id_card');
+    }
+    
+    public function show_id_card(){
         $enrollee = Enrollee::where('user_id', auth()->user()->id)
         ->whereNotNull('batch_id')
-        ->whereNull('completed_at')
+        ->whereHas('batch', function($query) {
+            $query->whereNull('completed_at');
+        })
         ->first();
 
         $qr_code = EnrolleeQrcode::where('enrollee_id', $enrollee->id)->first();
 
-        $id_pic = EnrolleeFile::where('enrollee_id', $id)->where('credential_type', 'id_picture') ->first();
+        // $id_pic = EnrolleeFile::where('enrollee_id', $id)->where('credential_type', 'id_picture') ->first();
 
-        $id_pic_url = asset('storage/enrollee_files/'. $enrollee->course_id . '/'. $enrollee->id .'/id_picture'.'/' . $id_pic->folder . '/'. $id_pic->filename, 'public');
-        // dd($id_pic_url);
-        $filename = 'idcard.pdf';
-        $html = view('idcard', compact('id_pic_url', 'qr_code'))->render();
+        // $id_pic_path = asset('storage/enrollee_files/'. $enrollee->course_id . '/'. $enrollee->id .'/id_picture'.'/' . $id_pic->folder . '/'. $id_pic->filename, 'public');
 
-        $pdf = new PDF;
-        PDF::SetTitle(auth()->user()->fname.'_'.auth()->user()->lname.'_IdCard');
-        PDF::AddPage();
-        PDF::writeHTML($html, true, false, true, false, '');
-        PDF::Output(public_path($filename), 'F');
+        // $html = view('idcard', compact('id_pic_url', 'qr_code'))->render();
+        // $qr_code_image = 'data:image/png;base64,' . base64_encode($qr_code->qr_code);
 
-        return response()->file(public_path($filename), [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'inline; filename="' . $filename . '"',
-        ]);
+        $data = ['title' => 'Laravel PDF Example',
+        'qr_code' => $qr_code,
+        ];
+        $pdf = Pdf::loadView('idcard', $data);
+        $pdf->setPaper('A5');
+    
+        // Stream the PDF content to the browser
+        return $pdf->stream($enrollee->user->lname.'_ID.pdf');
+        
     }
 }

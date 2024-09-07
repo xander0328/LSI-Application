@@ -59,7 +59,7 @@
                     //     });
                     // }
                     generateIdCard() {
-                        window.open("{{ route('generateIDCard', $enrollee_id) }}", "_blank");
+                        window.open("{{ route('id_card', $enrollee_id) }}", "_blank");
                     }
                 }));
             });

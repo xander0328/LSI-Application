@@ -2,17 +2,17 @@
     @php
         $student = App\Models\Enrollee::where('id', decrypt($enrollee))->first();
     @endphp
-    <form id="upload_files" class="p-4 md:p-5" enctype="multipart/form-data" method="POST"
+    <form x-data="fileUpload" id="upload_files" class="p-4 md:p-5" enctype="multipart/form-data" method="POST"
         action="{{ route('enroll_requirements_save') }}">
         @csrf
         <input type="hidden" name="enrollee_id" value="{{ $enrollee }}">
         <div class="col-span-2 mb-4">
             <div class="col-span-2 flex justify-between font-bold text-white">
                 <div class="content-center">Enrollment Requirements</div>
-                <button class="underlined col-span-1 rounded-md bg-white p-1 text-sm text-black" type="button"
-                    onclick="seeFormats()">See Formats</button>
+                <button class="underlined col-span-1 rounded-md bg-white px-2 py-0.5 text-sm text-black" type="button"
+                    onclick="seeFormats()">Formats</button>
             </div>
-            <div class="text-xs text-white">Click "See Formats" before uploading files</div>
+            <div class="text-xs text-white">Click "Formats" before uploading files</div>
         </div>
 
         <div class="visible mb-4 grid grid-cols-2 gap-4 text-white">
@@ -367,6 +367,21 @@
                         $('#result').text('An error occurred while checking credentials.');
                     }
                 });
+            }
+
+            function fileUpload() {
+                return {
+                    formatsModal: false,
+                    seeFormats() {
+                        const url = '{{ route('see_formats') }}'; // Replace with your desired URL
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.target = '_blank';
+                        a.rel =
+                            'noopener noreferrer'; // Optional: Improves security by preventing the new page from accessing the window.opener property
+                        a.click();
+                    }
+                }
             }
         </script>
     @endsection

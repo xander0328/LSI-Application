@@ -7,7 +7,7 @@
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
-        "@tailwindcss/typography": "^0.5.13",
+        "@tailwindcss/typography": "^0.5.14",
         "alpinejs": "^3.4.2",
         "autoprefixer": "^10.4.2",
         "axios": "^1.6.4",
@@ -18,7 +18,11 @@
         "vite": "^5.0.0"
     },
     "dependencies": {
+        "@alpinejs/intersect": "^3.14.1",
+        "@sweetalert2/theme-borderless": "^5.0.18",
         "filepond-plugin-get-file": "^1.1.0",
-        "moment": "^2.30.1"
+        "moment": "^2.30.1",
+        "sweetalert2": "^11.12.4",
+        "ua-parser-js": "^1.0.38"
     }
 }

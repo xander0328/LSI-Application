@@ -33,7 +33,7 @@
         </div>
         <div x-show="filteredRecords.length > 0">
             <template x-for="record in filteredRecords" :key="record.id">
-                <div class="mb-2 rounded-md bg-gray-800 hover:bg-gray-800/75 p-px">
+                <div class="mb-2 rounded-md bg-gray-800 p-px hover:bg-gray-800/75">
 
                     <div class="my-2 w-full rounded-md px-3 py-px">
                         <a @click="getRecordData(record)" class="cursor-pointer"
@@ -84,7 +84,7 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1" aria-hidden="true"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div @click.away="openModal = false" class="relative max-h-full w-full max-w-2xl p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
@@ -122,7 +122,8 @@
                                             stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                                     </svg>
                                 </div>
-                                <input type="text" @input="searchStudent($event)" id="table-search"
+                                <input autocomplete="off" type="text" @input="searchStudent($event)"
+                                    id="table-search"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                     placeholder="Search">
                             </div>
@@ -188,7 +189,7 @@
                                         </tr>
                                     </template>
                                     <template x-for="students in sortedStudents" :key="students.id">
-                                        <tr class="  border-gray-700 bg-gray-800 hover:bg-gray-800/50">
+                                        <tr class="border-gray-700 bg-gray-800 hover:bg-gray-800/50">
                                             <td @click="students.isChecked = !students.isChecked" class="w-4 p-4">
                                                 <div class="flex items-center">
                                                     <input x-model="students.isChecked" id="checkbox-table-search-1"
@@ -316,7 +317,7 @@
                         });
                     },
                     init() {
-                        this.originalStudents = this.students;
+                        // this.originalStudents = this.students;
                         this.sortStudents();
 
                         // this.filteredRecords = this.attendanceData;
@@ -345,7 +346,7 @@
                         // console.log(this.students);
                     },
                     searchStudent(event) {
-                        const searchTerm = event.target.value.toLowerCase();
+                        const searchTerm = event.target.value.toLowerCase().trim();
                         if (searchTerm) {
                             this.students = this.originalStudents.filter(student => {
                                 const fullName = `${student.first_name} ${student.last_name}`.toLowerCase();
@@ -440,6 +441,7 @@
 
                                 // Update the studentData().students with the updated students array
                                 this.students = dataArray;
+                                this.originalStudents = this.students;
                                 // this.init();
                             })
                             .catch(error => {

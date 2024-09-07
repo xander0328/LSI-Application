@@ -10,7 +10,7 @@
         <x-course-nav :selected="'assignment'"></x-course-nav>
 
     </x-slot>
-    <div id="course_list" class="mx-8 mt-2 flex flex-col-reverse pt-44 text-white">
+    <div id="course_list" class="mx-4 mt-4 flex flex-col-reverse pt-44 text-white">
         @foreach ($assignments as $post)
             <div class="mb-2 rounded-md bg-gray-800 p-px">
                 <div class="my-2 w-full rounded-md bg-gray-800 px-3 py-px">
@@ -45,6 +45,11 @@
                 </div>
             </div>
         @endforeach
+        @if ($assignments->count() < 1)
+            <div class="mb-2 rounded-md bg-gray-800 px-2 py-1 text-white/50">
+                No Assignment
+            </div>
+        @endif
     </div>
     @section('script')
         <script>
@@ -67,9 +72,9 @@
                 });
             })
 
-            function assignmentList(){
-                return{
-                    
+            function assignmentList() {
+                return {
+
                 }
             }
         </script>

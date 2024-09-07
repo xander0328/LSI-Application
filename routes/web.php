@@ -5,7 +5,11 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\InstructorController;
 use App\Http\Controllers\NotificationSendController;
+use App\Http\Controllers\SessionController;
 use App\Models\Course;
+use App\Models\User;
+use App\Models\Instructor;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,6 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $courses = Course::where('available', true)->get();
+    
     return view('welcome', compact('courses'));
 })->name('home');
 
@@ -40,6 +45,12 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::post('/course_toggle',  [SuperAdminController::class, 'course_toggle'])->name('course_toggle');
 
         Route::get('/{id}/enrollees', [SuperAdminController::class, 'enrollees'])->name('course_enrollees');
+        Route::post('/get_enrollee_records', [SuperAdminController::class, 'get_enrollee_records'])->name('get_enrollee_records');
+        
+        // Enrollees
+        Route::post('/remove_enrollee', [SuperAdminController::class, 'remove_enrollee'])->name('remove_enrollee');
+        
+        // Enrollee Batch
         Route::post('/create_new_batch', [SuperAdminController::class, 'create_new_batch'])->name('create_new_batch');
         Route::post('/create_batch', [SuperAdminController::class, 'create_batch'])->name('create_batch');
         Route::post('/delete_batch', [SuperAdminController::class, 'delete_batch'])->name('delete_batch');
@@ -50,11 +61,40 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::delete('/revert_course_image', [SuperAdminController::class, 'revert_course_image'])->name('revert_course_image');
         Route::get('/load_course_image/{action}/{source}', [SuperAdminController::class, 'load_course_image'])->name('load_course_image');
         Route::delete('/delete_course_image/{action}/{file_id}', [SuperAdminController::class, 'delete_course_image'])->name('delete_course_image');
-
-
+        
+        
         // Route::get('/text_input_post', [SuperAdminController::class, 'text_input_post'])->name('text_input_post');
         // Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
     });
+    
+    Route::prefix('users')->group(function () {
+        Route::get('/', [SuperAdminController::class, 'all_users'])->name('users');
+        Route::post('/disable_user', [SuperAdminController::class, 'disable_user'])->name('disable_user');
+        Route::post('/get_user_records', [SuperAdminController::class, 'get_user_records'])->name('get_user_records');
+        Route::get('/load_more_users', [SuperAdminController::class, 'load_more_users'])->name('load_more_users');
+        Route::get('/search_user', [SuperAdminController::class, 'search_user'])->name('search_user');
+        Route::post('/remove_session', [SuperAdminController::class, 'remove_session'])->name('remove_session');
+        Route::post('/promote_user', [SuperAdminController::class, 'promote_user'])->name('promote_user');
+        
+        Route::post('/get_enrollee_data', [SuperAdminController::class, 'get_enrollee_data'])->name('get_enrollee_data');
+
+    });
+    
+    Route::prefix('payments')->group(function () {
+        Route::get('/', [SuperAdminController::class, 'payments'])->name('payments');
+        Route::post('/make_payment', [SuperAdminController::class, 'make_payment'])->name('make_payment');
+        Route::post('/make_refund', [SuperAdminController::class, 'make_refund'])->name('make_refund');
+        Route::post('/get_payment_details', [SuperAdminController::class, 'get_payment_details'])->name('get_payment_details');
+    
+    });
+
+    Route::prefix('instructors')->group(function () {
+        Route::get('/', [SuperAdminController::class, 'instructors'])->name('instructors');
+        Route::post('/get_instructor_info', [SuperAdminController::class, 'get_instructor_info'])->name('get_instructor_info');
+    
+    });
+
+
 
     Route::get('/scan_attendance', [SuperAdminController::class, 'scan_attendance'])->name('scan_attendance');
     Route::post('/get_scan_data', [SuperAdminController::class, 'get_scan_data'])->name('get_scan_data');
@@ -69,6 +109,7 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::post('/enroll_save', [StudentController::class, 'enroll_save'])->name('enroll_save');
     Route::get('/enroll_requirements/{enrollee}', [StudentController::class, 'enroll_requirements'])->name('enroll_requirements');
     Route::get('/already_enrolled', [StudentController::class, 'already_enrolled'])->name('already_enrolled');
+
     Route::post('/upload_requirement', [StudentController::class, 'upload_requirement'])->name('upload_requirement');
     Route::delete('/revert_requirement', [StudentController::class, 'revert_requirement'])->name('revert_requirement');
     Route::get('/get_requirement/{enrolee_id}/{type}', [StudentController::class, 'get_requirement'])->name('get_requirement');
@@ -76,19 +117,21 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::delete('/delete_requirement/{enrollee_id}/{type}/{source}', [StudentController::class, 'delete_requirement'])->name('delete_requirement');
     Route::post('/check_user_requirements', [StudentController::class, 'check_user_requirements'])->name('check_user_requirements');
     Route::post('/enroll_requirements_save', [StudentController::class, 'enroll_requirements_save'])->name('enroll_requirements_save');
+    Route::post('/see_formats', [StudentController::class, 'see_formats'])->name('see_formats');
 
     Route::get('/course_completed', [StudentController::class, 'course_completed'])->name('course_completed');
 
     
+    Route::prefix('course')->group(function () {
     // Stream / Posts
-    Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
-    Route::get('/enrolled_course_assignment', [StudentController::class, 'enrolled_course_assignment'])->name('enrolled_course_assignment');
-    
-    //Assignments
-    Route::get('/view_assignment/{id}', [StudentController::class, 'view_assignment'])->name('view_assignment');
-    Route::post('/turn_in_status', [StudentController::class, 'turn_in_status'])->name('turn_in_status');
-    Route::post('/assignment_action', [StudentController::class, 'assignment_action'])->name('assignment_action');
-    
+        Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
+        Route::get('/enrolled_course_assignment', [StudentController::class, 'enrolled_course_assignment'])->name('enrolled_course_assignment');
+        
+    // Assignment
+        Route::get('/view_assignment/{id}', [StudentController::class, 'view_assignment'])->name('view_assignment');
+        Route::post('/turn_in_status', [StudentController::class, 'turn_in_status'])->name('turn_in_status');
+        Route::post('/assignment_action', [StudentController::class, 'assignment_action'])->name('assignment_action');
+    });
     //Filepond Assignment
     Route::post('/turn_in_files', [StudentController::class, 'turn_in_files'])->name('turn_in_files');
     Route::post('/turn_in_links', [StudentController::class, 'turn_in_links'])->name('turn_in_links');
@@ -103,13 +146,33 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
 
 
     //Message
-    Route::get('/message/{id}', [StudentController::class, 'message'])->name('message');
-    Route::get('/get_messages/{id}', [StudentController::class, 'get_messages'])->name('get_messages');
-    Route::get('/message_list', [StudentController::class, 'message_list'])->name('message_list');
-    Route::post('/send_message', [StudentController::class, 'send_message'])->name('send_message');
+    Route::prefix('message')->group(function () {
+        Route::get('/{id}', [StudentController::class, 'message'])->name('message');
+        Route::get('/get_messages/{id}', [StudentController::class, 'get_messages'])->name('get_messages');
+        Route::get('/message_list', [StudentController::class, 'message_list'])->name('message_list');
+        Route::post('/send_message', [StudentController::class, 'send_message'])->name('send_message');
+    });
     
     //ID CARD
     Route::get('/generateIDCard/{id}', [StudentController::class, 'generateIDCard'])->name('generateIDCard');
+    Route::get('/idcard', [StudentController::class, 'show_id_card'])->name('idcard');
+    Route::get('/id_card/{id}', [StudentController::class, 'id_card'])->name('id_card');
+    
+});
+
+Route::middleware(['auth', 'verified', 'role:guest'])->group(function () {
+    // Enrollment
+    Route::get('/enroll/{id}', [StudentController::class, 'enroll'])->name('enroll');
+    Route::post('/enroll_save', [StudentController::class, 'enroll_save'])->name('enroll_save');
+    Route::get('/enroll_requirements/{enrollee}', [StudentController::class, 'enroll_requirements'])->name('enroll_requirements');
+    Route::get('/already_enrolled', [StudentController::class, 'already_enrolled'])->name('already_enrolled');
+    Route::post('/upload_requirement', [StudentController::class, 'upload_requirement'])->name('upload_requirement');
+    Route::delete('/revert_requirement', [StudentController::class, 'revert_requirement'])->name('revert_requirement');
+    Route::get('/get_requirement/{enrolee_id}/{type}', [StudentController::class, 'get_requirement'])->name('get_requirement');
+    Route::get('/load_requirement/{enrollee_id}/{type}/{source}', [StudentController::class, 'load_requirement'])->name('load_requirement');
+    Route::delete('/delete_requirement/{enrollee_id}/{type}/{source}', [StudentController::class, 'delete_requirement'])->name('delete_requirement');
+    Route::post('/check_user_requirements', [StudentController::class, 'check_user_requirements'])->name('check_user_requirements');
+    Route::post('/enroll_requirements_save', [StudentController::class, 'enroll_requirements_save'])->name('enroll_requirements_save');
 });
 
 Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
@@ -121,6 +184,14 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::get('/list_turn_ins/{assignment_id}', [InstructorController::class, 'list_turn_ins'])->name('list_turn_ins');
     Route::get('/batch_attendance/{batch_id}', [InstructorController::class, 'batch_attendance'])->name('batch_attendance');
     
+    Route::prefix('record_information')->group(function () {
+        Route::post('/', [InstructorController::class, 'record_instructor'])->name('record_instructor');
+        Route::post('/upload_instructor_picture', [InstructorController::class, 'upload_instructor_picture'])->name('upload_instructor_picture');
+        Route::delete('/revert_instructor_picture', [InstructorController::class, 'revert_instructor_picture'])->name('revert_instructor_picture');
+        Route::get('/load_instructor_picture/{source}', [InstructorController::class, 'load_instructor_picture'])->name('load_instructor_picture');
+        Route::delete('/delete_instructor_picture/{source}', [InstructorController::class, 'delete_instructor_picture'])->name('delete_instructor_picture');
+    });
+
     //Post (for Stream)
     Route::post('/post', [InstructorController::class, 'post'])->name('post');
     Route::post('/upload_temp_post_files', [InstructorController::class, 'upload_temp_post_files'])->name('upload_temp_post_files');
@@ -175,6 +246,8 @@ Route::middleware('auth')->group(function () {
     
     Route::post('/store-token', [NotificationSendController::class, 'updateDeviceToken'])->name('store.token');
     Route::post('/send-web-notification', [NotificationSendController::class, 'sendMesssageNotification'])->name('send.web-notification');
+    
+    Route::post('/check_session', [SessionController::class, 'check_session'])->name('check_session');
 });
 
 require __DIR__.'/auth.php';

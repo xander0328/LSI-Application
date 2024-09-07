@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Session;
+use App\Models\UserSession;
 
 class LoginRequest extends FormRequest
 {
@@ -50,6 +52,7 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+        $this->recordSession();
     }
 
     /**
@@ -82,4 +85,18 @@ class LoginRequest extends FormRequest
     {
         return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
+
+    protected function recordSession(): void
+    {
+        $user = Auth::user(); // Get the authenticated user
+        $sessionId = Session::getId();
+        $userAgent = $this->header('User-Agent');
+
+        $userSession = new UserSession();
+        $userSession->user_id = $user->id;
+        $userSession->session_id = $sessionId;
+        $userSession->user_agent = $userAgent;
+        $userSession->save();
+    }
+
 }

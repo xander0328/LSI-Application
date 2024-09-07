@@ -22,8 +22,7 @@
             <div class="mx-1 my-1 flex rounded-lg p-2 hover:bg-gray-800">
                 <label class="inline-flex w-full cursor-pointer items-center">
                     <input @change="closeSubmission()" type="checkbox"
-                        :checked="assignment_details.closed ? true : false" 
-                        class="assignment-toggle peer sr-only">
+                        :checked="assignment_details.closed ? true : false" class="assignment-toggle peer sr-only">
                     <div
                         class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-yellow-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
                     </div>
@@ -60,6 +59,7 @@
                         <form id="delete-course" class="px-1" action="{{ route('delete_assignment') }}"
                             method="post">
                             @csrf
+                            <input type="hidden" name="assignment_id" :value="assignment_details.id">
                             <button @click.prevent="confirmDelete()" type="submit"
                                 class="flex w-full items-center rounded-lg p-1 px-2 align-text-bottom hover:bg-gray-700">
                                 <svg class="h-5 w-6 text-gray-800 dark:text-white" aria-hidden="true"
@@ -337,11 +337,12 @@
             </div>
 
         </div>
+        {{-- Assignment Modal --}}
         <div x-cloak x-show="showAssignmentModal" x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
-            class="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 overflow-y-auto overflow-x-hidden">
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-2xl p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
@@ -427,38 +428,51 @@
                                 </div>
 
                             </div>
-                            <div class="col-span-2">
-                                <label for="uc"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Unit of
-                                    Competency</label>
 
-                                <select id="uc" name="uc" required
-                                    x-model="assignment_details.unit_of_competency_id" @change="ucChanged()"
-                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
-                                    <option selected>Select</option>
+                            <template x-if="course.course.structure != 'small'">
+                                <div class="col-span-2">
+                                    <template x-if="course.course.structure == 'big'">
+                                        <div class="col-span-2">
+                                            <label for="uc"
+                                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Unit
+                                                of
+                                                Competency</label>
 
-                                    <template x-for="uc in course.unit_of_competency" :key="uc.id">
-                                        <option :value="uc.id" x-text="uc.title"
-                                            :selected="uc.id === assignment_details.unit_of_competency_id"></option>
+                                            <select id="uc" name="uc" required
+                                                x-model="assignment_details.unit_of_competency_id"
+                                                @change="ucChanged()"
+                                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+                                                <option value="" selected>Select</option>
+
+                                                <template x-for="uc in course.unit_of_competency"
+                                                    :key="uc.id">
+                                                    <option :value="uc.id" x-text="uc.title"
+                                                        :selected="uc.id === assignment_details.unit_of_competency_id">
+                                                    </option>
+                                                </template>
+
+                                            </select>
+
+                                        </div>
                                     </template>
+                                    <div class="col-span-2">
+                                        <label for="lesson"
+                                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lesson</label>
 
-                                </select>
+                                        <select id="lesson" name="lesson" x-model="assignment_details.lesson_id"
+                                            required
+                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+                                            <option value="" selected>Select</option>
+                                            <template x-for="lesson in selectedUc.lesson" :key="lesson.id">
+                                                <option :value="lesson.id" x-text="lesson.title"
+                                                    :selected="lesson.id === assignment_details.lesson_id"></option>
+                                            </template>
+                                        </select>
 
-                            </div>
-                            <div class="col-span-2">
-                                <label for="lesson"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lesson</label>
+                                    </div>
+                                </div>
+                            </template>
 
-                                <select id="lesson" name="lesson" x-model="assignment_details.lesson_id"
-                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
-                                    <option selected>Select</option>
-                                    <template x-for="lesson in selectedUc.lesson" :key="lesson.id">
-                                        <option :value="lesson.id" x-text="lesson.title"
-                                            :selected="lesson.id === assignment_details.lesson_id"></option>
-                                    </template>
-                                </select>
-
-                            </div>
                             <div class="col-span-2">
                                 <label for="title"
                                     class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Title</label>
@@ -486,13 +500,13 @@
                             <div class="text-xs text-white">
                                 <a class="flex cursor-pointer items-center" @click="toggleShowAddFile()">Attach
                                     File/s
-                                    <svg x-show="showAddFileModal" class="ml-2 w-4 h-4 text-white"
+                                    <svg x-show="showAddFileModal" class="ml-2 h-4 w-4 text-white"
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="m5 15 7-7 7 7" />
                                     </svg>
-                                    <svg x-show="!showAddFileModal" class="ml-2 w-4 h-4 text-gray-800 dark:text-white"
+                                    <svg x-show="!showAddFileModal" class="ml-2 h-4 w-4 text-gray-800 dark:text-white"
                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
                                         height="24" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -551,165 +565,6 @@
     @section('script')
         <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase.js"></script>
         <script>
-            // $(document).ready(function() {
-            //     $('.assignment-toggle').change(function() {
-            //         var assignment_id = $(this).data('assignment-id');
-            //         var isEnabled = $(this).is(':checked');
-
-            //         $.ajax({
-            //             url: '{{ route('assignment_toggle') }}',
-            //             method: 'POST',
-            //             data: {
-            //                 _token: '{{ csrf_token() }}',
-            //                 assignment_id: assignment_id
-            //             },
-            //             success: function(response) {
-            //                 console.log(response);
-            //             },
-            //             error: function(xhr, status, error) {
-            //                 console.error(xhr.responseText);
-            //             }
-            //         });
-            //     });
-
-            //     const inputElement = document.querySelector('.assignment_files');
-            //     const pond = FilePond.create(inputElement)
-            //     FilePond.setOptions({
-            //         allowMultiple: true,
-            //         allowReorder: true,
-            //         server: {
-            //             process: {
-            //                 url: '{{ route('temp_upload_assignment') }}',
-            //                 ondata: (formData) => {
-            //                     formData.append('batch_id', '{{ $batch->id }}');
-            //                     return formData;
-            //                 },
-            //             },
-            //             load: '/load_uploaded_files/{{ $batch->id }}',
-            //             revert: {
-            //                 url: '{{ route('revert_assignment_file') }}',
-            //                 method: 'DELETE',
-            //                 headers: {
-            //                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //                 },
-            //                 ondata: (formData) => {
-            //                     formData.append('batch_id', '{{ $batch->id }}');
-            //                     return formData;
-            //                 }
-            //             },
-            //             remove: (source, load, error) => {
-            //                 fetch(`/delete_uploaded_assignment_file/{{ $assignment->id }}/${source}`, {
-            //                     method: 'DELETE',
-            //                     headers: {
-            //                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //                     }
-            //                 }).then(response => {
-            //                     if (response.ok) {
-            //                         load();
-            //                     } else {
-            //                         error('Could not delete file');
-            //                     }
-            //                 }).catch(() => {
-            //                     error('Could not delete file');
-            //                 });
-            //             },
-            //             headers: {
-            //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //             }
-            //         },
-            //     });
-
-            //     fetch(`/get_uploaded_assignment_files/{{ $assignment->id }}`)
-            //         .then(response => response.json())
-            //         .then(files => {
-            //             const fileItems = files.map(file => ({
-            //                 source: file.id,
-            //                 options: {
-            //                     type: 'local',
-            //                     file: {
-            //                         name: file.filename,
-            //                         type: file
-            //                             .file_type // You can fetch the actual file type if stored in the database
-            //                     },
-            //                     metadata: {
-            //                         id: file.id,
-            //                     }
-            //                 }
-            //             }));
-            //             pond.files = fileItems;
-            //             console.log(files);
-            //             if (fileItems.length > 0)
-            //                 toggleShowAddFile('assigment')
-            //         })
-            //         .catch(error => console.error('Error loading files:', error));
-
-
-            //     var toggle = $('#due_date_toggle')
-            //     toggle.click(function() {
-            //         var due_inputs = $('#due_inputs')
-            //         due_inputs.toggleClass('hidden')
-
-            //         if ($(this).is(':checked')) {
-            //             $('#due_date').prop('required', true);
-            //             $('#due_time').prop('required', true);
-
-            //         } else {
-            //             $('#due_date').prop('required', false);
-            //             $('#due_time').prop('required', false);
-            //         }
-            //     })
-
-            //     $('#due_date_toggle').on('change', function() {
-            //         $('#due_date').val('')
-            //     })
-
-            //     $('#sort_by').on('change', function() {
-            //         const selectedValue = $(this).val();
-            //         const currentUrl = window.location.href;
-            //         const urlWithoutParams = currentUrl.split('?')[0];
-            //         const newUrl = urlWithoutParams + '?sort=' + encodeURIComponent(selectedValue);
-            //         window.location.href = newUrl;
-            //     })
-
-            //     $('#edit_assignment').on('click', function() {
-            //         var assignment = $(this).data('action')
-            //         var due_inputs = $('#due_inputs')
-            //         var due_date_toggle = $('#due_date_toggle')
-            //         var due_closing = $('#closing')
-
-            //         $('#due_date').val('');
-            //         $('#due_time').val('');
-            //         $('#lesson').val('');
-            //         $('#title').val('');
-            //         $('#description').val('');
-            //         $('#max_point').val('');
-            //         due_date_toggle.prop('checked', false)
-            //         due_closing.prop('checked', false)
-
-            //         $.get(assignment, function(data) {
-            //             console.log(assignment);
-            //             // $('#edit_assignmeny_modal').show();
-
-            //             if (data.due_date != null) {
-            //                 due_inputs.removeClass('hidden')
-            //                 due_date_toggle.prop('checked', true)
-
-            //                 if (data.closing) {
-            //                     due_closing.prop('checked', true)
-            //                 }
-            //             }
-
-            //             $('#assignment_id').val(data.id);
-            //             $('#due_date').val(data.due_date);
-            //             $('#due_time').val(data.due_hour);
-            //             $('#description').val(data.description);
-            //             $('#lesson').val(data.lesson_id);
-            //             $('#max_point').val(data.points);
-            //             $('#title').val(data.title);
-            //         })
-            //     })
-            // })
-
             function toggleShowAddFile(type) {
                 if (type === 'post') {
                     var content = document.getElementById('show_addFile_post');
@@ -751,7 +606,7 @@
                     selectedUc: [],
                     init() {
                         this.ucChanged();
-                        console.log(this.assignment_details);
+                        console.log(this.course);
                         console.log(this.course.unit_of_competency[0].lesson);
                         this.students = this.students.map(student => {
                             if (!student.grades || student.grades.length === 0) {
@@ -870,7 +725,7 @@
 
                         Swal.fire({
                             title: "Are you sure?",
-                            text: "You won't be able to revert this! All data related to this will also be deleted.",
+                            text: "Warning: All data related to this will also be deleted.",
                             icon: "warning",
                             showCancelButton: true,
                             confirmButtonColor: "#3085d6",

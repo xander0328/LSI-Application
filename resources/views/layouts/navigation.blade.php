@@ -21,13 +21,14 @@
             </div>
 
             <!-- Settings Dropdown -->
-            <div class="hidden sm:ms-6 sm:flex sm:items-center">
-                <x-dropdown align="right" width="48">
+            <div class="relative hidden sm:ms-6 sm:flex sm:items-center">
+                <x-dropdown align="right" width="46">
                     <x-slot name="trigger">
                         <button
                             class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
-                            <div>{{ Auth::user()->role == 'instructor' ? 'Trainer ' : '' }}{{ Auth::user()->fname }}
-                                {{ Auth::user()->lname }}</div>
+                            <div>
+                                {{ Auth::user()->role == 'instructor' ? 'Trainer ' . Auth::user()->fname . ' ' . Auth::user()->lname : (Auth::user()->role == 'superadmin' ? 'Administrator' : Auth::user()->fname . ' ' . Auth::user()->lname) }}
+                            </div>
 
                             <div class="ms-1">
                                 <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
@@ -41,20 +42,34 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+                        <div class="m-1.5">
 
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                            <x-dropdown-link :href="route('profile.edit')" class="flex items-center space-x-1.5 rounded-md px-1.5">
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path fill="currentColor"
+                                        d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
+                                </svg>
+                                <div>
+                                    Profile
+                                </div>
                             </x-dropdown-link>
-                        </form>
+
+                            <form class="cursor-pointer" method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <x-dropdown-link hover_bg="hover:bg-red-900"
+                                    class="flex items-center space-x-1.5 rounded-md px-1.5"
+                                    onclick="event.preventDefault();
+                                            this.closest('form').submit();">
+                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <path fill="currentColor"
+                                            d="M14.08,15.59L16.67,13H7V11H16.67L14.08,8.41L15.5,7L20.5,12L15.5,17L14.08,15.59M19,3A2,2 0 0,1 21,5V9.67L19,7.67V5H5V19H19V16.33L21,14.33V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19Z" />
+                                    </svg>
+                                    <div>
+                                        Log Out
+                                    </div>
+                                </x-dropdown-link>
+                            </form>
+                        </div>
                     </x-slot>
                 </x-dropdown>
             </div>
@@ -77,16 +92,12 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{ 'block': open, 'hidden': !open }" class="hidden sm:hidden">
-        {{-- <div class="space-y-1 pb-3 pt-2">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-        </div> --}}
-
         <!-- Responsive Settings Options -->
         <div class="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
             <div class="px-4">
-                <div class="text-base font-medium text-gray-800 dark:text-gray-200">{{ Auth::user()->name }}</div>
+                <div class="text-base font-medium text-gray-800 dark:text-gray-200">
+                    {{ (Auth::user()->role == 'instructor' ? 'Trainer ' . Auth::user()->fname . ' ' . Auth::user()->lname : Auth::user()->role == 'superadmin') ? 'Administrator' : Auth::user()->fname . ' ' . Auth::user()->lname }}
+                </div>
                 <div class="text-sm font-medium text-gray-500">{{ Auth::user()->email }}</div>
             </div>
 

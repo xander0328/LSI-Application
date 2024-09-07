@@ -12,7 +12,7 @@ class Batch extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'course_id', 
+        'user_id', 'course_id',
     ];
 
     public function enrollee()
@@ -48,7 +48,7 @@ class Batch extends Model
 
     public function instructor()
     {
-        return $this->belongsTo(User::class, 'instructor_id');
+        return $this->belongsTo(Instructor::class);
     }
 
     public function unit_of_competency(){

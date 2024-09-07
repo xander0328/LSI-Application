@@ -1,6 +1,10 @@
 <head>
     <title>LSI | Register</title>
     <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
         .hidden {
             opacity: 0;
             transform: translateY(20px);
@@ -18,12 +22,12 @@
 </head>
 
 <x-guest-layout>
-    <form id="registrationForm" method="POST" action="{{ route('register') }}">
+    <form id="registrationForm" method="POST" action="{{ route('submit_register') }}">
         @csrf
         <div x-data="formValidation()">
             <!-- Name -->
-            <div id="step1" x-show="currentStep === 1">
-                <input type="hidden" name="role" value="student">
+            <div x-cloak id="step1" x-show="currentStep === 1">
+                <input type="hidden" name="role" value="guest">
 
                 <div class="mt-4">
                     <x-input-label for="fname" :value="__('First Name')" />
@@ -58,7 +62,7 @@
                         {{ __('Already registered?') }}
                     </a>
                     <x-primary-button
-                        class="rounded-md from-cyan-500 to-blue-500 px-3 py-2 font-bold text-black hover:bg-gradient-to-r"
+                        class="rounded-md from-cyan-500 to-blue-500 px-3 py-2 font-bold text-black hover:bg-gradient-to-r hover:text-white"
                         type="button" @click="checkForm1()">Next</x-primary-button>
                 </div>
             </div>
@@ -73,6 +77,17 @@
                 </div>
                 <div id="lnameError" x-show="emailError" x-text="emailError"
                     class="error rounded-md p-1 text-sm text-red-500"></div>
+
+                <!-- Contact Number -->
+                <div class="mt-4">
+                    <x-input-label for="contact_number" :value="__('Contact Number')" />
+                    <x-text-input x-model="contactNumber" @input="validateContact($event)" id="contact_number"
+                        class="mt-1 block w-full" type="text" name="contact_number" :value="old('contact_number')" required
+                        autocomplete="username" />
+                    {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
+                </div>
+                <div x-show="contactError" x-text="contactError" class="error rounded-md p-1 text-sm text-red-500">
+                </div>
 
                 <!-- Password -->
                 <div class="mt-4">
@@ -214,11 +229,13 @@
             firstName: '',
             lastName: '',
             email: '',
+            contactNumber: '',
             password: '',
             confirmPassword: '',
             fnameError: '',
             lnameError: '',
             emailError: '',
+            contactError: '',
             passwordError: '',
             confirmPasswordError: '',
             currentStep: 1,
@@ -278,6 +295,31 @@
                 this.currentStep = step - 1;
             },
 
+            // validateContact() {
+            //     this.contactNumber.replace(/\D/g, ''); // Remove non-digits
+            //     if (this.contactNumber.length > 11) {
+            //         this.contactNumber = this.contactNumber.slice(0, 11); // Truncate value to 11 digits
+            //     } else {
+            //         this.contactError = '';
+            //     }
+            // },
+
+            validateContact(event) {
+                const input = event.target;
+                let value = input.value.trim();
+
+                value = value.replace(/\D/g, '');
+
+                if (value.length > 11) {
+                    value = value.slice(0, 11);
+                }
+
+                this.contactNumber = value;
+                input.value = value;
+
+                this.contactError = value.length === 0 ? 'Contact number is required.' : '';
+            },
+
             validatePassword() {
                 const lowercaseRegex = /[a-z]/;
                 const numberRegex = /[0-9]/;
@@ -300,7 +342,11 @@
             },
 
             submitForm() {
-                if (!this.passwordError && !this.confirmPasswordError && !this.emailError) {
+                var i = !this.contactNumber.trim() ? this.contactError = 'Please input your contact number' : (this
+                    .contactNumber.trim().length < 11 ? this.contactError = 'Please input valid contact number' : ''
+                );
+
+                if (!this.passwordError && !this.confirmPasswordError && !this.emailError && !this.contactError) {
                     document.getElementById('registrationForm').submit();
                 }
             }
