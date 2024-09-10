@@ -95,7 +95,7 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 </head>
 
-<body class="font-sans antialiased">
+<body class="bg-gray-900 font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         @include('layouts.navigation')
 
@@ -117,6 +117,18 @@
                 aria-label="Sidebar">
                 <div class="h-full overflow-y-auto bg-white px-3 pb-4 dark:bg-gray-800">
                     <ul class="space-y-2 font-medium">
+                        <li>
+                            <x-nav-link :href="route('website')" :active="request()->is('website*')"
+                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-width="2"
+                                        d="M3 11h18m-9 0v8m-8 0h16c.6 0 1-.4 1-1V6c0-.6-.4-1-1-1H4a1 1 0 0 0-1 1v12c0 .6.4 1 1 1Z" />
+                                </svg>
+                                <span class="ms-3">Dashboard</span>
+                            </x-nav-link>
+                        </li>
                         <li>
                             <x-nav-link :href="route('website')" :active="request()->is('website*')"
                                 class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">

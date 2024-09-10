@@ -39,7 +39,15 @@ class SuperAdminController extends Controller
     // View Courses
     public function courses_offers(){
         // dump(Course::all());
-        return view('courses', [ 'courses' => Course::get(), 'categories' => CourseCategory::all(), 'temp_image' => TempCourseImage::first()]);
+        $course = Course::withCount(['enrollees' => function($query){
+            $query->whereNull(['deleted_at', 'batch_id']);
+        }, 
+        'batches' => function($query){
+            $query->whereNull(['deleted_at', 'completed_at']);
+        }])
+        ->get();
+        
+        return view('courses', [ 'courses' => $course, 'categories' => CourseCategory::all(), 'temp_image' => TempCourseImage::first()]);
     }
 
     // Update / Save Course
@@ -276,7 +284,7 @@ class SuperAdminController extends Controller
         return response()->json($course);
     }
 
-    // Enable/Disable Course
+    // Enable/Disable Course Enrollment
     public function course_toggle(Request $request)
     {
         $course = Course::find($request->input('course_id'));
@@ -284,6 +292,15 @@ class SuperAdminController extends Controller
         $course->save();
 
         return response()->json(['status' => 'success', 'available' => $course->available]);
+    }
+
+    // Feature Toggle for Course
+    public function feature_toggle(Request $request) {
+        $course = Course::find($request->input('course_id'));
+        $course->featured = !$course->featured;
+        $course->save();
+
+        return response()->json(['status' => 'success', 'featured' => $course->featured]);
     }
     
     // See Enrollees per Course
@@ -400,6 +417,8 @@ class SuperAdminController extends Controller
         $new_batch->course_id = $request->course_id;
         $new_batch->save();
 
+        $new_batch->enrollee_count = 0;
+
         // Return a JSON response
         if ($new_batch) {
             return response()->json([
@@ -417,10 +436,63 @@ class SuperAdminController extends Controller
         ]);
     }
 
-    public function get_course_batches(){
-        
+    public function get_course_batches(Request $request){
+        $course = Course::where('id', $request->course_id)
+        ->with(['batches' => function ($query){
+            $query->whereNull(['deleted_at', 'completed_at'])
+                ->withCount(['enrollee' => function($enrollee){
+                    $enrollee->whereNull('deleted_at');
+                }]);
+        }])
+        ->first();
+
+        if($course){
+            return response()->json(['status' => 'success', 'course' => $course]);
+        }
+
+        return response()->json(['status' => 'error', 'message' => 'Course not found']);
     }
 
+    public function get_batch_data(Request $request){
+        $batch = Batch::where('id', $request->batch_id)
+        ->with(['enrollee' => function($query){
+            $query->select('id', 'batch_id', 'user_id')->whereNull('deleted_at')
+                ->with(['user' => function($user){
+                    $user->whereNull('deleted_at');
+                }]);
+        }, 'instructor', 'instructor.user'])->first();
+
+        if($batch){
+            return response()->json(['status' => 'success', 'batch' => $batch]);
+        }
+        
+        return response()->json(['status' => 'error', 'message' => 'Batch not found']);
+    }
+
+    public function unassign_instructor(Request $request) {
+        $batch = Batch::where('id', $request->batch_id)->first();
+        
+        if ($batch) {
+            $batch->instructor_id = null;
+
+            if($batch->update()){
+                return response()->json(['status' => 'success']);
+            }
+            
+            return response()->json(['status' => 'error', 'message' => 'Instructor did not removed']);
+        }
+        
+        return response()->json(['status' => 'error', 'message' => 'Batch not found']);
+    }
+    public function get_all_instructors(Request $request) {
+        $instructors = Instructor::with(['user' => function($query){
+            $query->whereNull('deleted_at');
+        }])
+        ->get();
+        
+        return response()->json(['instructors' => $instructors]);
+        
+    }
 
 
     public function get_user_records(Request $request){

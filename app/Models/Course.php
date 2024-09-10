@@ -21,7 +21,8 @@ class Course extends Model
         'filename',
         'available',
         'registration_fee',
-        'bond_deposit'
+        'bond_deposit',
+        'featured'
     ];
 
     public function enrollees()

@@ -50,8 +50,7 @@
                                                     class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
                                                 </div>
                                                 <span
-                                                    class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enable
-                                                    Enrollment</span>
+                                                    class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enrollment</span>
                                             </label>
                                         </div>
 
@@ -70,6 +69,23 @@
 
                                                 <x-slot name="content">
                                                     <div class="m-1.5">
+                                                        <div class="flex rounded-lg p-2 hover:bg-gray-800">
+                                                            <label
+                                                                class="inline-flex w-full cursor-pointer items-center">
+                                                                <input @change="featureToggle(course.id)"
+                                                                    type="checkbox" :checked="course.featured"
+                                                                    class="peer sr-only"
+                                                                    :class="'feature-toggle-' + course.id">
+                                                                <div
+                                                                    class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
+                                                                </div>
+                                                                <span
+                                                                    class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Feature</span>
+                                                            </label>
+                                                        </div>
+
+                                                        <hr class="my-1 opacity-50">
+
                                                         <a @click="editCourse(course.id)"
                                                             class="flex w-full cursor-pointer items-center space-x-1 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                                             <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg"
@@ -93,9 +109,9 @@
                                                             </div>
                                                         </x-dropdown-link>
 
-                                                        <hr class="my-1">
+                                                        <hr class="my-1 opacity-50">
 
-                                                        <div class="py-0.5">
+                                                        <div>
                                                             <a :href=`/courses/${course.id}/enrollees`
                                                                 class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                                                 <div class="mr-1"><svg
@@ -108,10 +124,13 @@
                                                                             clip-rule="evenodd" />
                                                                     </svg>
                                                                 </div>Enrollees
+                                                                <span
+                                                                    class="ms-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-900 text-xs font-semibold text-white"
+                                                                    x-text="course.enrollees_count"></span>
                                                             </a>
                                                         </div>
 
-                                                        <div class="py-0.5">
+                                                        <div>
                                                             <a @click.prevent="triggerBatchesModal(course.id)"
                                                                 class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                                                 <div class="mr-1">
@@ -122,6 +141,9 @@
                                                                             d="M23,2H1A1,1 0 0,0 0,3V21A1,1 0 0,0 1,22H23A1,1 0 0,0 24,21V3A1,1 0 0,0 23,2M22,20H20V19H15V20H2V4H22V20M10.29,9.71A1.71,1.71 0 0,1 12,8C12.95,8 13.71,8.77 13.71,9.71C13.71,10.66 12.95,11.43 12,11.43C11.05,11.43 10.29,10.66 10.29,9.71M5.71,11.29C5.71,10.58 6.29,10 7,10A1.29,1.29 0 0,1 8.29,11.29C8.29,12 7.71,12.57 7,12.57C6.29,12.57 5.71,12 5.71,11.29M15.71,11.29A1.29,1.29 0 0,1 17,10A1.29,1.29 0 0,1 18.29,11.29C18.29,12 17.71,12.57 17,12.57C16.29,12.57 15.71,12 15.71,11.29M20,15.14V16H16L14,16H10L8,16H4V15.14C4,14.2 5.55,13.43 7,13.43C7.55,13.43 8.11,13.54 8.6,13.73C9.35,13.04 10.7,12.57 12,12.57C13.3,12.57 14.65,13.04 15.4,13.73C15.89,13.54 16.45,13.43 17,13.43C18.45,13.43 20,14.2 20,15.14Z" />
                                                                     </svg>
                                                                 </div>Batches
+                                                                <span
+                                                                    class="ms-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-900 text-sm font-semibold text-white"
+                                                                    x-text="course.batches_count"></span>
                                                             </a>
                                                         </div>
                                                     </div>
@@ -462,7 +484,8 @@
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             Batches | <span class="text-xs" x-text="selectedCourse.name"></span>
                         </h3>
-                        <button type="button" @click="showBatchesModal = !showBatchesModal"
+                        <button type="button"
+                            @click="showBatchesModal = !showBatchesModal; document.body.classList.remove('no-scroll');"
                             class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
                             <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none"
                                 viewBox="0 0 14 14">
@@ -480,8 +503,8 @@
 
                                 <div class="text-white">
                                     <div>
-                                        <button @click="create_new_batch(selectedCourse.id)"
-                                            class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm hover:bg-sky-800">Create
+                                        <button @click="create_new_batch(selectedCourse.id)" :disabled="dataLoading"
+                                            class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm hover:bg-sky-800 disabled:cursor-not-allowed">Create
                                             New Batch</button>
                                     </div>
                                     <div id="list_uc">
@@ -492,10 +515,48 @@
                                         <template x-for="batch in selectedCourse.batches" :key="batch.id">
                                             <div
                                                 class="flex items-center justify-between rounded-md bg-gray-700 p-2 text-sm hover:bg-gray-800/75">
-                                                <span x-text="selectedCourse.code +'-'+ batch.name"></span>
+                                                <div class="flex items-center justify-between">
+                                                    <span
+                                                        :class="{
+                                                            'bg-lime-900 text-lime-300': batch.instructor_id,
+                                                            'bg-red-900 text-red-300': !batch.instructor_id,
+                                                        }"
+                                                        class="me-1 inline-flex items-center rounded px-2 py-0.5 text-sm font-medium">
+                                                        <svg class="h-5 w-5" fill="currentColor"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <title>school</title>
+                                                            <path
+                                                                d="M12,3L1,9L12,15L21,10.09V17H23V9M5,13.18V17.18L12,21L19,17.18V13.18L12,17L5,13.18Z" />
+                                                        </svg>
+                                                    </span>
+                                                    <span
+                                                        class="ms-0.5 inline-flex items-center rounded bg-sky-900 px-2 py-0.5 text-sm font-medium text-sky-300">
+                                                        <span class="me-1 flex items-center">
+                                                            <svg class="h-5 w-5" fill="currentColor"
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 24 24">
+                                                                <title>account-circle</title>
+                                                                <path
+                                                                    d="M12,19.2C9.5,19.2 7.29,17.92 6,16C6.03,14 10,12.9 12,12.9C14,12.9 17.97,14 18,16C16.71,17.92 14.5,19.2 12,19.2M12,5A3,3 0 0,1 15,8A3,3 0 0,1 12,11A3,3 0 0,1 9,8A3,3 0 0,1 12,5M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12C22,6.47 17.5,2 12,2Z" />
+                                                            </svg>
+                                                        </span>
+                                                        <span class="font-sans" x-text="batch.enrollee_count"></span>
+                                                    </span>
+                                                    <span class="ms-2"
+                                                        x-text="selectedCourse.code +'-'+ batch.name"></span>
+                                                </div>
                                                 <div class="flex">
+                                                    <a class="h-7 w-7 cursor-pointer rounded-md p-1 hover:bg-gray-600"
+                                                        @click="seeBatchData(batch.id)">
+                                                        <svg class="h-full w-full" fill="currentColor"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <title>eye-outline</title>
+                                                            <path
+                                                                d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z" />
+                                                        </svg>
+                                                    </a>
                                                     <form action="{{ route('delete_batch') }}"
-                                                        class="h-7 w-7 rounded-md p-1 hover:bg-gray-600"
+                                                        class="h-7 w-7 rounded-md p-1 hover:bg-red-900"
                                                         method="post">
                                                         @csrf
                                                         <input type="hidden" name="batch_id" :value="batch.id">
@@ -515,6 +576,183 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Batch Data --}}
+        <div x-cloak x-show="showBatchDataModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
+            <div class="relative max-h-full w-full max-w-lg p-4">
+                <!-- Modal content -->
+                <div class="relative rounded-lg bg-gray-700">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            Batch Information | <span class="text-xs"
+                                x-text="`${selectedCourse.code}-${selectedBatch.name}`"></span>
+                        </h3>
+                        <button type="button"
+                            @click="showBatchDataModal = !showBatchDataModal; document.body.classList.remove('no-scroll');"
+                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                            <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="p-4 md:p-5">
+                        <div class="mb-4 grid grid-cols-2 gap-4">
+                            <div class="col-span-2">
+
+                                <div class="text-white">
+                                    <div>
+                                        <div class="mb-2">
+                                            <span>Course: </span><span x-text="selectedCourse.name"></span>
+                                        </div>
+
+                                        <template x-if="!selectedBatch?.instructor">
+                                            <div
+                                                class="mb-2 flex items-center justify-between rounded-lg border border-gray-700 bg-gray-800 p-2">
+                                                <div
+                                                    class="flex items-center justify-between whitespace-nowrap rounded-lg p-2 text-white">
+                                                    <img src="{{ asset('images/temporary/profile.png') }}"
+                                                        class="h-12 w-12 rounded-full" alt="profile">
+                                                    <div class="pl-3">
+                                                        <h3 class="text-lg font-semibold text-white">No Instructor
+                                                        </h3>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <a @click="seeAssignInstructor(selectedBatch?.id)"
+                                                        class="cursor-pointer rounded border border-sky-700 px-2.5 py-1 text-sky-700 hover:bg-sky-700 hover:text-white">
+                                                        Assign
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </template>
+
+                                        <template x-if="selectedBatch?.instructor">
+                                            <div
+                                                class="mb-2 flex justify-between border border-gray-700 bg-gray-800 p-2 text-white">
+                                                <div class="flex items-center whitespace-nowrap rounded-lg">
+                                                    <img :src="'{{ asset('storage/instructor_files/') }}/' +
+                                                    selectedBatch?.instructor?.user_id + '/' + selectedBatch?.instructor
+                                                        ?.folder + '/' + selectedBatch?.instructor?.id_picture"
+                                                        class="h-12 w-12 rounded-full" alt="profile">
+                                                    <div class="pl-3">
+                                                        <h3 class="text-lg font-semibold text-white"
+                                                            x-text="`${selectedBatch?.instructor?.user.fname ?? ''} ${selectedBatch?.instructor?.user.lname ?? ''}`">
+                                                        </h3>
+                                                        <div class="font-normal text-gray-400"
+                                                            x-text="selectedBatch?.instructor?.user.email">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <a @click="unassignInstructor(selectedBatch?.id)"
+                                                        class="cursor-pointer rounded border border-pink-700 p-1 text-pink-700 hover:bg-pink-700 hover:text-white">
+                                                        <svg class="h-4 w-4" fill="currentColor"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <title>minus</title>
+                                                            <path d="M19,13H5V11H19V13Z" />
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template x-if="selectedBatch.enrollee.length > 0">
+                                            <div>
+                                                <div class="rounded-t-lg bg-gray-800 p-2 text-sm text-white/50">
+                                                    Trainees</div>
+                                                <div class="text-white">
+                                                    <template x-for="(enrollee, index) in selectedBatch.enrollee"
+                                                        :key="enrollee.id">
+                                                        <div
+                                                            class="border-white/25 p-2 last:rounded-b-lg odd:bg-gray-800 even:bg-gray-800/75">
+                                                            <div
+                                                                x-text="`${enrollee.user.lname}, ${enrollee.user.fname} ${enrollee.user.mname ? enrollee.user.mname.charAt(0)+'.' : ''}`">
+                                                            </div>
+                                                            <div class="text-sm text-white/50"
+                                                                x-text="enrollee.user.email">
+                                                            </div>
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Instructors Modal --}}
+        <div x-cloak x-show="showInstructorsModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
+            <div class="relative max-h-full w-full max-w-lg p-4">
+                <!-- Modal content -->
+                <div class="relative rounded-lg bg-gray-700">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            Batch Information | <span class="text-xs"
+                                x-text="`${selectedCourse.code}-${selectedBatch.name}`"></span>
+                        </h3>
+                        <button type="button"
+                            @click="showInstructorsModal = !showInstructorsModal; document.body.classList.remove('no-scroll');"
+                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                            <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="p-4 md:p-5">
+                        <div class="mb-4 grid grid-cols-2 gap-4">
+                            <div class="col-span-2">
+
+                                <label for="instructors"
+                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Select
+                                    instructor</label>
+                                <select id="instructors"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
+                                    <option value="" selected>Choose instructor</option>
+                                    <template x-for="instructor in instructors" :key="instructor.id">
+                                        <option :value="instructor.id" selected
+                                            x-text="`${instructor.user.fname} ${instructor.user.mname ? instructor.user.mname.charAt(0) + '.' : ''} ${instructor.user.lname}`">
+                                        </option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-4 px-4 pb-4 text-center">
+                        <button data-modal-hide="popup-modal" type="button"
+                            class="basis-1/2 items-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-sky-800">
+                            Assign
+                        </button>
+                        <button data-modal-hide="popup-modal" type="button"
+                            class="basis-1/2 rounded-lg border border-gray-600 bg-gray-800 px-5 py-2.5 text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -611,11 +849,22 @@
                     courses: @json($courses),
                     courseModal: false,
                     selectedCourse: [],
+                    selectedBatch: [],
                     edit: false,
                     filepond: '',
                     modalTitle: '',
                     tempImage: @json($temp_image),
+                    instructors: [],
+
+                    // Modals
                     showBatchesModal: false,
+                    showBatchDataModal: false,
+                    showInstructorsModal: false,
+
+                    // Loading Utility
+                    xhr: null,
+                    dataLoading: false,
+
                     init() {
                         console.log(this.courses);
                         this.filepondInit();
@@ -769,10 +1018,11 @@
                         });
                     },
                     courseToggle(course_id) {
+                        this.abortFetch('ajax')
                         var thisFunction = this
                         this.selectedCourse = this.courses.filter(course => course.id === course_id)
                         // console.log(this.selectedCourse[0].name);
-                        $.ajax({
+                        this.xhr = $.ajax({
                             url: '{{ route('course_toggle') }}',
                             method: 'POST',
                             data: {
@@ -792,6 +1042,66 @@
                                 console.error(xhr.responseText);
                             }
                         });
+                    },
+                    featureToggle(courseId) {
+                        var thisFunction = this
+
+                        var featuredCourses = this.courses.filter(course => course.featured);
+                        this.selectedCourse = this.courses.find(course => course.id === courseId)
+
+                        // Check if the selected course is already featured
+                        if (this.selectedCourse.featured) {
+                            // If the course is already featured, remove it from the featured list
+                            this.abortFetch('ajax');
+                            this.xhr = $.ajax({
+                                url: '{{ route('feature_toggle') }}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    course_id: courseId
+                                },
+                                success: function(response) {
+                                    thisFunction.selectedCourse.featured = false;
+                                    thisFunction.notification('success', 'Course is removed from featured list',
+                                        thisFunction.selectedCourse.name);
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(xhr.responseText);
+                                }
+                            });
+                        } else {
+                            // If not featured yet, check the number of featured courses
+                            if (featuredCourses.length < 3) {
+                                // Mark the course as featured
+                                this.abortFetch('ajax');
+                                this.xhr = $.ajax({
+                                    url: '{{ route('feature_toggle') }}',
+                                    method: 'POST',
+                                    data: {
+                                        _token: '{{ csrf_token() }}',
+                                        course_id: courseId
+                                    },
+                                    success: function(response) {
+                                        thisFunction.selectedCourse.featured = true;
+                                        thisFunction.notification('success', 'Course is now in featured list',
+                                            thisFunction.selectedCourse.name);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error(xhr.responseText);
+                                    }
+                                });
+                            } else {
+                                // If the limit is reached, notify the user and revert the checkbox
+                                this.notification('error',
+                                    `Sorry, the number of featured courses is limited to 3. Current: ${featuredCourses[0].name}, ${featuredCourses[1].name}, and ${featuredCourses[2].name}`,
+                                    '');
+
+                                this.$nextTick(() => {
+                                    // Ensure Alpine.js reactivity updates the UI accordingly
+                                    document.querySelector(`.feature-toggle-${courseId}`).checked = false;
+                                });
+                            }
+                        }
                     },
                     notification(status, message, title) {
                         status === 'success' ? toastr.success(message, title ?? title) : toastr.error(message, title ??
@@ -877,19 +1187,20 @@
 
                     },
                     triggerBatchesModal(courseId) {
+                        this.selectedCourse = this.courses.find(course => course.id === courseId)
                         this.abortFetch('ajax')
                         this.dataLoading = true
                         var t = this
                         this.xhr = $.ajax({
-                            url: '{{ route('get_payment_details') }}',
+                            url: '{{ route('get_course_batches') }}',
                             method: 'POST',
                             data: {
                                 _token: '{{ csrf_token() }}',
                                 course_id: courseId
                             },
                             success: function(response) {
-                                t.enrolleeHistory = response.payment
-                                console.log(t.enrolleeHistory);
+                                console.log(response);
+                                t.selectedCourse.batches = response.course.batches
                                 t.dataLoading = false
                             },
                             error: function(xhr, status, error) {
@@ -897,7 +1208,6 @@
                             }
                         });
                         this.showBatchesModal = !this.showBatchesModal;
-                        this.selectedCourse = this.courses.find(course => course.id === courseId)
                     },
                     confirmDelete() {
                         var form = event.target.closest('form');
@@ -918,9 +1228,10 @@
                     },
                     create_new_batch(courseId) {
                         // console.log(this.courses.find(course => course.id === courseId));
+                        this.abortFetch('ajax')
                         var courses = this.courses
                         var i = this
-                        $.ajax({
+                        this.xhr = $.ajax({
                             url: "{{ route('create_new_batch') }}",
                             type: "POST",
                             data: {
@@ -948,7 +1259,105 @@
                                 alert(errorMessage);
                             }
                         });
-                    }
+                    },
+
+                    // Batch Data Modal
+                    seeBatchData(batchId) {
+                        document.body.classList.add('no-scroll');
+                        this.selectedBatch = this.selectedCourse.batches.find(batch => batch.id === batchId)
+                        this.abortFetch('ajax')
+                        this.dataLoading = true
+                        var t = this
+                        this.xhr = $.ajax({
+                            url: '{{ route('get_batch_data') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                batch_id: batchId
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                t.selectedBatch = response.batch
+                                // t.selectedCourse.batches = response.course.batches
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                                t.notification('error', 'Fetching batch data error. Please try again.', '')
+                            }
+                        });
+                        this.showBatchDataModal = !this.showBatchDataModal;
+                    },
+                    unassignInstructor(batchId) {
+                        this.selectedBatch = this.selectedCourse.batches.find(batch => batch.id === batchId)
+                        this.abortFetch('ajax')
+                        this.dataLoading = true
+                        var t = this
+                        this.xhr = $.ajax({
+                            url: '{{ route('unassign_instructor') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                                batch_id: batchId
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                console.log(t.selectedBatch);
+
+                                if (response.status == 'success') {
+                                    t.selectedBatch.instructor_id = null
+                                    t.selectedBatch.instructor = null
+                                }
+
+                                console.log(t.selectedBatch);
+
+                                // t.selectedCourse.batches = response.course.batches
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                                t.notification('error', 'Connection error', '')
+                            }
+                        });
+                    },
+                    seeAssignInstructor(batchId) {
+                        this.abortFetch('ajax')
+                        this.dataLoading = true
+                        var t = this
+                        this.xhr = $.ajax({
+                            url: '{{ route('get_all_instructors') }}',
+                            method: 'POST',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                            },
+                            success: function(response) {
+                                console.log(response);
+
+                                t.instructors = response.instructors
+                                console.log(t.instructors);
+
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                                t.notification('error', 'Connection error', '')
+                            }
+                        });
+                        this.showInstructorsModal = true
+                    },
+
+                    // Utility
+                    abortFetch(type) {
+                        // Abort the current fetch request if there's an ongoing one
+                        if (type == 'fetch') {
+                            if (this.controller) {
+                                this.controller.abort();
+                            }
+                        }
+
+                        if (type == 'ajax') {
+                            if (this.xhr) {
+                                this.xhr.abort();
+                            }
+                        }
+                    },
 
                 }
             }

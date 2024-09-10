@@ -10,7 +10,7 @@
         @endphp
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         <input type="hidden" name="course_id" value="{{ $course_id }}">
-        <div id="step1" x-show="currentStep === 1" class="mb-4 grid grid-cols-2 gap-4">
+        <div id="step1" x-cloak x-show="currentStep === 1" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2 mb-2 font-bold text-white">MAILING ADDRESS</div>
             <div class="col-span-2">
                 <label for="region" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Region
@@ -111,7 +111,7 @@
                     type="button">Next</x-primary-button>
             </div>
         </div>
-        <div id="step2" x-show="currentStep === 2" class="mb-4 grid grid-cols-2 gap-4">
+        <div id="step2" x-cloak x-show="currentStep === 2" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2">
                 <div class="mb-2 font-bold text-white">Sex</div>
                 <div class="mb-2 flex items-center rounded border border-gray-200 ps-4 dark:border-gray-700">
@@ -137,7 +137,7 @@
                     type="button">Next</x-primary-button>
             </div>
         </div>
-        <div id="step3" x-show="currentStep === 3" class="mb-4 grid grid-cols-2 gap-4">
+        <div id="step3" x-cloak x-show="currentStep === 3" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2">
                 <div class="mb-2 font-bold text-white">Civil Status</div>
                 <div class="mb-2 flex items-center rounded border border-gray-200 ps-4 dark:border-gray-700">
@@ -179,7 +179,7 @@
                     type="button">Next</x-primary-button>
             </div>
         </div>
-        <div id="step4" x-show="currentStep === 4" class="mb-4 grid grid-cols-2 gap-4">
+        <div id="step4" x-cloak x-show="currentStep === 4" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2">
                 <div class="mb-2 font-bold text-white">Employment Type</div>
                 <div class="mb-2 flex items-center rounded border border-gray-200 ps-4 dark:border-gray-700">
@@ -235,7 +235,7 @@
             </div>
 
         </div>
-        <div id="step5" x-show="currentStep === 5" class="mb-4 grid grid-cols-2 gap-4">
+        <div id="step5" x-cloak x-show="currentStep === 5" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2 mb-2 font-bold text-white">PERSONAL INFORMATION</div>
             <div class="col-span-2 mb-2">
                 <label for="birth_date" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Birth
@@ -326,7 +326,7 @@
                     type="button">Next</x-primary-button>
             </div>
         </div>
-        <div id="step6" x-show="currentStep === 6" class="mb-4 grid grid-cols-2 gap-4">
+        <div id="step6" x-cloak x-show="currentStep === 6" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2 mb-2 font-bold text-white">PERSONAL INFORMATION</div>
             <div class="col-span-2">
                 <label for="sss" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">SSS
@@ -363,7 +363,7 @@
                     type="button">Next</x-primary-button>
             </div>
         </div>
-        <div id="step7" x-show="currentStep === 7" class="mb-4 grid grid-cols-2 gap-4">
+        <div id="step7" x-cloak x-show="currentStep === 7" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2 mb-2 flex justify-between font-bold text-white">
                 <div class="content-center">EDUCATIONAL BACKGROUND</div>
                 <button class="col-span-1 text-white" type="button" @click="addField">Add</button>
@@ -458,7 +458,7 @@
                     type="button">Next</x-primary-button>
             </div>
         </div>
-        <div id="step8" x-show="currentStep === 8" class="mb-4 grid grid-cols-2 gap-4">
+        <div id="step8" x-cloak x-show="currentStep === 8" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2 mb-2">
                 <div class="mb-2 font-bold text-white">Preferred Schedule (Training)</div>
                 <div class="mb-2 flex items-center rounded border border-gray-200 ps-4 dark:border-gray-700">
