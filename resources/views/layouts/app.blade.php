@@ -337,6 +337,10 @@
             </main>
             {{-- </div> --}}
         </div>
+        <button id="installButton"
+            style="display: none; position: fixed; bottom: 20px; right: 20px; background-color: #007bff; color: #fff; border: none; border-radius: 5px; padding: 10px 20px; cursor: pointer;">
+            Install App
+        </button>
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
@@ -385,57 +389,6 @@
                     });
                 }
             }
-        }
-    </script>
-    <script type="text/javascript">
-        if ('serviceWorker' in navigator) {
-            // Register the service worker
-            navigator.serviceWorker.register('/serviceworker.js')
-                .then(registration => {
-                    // Service worker registration success
-                    console.log('Service Worker registered:', registration);
-                })
-                .catch(error => {
-                    // Service worker registration failed
-                    console.error('Service Worker registration failed:', error);
-                });
-
-            // Listen for the beforeinstallprompt event
-            window.addEventListener('beforeinstallprompt', (event) => {
-                // Prevent the default browser prompt
-                console.log('being installed');
-                event.preventDefault();
-                // Store the event for later use
-                let deferredPrompt = event;
-                // Show your custom install prompt
-                showInstallPrompt();
-
-                // Example function to show a custom install prompt
-                function showInstallPrompt() {
-                    // Show a custom button or banner
-                    // Example: display a button with id "installButton"
-                    const installButton = document.getElementById('installButton');
-                    installButton.style.display = 'block';
-
-                    // Attach an event listener to the button
-                    installButton.addEventListener('click', () => {
-                        // Show the browser's install prompt
-                        deferredPrompt.prompt();
-                        // Wait for the user to respond to the prompt
-                        deferredPrompt.userChoice.then((choiceResult) => {
-                            if (choiceResult.outcome === 'accepted') {
-                                console.log('User accepted the install prompt');
-                            } else {
-                                console.log('User dismissed the install prompt');
-                            }
-                            // Reset the deferredPrompt variable
-                            deferredPrompt = null;
-                            // Hide the install button
-                            installButton.style.display = 'none';
-                        });
-                    });
-                }
-            });
         }
     </script>
     @yield('script')

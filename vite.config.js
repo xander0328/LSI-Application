@@ -12,10 +12,20 @@ export default defineConfig({
         }),
     ],
     server:{
-        // host: '0.0.0.0',
+        // host: true,
         hmr:{
             host: 'localhost',
         },
     },
+    // build: {
+    //     outDir: 'public/build', // This is optional, depending on your needs
+    //     rollupOptions: {
+    //         input: {
+    //             manifest: 'public/manifest.json',
+    //             serviceworker: 'public/serviceworker.js'
+    //         }
+    //     }
+    // }
+
     
 });
