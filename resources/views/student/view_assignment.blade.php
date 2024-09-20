@@ -301,14 +301,14 @@
                     },
 
                     turnInStatus() {
-                        fetch('/turn_in_status', {
+                        fetch('/course/turn_in_status', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
                                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                                 },
                                 body: JSON.stringify({
-                                    assignment_id: {{ $assignment->id }}
+                                    assignment_id: {{ $assignment->id }},
                                 })
                             })
                             .then(response => response.json())
@@ -344,7 +344,7 @@
                         this.isPending = true;
                         this.assignmentButton.disable = true;
                         var t = this;
-                        fetch('/assignment_action', {
+                        fetch('/course/assignment_action', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',

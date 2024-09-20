@@ -28,30 +28,56 @@ use App\Http\Controllers\NotificationSendController;
 
 class InstructorController extends Controller
 {
+    // Batch List
     public function batch_list(){
-        $instructor = Instructor::where('user_id', auth()->user()->id)->first();
-        $batch = $instructor->batches()->get();
+        $batch = Instructor::with(['batches' => function($query){
+            $query->whereNull( 'deleted_at')
+                ->with(['course' => function ($course) {
+                    $course->select(['id', 'code', 'name', 'folder', 'filename'])->whereNull('deleted_at');
+                }]);
+        }])
+        ->where('user_id', auth()->user()->id)->first();
+
+        
+
+        // dd($batch);
 
         return view('instructor.batch_list', compact('batch'));
     }
 
-    public function batch_posts($id){
-        $user = auth()->user();
-        $batch = Batch::findOrFail(decrypt($id));
-        $posts = $batch->post;
-        $course = $batch->course;
-        // $lessons = $batch->lesson;
+    public function get_batch_info(Request $request){
+        $batch = Batch::where('id', $request->batch_id)
+        ->with(['enrollee' => function($query){
+            $query->select('id', 'batch_id', 'user_id')
+                ->whereNull('deleted_at')
+                ->whereHas('user', function($userQuery) {
+                    $userQuery->whereNull('deleted_at');
+                })
+                ->with(['user' => function($user){
+                    $user->select(['id','fname', 'mname', 'lname', 'email', 'created_at']);
+                }]);
+        }])->first();
 
-        $files = collect(); 
-
-        foreach ($posts as $post) {
-            $post->formatted_created_at = Carbon::parse($post->created_at)->timezone('Asia/Manila')->format('Y-m-d H:i:s');
-            $files = $files->merge($post->files);
+        if($batch){
+            return response()->json(['status' => 'success', 'batch' => $batch]);
         }
+        
+        return response()->json(['status' => 'error', 'message' => 'Batch not found']);
+    }
 
-        $temp_files = TempFile::where('batch_id', $batch->id)->get();
+    public function close_batch(Request $request){
+        $batch = Batch::where('id', $request->batch_id)->whereNull('completed_at')->first();
 
-        return view('instructor.batch_posts', compact('batch', 'posts', 'files', 'temp_files'));
+        if($batch){
+            $batch->completed_at = Carbon::now();
+            
+            if($batch->update()){
+                return response()->json(['status' => 'success', 'message' => "Batch: {$batch->course->name}-{$batch->name} Closed", 'date' => $batch->completed_at]);
+            }
+
+            return response()->json(['status' => 'error', 'message' => 'Batch did not update']);
+        }
+        return response()->json(['status' => 'error', 'message' => 'Batch not found']);
     }
 
     public function batch_assignments($batch_id){
@@ -280,6 +306,25 @@ class InstructorController extends Controller
     }
 
     // Posting
+    public function batch_posts($id){
+        $user = auth()->user();
+        $batch = Batch::findOrFail(decrypt($id));
+        $posts = $batch->post;
+        $course = $batch->course;
+        // $lessons = $batch->lesson;
+
+        $files = collect(); 
+
+        foreach ($posts as $post) {
+            $post->formatted_created_at = Carbon::parse($post->created_at)->timezone('Asia/Manila')->format('Y-m-d H:i:s');
+            $files = $files->merge($post->files);
+        }
+
+        $temp_files = TempFile::where('batch_id', $batch->id)->get();
+
+        return view('instructor.batch_posts', compact('batch', 'posts', 'files', 'temp_files'));
+    }
+
     public function post(Request $request){
 
         $message = $request->input('message');

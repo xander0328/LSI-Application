@@ -382,7 +382,7 @@ class SuperAdminController extends Controller
     public function create_new_batch(Request $request)
     {
         // Fetch all batches for the given course, including soft-deleted ones
-        $batches = Batch::withTrashed()->where('course_id', $request->course_id)->get();
+        $batches = Batch::where('course_id', $request->course_id)->get();
 
         // Get the current year and extract the last 2 digits
         $year = date('y'); // 'y' gives the last two digits of the year
@@ -457,6 +457,9 @@ class SuperAdminController extends Controller
         $batch = Batch::where('id', $request->batch_id)
         ->with(['enrollee' => function($query){
             $query->select('id', 'batch_id', 'user_id')->whereNull('deleted_at')
+                ->whereHas('user', function($userQuery) {
+                    $userQuery->whereNull('deleted_at');
+                })
                 ->with(['user' => function($user){
                     $user->whereNull('deleted_at');
                 }]);
@@ -484,6 +487,7 @@ class SuperAdminController extends Controller
         
         return response()->json(['status' => 'error', 'message' => 'Batch not found']);
     }
+
     public function get_all_instructors(Request $request) {
         $instructors = Instructor::with(['user' => function($query){
             $query->whereNull('deleted_at');
@@ -492,6 +496,25 @@ class SuperAdminController extends Controller
         
         return response()->json(['instructors' => $instructors]);
         
+    }
+
+    public function assign_instructor(Request $request){
+        $batch = Batch::where('id', $request->batch_id)->first();
+        if($batch){
+            $instructor = Instructor::where('id', $request->instructor_id)->with('user')->first();
+
+            if($instructor){
+                $batch->instructor_id = $instructor->id;
+                if($batch->update()){
+                    return response()->json(['status' => 'success', 'instructor' => $instructor]);
+                }else{
+                    return response()->json(['status' => 'error', 'message' => 'Instructor not found']);
+                }
+            }
+            return response()->json(['status' => 'error', 'message' => 'Instructor not assigned']);
+        }
+        
+        return response()->json(['status' => 'error', 'message' => 'Batch not found']);
     }
 
 
@@ -853,7 +876,7 @@ class SuperAdminController extends Controller
     }
 
     public function make_refund(Request $request){
-        $payment = Payment::find($request->payment_id)->first();
+        $payment = Payment::where('id', $request->payment_id)->first();
 
         if($request->refund_reason != 'bond deposit'){
             $new_balance = $payment->balance + $request->refund_amount;
@@ -907,6 +930,42 @@ class SuperAdminController extends Controller
             return response()->json(['status' => 'success', 'instructorInfo' => $instructor_info]);
         
         return response()->json(['status' => 'error', 'message' => 'Instructor information not found']);
+    }
+
+    // Dashboard Section
+    public function dashboard(){
+        $web_users = [];
+
+        $roles = User::select('role', \DB::raw('COUNT(*) as count'))->groupBy('role')->get();
+        foreach ($roles as $role) {
+            $web_users[] = [
+                'role' => $role->role,  // Role name
+                'count' => $role->count // Number of users with that role
+            ];
+        }
+
+        $deletedUsersCount = User::onlyTrashed()->count();
+        $web_users[] = [
+            'role' => 'disabled account',
+            'count' => $deletedUsersCount
+        ];
+
+
+        $yearly_enrollees['all'] = Enrollee::select(\DB::raw('YEAR(created_at) as year'), \DB::raw('COUNT(*) as count'))
+        ->groupBy('year')
+        ->get();
+
+        $yearly_enrollees['accepted'] = Enrollee::select(\DB::raw('YEAR(created_at) as year'), \DB::raw('COUNT(*) as count'))
+        ->whereNotNull('batch_id')
+        ->groupBy('year')
+        ->get();
+
+        $monthly_enrollees = Enrollee::select(\DB::raw('YEAR(created_at) as year'), \DB::raw('MONTH(created_at) as month'), \DB::raw('COUNT(*) as count'))
+        ->groupBy('year', 'month')
+        ->get();
+        
+        // dd($web_users);
+        return view('dashboard', compact('web_users', 'yearly_enrollees' , 'monthly_enrollees')); 
     }
 
     // Test Input

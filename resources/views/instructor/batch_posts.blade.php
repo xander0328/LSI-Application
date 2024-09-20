@@ -27,7 +27,7 @@
         {{-- Quill JS --}}
         @font-face {
         font-family: 'Figtree';
-        src: url(@vite('resources/font/Figtree-VariableFont_wght.ttf')) format('truetype');
+        src: url('/resources/font/Figtree-VariableFont_wght.ttf') format('truetype');
         font-weight: normal;
         font-style: normal;
         }
@@ -36,10 +36,8 @@
         font-family: 'Figtree', Arial, sans-serif;
         font-size: 16px;
         color: #000; /* Text color */
-        background-color: #fff; /* Editor background color */
-        border: 0px !important;
         }
-
+        {{-- 
         .ql-snow a {
         color: #000 !important; /* Link color */
         }
@@ -72,7 +70,7 @@
         .ql-toolbar.ql-snow {
         background-color: #0284c7; /* Toolbar background color */
         border: 0px !important; /* Toolbar border */
-        }
+        } --}}
 
         {{-- Displaying --}}
         ol {
@@ -83,8 +81,6 @@
         [x-cloak] { display: none !important; }
     @endsection
     @section('style-links')
-        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
-        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
@@ -93,7 +89,8 @@
                     class="text-lg font-normal text-sky-500">{{ $batch->course->name }}</span>
             </div>
             <div class="flex items-center">
-                <div class="mr-4">Batch: {{ $batch->name }}</div>
+                <div class="mr-4"><span class="text-white/75"> Batch:</span>
+                    {{ $batch->course->code }}-{{ $batch->name }}</div>
 
             </div>
         </div>
@@ -105,13 +102,13 @@
             class="flex items-center justify-center rounded-md bg-sky-700 p-2 px-3" type="button">
         </button> --}}
 
-        <div class="flex pt-2">
+        {{-- <div class="flex pt-8">
             <a @click="edit = false; createPost()"
                 class="block cursor-pointer rounded-md bg-sky-700 px-4 py-2 text-sm hover:bg-sky-800 hover:text-white">Create
                 New</a>
-        </div>
+        </div> --}}
 
-        <div class="flex flex-col-reverse">
+        <div class="flex flex-col-reverse py-6">
             <template x-if="posts.length > 0">
                 <template x-for="post in posts" :key="post.id">
                     <div class="my-1.5 rounded-md bg-gray-800 p-3 shadow-md">
@@ -222,20 +219,54 @@
                                     </div>
                                 </template>
                             </div>
+                            <template x-if="moment(post.created_at).format() != moment(post.updated_at).format()">
+                                <div class="pt-4 text-xs" x-text="`Updated: ${moment(post.updated_at).format('lll')}`">
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </template>
             </template>
             <template x-if="posts.length == 0">
-                <div class="mt-4 rounded-md bg-gray-700 p-2.5 text-center text-sm text-gray-300">No Post
+                <div class="bg-gray-700/35 mt-2.5 rounded-md p-2.5 text-center text-sm text-gray-300">No Post
                 </div>
             </template>
             <template x-if="batch.length == 0">
-                <div class="mt-4 rounded-md bg-gray-700 p-2.5 text-center text-sm text-gray-300">We will
+                <div class="bg-gray-700/35 mt-2.5 rounded-md p-2.5 text-center text-sm text-gray-300">We will
                     contact you as
                     soon as
                     possible, feel free
                     to contact us here for inquiries</div>
+            </template>
+
+            {{-- Speed Dial --}}
+            <template x-if="batch.completed_at == null">
+                <div data-dial-init class="group fixed bottom-6 end-6">
+                    <div id="speed-dial-menu-text-inside-button-square"
+                        class="mb-4 flex hidden flex-col items-center space-y-2">
+                        <button type="button" @click="edit = false; createPost()"
+                            class="h-[56px] w-[56px] rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-400">
+                            <svg class="mx-auto mb-1 h-4 w-4" fill="currentColor"xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <title>note-edit-outline</title>
+                                <path
+                                    d="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z" />
+                            </svg>
+                            <span class="mb-px block text-xs font-medium">Post</span>
+                        </button>
+
+                    </div>
+                    <button type="button" data-dial-toggle="speed-dial-menu-text-inside-button-square"
+                        aria-controls="speed-dial-menu-text-inside-button-square" aria-expanded="false"
+                        class="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        <svg class="h-5 w-5 transition-transform group-hover:rotate-45" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="M9 1v16M1 9h16" />
+                        </svg>
+                        <span class="sr-only">Open actions menu</span>
+                    </button>
+                </div>
             </template>
         </div>
 
@@ -275,19 +306,11 @@
                             <input type="hidden" name="post_id" :value="selectedPost[0].id">
                         </template>
                         <div class="mb-4">
-                            <label
-                                class="mb-1.5 block text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                            <div id="editor">
+                            <div class="rounded-lg bg-white">
+                                <div class="bg-white" id="editor"></div>
                             </div>
                         </div>
                         <div class="mb-4 grid grid-cols-2 gap-4">
-                            {{-- <div class="col-span-2">
-                                <label for="message"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                                <textarea id="message" name="message" rows="2"
-                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                    placeholder="Write post description here"></textarea>
-                            </div> --}}
                             <div class="rounded-full text-xs text-white">
                                 <a class="flex cursor-pointer items-center" @click="toggleShowAddFile()">Attach
                                     File/s
@@ -322,7 +345,7 @@
                             </div>
 
                         </div>
-                        <button type="button" {{-- onclick="formCheck()" --}} @click="formCheck()"
+                        <button type="button" @click="formCheck()"
                             class="w-full items-center rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
 
                             <div class="flex justify-center">
@@ -343,99 +366,9 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         {{-- File Pond --}}
         {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script> --}}
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.5/purify.min.js"
-            integrity="sha512-JatFEe90fJU2nrgf27fUz2hWRvdYrSlTEV8esFuqCtfiqWN8phkS1fUl/xCfYyrLDQcNf3YyS0V9hG7U4RHNmQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
         <script type="text/javascript">
             var initial_lesson_count
-
-            // function get_lessons() {
-            //     $.ajax({
-            //         url: `/get_lessons`,
-            //         method: 'POST',
-            //         data: {
-            //             _token: '{{ csrf_token() }}',
-            //             batch_id: {{ $batch->id }},
-            //         },
-            //         success: function(data) {
-            //             // console.log(data);
-            //             var lesson = $('#lesson')
-            //             var current_lesson_count = data.lessons
-            //             if (JSON.stringify(current_lesson_count) != JSON.stringify(initial_lesson_count)) {
-            //                 initial_lesson_count = current_lesson_count
-            //                 lesson.empty();
-
-            //                 lesson.append($('<option>', {
-            //                     value: '',
-            //                     text: 'Select'
-            //                 }));
-
-            //                 let list_lessons = ''
-            //                 $.each(data.lessons, function(index, data) {
-            //                     lesson.append($('<option>', {
-            //                         value: data.id,
-            //                         text: data.title
-            //                     }));
-
-            //                     list_lessons += `<div
-    //                                 class="flex items-center justify-between bg-gray-600 p-2 text-sm hover:bg-sky-800">
-    //                                 <span>${data.title}</span>
-    //                                 <div class="flex">
-    //                                     <button onclick="edit_lesson('${data.title}', ${data.id})"
-    //                                         class="me-1 h-7 w-7 rounded-md p-1 hover:bg-gray-600">
-    //                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    //                                             <title>Edit</title>
-    //                                             <path fill="white"
-    //                                                 d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-    //                                         </svg>
-    //                                     </button>
-    //                                     <form id="delete_lesson_form_${data.id}"
-    //                                         action="/delete_lesson/${data.id}"
-    //                                         class="h-7 w-7 rounded-md p-1 hover:bg-gray-600" method="post">
-    //                                         @method('DELETE')
-    //                                         <button onclick="confirmDelete(${data.id})"
-    //                                             class="h-full w-full" type="button">
-    //                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-    //                                                 <title>Delete</title>
-    //                                                 <path fill="white"
-    //                                                     d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-    //                                             </svg></button>
-    //                                     </form>
-    //                                 </div>
-    //                             </div>`
-            //                 });
-
-            //                 $('#list_lessons').html(list_lessons)
-            //             }
-
-            //         },
-            //     })
-            // }
-
-            // setInterval(() => {
-            //     get_lessons()
-            // }, 2000);
-
-            // function toggleShowAddFile(type) {
-            //     var content = document.getElementById('show_addFile_post');
-            //     var icon = document.getElementById('icon_post');
-
-            //     content.classList.toggle('hidden');
-            //     if (!content.classList.contains('hidden')) {
-            //         icon.innerHTML = `
-    //     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-    //         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 15 7-7 7 7"/>
-    //     </svg>
-    // `;
-            //     } else {
-            //         icon.innerHTML = `
-    //     <svg class="h-3 w-3 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-    //         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
-    //     </svg>
-    // `;
-            //     }
-            // }
 
 
             $('#add_lesson_form').submit(function(event) {
@@ -529,6 +462,8 @@
                     modalTitle: '',
                     showAddFile: false,
                     init() {
+                        console.log(this.batch);
+
                         this.posts.forEach(post => {
                             post.formattedDate = this.formatDate(post.formatted_created_at);
 
@@ -619,6 +554,7 @@
                         });
                     },
                     quillInit() {
+
                         const toolbarOptions = [
                             [{
                                 'header': [1, 2, false]
@@ -632,10 +568,14 @@
                         ];
                         this.quill = new Quill('#editor', {
                             theme: 'snow',
+                            container: '#toolbar',
                             modules: {
                                 toolbar: toolbarOptions
                             }
                         });
+
+                        $('[role="toolbar"]').addClass('rounded-t-lg')
+                        $('#editor').addClass('rounded-b-lg')
                     },
                     formCheck() {
                         $('#message').val(this.quill.root.innerHTML)
@@ -645,7 +585,7 @@
                         var fileValue = $('input[name="file[]"]').val();
 
                         if (messageValue.length === 0 && fileValue === '') {
-                            alert('Please provide a message or upload a file.');
+                            this.notification('error', 'Please provide a message or upload a file.', 'Empty Form')
                             return
                         }
                         $('#post_form').submit()

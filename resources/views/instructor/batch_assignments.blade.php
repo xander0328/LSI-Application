@@ -14,7 +14,7 @@
 
     </x-slot>
     <div x-data="assignmentList" id="course_list" class="mx-8 pb-4 pt-48 text-white">
-        <div class="relative flex pt-2">
+        {{-- <div class="relative flex pt-2">
             <x-dropdown width="lg" align="left">
                 <x-slot name="trigger">
                     <button
@@ -63,7 +63,7 @@
                     </div>
                 </x-slot>
             </x-dropdown>
-        </div>
+        </div> --}}
         <template x-if="course.structure == 'big'">
             <div>
                 <template x-for="uc in uc" :key="uc.id">
@@ -995,6 +995,56 @@
             </div>
         </div>
 
+        {{-- Speed Dial --}}
+        <template x-if="batch.completed_at == null">
+            <div data-dial-init class="group fixed bottom-6 end-6">
+                <div id="speed-dial-menu-text-inside-button-square"
+                    class="mb-4 flex hidden flex-col items-center space-y-2">
+                    <button type="button" @click="triggerModal('assignment')"
+                        class="h-[56px] w-[56px] rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-400">
+                        <svg class="mx-auto mb-1 h-4 w-4" fill="currentColor"xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24">
+                            <title>note-edit-outline</title>
+                            <path
+                                d="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z" />
+                        </svg>
+                        <span class="mb-px block text-xs font-medium">Assignment</span>
+                    </button>
+                    <button type="button" @click="triggerModal('lesson')"
+                        class="h-[56px] w-[56px] rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-400">
+                        <svg class="mx-auto mb-1 h-4 w-4" fill="currentColor"xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24">
+                            <title>note-edit-outline</title>
+                            <path
+                                d="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z" />
+                        </svg>
+                        <span class="mb-px block text-xs font-medium">Lesson</span>
+                    </button>
+                    <button type="button" @click="triggerModal('uc')"
+                        class="h-[56px] w-[56px] rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-400">
+                        <svg class="mx-auto mb-1 h-4 w-4" fill="currentColor"xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24">
+                            <title>note-edit-outline</title>
+                            <path
+                                d="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z" />
+                        </svg>
+                        <span class="mb-px block text-xs font-medium">Unit of Competency</span>
+                    </button>
+
+                </div>
+                <button type="button" data-dial-toggle="speed-dial-menu-text-inside-button-square"
+                    aria-controls="speed-dial-menu-text-inside-button-square" aria-expanded="false"
+                    class="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="h-5 w-5 transition-transform group-hover:rotate-45" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 1v16M1 9h16" />
+                    </svg>
+                    <span class="sr-only">Open actions menu</span>
+                </button>
+            </div>
+        </template>
+
     </div>
     </div>
 
@@ -1243,8 +1293,6 @@
                         console.log(this.lessonOptions);
                     },
 
-
-
                     notification(status, message, title) {
                         status === 'success' ? toastr.success(message, title ?? title) : toastr.error(message,
                             title ?? title);
@@ -1265,6 +1313,7 @@
                     },
 
                     filepondConfig() {
+                        FilePond.registerPlugin(FilePondPluginImagePreview, FilePondPluginGetFile);
                         const inputElement = document.querySelector('.assignment_files');
                         const pond = FilePond.create(inputElement)
                         FilePond.setOptions({

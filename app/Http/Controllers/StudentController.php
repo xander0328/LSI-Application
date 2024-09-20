@@ -852,8 +852,10 @@ class StudentController extends Controller
         $enrollee = Enrollee::where('user_id', auth()->user()->id)
         ->whereNotNull('batch_id')
         ->whereHas('batch', function($query) {
-            $query->whereNull('completed_at');
+            $query->whereNull('completed_at')
+            ->with('course');
         })
+        ->with(['user', 'enrollee_files', ])
         ->first();
 
         $qr_code = EnrolleeQrcode::where('enrollee_id', $enrollee->id)->first();

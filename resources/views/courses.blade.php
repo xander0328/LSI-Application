@@ -497,7 +497,7 @@
                     </div>
 
                     <!-- Modal body -->
-                    <div class="p-4 md:p-5">
+                    <div class="relative p-4 md:p-5">
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
 
@@ -547,7 +547,7 @@
                                                 </div>
                                                 <div class="flex">
                                                     <a class="h-7 w-7 cursor-pointer rounded-md p-1 hover:bg-gray-600"
-                                                        @click="seeBatchData(batch.id)">
+                                                        @click="seeBatchData(batch.id); showBatchesModal = false">
                                                         <svg class="h-full w-full" fill="currentColor"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                             <title>eye-outline</title>
@@ -576,6 +576,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div role="status" x-show="dataLoading"
+                            class="absolute inset-0 z-50 flex items-center justify-center bg-black/25">
+                            <svg aria-hidden="true"
+                                class="h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor" />
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentFill" />
+                            </svg>
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -596,8 +610,7 @@
                             Batch Information | <span class="text-xs"
                                 x-text="`${selectedCourse.code}-${selectedBatch.name}`"></span>
                         </h3>
-                        <button type="button"
-                            @click="showBatchDataModal = !showBatchDataModal; document.body.classList.remove('no-scroll');"
+                        <button type="button" @click="showBatchDataModal = false; showBatchesModal = true;"
                             class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
                             <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none"
                                 viewBox="0 0 14 14">
@@ -609,7 +622,7 @@
                     </div>
 
                     <!-- Modal body -->
-                    <div class="p-4 md:p-5">
+                    <div class="relative p-4 md:p-5">
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
 
@@ -642,7 +655,7 @@
 
                                         <template x-if="selectedBatch?.instructor">
                                             <div
-                                                class="mb-2 flex justify-between border border-gray-700 bg-gray-800 p-2 text-white">
+                                                class="mb-2 flex justify-between rounded-lg border border-gray-700 bg-gray-800 p-2 text-white">
                                                 <div class="flex items-center whitespace-nowrap rounded-lg">
                                                     <img :src="'{{ asset('storage/instructor_files/') }}/' +
                                                     selectedBatch?.instructor?.user_id + '/' + selectedBatch?.instructor
@@ -669,7 +682,7 @@
                                                 </div>
                                             </div>
                                         </template>
-                                        <template x-if="selectedBatch.enrollee.length > 0">
+                                        <template x-if="selectedBatch?.enrollee?.length > 0">
                                             <div>
                                                 <div class="rounded-t-lg bg-gray-800 p-2 text-sm text-white/50">
                                                     Trainees</div>
@@ -693,6 +706,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div role="status" x-show="dataLoading"
+                            class="absolute inset-0 z-50 flex items-center justify-center bg-black/25">
+                            <svg aria-hidden="true"
+                                class="h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor" />
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentFill" />
+                            </svg>
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -707,23 +734,6 @@
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-gray-700">
-                    <!-- Modal header -->
-                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Batch Information | <span class="text-xs"
-                                x-text="`${selectedCourse.code}-${selectedBatch.name}`"></span>
-                        </h3>
-                        <button type="button"
-                            @click="showInstructorsModal = !showInstructorsModal; document.body.classList.remove('no-scroll');"
-                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-                            <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
-                    </div>
 
                     <!-- Modal body -->
                     <div class="p-4 md:p-5">
@@ -733,11 +743,11 @@
                                 <label for="instructors"
                                     class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Select
                                     instructor</label>
-                                <select id="instructors"
+                                <select id="instructor" x-model="selectedInstructorId"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
                                     <option value="" selected>Choose instructor</option>
                                     <template x-for="instructor in instructors" :key="instructor.id">
-                                        <option :value="instructor.id" selected
+                                        <option :value="instructor.id"
                                             x-text="`${instructor.user.fname} ${instructor.user.mname ? instructor.user.mname.charAt(0) + '.' : ''} ${instructor.user.lname}`">
                                         </option>
                                     </template>
@@ -747,11 +757,13 @@
                     </div>
 
                     <div class="flex space-x-4 px-4 pb-4 text-center">
-                        <button data-modal-hide="popup-modal" type="button"
+                        <button @click="assignInstructor()" type="button"
                             class="basis-1/2 items-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-sky-800">
                             Assign
                         </button>
-                        <button data-modal-hide="popup-modal" type="button"
+                        <button
+                            @click="showInstructorsModal = !showInstructorsModal; document.body.classList.remove('no-scroll');"
+                            type="button"
                             class="basis-1/2 rounded-lg border border-gray-600 bg-gray-800 px-5 py-2.5 text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Cancel</button>
                     </div>
                 </div>
@@ -855,6 +867,7 @@
                     modalTitle: '',
                     tempImage: @json($temp_image),
                     instructors: [],
+                    selectedInstructorId: '',
 
                     // Modals
                     showBatchesModal: false,
@@ -878,7 +891,7 @@
                         @endif
                     },
                     filepondInit() {
-                        FilePond.registerPlugin(FilePondPluginImagePreview);
+                        FilePond.registerPlugin(FilePondPluginImagePreview, FilePondPluginGetFile);
                         const input_element = document.querySelector('#image');
                         this.filepond = FilePond.create(input_element);
                     },
@@ -1106,19 +1119,6 @@
                     notification(status, message, title) {
                         status === 'success' ? toastr.success(message, title ?? title) : toastr.error(message, title ??
                             title);
-                        toastr.options = {
-                            "closeButton": true,
-                            "progressBar": true,
-                            "positionClass": "toast-bottom-right",
-                            "showDuration": "300",
-                            "hideDuration": "800",
-                            "timeOut": "5000",
-                            "extendedTimeOut": "1000",
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut"
-                        }
                     },
                     deleteCourseConfirmation(courseId) {
                         var form = event.target.closest('form');
@@ -1279,6 +1279,7 @@
                                 console.log(response);
                                 t.selectedBatch = response.batch
                                 // t.selectedCourse.batches = response.course.batches
+                                t.dataLoading = false
                             },
                             error: function(xhr, status, error) {
                                 console.error(xhr.responseText);
@@ -1288,7 +1289,8 @@
                         this.showBatchDataModal = !this.showBatchDataModal;
                     },
                     unassignInstructor(batchId) {
-                        this.selectedBatch = this.selectedCourse.batches.find(batch => batch.id === batchId)
+                        // this.selectedBatch = this.selectedCourse.batches.find(batch => batch.id === batchId)
+                        console.log(this.selectedBatch);
                         this.abortFetch('ajax')
                         this.dataLoading = true
                         var t = this
@@ -1300,15 +1302,17 @@
                                 batch_id: batchId
                             },
                             success: function(response) {
-                                console.log(response);
-                                console.log(t.selectedBatch);
+                                // console.log(response);
 
                                 if (response.status == 'success') {
                                     t.selectedBatch.instructor_id = null
                                     t.selectedBatch.instructor = null
+                                    let course = t.selectedCourse.batches.find(batch => batch.id === t.selectedBatch
+                                        .id)
+                                    course.instructor_id = null
                                 }
 
-                                console.log(t.selectedBatch);
+                                // console.log(t.selectedBatch);
 
                                 // t.selectedCourse.batches = response.course.batches
                             },
@@ -1341,6 +1345,49 @@
                             }
                         });
                         this.showInstructorsModal = true
+                    },
+
+                    // Assign Instructor Modal
+                    assignInstructor() {
+                        if (this.selectedInstructorId) {
+                            this.abortFetch('ajax')
+                            this.dataLoading = true
+                            var t = this
+                            this.xhr = $.ajax({
+                                url: '{{ route('assign_instructor') }}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    batch_id: t.selectedBatch.id,
+                                    instructor_id: t.selectedInstructorId
+                                },
+                                success: function(response) {
+                                    console.log(response);
+                                    if (response.status == 'success') {
+                                        t.selectedBatch.instructor_id = response.instructor.id
+                                        t.selectedBatch.instructor = response.instructor
+                                        let course = t.selectedCourse.batches.find(batch => batch.id === t
+                                            .selectedBatch.id)
+                                        course.instructor_id = response.instructor.id
+
+                                        var instructor = response.instructor
+                                        t.notification('success',
+                                            `${instructor.user.fname} ${instructor.user.mname ? instructor.user.mname.charAt(0) + '.' : ''} ${instructor.user.lname} is assigned to ${t.selectedBatch.name}`,
+                                            'Instructor Assigning')
+                                        t.showInstructorsModal = false
+                                        t.selectedInstructorId = ''
+                                    }
+
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(xhr.responseText);
+                                    t.notification('error', 'Connection error', '')
+                                }
+                            });
+                        } else {
+                            this.notification('error', 'Select an instructor first', '')
+                        }
+
                     },
 
                     // Utility

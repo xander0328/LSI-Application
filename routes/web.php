@@ -43,6 +43,10 @@ Route::get('/unavailable', function () {
 
 
 Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
+    Route::prefix('dashboard')->group(function(){
+        Route::get('/', [SuperAdminController::class, 'dashboard'])->name('dashboard');
+    });
+
     Route::get('/website', [SuperAdminController::class, 'website'])->name('website');
 
     Route::prefix('courses')->group(function () {
@@ -68,6 +72,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::post('/get_batch_data', [SuperAdminController::class, 'get_batch_data'])->name('get_batch_data');
         Route::post('/unassign_instructor', [SuperAdminController::class, 'unassign_instructor'])->name('unassign_instructor');
         Route::post('/get_all_instructors', [SuperAdminController::class, 'get_all_instructors'])->name('get_all_instructors');
+        Route::post('/assign_instructor', [SuperAdminController::class, 'assign_instructor'])->name('assign_instructor');
 
         // Upload Course Image (FilePond)
         Route::post('/upload_course_image', [SuperAdminController::class, 'upload_course_image'])->name('upload_course_image');
@@ -120,6 +125,7 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::get('/course_completed', [StudentController::class, 'course_completed'])->name('course_completed');
 
     
+
     Route::prefix('course')->group(function () {
     // Stream / Posts
         Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
@@ -163,7 +169,12 @@ Route::middleware(['auth', 'verified', 'role:guest'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
+    // Batch List
     Route::get('/batch_list', [InstructorController::class, 'batch_list'])->name('batch_list');
+    Route::post('/get_batch_info', [InstructorController::class, 'get_batch_info'])->name('get_batch_info');
+    Route::post('/close_batch', [InstructorController::class, 'close_batch'])->name('close_batch');
+    
+
     Route::get('/batch_posts/{id}', [InstructorController::class, 'batch_posts'])->name('batch_posts');
     Route::get('/batch_members', [InstructorController::class, 'batch_members'])->name('batch_members');
     Route::get('/batch_assignments/{batch_id}', [InstructorController::class, 'batch_assignments'])->name('batch_assignments');

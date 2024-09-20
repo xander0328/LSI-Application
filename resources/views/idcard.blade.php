@@ -65,7 +65,7 @@
             <tr>
                 <td colspan="2" style="text-align: center; padding: 0px;">
                     <span style="background-color: rgba(0, 0, 0, 0.1); padding: 0 3px 5px 5px; border-radius: 5px ">
-                        Batch: COMP-0001
+                        Batch:
                     </span>
                 </td>
             </tr>

@@ -41,7 +41,6 @@
         </div>
     </div>
     @section('script')
-        <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
         <script>
             function scanStudent() {
                 return {

@@ -13,15 +13,15 @@
         <x-course-nav :selected="'attendance'" :batch="$batch->id"></x-course-nav>
 
     </x-slot>
-    <div x-data="studentData()" id="course_list" class="mx-8 mt-2 pb-4 pt-44 text-white">
-        <div class="mb-2 flex">
+    <div x-data="studentData()" id="course_list" class="mx-8 mt-2 pb-8 pt-48 text-white">
+        {{-- <div class="mb-2 flex">
             <a @click="createNew()"
                 class="block cursor-pointer rounded-md bg-sky-700 px-4 py-2 text-sm hover:bg-sky-800 hover:text-white">Create
                 New</a>
-        </div>
+        </div> --}}
         <div class="mb-2">
             <div class="mr-3 flex w-full items-center text-sm">
-                <div class="me-1.5 whitespace-nowrap">Mode:</div>
+                <div class="me-1.5 whitespace-nowrap">Mode</div>
                 <select x-model="filterMode" @change="filterRecords"
                     class="w-1/3 rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
                     <option value="">All</option>
@@ -78,6 +78,10 @@
                 </div>
             </template>
         </div>
+        <template x-if="filteredRecords.length == 0">
+            <div class="bg-gray-700/35 mt-2.5 rounded-md p-2.5 text-center text-sm text-gray-300">No Record
+            </div>
+        </template>
 
         {{-- Create Modal --}}
         <div x-cloak x-show="openModal" x-transition:enter="transition ease-out duration-200"
@@ -188,29 +192,29 @@
                                             <td colspan="3" class="p-4 text-center">No data</td>
                                         </tr>
                                     </template>
-                                    <template x-for="students in sortedStudents" :key="students.id">
+                                    <template x-for="(student, index) in students" :key="student.id">
                                         <tr class="border-gray-700 bg-gray-800 hover:bg-gray-800/50">
-                                            <td @click="students.isChecked = !students.isChecked" class="w-4 p-4">
+                                            <td @click="student.isChecked = !student.isChecked" class="w-4 p-4">
                                                 <div class="flex items-center">
-                                                    <input x-model="students.isChecked" id="checkbox-table-search-1"
+                                                    <input x-model="student.isChecked" id="checkbox-table-search-1"
                                                         type="checkbox"
                                                         class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
                                                     <label for="checkbox-table-search-1"
                                                         class="sr-only">checkbox</label>
                                                 </div>
                                             </td>
-                                            <th @click="students.isChecked = !students.isChecked" scope="row"
-                                                x-text="students.last_name + ', ' + students.first_name"
+                                            <th @click="student.isChecked = !student.isChecked" scope="row"
+                                                x-text="student.last_name + ', ' + student.first_name"
                                                 class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             </th>
                                             <td class="px-6 py-4">
-                                                <select x-model="students.status"
-                                                    @change="updateStudentStatus(students, $event.target.value)"
+                                                <select x-model="student.status"
+                                                    @change="updateStudentStatus(student.id, $event.target.value)"
                                                     id="sort_by"
                                                     :class="{
-                                                        'bg-red-800 text-white': students.status === 'absent',
-                                                        'bg-yellow-700 text-white': students.status === 'late',
-                                                        'bg-sky-800 text-white': students.status === 'present',
+                                                        'bg-red-800 text-white': student.status === 'absent',
+                                                        'bg-yellow-700 text-white': student.status === 'late',
+                                                        'bg-sky-800 text-white': student.status === 'present',
                                                     }"
                                                     class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
                                                     <option value="absent">Absent</option>
@@ -237,6 +241,194 @@
             </div>
 
         </div>
+
+        {{-- Edit Modal --}}
+        <div x-cloak x-show="editRecordModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1" aria-hidden="true"
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
+            <div @click.away="editRecordModal = false" class="relative max-h-full w-full max-w-2xl p-4">
+                <!-- Modal content -->
+                <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white"
+                                x-text="selectedDate ? 'Edit Attendance Record' : 'Create New Attendance Record'">
+                            </h3>
+                            <div class="text-xs">Date: <span class="text-gray-300"
+                                    x-text="selectedDate ? moment(selectedDate).format('MMM D, YYYY') : moment().format('MMM D, YYYY')"></span>
+                            </div>
+                        </div>
+                        <button type="button"
+                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                            @click="editRecordModal = false; editInitialStudents = []">
+                            <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+
+                    <div class="">
+                        <div class="flex p-2 text-sm">
+                            <label for="table-search-edit" class="sr-only">Search</label>
+                            <div class="relative w-full">
+                                <div
+                                    class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+                                    <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    </svg>
+                                </div>
+                                <input autocomplete="off" type="text" @input="searchStudent($event)"
+                                    id="table-search-edit"
+                                    class="block w-full rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                                    placeholder="Search">
+                            </div>
+                            <button @click="clearSearch()"
+                                class="ml-2 rounded-md bg-blue-500 px-3 py-1.5 text-white hover:bg-blue-600">
+                                Clear
+                            </button>
+                        </div>
+                        <div class="ms-2 flex items-center p-2">
+                            <div class="mr-3 flex w-full items-center text-sm">
+                                <div class="me-1.5 whitespace-nowrap">Sort by:</div>
+                                <select x-model="sortColumn" @change="sortColumnChanged" id="sort_by"
+                                    class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
+                                    <option value="last_name">
+                                        Surname
+                                    </option>
+                                    <option value="first_name">First name
+                                    </option>
+                                </select>
+
+                            </div>
+                            <div class="flex w-full items-center text-sm">
+                                <div class="me-1.5">Action:</div>
+                                <select x-model="selectedAction" id="action_dropdown"
+                                    class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
+                                    <option value="">Select Action</option>
+                                    <option value="absent">Mark Absent</option>
+                                    <option value="late">Mark Late</option>
+                                    <option value="present">Mark Present</option>
+                                </select>
+                                <button @click="updateCheckedStudents()"
+                                    class="ml-2 rounded-md bg-blue-500 px-3 py-1.5 text-white hover:bg-blue-600">
+                                    Apply
+                                </button>
+                            </div>
+
+                        </div>
+                        <div class="p-2">
+                            <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                                <thead class="bg-gray-900 text-xs uppercase text-white">
+                                    <tr>
+                                        <th scope="col" class="p-4">
+                                            <div class="flex items-center">
+                                                <input id="checkbox-all-search" type="checkbox"
+                                                    @change="toggleAllCheckboxes($event)"
+                                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
+                                                <label for="checkbox-all-search" class="sr-only">checkbox</label>
+                                            </div>
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Student
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
+                                            Status
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody x-cloak>
+                                    <template x-if="students.length === 0">
+                                        <tr class="text-gray-400">
+                                            <td colspan="3" class="p-4 text-center">No data</td>
+                                        </tr>
+                                    </template>
+                                    <template x-for="(student, index) in students" :key="student.id">
+                                        <tr class="border-gray-700 bg-gray-800 hover:bg-gray-800/50">
+                                            <td @click="student.isChecked = !student.isChecked" class="w-4 p-4">
+                                                <div class="flex items-center">
+                                                    <input x-model="student.isChecked" id="checkbox-table-search-1"
+                                                        type="checkbox"
+                                                        class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
+                                                    <label for="checkbox-table-search-1"
+                                                        class="sr-only">checkbox</label>
+                                                </div>
+                                            </td>
+                                            <th @click="student.isChecked = !student.isChecked" scope="row"
+                                                x-text="student.last_name + ', ' + student.first_name"
+                                                class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                            </th>
+                                            <td class="px-6 py-4">
+                                                <select x-model="student.status"
+                                                    @change="updateStudentStatus(student.id, $event.target.value)"
+                                                    id="sort_by"
+                                                    :class="{
+                                                        'bg-red-800 text-white': student.status === 'absent',
+                                                        'bg-yellow-700 text-white': student.status === 'late',
+                                                        'bg-sky-800 text-white': student.status === 'present',
+                                                    }"
+                                                    class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
+                                                    <option value="absent">Absent</option>
+                                                    <option value="late">Late</option>
+                                                    <option value="present">Present</option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </template>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-2 pb-4 pt-0">
+                            <button @click="submitStudentData"
+                                class="w-full rounded-lg border border-blue-600 bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600">
+                                Save Record
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        {{-- Speed Dial --}}
+        <template x-if="batch.completed_at == null">
+            <div data-dial-init class="group fixed bottom-6 end-6">
+                <div id="speed-dial-menu-text-inside-button-square"
+                    class="mb-4 flex hidden flex-col items-center space-y-2">
+                    <button type="button" @click="createNew()"
+                        class="h-[56px] w-[56px] rounded-lg border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-400">
+                        <svg class="mx-auto mb-1 h-4 w-4" fill="currentColor"xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24">
+                            <title>note-edit-outline</title>
+                            <path
+                                d="M18.13 12L19.39 10.74C19.83 10.3 20.39 10.06 21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.1 3.89 21 5 21H11V19.13L11.13 19H5V5H12V12H18.13M14 4.5L19.5 10H14V4.5M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19Z" />
+                        </svg>
+                        <span class="mb-px block text-xs font-medium">New Record</span>
+                    </button>
+
+                </div>
+                <button type="button" data-dial-toggle="speed-dial-menu-text-inside-button-square"
+                    aria-controls="speed-dial-menu-text-inside-button-square" aria-expanded="false"
+                    class="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="h-5 w-5 transition-transform group-hover:rotate-45" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 1v16M1 9h16" />
+                    </svg>
+                    <span class="sr-only">Open actions menu</span>
+                </button>
+            </div>
+        </template>
 
     </div>
     @section('script')
@@ -287,29 +479,35 @@
                             },
                         @endforeach
                     ],
-                    students: [
-                        @foreach ($students as $student)
-                            {
-                                id: {{ $student->id }},
-                                first_name: '{{ $student->user->fname }}',
-                                last_name: '{{ $student->user->lname }}',
-                                status: 'absent',
-                                isChecked: false,
-                            },
-                        @endforeach
-                    ],
+                    editInitialStudents: [],
+                    students: [],
+                    batch: @json($batch ?? ''),
                     sortColumn: 'last_name',
                     sortDirection: 'desc',
                     selectedAction: null,
-                    originalStudents: [],
                     sortColumnChanged() {
                         // Toggle the sort direction
                         // this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
                         // Perform the sort
+                        console.log();
+
+                        if (this.editInitialStudents.length == 0) {
+                            var initStudents = this.initialStudents
+                        } else {
+                            var initStudents = this.editInitialStudents
+                        }
+
                         this.sortStudents();
+                        this.students = initStudents;
                     },
                     sortStudents() {
-                        this.students.sort((a, b) => {
+                        if (this.editInitialStudents.length == 0) {
+                            var initStudents = this.initialStudents
+                        } else {
+                            var initStudents = this.editInitialStudents
+                        }
+
+                        initStudents.sort((a, b) => {
                             let modifier = this.sortDirection === 'desc' ? 1 : -1;
                             if (a[this.sortColumn] < b[this.sortColumn]) return -1 * modifier;
                             if (a[this.sortColumn] > b[this.sortColumn]) return 1 * modifier;
@@ -323,12 +521,18 @@
                         // this.filteredRecords = this.attendanceData;
                         this.filterRecords();
                     },
-                    get sortedStudents() {
-                        return this.students;
-                    },
-                    updateStudentStatus(student, status) {
+                    updateStudentStatus(studentId, status) {
+                        // let student = this.students.find(student => student.id == studentId);
+                        // student.status = status;
+                        if (this.editInitialStudents.length == 0) {
+                            var initStudents = this.initialStudents
+                        } else {
+                            var initStudents = this.editInitialStudents
+                        }
+
+                        let student = initStudents.find(student => student.id == studentId);
                         student.status = status;
-                        // console.log(this.students);
+                        console.log(this.students);
                     },
                     updateCheckedStudents() {
                         if (this.selectedAction) {
@@ -347,18 +551,31 @@
                     },
                     searchStudent(event) {
                         const searchTerm = event.target.value.toLowerCase().trim();
+                        if (this.editInitialStudents.length == 0) {
+                            var initStudents = this.initialStudents
+                        } else {
+                            var initStudents = this.editInitialStudents
+                        }
+
                         if (searchTerm) {
-                            this.students = this.originalStudents.filter(student => {
+                            this.students = initStudents.filter(student => {
                                 const fullName = `${student.first_name} ${student.last_name}`.toLowerCase();
                                 return fullName.includes(searchTerm);
                             });
                         } else {
-                            this.students = this.originalStudents;
+                            this.students = JSON.parse(JSON.stringify(initStudents));
                         }
                     },
                     clearSearch() {
+                        if (this.editInitialStudents.length == 0) {
+                            var initStudents = this.initialStudents
+                        } else {
+                            var initStudents = this.editInitialStudents
+                        }
+
                         $('#table-search').val('')
-                        this.students = this.originalStudents;
+                        $('#table-search-edit').val('')
+                        this.students = JSON.parse(JSON.stringify(initStudents));
                     },
                     async submitStudentData() {
                         try {
@@ -392,8 +609,13 @@
                         this.selectedDate = '';
                         this.selectedID = '';
                         this.students = []
-                        this.students = this.initialStudents
+                        this.initialStudents.map(student => student.status = 'absent')
+                        var initial = JSON.parse(JSON.stringify(this.initialStudents));
+                        this.students = initial;
                         this.triggerModal()
+                        console.log(this.students);
+                        console.log(this.initialStudents);
+
                     },
 
                     filterMode: '',
@@ -420,6 +642,8 @@
                         }
                         console.log(this.filteredRecords);
                     },
+
+                    editRecordModal: false,
                     getRecordData(record) {
                         this.students = [];
                         fetch('{{ route('get_attendance_data') }}', {
@@ -441,14 +665,15 @@
 
                                 // Update the studentData().students with the updated students array
                                 this.students = dataArray;
-                                this.originalStudents = this.students;
+                                this.editInitialStudents = this.students;
                                 // this.init();
                             })
                             .catch(error => {
                                 console.error('Error fetching attendance data:', error);
                             });
-                        this.triggerModal();
+                        this.editRecordModal = true;
                     },
+
                     triggerModal() {
                         this.openModal = !this.openModal;
                         // console.log(this.openModal);

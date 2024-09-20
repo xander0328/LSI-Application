@@ -30,7 +30,6 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 
     {{-- FilePond --}}
-    <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
         rel="stylesheet" />
     <link href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css" rel="stylesheet" />
@@ -238,32 +237,34 @@
                 @endif
             </div>
 
-            {{-- <div class="flex flex-1 items-center p-4">
-                <div x-data="{ show: false }" x-intersect:enter="show = true"
-                    :class="{ 'opacity-100 translate-x-0': show, 'opacity-0 translate-x-full': !show }"
-                    class="w-1/2 translate-x-full transform opacity-0 transition-opacity transition-transform duration-500 ease-out">
-                    <h3 class="text-xl font-bold">Animated Element 1</h3>
-                    <p class="mt-4 text-gray-600">This element slides in from the right as you scroll down.</p>
+            <div class="flex h-full flex-col items-center p-4">
+                <div class="flex">
+                    <div x-data="{ show: false }" x-intersect:enter="show = true"
+                        :class="{ 'opacity-100 translate-x-0': show, 'opacity-0 translate-x-full': !show }"
+                        class="w-1/2 translate-x-full transform opacity-0 transition-opacity transition-transform duration-500 ease-out">
+                        <h3 class="text-xl font-bold">Animated Element 1</h3>
+                        <p class="mt-4 text-gray-600">This element slides in from the right as you scroll down.</p>
+                    </div>
+                    <div class="flex w-1/2 items-center rounded">
+                        <swiper-container class="mySwiper h-full w-full" pagination="true"
+                            pagination-clickable="true" space-between="30" effect="fade" navigation="true"
+                            autoplay-delay="2500" autoplay-disable-on-interaction="false">
+                            <swiper-slide>
+                                <img src=" https://swiperjs.com/demos/images/nature-1.jpg" />
+                            </swiper-slide>
+                            <swiper-slide>
+                                <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
+                            </swiper-slide>
+                            <swiper-slide>
+                                <img src="https://swiperjs.com/demos/images/nature-3.jpg" />
+                            </swiper-slide>
+                            <swiper-slide>
+                                <img src="https://swiperjs.com/demos/images/nature-4.jpg" />
+                            </swiper-slide>
+                        </swiper-container>
+                    </div>
                 </div>
-                <div class="flex h-2/3 w-1/2 items-center rounded">
-                    <swiper-container class="mySwiper h-full w-full" pagination="true" pagination-clickable="true"
-                        space-between="30" effect="fade" navigation="true" autoplay-delay="2500"
-                        autoplay-disable-on-interaction="false">
-                        <swiper-slide>
-                            <img src=" https://swiperjs.com/demos/images/nature-1.jpg" />
-                        </swiper-slide>
-                        <swiper-slide>
-                            <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
-                        </swiper-slide>
-                        <swiper-slide>
-                            <img src="https://swiperjs.com/demos/images/nature-3.jpg" />
-                        </swiper-slide>
-                        <swiper-slide>
-                            <img src="https://swiperjs.com/demos/images/nature-4.jpg" />
-                        </swiper-slide>
-                    </swiper-container>
-                </div>
-            </div> --}}
+            </div>
         </div>
 
         <h1
@@ -505,7 +506,6 @@
             </li>
         </ul>
     </footer>
-    <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
     <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
     <script src="https://unpkg.com/filepond-plugin-image-crop/dist/filepond-plugin-image-crop.js"></script>

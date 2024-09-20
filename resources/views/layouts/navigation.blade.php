@@ -5,8 +5,24 @@
         <div class="flex h-16 justify-between">
             <div class="flex">
                 <!-- Logo -->
-                <div class="flex shrink-0 items-center">
-                    <a href="{{ route('home') }}" class="items-center">
+                <div x-data="{
+                    role: '{{ Auth::user()->role }}',
+                    getHref() {
+                        switch (this.role) {
+                            case 'guest':
+                                return '{{ route('home') }}';
+                            case 'superadmin':
+                                return '{{ route('dashboard') }}';
+                            case 'instructor':
+                                return '{{ route('batch_list') }}';
+                            case 'student':
+                                return '{{ route('enrolled_course') }}';
+                            default:
+                                return '#'; // fallback or default route
+                        }
+                    }
+                }" class="flex shrink-0 items-center">
+                    <a :href="getHref()" class="items-center">
                         <!-- <img src="images/icons/lsi-logo.png" alt="LSI" class="h-16 w-auto rounded-full dark:bg-gray-900" /> -->
                         <img src="../../images/icons/lsi-logo.png" alt="" class="h-9 w-auto">
                     </a>
