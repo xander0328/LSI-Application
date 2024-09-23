@@ -58,6 +58,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::post('/feature_toggle',  [SuperAdminController::class, 'feature_toggle'])->name('feature_toggle');
 
         Route::get('/{id}/enrollees', [SuperAdminController::class, 'enrollees'])->name('course_enrollees');
+        Route::get('/{id}/enrollees/{page}', [SuperAdminController::class, 'load_more_enrollees'])->name('load_more_enrollees');
         Route::post('/get_enrollee_records', [SuperAdminController::class, 'get_enrollee_records'])->name('get_enrollee_records');
         
         // Enrollees

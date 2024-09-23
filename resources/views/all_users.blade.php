@@ -3,15 +3,15 @@
         [x-cloak] { display: none !important; }
     @endsection
     <x-slot name="header">
-        <div class="flex items-center justify-between pr-4 text-white">
+        <div class="flex items-center justify-between text-white">
             <div class="text-2xl font-semibold text-white">
                 {{ __('Users') }}
             </div>
-            <div class="flex items-center">
-                <div class="w-full pr-2 text-sm text-gray-400">
+            <div class="flex w-1/2 items-center justify-end md:w-1/3">
+                <span class="me-1 pr-2 text-sm text-gray-400 md:me-1.5">
                     Role
-                </div>
-                <div class="w-full flex-shrink-0">
+                </span>
+                <div class="w-full">
                     <select id="role_select"
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
                         <option {{ $role == 'all' ? 'selected' : '' }} value="all">All</option>
@@ -24,22 +24,12 @@
         </div>
 
     </x-slot>
-    <div x-data="manageUsers" class="p-2 px-8 pb-16 pt-40">
-        <div class="overflow-hidden bg-gray-800 shadow-md sm:rounded-lg">
+    <div x-data="manageUsers" class="p-2 px-4 pb-16 pt-28 md:px-8 md:pt-40">
+        <div class="overflow-hidden rounded-lg bg-gray-800 shadow-md">
             <div
-                class="flex flex-col space-y-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
-                <div class="flex flex-1 items-center space-x-4">
-                    <h5>
-                        <span class="text-gray-400">All Users:</span>
-                        <span class="text-white" x-text="`{{ $all_user_count }}`"></span>
-                    </h5>
-                    {{-- <h5>
-                        <span class="text-gray-400">Total sales:</span>
-                        <span class="text-white">$88.4k</span>
-                    </h5> --}}
-                </div>
+                class="flex flex-col space-y-3 bg-gray-700/50 px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">
                 <div
-                    class="flex flex-shrink-0 flex-col space-y-3 md:flex-row md:items-center md:space-x-3 md:space-y-0 lg:justify-end">
+                    class="flex flex-shrink-0 flex-col space-y-1.5 text-sm md:flex-row md:items-center md:justify-end md:space-x-3 md:space-y-0">
 
                     <button type="button"
                         class="hover:text-primary-700 flex flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
@@ -61,11 +51,8 @@
                     </button>
                 </div>
             </div>
-            <div class="px-2">
-                <hr class="border border-gray-700">
-            </div>
             <div class="items-center justify-between space-y-4 bg-gray-800 px-4 py-4 md:flex-row md:space-y-0">
-                <div class="relative pr-2">
+                <div class="relative">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
                         <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path fill="currentColor"
@@ -82,17 +69,24 @@
                 <table class="w-full text-left text-sm text-white rtl:text-right">
                     <thead class="bg-gray-700 text-xs uppercase text-gray-400">
                         <tr>
-                            <th scope="col" class="p-4">
+                            {{-- <th scope="col" class="p-4">
                                 <div class="flex items-center">
                                     <input id="checkbox-all-search" type="checkbox" @change="toggleAllCheckboxes"
                                         :disabled="users.length === 0":checked="allChecked"
                                         class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
                                     <label for="checkbox-all-search" class="sr-only">checkbox</label>
                                 </div>
+                            </th> --}}
+                            <th scope="col" class="px-6 py-3">
+                                <span class="hidden md:block">
+                                    Name
+                                </span>
+                                <span class="md:hidden">
+                                    User
+                                </span>
                             </th>
-                            <th scope="col" class="px-6 py-3">Name</th>
-                            <th scope="col" class="px-6 py-3">Contact</th>
-                            <th scope="col" class="px-6 py-3">Role</th>
+                            <th scope="col" class="hidden px-6 py-3 md:table-cell">Contact</th>
+                            <th scope="col" class="hidden px-6 py-3 md:table-cell">Role</th>
                             <th scope="col" class="px-6 py-3"></th>
                         </tr>
                     </thead>
@@ -100,31 +94,41 @@
                         {{-- <template x-if="users.length > 0"> --}}
                         <template x-for="user in users" :key="user.id">
                             <tr class="border-b border-gray-700 bg-gray-800 hover:bg-gray-800/50">
-                                <td class="w-4 p-4" @click="toggleUser(user.id)">
+                                {{-- <td class="w-4 p-4" @click="toggleUser(user.id)">
                                     <div class="flex items-center">
                                         <input type="checkbox" @click.stop @change="toggleUser(user.id)"
                                             :checked="isSelected(user.id)"
                                             class="row-checkbox h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
                                         <label class="sr-only">checkbox</label>
                                     </div>
-                                </td>
-                                <th scope="row" @click="toggleUser(user.id)" class="px-6 py-4">
+                                </td> --}}
+                                <th scope="row" class="px-6 py-4">
                                     <div class="flex items-center whitespace-nowrap text-white">
-                                        <img src="{{ asset('images/temporary/profile.png') }}"
-                                            class="h-10 w-10 rounded-full" alt="profile">
-                                        <div class="pl-3">
-                                            <div class="text-base font-semibold"
+                                        <div class="">
+                                            <div class="text-sm font-semibold md:text-base"
                                                 x-text="`${user.lname}, ${user.fname} ${user.mname || ''}`"></div>
                                             <div class="font-normal text-gray-500" x-text="user.email"></div>
+                                            <div class="font-normal text-gray-500 md:hidden"
+                                                x-text="user.contact_number"></div>
+                                            <div class="flex items-center md:hidden">
+                                                <span
+                                                    :class="{
+                                                        'bg-sky-900 text-sky-300': user.role == 'student',
+                                                        'bg-yellow-900 text-yellow-300': user.role == 'guest',
+                                                        'bg-green-900 text-green-300': user.role == 'instructor',
+                                                    }"
+                                                    class="rounded px-2 py-0.5 text-xs font-medium"
+                                                    x-text="capitalize(user.role) ?? ''"></span>
+                                            </div>
                                         </div>
                                     </div>
                                 </th>
-                                <td class="px-6 py-4" @click="toggleUser(user.id)">
+                                <td class="hidden px-6 py-4 md:table-cell">
                                     <div class="flex items-center">
                                         <span x-text="user.contact_number ?? '---'"></span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4" @click="toggleUser(user.id)">
+                                <td class="hidden px-6 py-4 md:table-cell">
                                     <div class="flex items-center">
                                         <span
                                             :class="{
@@ -136,16 +140,22 @@
                                             x-text="capitalize(user.role) ?? ''"></span>
                                     </div>
                                 </td>
-                                <td class="flex items-center justify-end px-6 py-4">
+                                <td class="flex items-center justify-end px-4 py-6">
                                     <div class="cursor-pointer">
                                         <x-dropdown width="40" align="right">
                                             <x-slot name="trigger">
                                                 <button
                                                     class="inline-flex items-center rounded-md border border-transparent bg-white text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
-                                                    <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24">
+                                                    <svg class="hidden h-7 w-7 text-white md:block"
+                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                         <path fill="currentColor"
                                                             d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" />
+                                                    </svg>
+                                                    <svg class="h-7 w-7 text-white md:hidden" fill="currentColor"
+                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                        <title>dots-vertical</title>
+                                                        <path
+                                                            d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
                                                     </svg>
                                                 </button>
                                             </x-slot>
@@ -196,16 +206,6 @@
                                                                     </div>
                                                                 </x-dropdown-link>
                                                             </form>
-                                                            <a
-                                                                class="flex w-full items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
-                                                                <svg class="h-4 w-4"
-                                                                    xmlns="http://www.w3.org/2000/svg"
-                                                                    viewBox="0 0 24 24">
-                                                                    <path fill="currentColor"
-                                                                        d="M23,2H1A1,1 0 0,0 0,3V21A1,1 0 0,0 1,22H23A1,1 0 0,0 24,21V3A1,1 0 0,0 23,2M22,20H20V19H15V20H2V4H22V20M10.29,9.71A1.71,1.71 0 0,1 12,8C12.95,8 13.71,8.77 13.71,9.71C13.71,10.66 12.95,11.43 12,11.43C11.05,11.43 10.29,10.66 10.29,9.71M5.71,11.29C5.71,10.58 6.29,10 7,10A1.29,1.29 0 0,1 8.29,11.29C8.29,12 7.71,12.57 7,12.57C6.29,12.57 5.71,12 5.71,11.29M15.71,11.29A1.29,1.29 0 0,1 17,10A1.29,1.29 0 0,1 18.29,11.29C18.29,12 17.71,12.57 17,12.57C16.29,12.57 15.71,12 15.71,11.29M20,15.14V16H16L14,16H10L8,16H4V15.14C4,14.2 5.55,13.43 7,13.43C7.55,13.43 8.11,13.54 8.6,13.73C9.35,13.04 10.7,12.57 12,12.57C13.3,12.57 14.65,13.04 15.4,13.73C15.89,13.54 16.45,13.43 17,13.43C18.45,13.43 20,14.2 20,15.14Z" />
-                                                                </svg>
-                                                                <div>Classes</div>
-                                                            </a>
                                                         </div>
                                                     </template>
 
@@ -829,7 +829,7 @@
                     originalData: {
                         users: @json($users),
                         usersRoleCount: {{ $users_role_count }},
-                        offset: 4,
+                        offset: 20,
                     },
                     usersRoleCount: {{ $users_role_count }},
                     selectedUserIds: [],
@@ -850,7 +850,7 @@
 
                     // Data Chunking
                     offset: 0,
-                    chunkSize: 4,
+                    chunkSize: 20,
 
                     // Preventing Multiple Requests
                     controller: null,

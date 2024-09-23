@@ -51,7 +51,7 @@
                         <th scope="col" class="p-4">
                             <div class="flex items-center">
                                 <input id="checkbox-all-search" type="checkbox" @change="toggleAllCheckboxes"
-                                    :disabled="course.enrollees.length === 0":checked="allChecked"
+                                    :disabled="course?.enrollees?.length === 0":checked="allChecked"
                                     class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
                                 <label for="checkbox-all-search" class="sr-only">checkbox</label>
                             </div>
@@ -65,7 +65,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-xs">
-                    <template x-for="user in course.enrollees" :key="user.id">
+                    <template x-for="user in course?.enrollees" :key="user.id">
                         <tr class="border-gray-700 bg-gray-800 hover:bg-gray-800/75">
                             <td class="w-4 p-4">
                                 <div class="flex items-center">
@@ -190,62 +190,9 @@
                     {{-- </template> --}}
                 </tbody>
             </table>
-            <div class="my-4 text-center text-sm text-white/75" x-show="course.enrollees.length === 0">
+            <div class="my-4 text-center text-sm text-white/75" x-show="course?.enrollees?.length === 0">
                 No enrollees
             </div>
-            {{-- <div id="batch-modal" tabindex="-1" aria-hidden="true"
-                class="fixed left-0 right-0 top-0 z-50 hidden h-[calc(100%-1rem)] max-h-full w-full items-center justify-center overflow-y-auto overflow-x-hidden md:inset-0">
-                <div class="relative max-h-full w-full max-w-md p-4">
-                    <!-- Modal content -->
-                    <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
-                        <!-- Modal header -->
-                        <div
-                            class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                                Select Batch
-                            </h3>
-                            <button type="button"
-                                class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
-                                data-modal-toggle="batch-modal">
-                                <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                    fill="none" viewBox="0 0 14 14">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                </svg>
-                                <span class="sr-only">Close modal</span>
-                            </button>
-                        </div>
-                        <!-- Modal body -->
-                        <div class="p-2">
-                            <button @click="createBatch"
-                                class="block flex w-full items-center justify-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none">
-                                <svg class="mr-2 h-5 w-5 text-gray-800 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2" d="M5 12h14m-7 7V5" />
-                                </svg><span>Create New</span></button>
-                            <ul class="mt-2 rounded-md bg-gray-800 p-2">
-                                <div class="py-3 text-center font-bold text-white">List of Batches</div>
-                                <template x-for="batch in batches" :key="batch.id">
-                                    <li class="cursor-pointer rounded-md px-2 py-1 text-white hover:bg-gray-900">
-                                        <button @click="addToBatch(batch.id)" class="flex items-center">
-                                            <svg class="mr-2 h-3 w-3 text-gray-800 dark:text-white" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path fill-rule="evenodd"
-                                                    d="M10.3 5.6A2 2 0 0 0 7 7v10a2 2 0 0 0 3.3 1.5l5.9-4.9a2 2 0 0 0 0-3l-6-5Z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                            <div class="font-normal" x-text="batch.name"></div>
-                                        </button>
-                                    </li>
-                                </template>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-            </div> --}}
 
             {{-- List of Batches Modal --}}
             <div x-cloak x-show="showBatchesModal" x-transition:enter="transition ease-out duration-200"
@@ -285,7 +232,7 @@
                                                 New Batch</button>
                                         </div>
                                         <div id="list_uc">
-                                            <template x-if="course.batches.length < 1">
+                                            <template x-if="course.batches?.length < 1">
                                                 <div class="p-2 text-center text-sm text-gray-400">No batches</div>
                                             </template>
 
@@ -987,20 +934,48 @@
         <script>
             function batchManager() {
                 return {
-                    course: @json($course),
+                    course: [],
                     selectedUserIds: [],
                     allChecked: false,
                     batchId: null,
-                    courseId: null,
                     showBatchesModal: false,
 
 
                     recordsLoading: false,
 
-                    init() {
-                        // Call method to fetch user locations
-                        console.log(this.course); // Debug statement to log the enrollees data
+                    async init() {
+                        await this.loadMore(); // Load the first batch on initialization
                     },
+
+                    page: {{ $page }},
+                    allLoaded: false,
+                    async loadMore() {
+                        this.loading = true;
+                        try {
+                            const response = await axios.get(`/courses/${this.courseId}/enrollees/${this.page}`);
+                            const data = response.data;
+                            console.log(data);
+
+
+                            if (this.course.length == 0) {
+                                this.course = data;
+                                this.page++;
+                            } else {
+                                if (data.length > 0) {
+                                    this.course = [...this.course.enrollees, ...data];
+                                    this.page++;
+                                } else {
+                                    this.allLoaded = true;
+                                }
+                            }
+
+                        } catch (error) {
+                            console.error("Failed to load more enrollees:", error);
+                        }
+                        this.loading = false;
+                    },
+
+
                     async fetchUserLocations() {
 
                         const enrollee = this.enrolleeProfile;
@@ -1057,12 +1032,12 @@
                         } else {
                             this.selectedUserIds.push(userId);
                         }
-                        this.allChecked = this.selectedUserIds.length === this.course.enrollees.length;
+                        this.allChecked = this.selectedUserIds.length === this.course?.enrollees?.length;
                         console.log(this.selectedUserIds);
                     },
                     toggleAllCheckboxes(event) {
                         this.allChecked = !this.allChecked;
-                        this.selectedUserIds = this.allChecked ? this.course.enrollees.map(user => user.id) : [];
+                        this.selectedUserIds = this.allChecked ? this.course?.enrollees?.map(user => user.id) : [];
                     },
                     isSelected(userId) {
                         return this.selectedUserIds.includes(userId);
@@ -1154,10 +1129,10 @@
                             },
                             success: function(response) {
                                 if (response.status === 'success') {
-                                    let enrolleeIndex = course.enrollees.findIndex(enrollee => enrollee.id ===
+                                    let enrolleeIndex = course?.enrollees?.findIndex(enrollee => enrollee.id ===
                                         enrolleeId);
                                     if (enrolleeIndex !== -1) {
-                                        course.enrollees.splice(enrolleeIndex, 1);
+                                        course?.enrollees?.splice(enrolleeIndex, 1);
                                     }
 
                                     i.notification(response.status, response.message, response.title)
@@ -1252,133 +1227,3 @@
         </script>
     @endsection
 </x-app-layout>
-{{-- <script type="text/javascript">
-                //Add to batch button
-    function add_to_batch(batch_id) {
-        if (selectedUserIds.length === 0) {
-            alert('Please select at least one user.');
-            return;
-        }
-
-        // Send an AJAX request to save selected user IDs to the batches table
-        var csrfToken = $('meta[name="csrf-token"]').attr('content');
-
-        $.ajax({
-            url: "{{ route('add_to_batch') }}",
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            data: {
-                user_ids: selectedUserIds,
-                batch_id: batch_id,
-            },
-            success: function(response) {
-                $('#success-alert').removeClass('hidden').delay(3000).fadeOut(); // Show for 3 seconds
-                location.reload();
-                console.log(selectedUserIds);
-                // alert('Selected users have been saved to the batch.');
-            },
-            error: function(xhr, status, error) {
-                console.error('Error saving to batch:', error);
-                alert('An error occurred while saving to the batch.');
-            }
-        });
-    }
-
-    // Create batch
-    function create_batch(course_id) {
-        console.log(course_id);
-        $.ajax({
-            url: "{{ route('generate_batch_name') }}",
-            method: "GET",
-            data: {
-                courseid: course_id,
-            },
-            success: function(newBatchName) {
-                var batchData = {
-                    batch_name: newBatchName,
-                    courseid: course_id,
-                };
-
-                $.ajax({
-                    url: "{{ route('create_batch') }}",
-                    method: "POST",
-                    data: batchData,
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                            'content')
-                    },
-                    success: function(response) {
-                        console.log(response);
-                        location.reload();
-
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(xhr.responseText);
-                    }
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
-        });
-    }
-
-    // Check All Checkbox
-    $(document).ready(function() {
-        $('#checkbox-all-search').change(function() {
-            var isChecked = $(this).prop('checked');
-            $('.row-checkbox').prop('checked', isChecked).change();
-        });
-    });
-
-
-    window.onload = function() {
-        var elements = document.querySelectorAll('[id^="address_"]');
-        var barangay, city, province;
-        elements.forEach(function(element) {
-            $.ajax({
-                url: 'https://psgc.gitlab.io/api/barangays/{{ $enrollee->barangay ?? '' }}',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    barangay = data.name;
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching barangays:', error);
-                }
-            });
-
-            $.ajax({
-                url: 'https://psgc.gitlab.io/api/cities-municipalities/{{ $enrollee->city ?? '' }}',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    city = data.name;
-                    console.log(city);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching barangays:', error);
-                }
-            });
-
-            $.ajax({
-                url: 'https://psgc.gitlab.io/api/provinces/{{ $enrollee->province ?? '' }}',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    province = data.name;
-                    $('#address_{{ $enrollee->user_id ?? '' }}').text(barangay + ', ' + city +
-                        ', ' +
-                        province)
-                    console.log(province);
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error fetching barangays:', error);
-                }
-            });
-
-        });
-    };
-</script> --}}

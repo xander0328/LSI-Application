@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
@@ -304,26 +305,48 @@ class SuperAdminController extends Controller
     }
     
     // See Enrollees per Course
-    public function enrollees($id)
+    public function enrollees($id, $page = 1)
     {
-        $course = Course::with(['batches', 'enrollees' => function ($query) use ($id) {
-            $query->select(['id', 'employment_status', 'employment_type', 'user_id', 'course_id', 'preferred_schedule', 'preferred_start', 'preferred_finish']) 
-                ->whereNull('batch_id')
-                ->whereNotIn('user_id', function ($subQuery) use ($id) {
-                    $subQuery->select('user_id')
-                            ->from('enrollees')
-                            ->where('course_id', '!=', $id)
-                            ->whereNotNull('batch_id');
-                })
-                ->whereNull('deleted_at');
-        }, 
-        'enrollees.user',
-        'enrollees.enrollee_files_submitted'  => function ($query){
-            $query->select(['id', 'enrollee_id', 'credential_type']);
-        }, ])
-        ->where('id',$id)->first();
+        $course = Course::where('id', $id)->first();
         
-        return view('enrollees', compact('course'));
+        return view('enrollees', compact('course', 'page'));
+    }
+
+    public function load_more_enrollees($id, $page){
+        $perPage = 20; 
+        $cacheKey = "course-enrollees-page-{$id}-{$page}";
+
+        $course = Cache::remember($cacheKey, 60, function () use ($id, $perPage, $page) {
+            $offset = ($page - 1) * $perPage; // Calculate offset
+            
+
+            return Course::with(['batches', 
+                'enrollees' => function ($query) use ($id, $perPage, $offset) {
+                    $query->select(['id', 'employment_status', 'employment_type', 'user_id', 'course_id', 'preferred_schedule', 'preferred_start', 'preferred_finish'])
+                        ->whereNull('batch_id')
+                        ->whereNotIn('user_id', function ($subQuery) use ($id) {
+                            $subQuery->select('user_id')
+                                    ->from('enrollees')
+                                    ->where('course_id', '!=', $id)
+                                    ->whereNotNull('batch_id');
+                        })
+                        ->whereNull('deleted_at')
+                        ->whereHas('user', function($query){
+                            $query->whereNull('deleted_at');
+                        })
+                        ->skip($offset)
+                        ->take($perPage);
+                },
+                'enrollees.user',
+                'enrollees.enrollee_files_submitted' => function ($query) {
+                    $query->select(['id', 'enrollee_id', 'credential_type']);
+                }
+            ])
+            ->where('id', $id)
+            ->first();
+        });
+
+        return response()->json($course);
     }
 
     // Remove Enrollee
@@ -693,55 +716,81 @@ class SuperAdminController extends Controller
     public function all_users(Request $request){
         $role = $request->query('role', 'all');
 
-        $query = User::query();
-        $query->whereNot('role', 'superadmin');
+        $cacheKey = "all_users_role_{$role}";
 
-        $users_count_query = clone $query;
-        $all_user_count = $users_count_query->count();
+        $cachedData = Cache::remember($cacheKey, 60, function () use ($role) {
+            $query = User::query();
+            $query->whereNot('role', 'superadmin');
 
-        if($role && $role != 'all'){
-            $query->where('role', $role);
-        }
+            $users_count_query = clone $query;
+            $all_user_count = $users_count_query->count();
 
-        $role_count_query = clone $query;
-        $users_role_count = $role_count_query->count();
+            if($role && $role != 'all'){
+                $query->where('role', $role);
+            }
 
-        $users = $query->with(['enrollee.enrollee_files' => function ($query) {
-                    $query->select('enrollee_id', 'credential_type', 'filename');
-            }])->take(4)->get();
+            $role_count_query = clone $query;
+            $users_role_count = $role_count_query->count();
 
+            $users = $query->with(['enrollee.enrollee_files' => function ($query) {
+                        $query->select('enrollee_id', 'credential_type', 'filename');
+                }])->take(20)->get();
+            
+            return [
+                'users' => $users,
+                'all_user_count' => $all_user_count,
+                'users_role_count' => $users_role_count,
+            ];
+        });
+
+        $users = $cachedData['users'];
+        $all_user_count = $cachedData['all_user_count'];
+        $users_role_count = $cachedData['users_role_count'];
+                
         return view('all_users', compact('users', 'role', 'all_user_count', 'users_role_count'));
     }
 
     public function load_more_users(Request $request){
-        $chunkSize = $request->query('chunkSize', 4);
+        $chunkSize = $request->query('chunkSize', 20);
         $offset = $request->query('offset', 0);
         $role = $request->query('role');
         $searchTerm = $request->query('searchTerm');
 
-        $query = User::query();
+        $cacheKey = "load_more_users_{$role}_{$searchTerm}_{$chunkSize}_{$offset}";
 
-        // Add the search term filter if it's provided and not empty
-        if (!empty($searchTerm)) {
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('fname', 'like', "%$searchTerm%")
-                ->orWhere('lname', 'like', "%$searchTerm%")
-                ->orWhere('email', 'like', "%$searchTerm%");
-            });
-        }
+        $cachedData = Cache::remember($cacheKey, 60, function () use ($chunkSize, $offset, $role, $searchTerm) {
+            $query = User::query();
 
-        // Apply role filter based on the 'role' parameter
-        if ($role && $role !== 'all') {
-            $query->where('role', $role);
-        }
+            // Add the search term filter if it's provided and not empty
+            if (!empty($searchTerm)) {
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('fname', 'like', "%$searchTerm%")
+                    ->orWhere('lname', 'like', "%$searchTerm%")
+                    ->orWhere('email', 'like', "%$searchTerm%");
+                });
+            }
 
-        // Exclude 'superadmin' role from the results
-        $query->whereNot('role', 'superadmin');
-        $totalQuery = clone $query;
+            // Apply role filter based on the 'role' parameter
+            if ($role && $role !== 'all') {
+                $query->where('role', $role);
+            }
 
-        // Get the specified chunk of users
-        $users = $query->skip($offset)->take($chunkSize)->get();
-        $totalCount = $totalQuery->count();
+            // Exclude 'superadmin' role from the results
+            $query->whereNot('role', 'superadmin');
+            $totalQuery = clone $query;
+
+            // Get the specified chunk of users
+            $users = $query->skip($offset)->take($chunkSize)->get();
+            $totalCount = $totalQuery->count();
+            
+            return [
+                'users' => $users,
+                'count' => $totalCount,
+            ];
+        });
+
+        $users = $cachedData['users'];
+        $totalCount = $cachedData['count'];
 
         return response()->json(['users' => $users, 'count' => $totalCount]);
     }
@@ -919,7 +968,7 @@ class SuperAdminController extends Controller
     public function get_instructor_info(Request $request){
         $instructor_info = Instructor::find($request->instructor_id)
             ->with(['batches' => function ($query){
-                $query->whereNull(['completed_at', 'deleted_at'])
+                $query->whereNull(['deleted_at'])
                 ->with(['course' => function ($query){
                     $query->select('id', 'code', 'name');
                 }
@@ -936,7 +985,7 @@ class SuperAdminController extends Controller
     public function dashboard(){
         $web_users = [];
 
-        $roles = User::select('role', \DB::raw('COUNT(*) as count'))->groupBy('role')->get();
+        $roles = User::select('role', \DB::raw('COUNT(*) as count'))->whereNot('role', 'superadmin')->groupBy('role')->get();
         foreach ($roles as $role) {
             $web_users[] = [
                 'role' => $role->role,  // Role name
@@ -944,7 +993,7 @@ class SuperAdminController extends Controller
             ];
         }
 
-        $deletedUsersCount = User::onlyTrashed()->count();
+        $deletedUsersCount = User::onlyTrashed()->whereNot('role', 'superadmin')->count();
         $web_users[] = [
             'role' => 'disabled account',
             'count' => $deletedUsersCount

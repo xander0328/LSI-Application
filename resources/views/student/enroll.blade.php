@@ -1004,10 +1004,18 @@
                             return acc;
                         }, {});
                         if (cookies.formProgress) {
-                            this.form = JSON.parse(cookies.formProgress);
-                        }
-                        if (cookies.currentStep) {
-                            this.currentStep = parseInt(cookies.currentStep, 10);
+                            const formProgress = JSON.parse(cookies.formProgress);
+                            const savedCourseId = formProgress.course_id; // Assuming this is how course_id is stored
+
+                            // Check if the course_id matches
+                            if (savedCourseId === this.form.course_id) {
+                                this.form = formProgress;
+                                if (cookies.currentStep) {
+                                    this.currentStep = parseInt(cookies.currentStep, 10);
+                                }
+                            } else {
+                                this.currentStep = 1;
+                            }
                         }
                     },
                     clearProgress() {

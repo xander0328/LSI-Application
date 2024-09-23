@@ -13,7 +13,7 @@
             </div>
             <div>
                 <button onclick="window.dispatchEvent(new CustomEvent('add-course-modal'))"
-                    class="flex items-center rounded-lg bg-sky-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800"
+                    class="flex items-center rounded-lg bg-sky-700 px-3.5 py-2.5 text-center text-xs font-medium text-white hover:bg-blue-800 md:px-5 md:text-sm"
                     type="button">
                     <svg class="h-4 w-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 24 24">
@@ -25,7 +25,7 @@
         </div>
 
     </x-slot>
-    <div x-data="manageCourse" id="main-div" class="mx-8 pb-4 pt-40">
+    <div x-data="manageCourse" id="main-div" class="mx-4 pb-4 pt-40 md:mx-8">
         <ul class="space-y-2 font-semibold text-white">
             <template x-if="courses.length == 0">
                 <div>
@@ -38,11 +38,11 @@
                     <li id="course-item" class="rounded-md bg-gray-800 p-2">
                         <div>
                             <div class="mb-px flex items-center justify-between">
-                                <div class="my-1 py-1 text-sky-400" x-text="course.name"></div>
+                                <div class="my-1 py-1 text-sm text-sky-400 md:text-base" x-text="course.name"></div>
                                 <div class="flex">
 
                                     <div class="flex justify-between align-middle">
-                                        <div class="mx-1 my-1 flex rounded-lg p-2 hover:bg-gray-800">
+                                        <div class="hidden rounded-lg p-2 hover:bg-gray-800 md:flex md:inline-flex">
                                             <label class="inline-flex w-full cursor-pointer items-center">
                                                 <input @change="courseToggle(course.id)" type="checkbox"
                                                     :checked="course.available" class="course-toggle peer sr-only">
@@ -69,6 +69,20 @@
 
                                                 <x-slot name="content">
                                                     <div class="m-1.5">
+                                                        <div class="flex rounded-lg p-2 hover:bg-gray-800 md:hidden">
+                                                            <label
+                                                                class="inline-flex w-full cursor-pointer items-center">
+                                                                <input @change="courseToggle(course.id)" type="checkbox"
+                                                                    :checked="course.available"
+                                                                    class="course-toggle peer sr-only">
+                                                                <div
+                                                                    class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
+                                                                </div>
+                                                                <span
+                                                                    class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enrollment</span>
+                                                            </label>
+                                                        </div>
+
                                                         <div class="flex rounded-lg p-2 hover:bg-gray-800">
                                                             <label
                                                                 class="inline-flex w-full cursor-pointer items-center">
@@ -150,75 +164,14 @@
                                                 </x-slot>
                                             </x-dropdown>
                                         </div>
-                                        {{-- <button class="my-1 inline-flex items-center rounded-lg bg-white p-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-50 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800 dark:focus:ring-gray-600"
-                                            type="button">
-                                            <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                fill="currentColor" viewBox="0 0 16 3">
-                                                <path
-                                                    d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
-                                            </svg>
-                                        </button> --}}
-
-                                        {{-- <!-- Dropdown menu -->
-                                        <div id="dropdownDotsHorizontal_{{ $course->id }}"
-                                            class="z-10 hidden w-52 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-800">
-                                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200"
-                                                aria-labelledby="dropdownMenuIconHorizontalButton">
-                                                <li>
-                                                    <a href="javascript:void(0)" id="edit_course"
-                                                        data-id="{{ route('edit_course', $course->id) }}"
-                                                        data-modal-target="edit-modal" data-modal-toggle="edit-modal"
-                                                        class="m-1 flex items-center rounded-lg p-2 py-1 align-middle hover:bg-gray-700"><svg
-                                                            class="h-5 w-6 text-gray-800 dark:text-white"
-                                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                            fill="none" viewBox="0 0 24 24">
-                                                            <path stroke="currentColor" stroke-linecap="round"
-                                                                stroke-linejoin="round" stroke-width="2"
-                                                                d="m10.8 17.8-6.4 2.1 2.1-6.4m4.3 4.3L19 9a3 3 0 0 0-4-4l-8.4 8.6m4.3 4.3-4.3-4.3m2.1 2.1L15 9.1m-2.1-2 4.2 4.2" />
-                                                        </svg>Edit
-                                                    </a>
-                                                </li>
-
-                                                <li>
-                                                    <form id="delete-course" class="px-1"
-                                                        action="{{ route('delete_course', $course->id) }}"
-                                                        method="post">
-                                                        @method('DELETE')
-                                                        <button onclick="confirmDelete()" type="submit"
-                                                            class="flex w-full items-center rounded-lg p-1 px-2 align-text-bottom hover:bg-gray-700">
-                                                            <svg class="h-5 w-6 text-gray-800 dark:text-white"
-                                                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                                fill="currentColor" viewBox="0 0 24 24">
-                                                                <path fill-rule="evenodd"
-                                                                    d="M8.6 2.6A2 2 0 0 1 10 2h4a2 2 0 0 1 2 2v2h3a1 1 0 1 1 0 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V8a1 1 0 0 1 0-2h3V4c0-.5.2-1 .6-1.4ZM10 6h4V4h-4v2Zm1 4a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Zm4 0a1 1 0 1 0-2 0v8a1 1 0 1 0 2 0v-8Z"
-                                                                    clip-rule="evenodd" />
-                                                            </svg>
-                                                            Delete</button>
-                                                    </form>
-
-                                                </li>
-                                            </ul>
-                                            <div class="py-2">
-                                                <a href="{{ route('course_enrollees', $course->id) }}"
-                                                    class="block flex px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white">
-                                                    <div class="mr-1"><svg
-                                                            class="h-5 w-5 text-gray-800 dark:text-white"
-                                                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                            fill="currentColor" viewBox="0 0 24 24">
-                                                            <path fill-rule="evenodd"
-                                                                d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4c0 1.1.9 2 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.8-3.1a5.5 5.5 0 0 0-2.8-6.3c.6-.4 1.3-.6 2-.6a3.5 3.5 0 0 1 .8 6.9Zm2.2 7.1h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1l-.5.8c1.9 1 3.1 3 3.1 5.2ZM4 7.5a3.5 3.5 0 0 1 5.5-2.9A5.5 5.5 0 0 0 6.7 11 3.5 3.5 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4c0 1.1.9 2 2 2h.5a6 6 0 0 1 3-5.2l-.4-.8Z"
-                                                                clip-rule="evenodd" />
-                                                        </svg>
-                                                    </div>Enrollees
-                                                </a>
-                                            </div>
-                                        </div> --}}
                                     </div>
 
                                 </div>
                             </div>
                             <hr class="border border-gray-500">
-                            <div class="my-2 text-sm font-thin">
+                            <div @click="$('#description-'+course.id).toggleClass('line-clamp-3')"
+                                :id="'description-' + course.id"
+                                class="my-2 line-clamp-3 cursor-pointer text-xs font-thin md:text-sm">
                                 <span class="" x-text="course.description"></span>
                             </div>
                             <div class="text-xs font-thin">
