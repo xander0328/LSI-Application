@@ -24,7 +24,7 @@
         </div>
 
     </x-slot>
-    <div x-data="manageUsers" class="p-2 px-4 pb-16 pt-28 md:px-8 md:pt-40">
+    <div x-data="manageUsers" class="p-2 px-4 pb-16 md:px-8 pt-40">
         <div class="overflow-hidden rounded-lg bg-gray-800 shadow-md">
             <div
                 class="flex flex-col space-y-3 bg-gray-700/50 px-4 py-3 lg:flex-row lg:items-center lg:justify-between lg:space-x-4 lg:space-y-0">

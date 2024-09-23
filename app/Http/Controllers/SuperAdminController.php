@@ -360,48 +360,6 @@ class SuperAdminController extends Controller
             return response()->json(['status' => 'error', 'message' => "Failed to remove {$enrollee->user->fname} {$enrollee->user->lname} in the enrollee list. Please try again.", 'title' => 'Enrollee Removal']);
     }
 
-    // Generate New Batch
-    // public function create_new_batch(Request $request)
-    // {
-    //    // Fetch all batches for the given course, including soft-deleted ones
-    //     $batches = Batch::withTrashed()->where('course_id', $request->course_id)->get();
-
-    //     // Initialize the maximum number and a flag to check if it's from a soft-deleted batch
-    //     $maxNumber = 0;
-    //     $isMaxFromSoftDeleted = false;
-
-    //     foreach ($batches as $batch) {
-    //         $number = intval($batch->name); // Convert batch name directly to an integer
-
-    //         // Check if this number is greater than the current max
-    //         if ($number > $maxNumber) {
-    //             $maxNumber = $number;
-    //             $isMaxFromSoftDeleted = $batch->trashed();
-    //         }
-    //     }
-
-    //     // Determine the new number based on whether the highest was soft-deleted
-    //     if ($isMaxFromSoftDeleted) {
-    //         $newNumber = $maxNumber; // Reuse the highest number
-    //     } else {
-    //         $newNumber = $maxNumber + 1; // Use the next number
-    //     }
-
-    //     // Format the new batch name with leading zeros
-    //     $newBatchName = str_pad($newNumber, 4, '0', STR_PAD_LEFT);
-
-    //     $new_batch = new Batch();
-    //     $new_batch->name = $newBatchName;
-    //     $new_batch->course_id = $request->course_id;
-    //     $new_batch->save();
-
-    //     if($new_batch)
-    //         return response()->json(['status' => 'success','message' => 'Batch created successfully, '.$new_batch->course->code.'-'. $new_batch->name, 'title' => 'Create New Batch', 'new_batch' => $new_batch]);
-
-    //     return response()->json(['status' => 'error','message' => 'New batch cannot be created. Try again later', 'title' => 'Create New Batch']);
-
-    // }
-
     public function create_new_batch(Request $request)
     {
         // Fetch all batches for the given course, including soft-deleted ones
@@ -966,7 +924,7 @@ class SuperAdminController extends Controller
     }
 
     public function get_instructor_info(Request $request){
-        $instructor_info = Instructor::find($request->instructor_id)
+        $instructor_info = Instructor::where('id',$request->instructor_id)
             ->with(['batches' => function ($query){
                 $query->whereNull(['deleted_at'])
                 ->with(['course' => function ($query){
