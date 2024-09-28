@@ -4,20 +4,53 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="text-2xl font-semibold text-white">
-                {{ __('Course') }} <span class="text-slate-600">|</span> <span
-                    class="text-lg font-normal text-sky-500">{{ $batch->course->name }}</span>
+            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+                <div>{{ __('Course') }}</div>
+                <div class="hidden md:block text-slate-600">|</div>
+                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
             </div>
-            <div>Batch: {{ $batch->name }}</div>
+            <div class="hidden md:flex items-center">
+                <div class="flex space-x-1 mr-4">
+                    <div class="text-white/75"> Batch: </div>
+                    <div>
+                        {{ $batch->course->code }}-{{ $batch->name }}
+                    </div>
+                </div>
+            </div>
+            <div class="flex md:hidden items-center">
+                <x-dropdown width="40" align="right">
+                    <x-slot name="trigger">
+                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
+                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <title>dots-vertical</title>
+                                <path
+                                    d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
+                            </svg>
+                        </button>
+                    </x-slot>
+
+                    <x-slot name="content">
+                        <div class="m-1.5 flex-row">
+                            <div class="my-2 flex justify-center text-xs space-x-1">
+                                <div class="text-white/75"> Batch: </div>
+                                <div>
+                                    {{ $batch->course->code }}-{{ $batch->name }}
+                                </div>
+                            </div>
+                            <x-course-nav :selected="'assignment'" :batch="$batch->id"></x-course-nav>
+                        </div>
+                    </x-slot>
+                </x-dropdown>
+            </div>
         </div>
-        <x-course-nav :batch="$batch->id" :selected="'assignment'"></x-course-nav>
-        {{-- <div>
-            <button onclick="startFCM()" class="btn btn-danger btn-flat">Allow notification
-            </button>
-        </div> --}}
+        <div class="hidden md:block">
+
+            <x-course-nav :selected="'assignment'" :batch="$batch->id"></x-course-nav>
+        </div>
 
     </x-slot>
-    <div x-data="turnIns()" class="mx-8 mt-2 pt-44 text-white">
+    <div x-data="turnIns()" class="mx-4 md:mx-8 mt-2 pt-44 md:pt-48 text-white">
         <div class="mb-2 flex items-center justify-end">
             <div class="mx-1 my-1 flex rounded-lg p-2 hover:bg-gray-800">
                 <label class="inline-flex w-full cursor-pointer items-center">
@@ -135,31 +168,25 @@
         </div>
         <br>
         <div class="pb-6">
-            <div>
-                <span class="text-sm">Sort by</span>
-                <select x-model="sort_by" @change="filterRecords"
-                    class="mb-2 w-1/3 rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
-                    <option value="lname">Surname</option>
-                    <option value="fname">First name</option>
-                    <option value="turned_in">Turn in status</option>
-                    <option value="grade">Grade</option>
-                </select>
+            <div class="md:flex flex-row space-y-1 md:space-x-2 md:space-y-0 mb-2 items">
+                <div class="flex w-full md:w-1/2 items-center space-x-1">
+                    <span class="text-sm">Sort by</span>
+                    <select x-model="sort_by" @change="filterRecords"
+                        class="flex-1 w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-center text-white">
+                        <option value="lname">Surname</option>
+                        <option value="fname">First name</option>
+                        <option value="turned_in">Turn in status</option>
+                        <option value="grade">Grade</option>
+                    </select>
+                </div>
                 <select x-model="sort_direction"
-                    class="mb-2 w-1/4 rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white" @change="filterRecords">
-                    <option value="asc">Ascending</option>
+                    class="w-full md:w-1/2 rounded-md bg-gray-700 px-2.5 py-1 text-sm text-center text-white"
+                    @change="filterRecords">
                     <option value="desc">Descending</option>
+                    <option value="asc">Ascending</option>
                 </select>
             </div>
-            <div id="accordion-collapse" {{-- data-accordion="open" data-active-classes="bg-sky-800 text-white"
-                data-inactive-classes="text-white" --}}>
-                {{-- @foreach ($students as $student)
-                @php
-                    $turnIn = $turn_in_files
-                        ->where('user_id', $student->user->id)
-                        ->where('assignment_id', $assignment->id)
-                        ->first();
-                    $hasTurnedIn = $turnIn && $turnIn->turned_in;
-                @endphp --}}
+            <div id="accordion-collapse">
                 <template x-for="student in filteredRecords " :key="student.id">
                     <div x-data="{ open: false }">
                         <h2 :id="`accordion-collapse-heading-${student.id}`" x-transition>
@@ -175,22 +202,13 @@
                                                 'bg-yellow-600'"
                                             class="rounded-full p-1 px-2 text-xs"
                                             x-text="student.grades[0].grade == 0 || student.grades[0].grade == null ? 'Not graded' : 'Graded'">
-                                            {{-- @if ($student->grade)
-                                            Graded
-                                        @else
-                                            Not graded
-                                        @endif --}}
                                         </span>
                                     </div>
                                 </div>
                                 <div class="flex items-center">
                                     <span class="me-2 text-sm italic"
                                         x-text="student.turn_ins[0].turned_in ? 'Turned in' : 'Not turned in'">
-                                        {{-- @if ($hasTurnedIn)
-                                        Turned in
-                                    @else
-                                        Not turned in
-                                    @endif --}}
+
                                     </span>
                                     <svg class="h-3 w-3 shrink-0 rotate-180" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -201,8 +219,12 @@
 
                             </button>
                         </h2>
-                        <div x-show="open" x-transition {{-- :id="`accordion-collapse-body-${student.id}`" class="mb-2 hidden"
-                            :aria-labelledby="`accordion-collapse-heading-${student.id}`" --}}>
+                        <div x-show="open" x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 transform -translate-y-4"
+                            x-transition:enter-end="opacity-100 transform translate-y-0"
+                            x-transition:leave="transition ease-in duration-300"
+                            x-transition:leave-start="opacity-100 transform translate-y-0"
+                            x-transition:leave-end="opacity-0 transform -translate-y-4">
                             <div class="rounded-b-md bg-gray-800 p-3">
                                 <div class="mb-2 text-sm">Submitted Files</div>
                                 <template
@@ -223,95 +245,24 @@
                                     </div>
                                 </template>
 
-                                {{-- @if ($file->user_id === $student->user_id)
-                                    @if ($file->turned_in)
-                                        @if (Str::startsWith($file->file_type, 'image/'))
-                                            <div class="mb-2">
-                                                <a target="_blank"
-                                                    class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-600"
-                                                    href="{{ asset('storage/assignments/' . $batch->id . '/' . $assignment->id . '/' . $student->user_id . '/' . $file->folder . '/' . $file->filename) }}">
-                                                    <svg class="mr-2 h-6 w-6" fill="gray"
-                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                        <title>text-box</title>
-                                                        <path
-                                                            d="M14,17H7V15H14M17,13H7V11H17M17,9H7V7H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" />
-                                                    </svg>
-                                                    {{ substr(str_replace('uploads/', '', $file->filename), strpos(str_replace('uploads/', '', $file->filename), '_')1) }}
-                                                </a>
-                                            </div>
-                                        @elseif ($file->file_type == 'application/pdf')
-                                            <div class="mb-2">
-                                                <a target="_blank"
-                                                    class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-600"
-                                                    href="{{ asset('storage/assignments/' . $batch->id . '/' . $assignment->id . '/' . $student->user_id . '/' . $file->folder . '/' . $file->filename) }}">
-                                                    <svg class="mr-2 h-6 w-6" fill="rgb(185 28 28)"
-                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                        <title>file-pdf-box</title>
-                                                        <path
-                                                            d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M9.5 11.5C9.5 12.3 8.8 13 8 13H7V15H5.5V9H8C8.8 9 9.5 9.7 9.5 10.5V11.5M14.5 13.5C14.5 14.3 13.8 15 13 15H10.5V9H13C13.8 9 14.5 9.7 14.5 10.5V13.5M18.5 10.5H17V11.5H18.5V13H17V15H15.5V9H18.5V10.5M12 10.5H13V13.5H12V10.5M7 10.5H8V11.5H7V10.5Z" />
-                                                    </svg>
-                                                    {{ substr(str_replace('uploads/', '', $file->filename), strpos(str_replace('uploads/', '', $file->filename), '_') + 1) }}</a>
-                                            </div>
-                                        @elseif (Str::endsWith($file->filename, '.docx') || Str::endsWith($file->filename, '.doc'))
-                                            <div class="mb-2">
-                                                <a target="_blank" download
-                                                    class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-600"
-                                                    href="{{ asset('storage/assignments/' . $batch->id . '/' . $assignment->id . '/' . $student->user_id . '/' . $file->folder . '/' . $file->filename) }}">
-                                                    <svg class="mr-2 h-6 w-6" fill="rgb(2 132 199)"
-                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                        <title>file-word-box</title>
-                                                        <path
-                                                            d="M15.5,17H14L12,9.5L10,17H8.5L6.1,7H7.8L9.34,14.5L11.3,7H12.7L14.67,14.5L16.2,7H17.9M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" />
-                                                    </svg>
-
-                                                    {{ substr(str_replace('uploads/', '', $file->filename), strpos(str_replace('uploads/', '', $file->filename), '_') + 1) }}</a>
-                                            </div>
-                                        @elseif (Str::endsWith($file->filename, '.xlsx') ||
-                                                Str::endsWith($file->filename, '.xls') ||
-                                                Str::endsWith($file->filename, '.csv'))
-                                            <div class="mb-2">
-                                                <a target="_blank" download
-                                                    class="flex rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-600"
-                                                    href="{{ asset('storage/assignments/' . $batch->id . '/' . $assignment->id . '/' . $student->user_id . '/' . $file->folder . '/' . $file->filename) }}">
-                                                    <svg class="mr-2 h-6 w-6" fill="rgb(22 163 74)"
-                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                        <title>file-excel-box</title>
-                                                        <path
-                                                            d="M16.2,17H14.2L12,13.2L9.8,17H7.8L11,12L7.8,7H9.8L12,10.8L14.2,7H16.2L13,12M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" />
-                                                    </svg>
-                                                    {{ substr(str_replace('uploads/', '', $file->filename), strpos(str_replace('uploads/', '', $file->filename), '_') + 1) }}</a>
-                                            </div>
-                                        @elseif (Str::endsWith($file->filename, '.txt'))
-                                            <div class="mb-2">
-                                                <a target="_blank" download
-                                                    class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-600"
-                                                    href="{{ asset('storage/assignments/' . $batch->id . '/' . $assignment->id . '/' . $student->user_id . '/' . $file->folder . '/' . $file->filename) }}">
-                                                    <svg class="mr-2 h-6 w-6" fill="gray"
-                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                        <title>text-box</title>
-                                                        <path
-                                                            d="M14,17H7V15H14M17,13H7V11H17M17,9H7V7H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" />
-                                                    </svg>
-                                                    {{ substr(str_replace('uploads/', '', $file->filename), strpos(str_replace('uploads/', '', $file->filename), '_') + 1) }}</a>
-                                            </div>
-                                        @else
-                                            <div class="mb-2">
-                                                <a target="_blank" download
-                                                    class="flex items-center rounded-md bg-gray-900 p-2 text-sm hover:bg-gray-600"
-                                                    href="{{ asset('storage/assignments/' . $batch->id . '/' . $assignment->id . '/' . $student->user_id . '/' . $file->folder . '/' . $file->filename) }}">
-                                                    <svg class="mr-2 h-6 w-6" fill="gray"
-                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                        <title>file-document</title>
-                                                        <path
-                                                            d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M15,18V16H6V18H15M18,14V12H6V14H18Z" />
-                                                    </svg>
-                                                    {{ substr(str_replace('uploads/', '', $file->filename), strpos(str_replace('uploads/', '', $file->filename), '_') + 1) }}
-                                                </a>
-                                            </div>
-                                        @endif
-                                    @endif
-                                @endif --}}
                                 <hr class="mt-2 border-t-2 border-gray-600">
+
+                                <div x-data="{ initialGrade: student.grades[0].grade, currentGrade: student.grades[0].grade }" class="mt-2 flex items-center">
+                                    {{-- {{ $student }} --}}
+                                    <div class="me-2 text-sm">Grade:</div>
+                                    <input
+                                        class="me-2 block w-full rounded-lg p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                        type="number" x-model="student.grades[0].grade"
+                                        @input="console.log(`${initialGrade} ${currentGrade}`)" name="grade"
+                                        :id="`grade_${student.id}`">
+                                    <div @click="grade_changed(student.id)"
+                                        class="cursor-pointer rounded-md p-2 hover:bg-sky-800">
+                                        <svg class="w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path fill="currentColor"
+                                                d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+                                        </svg>
+                                    </div>
+                                </div>
                                 <div x-data="{ initialGrade: student.grades[0].grade, currentGrade: student.grades[0].grade }" class="mt-2 flex items-center">
                                     {{-- {{ $student }} --}}
                                     <div class="me-2 text-sm">Grade:</div>
@@ -522,12 +473,6 @@
                                 x-transition:leave-start="opacity-100 scale-100"
                                 x-transition:leave-end="opacity-0 scale-95" id="show_addFile_assignment"
                                 class="col-span-2">
-                                {{-- <label for="name"
-                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Attach
-                                File/s</label> --}}
-                                {{-- <input
-                                class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
-                                type="file" name="file[]" accept=".jpg, .png, .xlsx, .docx, .txt" multiple> --}}
                                 <input type="file" class="filepond assignment_files" id="assignment_files"
                                     name="assignment_files[]" multiple />
                             </div>
@@ -563,7 +508,6 @@
     </div>
 
     @section('script')
-        <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase.js"></script>
         <script>
             function toggleShowAddFile(type) {
                 if (type === 'post') {
@@ -598,7 +542,7 @@
                     assignment_files: [],
                     filepond_files: [],
                     sort_by: 'lname',
-                    sort_direction: 'asc',
+                    sort_direction: 'dsc',
                     filteredRecords: [], // Store the filtered records
                     students: @json($students),
                     showAssignmentModal: false,
@@ -678,6 +622,7 @@
                         let grade = student.grades[0].grade;
                         let desc = '';
                         let color = '';
+                        const t = this;
 
                         if (grade > this.maxPoint) {
                             alert('You cannot rate more than maximum point!')
@@ -699,15 +644,10 @@
                                 })
                                 .then(response => response.json())
                                 .then(data => {
-                                    // if (grade == 0 || grade === null) {
-                                    //     desc = 'Not graded';
-                                    //     color = 'yellow';
-                                    // } else if (grade > 0 || grade !== null) {
-                                    //     desc = 'Graded';
-                                    //     color = 'sky';
-                                    // }
-                                    // student.grades.grade_status =
-                                    //     `<span class="bg-${color}-600 rounded-full p-1 px-2 text-xs">${desc}</span>`;
+                                    if (data.status == "success") {
+                                        t.notification('success', data.trainee.user.fname + ' ' + data.trainee.user.lname,
+                                            'Grade Updated')
+                                    }
                                 })
                                 .catch(error => console.error('Error:', error));
                         }
@@ -816,59 +756,67 @@
                     },
                     toggleShowAddFile() {
                         this.showAddFileModal = !this.showAddFileModal;
-                    }
+                    },
+
+                    notification(status, message, title) {
+                        toastr.options = {
+                            closeButton: true,
+                            progressBar: true,
+                            preventDuplicates: true,
+                            positionClass: "toast-top-right",
+                            showDuration: "100",
+                            hideDuration: "100",
+                            timeOut: "5000",
+                            extendedTimeOut: "1000",
+                            showEasing: "swing",
+                            hideEasing: "linear",
+                            showMethod: "slideDown",
+                            hideMethod: "slideUp",
+                        };
+                        status === 'success' ? toastr.success(message, title ?? title) : toastr.error(message,
+                            title ?? title);
+                    },
                 }
             }
 
-            var firebaseConfig = {
-                apiKey: "AIzaSyBi4oNVlyHAk6hdk42V7XugS_eR8_ianVw",
-                authDomain: "lsi-app-541ad.firebaseapp.com",
-                projectId: "lsi-app-541ad",
-                storageBucket: "lsi-app-541ad.appspot.com",
-                messagingSenderId: "740784195857",
-                appId: "1:740784195857:web:01c322ecbcf6cc18bda4b0"
-            };
-            firebase.initializeApp(firebaseConfig);
-            const messaging = firebase.messaging();
-
-            function startFCM() {
-                messaging
-                    .requestPermission()
-                    .then(function() {
-                        return messaging.getToken()
-                    })
-                    .then(function(response) {
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                        $.ajax({
-                            url: '{{ route('store.token') }}',
-                            type: 'POST',
-                            data: {
-                                token: response
-                            },
-                            dataType: 'JSON',
-                            success: function(response) {
-                                alert('Token stored.');
-                            },
-                            error: function(error) {
-                                alert(error);
-                            },
-                        });
-                    }).catch(function(error) {
-                        alert(error);
-                    });
-            }
-            messaging.onMessage(function(payload) {
-                const title = payload.notification.title;
-                const options = {
-                    body: payload.notification.body,
-                    icon: payload.notification.icon,
-                };
-                new Notification(title, options);
-            });
+            // function startFCM() {
+            //     messaging
+            //         .requestPermission()
+            //         .then(function() {
+            //             return messaging.getToken()
+            //         })
+            //         .then(function(response) {
+            //             $.ajaxSetup({
+            //                 headers: {
+            //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //                 }
+            //             });
+            //             $.ajax({
+            //                 url: '{{ route('store.token') }}',
+            //                 type: 'POST',
+            //                 data: {
+            //                     token: response
+            //                 },
+            //                 dataType: 'JSON',
+            //                 success: function(response) {
+            //                     console.log('Token stored.');
+            //                 },
+            //                 error: function(error) {
+            //                     console.log(error);
+            //                 },
+            //             });
+            //         }).catch(function(error) {
+            //             console.log(error);
+            //         });
+            // }
+            // messaging.onMessage(function(payload) {
+            //     const title = payload.notification.title;
+            //     const options = {
+            //         body: payload.notification.body,
+            //         icon: payload.notification.icon,
+            //     };
+            //     new Notification(title, options);
+            // });
         </script>
     @endsection
 </x-app-layout>

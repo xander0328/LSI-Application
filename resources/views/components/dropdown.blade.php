@@ -15,8 +15,8 @@
     }
 @endphp
 
-<div class="" x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
-    <div @click="open = ! open">
+<div x-data="{ open: false }" @click.outside="open = false" @close.stop="open = false">
+    <div class="flex items-center" @click="open = ! open">
         {{ $trigger }}
     </div>
 

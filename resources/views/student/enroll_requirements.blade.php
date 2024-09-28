@@ -2,17 +2,17 @@
     @php
         $student = App\Models\Enrollee::where('id', decrypt($enrollee))->first();
     @endphp
-    <form x-data="fileUpload" id="upload_files" class="p-4 md:p-5" enctype="multipart/form-data" method="POST"
-        action="{{ route('enroll_requirements_save') }}">
+    <form x-data="fileUpload" id="upload_files" class="p-2 md:p-5" @submit.prevent="submitForm()"
+        enctype="multipart/form-data" method="POST" action="{{ route('enroll_requirements_save') }}">
         @csrf
         <input type="hidden" name="enrollee_id" value="{{ $enrollee }}">
         <div class="col-span-2 mb-4">
-            <div class="col-span-2 flex justify-between font-bold text-white">
-                <div class="content-center">Enrollment Requirements</div>
+            <div class="col-span-2 flex  justify-between font-bold text-white">
+                <div class="content-center text-sm md:text-base">Enrollment Requirements</div>
                 <button class="underlined col-span-1 rounded-md bg-white px-2 py-0.5 text-sm text-black" type="button"
                     onclick="seeFormats()">Formats</button>
             </div>
-            <div class="text-xs text-white">Click "Formats" before uploading files</div>
+            <div class="text-xs md:block hidden text-white">Click "Formats" before uploading files</div>
         </div>
 
         <div class="visible mb-4 grid grid-cols-2 gap-4 text-white">
@@ -60,327 +60,330 @@
             </div>
 
             <div class="col-span-2 justify-self-end">
-                <x-primary-button id="step1_next" onclick="submitForm()" class="col-span-1 col-end-3 w-full text-white"
-                    type="button">Submit</x-primary-button>
+                <x-primary-button id="step1_next" class="col-span-1 col-end-3 w-full text-white"
+                    type="submit">Submit</x-primary-button>
             </div>
 
         </div>
     </form>
     @section('script')
         <script>
-            FilePond.registerPlugin(FilePondPluginImagePreview,
-                FilePondPluginImageCrop,
-                FilePondPluginImageTransform,
-                FilePondPluginImageResize,
-                FilePondPluginImageEdit,
-            );
-            const valid_id_front = document.querySelector('#valid_id_front');
-            const valid_id_back = document.querySelector('#valid_id_back');
-            const diploma = document.querySelector('#diploma_tor');
-            const birth_certificate = document.querySelector('#birth_certificate');
-            const id_pic = document.querySelector('#id_picture');
-            var valid_frontPond = FilePond.create(valid_id_front, {
-                labelIdle: `Drag & Drop a photo or <span class="filepond--label-action">Browse</span>`,
-                allowReorder: true,
-                allowImagePreview: true,
-                @if ($valid_id_front)
-                    files: [{
-                        source: {{ $valid_id_front->id }},
-                        options: {
-                            type: 'local',
-                        },
-                    }, ],
-                @endif
-                server: {
-                    process: {
-                        url: '{{ route('upload_requirement') }}',
-                        ondata: (formData) => {
-                            formData.append('enrollee_id', '{{ $enrollee }}');
-                            formData.append('course_id', '{{ encrypt($student->course_id) }}');
-                            formData.append('credential_type', 'valid_id_front');
-                            return formData;
-                        },
-                    },
-                    load: '/load_requirement/{{ encrypt($student->id) }}/valid_id_front/',
-                    revert: {
-                        url: '{{ route('revert_requirement') }}',
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                    },
-                    remove: (source, load, error) => {
-                        fetch(`/delete_requirement/{{ encrypt($student->id) }}/valid_id_front/${source}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        }).then(response => {
-                            if (response.ok) {
-                                load();
-                            } else {
-                                error('Could not delete file');
-                            }
-                        }).catch(() => {
-                            error('Could not delete file');
-                        });
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                },
-
-
-            });
-            var valid_backPond = FilePond.create(valid_id_back, {
-                labelIdle: `Drag & Drop a photo or <span class="filepond--label-action">Browse</span>`,
-                allowReorder: true,
-                allowImagePreview: true,
-                @if ($valid_id_back)
-                    files: [{
-                        source: {{ $valid_id_back->id }},
-                        options: {
-                            type: 'local',
-                        },
-                    }, ],
-                @endif
-                server: {
-                    process: {
-                        url: '{{ route('upload_requirement') }}',
-                        ondata: (formData) => {
-                            formData.append('enrollee_id', '{{ $enrollee }}');
-                            formData.append('course_id', '{{ encrypt($student->course_id) }}');
-                            formData.append('credential_type', 'valid_id_back');
-                            return formData;
-                        },
-                    },
-                    load: '/load_requirement/{{ encrypt($student->id) }}/valid_id_back/',
-                    revert: {
-                        url: '{{ route('revert_requirement') }}',
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                    },
-                    remove: (source, load, error) => {
-                        fetch(`/delete_requirement/{{ encrypt($student->id) }}/valid_id_back/${source}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        }).then(response => {
-                            if (response.ok) {
-                                load();
-                            } else {
-                                error('Could not delete file');
-                            }
-                        }).catch(() => {
-                            error('Could not delete file');
-                        });
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                },
-
-            });
-            var diploma_pond = FilePond.create(diploma, {
-                labelIdle: `Drag & Drop a file (pdf/photo) or <span class="filepond--label-action">Browse</span>`,
-                allowReorder: true,
-                allowImagePreview: true,
-                @if ($diploma_tor)
-                    files: [{
-                        source: {{ $diploma_tor->id }},
-                        options: {
-                            type: 'local',
-                        },
-                    }, ],
-                @endif
-                server: {
-                    process: {
-                        url: '{{ route('upload_requirement') }}',
-                        ondata: (formData) => {
-                            formData.append('enrollee_id', '{{ $enrollee }}');
-                            formData.append('course_id', '{{ encrypt($student->course_id) }}');
-                            formData.append('credential_type', 'diploma_tor');
-                            return formData;
-                        },
-                    },
-                    load: '/load_requirement/{{ encrypt($student->id) }}/diploma_tor/',
-                    revert: {
-                        url: '{{ route('revert_requirement') }}',
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                    },
-                    remove: (source, load, error) => {
-                        fetch(`/delete_requirement/{{ encrypt($student->id) }}/diploma_tor/${source}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        }).then(response => {
-                            if (response.ok) {
-                                load();
-                            } else {
-                                error('Could not delete file');
-                            }
-                        }).catch(() => {
-                            error('Could not delete file');
-                        });
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                },
-
-            });
-            var birth_pond = FilePond.create(birth_certificate, {
-                labelIdle: `Drag & Drop a file (pdf/photo) or <span class="filepond--label-action">Browse</span>`,
-                allowReorder: true,
-                allowImagePreview: true,
-                @if ($birth_certificate)
-                    files: [{
-                        source: {{ $birth_certificate->id }},
-                        options: {
-                            type: 'local',
-                        },
-                    }, ],
-                @endif
-                server: {
-                    process: {
-                        url: '{{ route('upload_requirement') }}',
-                        ondata: (formData) => {
-                            formData.append('enrollee_id', '{{ $enrollee }}');
-                            formData.append('course_id', '{{ encrypt($student->course_id) }}');
-                            formData.append('credential_type', 'birth_certificate');
-                            return formData;
-                        },
-                    },
-                    load: '/load_requirement/{{ encrypt($student->id) }}/birth_certificate/',
-                    revert: {
-                        url: '{{ route('revert_requirement') }}',
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                    },
-                    remove: (source, load, error) => {
-                        fetch(`/delete_requirement/{{ encrypt($student->id) }}/birth_certificate/${source}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        }).then(response => {
-                            if (response.ok) {
-                                load();
-                            } else {
-                                error('Could not delete file');
-                            }
-                        }).catch(() => {
-                            error('Could not delete file');
-                        });
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                },
-            });
-            var id_pond = FilePond.create(id_pic, {
-                allowImagePreview: true,
-                allowDownloadByUrl: true,
-                stylePanelLayout: 'compact circle',
-                imageCropAspectRatio: '1:1',
-                styleLoadIndicatorPosition: 'center bottom',
-                styleProgressIndicatorPosition: 'right bottom',
-                styleButtonRemoveItemPosition: 'left bottom',
-                styleButtonProcessItemPosition: 'right bottom',
-                @if ($id_picture)
-                    files: [{
-                        source: {{ $id_picture->id }},
-                        options: {
-                            type: 'local',
-                        },
-                    }, ],
-                @endif
-                server: {
-                    process: {
-                        url: '{{ route('upload_requirement') }}',
-                        ondata: (formData) => {
-                            formData.append('enrollee_id', '{{ $enrollee }}');
-                            formData.append('course_id', '{{ encrypt($student->course_id) }}');
-                            formData.append('credential_type', 'id_picture');
-                            return formData;
-                        },
-                    },
-                    load: '/load_requirement/{{ encrypt($student->id) }}/id_picture/',
-                    revert: {
-                        url: '{{ route('revert_requirement') }}',
-                        method: 'DELETE',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                    },
-                    remove: (source, load, error) => {
-                        fetch(`/delete_requirement/{{ encrypt($student->id) }}/id_picture/${source}`, {
-                            method: 'DELETE',
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        }).then(response => {
-                            if (response.ok) {
-                                load();
-                            } else {
-                                error('Could not delete file');
-                            }
-                        }).catch(() => {
-                            error('Could not delete file');
-                        });
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
-                },
-            });
-
-            function submitForm() {
-                $.ajax({
-                    url: '{{ route('check_user_requirements') }}',
-                    type: 'POST',
-                    data: {
-                        enrollee_id: '{{ $enrollee }}'
-                    },
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    dataType: 'json',
-                    success: function(response) {
-                        if (response.completed) {
-                            $('#upload_files').submit();
-                        } else {
-                            alert('Please upload all the credentials')
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                        $('#result').text('An error occurred while checking credentials.');
-                    }
-                });
-            }
-
             function fileUpload() {
                 return {
                     formatsModal: false,
                     seeFormats() {
-                        const url = '{{ route('see_formats') }}'; // Replace with your desired URL
+                        const url = '{{ route('formats') }}'; // Replace with your desired URL
                         const a = document.createElement('a');
                         a.href = url;
                         a.target = '_blank';
                         a.rel =
                             'noopener noreferrer'; // Optional: Improves security by preventing the new page from accessing the window.opener property
                         a.click();
+                    },
+                    init() {
+                        FilePond.registerPlugin(FilePondPluginImagePreview,
+                            FilePondPluginImageCrop,
+                            FilePondPluginImageTransform,
+                            FilePondPluginImageResize,
+                            FilePondPluginImageEdit,
+                        );
+                        const valid_id_front = document.querySelector('#valid_id_front');
+                        const valid_id_back = document.querySelector('#valid_id_back');
+                        const diploma = document.querySelector('#diploma_tor');
+                        const birth_certificate = document.querySelector('#birth_certificate');
+                        const id_pic = document.querySelector('#id_picture');
+                        var valid_frontPond = FilePond.create(valid_id_front, {
+                            labelIdle: `Drag & Drop a photo or <span class="filepond--label-action">Browse</span>`,
+                            allowReorder: true,
+                            allowImagePreview: true,
+                            @if ($valid_id_front)
+                                files: [{
+                                    source: {{ $valid_id_front->id }},
+                                    options: {
+                                        type: 'local',
+                                    },
+                                }, ],
+                            @endif
+                            server: {
+                                process: {
+                                    url: '{{ route('upload_requirement') }}',
+                                    ondata: (formData) => {
+                                        formData.append('enrollee_id', '{{ $enrollee }}');
+                                        formData.append('course_id', '{{ encrypt($student->course_id) }}');
+                                        formData.append('credential_type', 'valid_id_front');
+                                        return formData;
+                                    },
+                                },
+                                load: '/load_requirement/{{ encrypt($student->id) }}/valid_id_front/',
+                                revert: {
+                                    url: '{{ route('revert_requirement') }}',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                },
+                                remove: (source, load, error) => {
+                                    fetch(`/delete_requirement/{{ encrypt($student->id) }}/valid_id_front/${source}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            load();
+                                        } else {
+                                            error('Could not delete file');
+                                        }
+                                    }).catch(() => {
+                                        error('Could not delete file');
+                                    });
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            },
+
+
+                        });
+                        var valid_backPond = FilePond.create(valid_id_back, {
+                            labelIdle: `Drag & Drop a photo or <span class="filepond--label-action">Browse</span>`,
+                            allowReorder: true,
+                            allowImagePreview: true,
+                            @if ($valid_id_back)
+                                files: [{
+                                    source: {{ $valid_id_back->id }},
+                                    options: {
+                                        type: 'local',
+                                    },
+                                }, ],
+                            @endif
+                            server: {
+                                process: {
+                                    url: '{{ route('upload_requirement') }}',
+                                    ondata: (formData) => {
+                                        formData.append('enrollee_id', '{{ $enrollee }}');
+                                        formData.append('course_id', '{{ encrypt($student->course_id) }}');
+                                        formData.append('credential_type', 'valid_id_back');
+                                        return formData;
+                                    },
+                                },
+                                load: '/load_requirement/{{ encrypt($student->id) }}/valid_id_back/',
+                                revert: {
+                                    url: '{{ route('revert_requirement') }}',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                },
+                                remove: (source, load, error) => {
+                                    fetch(`/delete_requirement/{{ encrypt($student->id) }}/valid_id_back/${source}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            load();
+                                        } else {
+                                            error('Could not delete file');
+                                        }
+                                    }).catch(() => {
+                                        error('Could not delete file');
+                                    });
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            },
+
+                        });
+                        var diploma_pond = FilePond.create(diploma, {
+                            labelIdle: `Drag & Drop a file (pdf/photo) or <span class="filepond--label-action">Browse</span>`,
+                            allowReorder: true,
+                            allowImagePreview: true,
+                            @if ($diploma_tor)
+                                files: [{
+                                    source: {{ $diploma_tor->id }},
+                                    options: {
+                                        type: 'local',
+                                    },
+                                }, ],
+                            @endif
+                            server: {
+                                process: {
+                                    url: '{{ route('upload_requirement') }}',
+                                    ondata: (formData) => {
+                                        formData.append('enrollee_id', '{{ $enrollee }}');
+                                        formData.append('course_id', '{{ encrypt($student->course_id) }}');
+                                        formData.append('credential_type', 'diploma_tor');
+                                        return formData;
+                                    },
+                                },
+                                load: '/load_requirement/{{ encrypt($student->id) }}/diploma_tor/',
+                                revert: {
+                                    url: '{{ route('revert_requirement') }}',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                },
+                                remove: (source, load, error) => {
+                                    fetch(`/delete_requirement/{{ encrypt($student->id) }}/diploma_tor/${source}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            load();
+                                        } else {
+                                            error('Could not delete file');
+                                        }
+                                    }).catch(() => {
+                                        error('Could not delete file');
+                                    });
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            },
+
+                        });
+                        var birth_pond = FilePond.create(birth_certificate, {
+                            labelIdle: `Drag & Drop a file (pdf/photo) or <span class="filepond--label-action">Browse</span>`,
+                            allowReorder: true,
+                            allowImagePreview: true,
+                            @if ($birth_certificate)
+                                files: [{
+                                    source: {{ $birth_certificate->id }},
+                                    options: {
+                                        type: 'local',
+                                    },
+                                }, ],
+                            @endif
+                            server: {
+                                process: {
+                                    url: '{{ route('upload_requirement') }}',
+                                    ondata: (formData) => {
+                                        formData.append('enrollee_id', '{{ $enrollee }}');
+                                        formData.append('course_id', '{{ encrypt($student->course_id) }}');
+                                        formData.append('credential_type', 'birth_certificate');
+                                        return formData;
+                                    },
+                                },
+                                load: '/load_requirement/{{ encrypt($student->id) }}/birth_certificate/',
+                                revert: {
+                                    url: '{{ route('revert_requirement') }}',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                },
+                                remove: (source, load, error) => {
+                                    fetch(`/delete_requirement/{{ encrypt($student->id) }}/birth_certificate/${source}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            load();
+                                        } else {
+                                            error('Could not delete file');
+                                        }
+                                    }).catch(() => {
+                                        error('Could not delete file');
+                                    });
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            },
+                        });
+                        var id_pond = FilePond.create(id_pic, {
+                            allowImagePreview: true,
+                            allowDownloadByUrl: true,
+                            stylePanelLayout: 'compact circle',
+                            imageCropAspectRatio: '1:1',
+                            styleLoadIndicatorPosition: 'center bottom',
+                            styleProgressIndicatorPosition: 'right bottom',
+                            styleButtonRemoveItemPosition: 'left bottom',
+                            styleButtonProcessItemPosition: 'right bottom',
+                            @if ($id_picture)
+                                files: [{
+                                    source: {{ $id_picture->id }},
+                                    options: {
+                                        type: 'local',
+                                    },
+                                }, ],
+                            @endif
+                            server: {
+                                process: {
+                                    url: '{{ route('upload_requirement') }}',
+                                    ondata: (formData) => {
+                                        formData.append('enrollee_id', '{{ $enrollee }}');
+                                        formData.append('course_id', '{{ encrypt($student->course_id) }}');
+                                        formData.append('credential_type', 'id_picture');
+                                        return formData;
+                                    },
+                                },
+                                load: '/load_requirement/{{ encrypt($student->id) }}/id_picture/',
+                                revert: {
+                                    url: '{{ route('revert_requirement') }}',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                },
+                                remove: (source, load, error) => {
+                                    fetch(`/delete_requirement/{{ encrypt($student->id) }}/id_picture/${source}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            load();
+                                        } else {
+                                            error('Could not delete file');
+                                        }
+                                    }).catch(() => {
+                                        error('Could not delete file');
+                                    });
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            },
+                        });
+
+
+                    },
+                    submitForm() {
+                        $.ajax({
+                            url: '{{ route('check_user_requirements') }}',
+                            type: 'POST',
+                            data: {
+                                enrollee_id: '{{ $enrollee }}'
+                            },
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            dataType: 'json',
+                            success: function(response) {
+                                if (response.completed) {
+                                    $('#upload_files').submit();
+                                } else {
+                                    alert('Please upload all the credentials')
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(error);
+                                $('#result').text('An error occurred while checking credentials.');
+                            }
+                        });
                     }
+
                 }
             }
         </script>

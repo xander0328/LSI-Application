@@ -84,30 +84,53 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="text-2xl font-semibold text-white">
-                {{ __('Course') }} <span class="text-slate-600">|</span> <span
-                    class="text-lg font-normal text-sky-500">{{ $batch->course->name }}</span>
+            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+                <div>{{ __('Course') }}</div>
+                <div class="hidden md:block text-slate-600">|</div>
+                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
             </div>
-            <div class="flex items-center">
-                <div class="mr-4"><span class="text-white/75"> Batch:</span>
-                    {{ $batch->course->code }}-{{ $batch->name }}</div>
+            <div class="hidden md:flex items-center">
+                <div class="flex space-x-1 mr-4">
+                    <div class="text-white/75"> Batch: </div>
+                    <div>
+                        {{ $batch->course->code }}-{{ $batch->name }}
+                    </div>
+                </div>
+            </div>
+            <div class="flex md:hidden items-center">
+                <x-dropdown width="40" align="right">
+                    <x-slot name="trigger">
+                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
+                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <title>dots-vertical</title>
+                                <path
+                                    d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
+                            </svg>
+                        </button>
+                    </x-slot>
 
+                    <x-slot name="content">
+                        <div class="m-1.5 flex-row">
+                            <div class="my-2 flex justify-center text-xs space-x-1">
+                                <div class="text-white/75"> Batch: </div>
+                                <div>
+                                    {{ $batch->course->code }}-{{ $batch->name }}
+                                </div>
+                            </div>
+                            <x-course-nav :selected="'stream'" :batch="$batch->id"></x-course-nav>
+                        </div>
+                    </x-slot>
+                </x-dropdown>
             </div>
         </div>
-        <x-course-nav :selected="'stream'" :batch="$batch->id"></x-course-nav>
+        <div class="hidden md:block">
+
+            <x-course-nav :selected="'stream'" :batch="$batch->id"></x-course-nav>
+        </div>
 
     </x-slot>
-    <div x-data="stream" id="course_list" class="mx-8 pt-44 text-white">
-        {{-- <button 
-            class="flex items-center justify-center rounded-md bg-sky-700 p-2 px-3" type="button">
-        </button> --}}
-
-        {{-- <div class="flex pt-8">
-            <a @click="edit = false; createPost()"
-                class="block cursor-pointer rounded-md bg-sky-700 px-4 py-2 text-sm hover:bg-sky-800 hover:text-white">Create
-                New</a>
-        </div> --}}
-
+    <div x-data="stream" id="course_list" class="mx-4 md:mx-8 pt-40 md:pt-44 text-white">
         <div class="flex flex-col-reverse py-6">
             <template x-if="posts.length > 0">
                 <template x-for="post in posts" :key="post.id">
@@ -183,7 +206,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="p-2">
+                        <div class="p-2 text-sm md:text-base">
                             <div x-show="post.description" class="post mb-2">
                                 <p x-html="sanitize(post.description)" class="description font-sans">
                                 </p>
@@ -220,7 +243,8 @@
                                 </template>
                             </div>
                             <template x-if="moment(post.created_at).format() != moment(post.updated_at).format()">
-                                <div class="pt-4 text-xs" x-text="`Updated: ${moment(post.updated_at).format('lll')}`">
+                                <div class="pt-2 mt-3 border-t border-white/25 text-xs text-white/50"
+                                    x-text="`Updated: ${moment(post.updated_at).format('lll')}`">
                                 </div>
                             </template>
                         </div>
@@ -368,81 +392,6 @@
         {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script> --}}
 
         <script type="text/javascript">
-            var initial_lesson_count
-
-
-            $('#add_lesson_form').submit(function(event) {
-                event.preventDefault()
-                var lesson_input = $('#lesson_input')
-                $.ajax({
-                    url: `{{ route('add_lesson') }}`,
-                    method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        batch_id: {{ $batch->id }},
-                        lesson: lesson_input.val()
-                    },
-                    success: function(data) {
-                        lesson_input.val('')
-                    },
-                })
-            })
-
-            function edit_lesson(title, id) {
-                var current_title = title;
-                console.log(current_title);
-                var new_title = prompt("Edit the lesson title:", current_title);
-
-                if (new_title !== null && new_title !== current_title) {
-                    $.ajax({
-                        url: '{{ route('edit_lesson') }}',
-                        type: 'POST',
-                        data: {
-                            id: id,
-                            title: new_title,
-                            _token: '{{ csrf_token() }}'
-                        },
-                        success: function(response) {
-                            alert('Title updated successfully');
-                        },
-                        error: function(xhr) {
-                            alert('Error updating title');
-                        }
-                    });
-                }
-            }
-
-            // function confirmDelete(lesson_id) {
-            //     var confirmation = 'DELETE'
-            //     var user_input = prompt(
-            //         "Deleting this lesson will also delete all related data. To confirm deletion, type the word '" +
-            //         confirmation + "'."
-            //     )
-            //     if (user_input === confirmation) {
-            //         // event.preventDefault();
-            //         var form = $('#delete_lesson_form_' + lesson_id);
-
-            //         $.ajax({
-            //             url: form.attr('action'),
-            //             type: 'DELETE',
-            //             headers: {
-            //                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            //             },
-            //             success: function(response) {
-            //                 console.log(response);
-            //             },
-            //             error: function(xhr, status, error) {
-            //                 console.error(xhr.responseText);
-            //             }
-            //         });
-            //     } else {
-            //         alert('Deletion cancelled.')
-            //     }
-
-            // }
-
-
-
             function stream() {
                 return {
                     posts: @if ($posts)

@@ -285,7 +285,7 @@
             <!-- Page Heading -->
             @if (isset($header))
                 <header
-                    class="{{ auth()->user()->role != 'instructor' ? 'md:left-60' : '' }} fixed left-0 right-0 top-14 z-10 shadow-lg">
+                    class="{{ auth()->user()->role != 'instructor' ? 'md:left-60' : '' }} fixed left-0 right-0  top-16 z-10 shadow-lg">
                     <div
                         class="{{ auth()->user()->role != 'instructor' ? 'max-w-7xl' : '' }} mx-auto border-gray-600 bg-gray-800 px-4 py-6 sm:px-6 lg:px-8">
                         {{ $header }}
@@ -302,12 +302,8 @@
         </div>
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.3.2/firebase.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
-    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     {{-- Alerts --}}
 

@@ -57,9 +57,25 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::post('/course_toggle',  [SuperAdminController::class, 'course_toggle'])->name('course_toggle');
         Route::post('/feature_toggle',  [SuperAdminController::class, 'feature_toggle'])->name('feature_toggle');
 
+        Route::post('/add_course_category',  [SuperAdminController::class, 'add_course_category'])->name('add_course_category');
+        Route::post('/edit_course_category',  [SuperAdminController::class, 'edit_course_category'])->name('edit_course_category');
+        Route::post('/delete_course_category',  [SuperAdminController::class, 'delete_course_category'])->name('delete_course_category');
+
         Route::get('/{id}/enrollees', [SuperAdminController::class, 'enrollees'])->name('course_enrollees');
         Route::get('/{id}/enrollees/{page}', [SuperAdminController::class, 'load_more_enrollees'])->name('load_more_enrollees');
         Route::post('/get_enrollee_records', [SuperAdminController::class, 'get_enrollee_records'])->name('get_enrollee_records');
+        
+        // Defaults
+        Route::get('/load_default_id/{source}', [SuperAdminController::class, 'load_default_id'])->name('load_default_id');
+        Route::post('/upload_default_id', [SuperAdminController::class, 'upload_default_id'])->name('upload_default_id');
+        Route::delete('/revert_default_id', [SuperAdminController::class, 'revert_default_id'])->name('revert_default_id');
+        Route::delete('/delete_default_id/{file_id}', [SuperAdminController::class, 'delete_default_id'])->name('delete_default_id');
+        
+        // ID Template
+        Route::get('/load_id_template/{source}', [SuperAdminController::class, 'load_id_template'])->name('load_id_template');
+        Route::post('/upload_id_template', [SuperAdminController::class, 'upload_id_template'])->name('upload_id_template');
+        Route::delete('/revert_id_template', [SuperAdminController::class, 'revert_id_template'])->name('revert_id_template');
+        Route::delete('/delete_id_template/{file_id}', [SuperAdminController::class, 'delete_id_template'])->name('delete_id_template');
         
         // Enrollees
         Route::post('/remove_enrollee', [SuperAdminController::class, 'remove_enrollee'])->name('remove_enrollee');
@@ -263,6 +279,7 @@ Route::middleware(['auth', 'verified', 'role:guest,student'])->group(function ()
     Route::delete('/delete_requirement/{enrollee_id}/{type}/{source}', [StudentController::class, 'delete_requirement'])->name('delete_requirement');
     Route::post('/check_user_requirements', [StudentController::class, 'check_user_requirements'])->name('check_user_requirements');
     Route::post('/enroll_requirements_save', [StudentController::class, 'enroll_requirements_save'])->name('enroll_requirements_save');
+    Route::get('/formats', [StudentController::class, 'formats'])->name('formats');
 });
 
 

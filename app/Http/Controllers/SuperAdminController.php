@@ -30,6 +30,8 @@ use App\Models\Payment;
 use App\Models\PaymentLog;
 use App\Models\UserSession;
 use App\Models\Instructor;
+use App\Models\CourseDefault;
+use App\Models\CourseIdTemplate;
 
 class SuperAdminController extends Controller
 {
@@ -40,15 +42,44 @@ class SuperAdminController extends Controller
     // View Courses
     public function courses_offers(){
         // dump(Course::all());
-        $course = Course::withCount(['enrollees' => function($query){
+        $course = Course::with(['course_category', 'course_id_template'])->withCount(['enrollees' => function($query){
             $query->whereNull(['deleted_at', 'batch_id']);
         }, 
         'batches' => function($query){
             $query->whereNull(['deleted_at', 'completed_at']);
         }])
         ->get();
+        $course_default = CourseDefault::all();
+        $category = CourseCategory::all();
+        $temp_image = TempCourseImage::first();
+        return view('courses', [ 'courses' => $course, 'categories' => $category, 'temp_image' => $temp_image,'course_defaults' => $course_default ]);
+    }
+
+    // add Course Category
+    public function add_course_category(Request $request){
+        $category = new CourseCategory();
+        $category->name = $request->new_category;
         
-        return view('courses', [ 'courses' => $course, 'categories' => CourseCategory::all(), 'temp_image' => TempCourseImage::first()]);
+        if($category->save()){
+            return response()->json(['status' => 'success', 'category' => $category]);
+        }
+        return response()->json(['status' => 'error', 'message' => 'Adding course category failed']);
+    }
+
+    // edit course category
+    public function edit_course_category(Request $request){
+        $category = CourseCategory::where('id', $request->category_id)->first();
+        $category->name = $request->category_name;
+        if($category->save()){
+            return response()->json(['status' => 'success', 'category' => $category]);
+        }
+    }
+
+    public function delete_course_category(Request $request){
+        $category = CourseCategory::where('id', $request->category_id)->first();
+        if($category->delete()){
+            return response()->json(['status' => 'success', 'category' => $category]);
+        }
     }
 
     // Update / Save Course
@@ -303,7 +334,146 @@ class SuperAdminController extends Controller
 
         return response()->json(['status' => 'success', 'featured' => $course->featured]);
     }
+
+    // Load the default ID Template
+    public function load_default_id($source) {
+        $file = CourseDefault::where('id', $source)->first();
+
+        if($file){
+            $path = storage_path("app/public/website/id_template/default/{$file->filename}");
+        }
+
+        if (isset($path) && file_exists($path)) {
+            $headers = [
+                'Content-Disposition' => 'inline; filename="' . basename($path) . '"',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+            ];
+            // Use the file's last modified time as a cache buster
+            $cacheBuster = filemtime($path);
+            return response()->file($path, $headers)->setEtag($cacheBuster);
+        }
+        
+        return response()->json('no file');   
+        // dd($source);
+    }
+
+    // Upload default ID
+    public function upload_default_id(Request $request){
+        $attachment = $request->file('image');
+        if($attachment){
+            $filename = "default_id_template.".$attachment->getClientOriginalExtension();
+            
+            $currentFile = CourseDefault::where('purpose', 'id_template')->first();
+            
+            if($currentFile){
+                $path = 'website/id_template/default/' . $currentFile->filename;
+                
+                if (Storage::exists($path)) {
+                    Storage::delete($path);
+                    $directory = dirname($path);
+                    Storage::deleteDirectory($directory);
+                }
+                
+                $currentFile->delete();
+            }
+            else{
+                $currentFile = new CourseDefault();
+                $currentFile->purpose = "id_template";
+            }
+            
+            $filePath = $attachment->storeAs('website/id_template/default',$filename, 'public'); // Change 'uploads' to your desired directory
+            $currentFile->filename = $filename;
+            $currentFile->save();   
+            return $filename;
+
+        }
+
+        return json(['error' => 'File not found']);
+        
+    }
     
+    // Revert Default ID
+    public function revert_default_id(Request $request){
+        return response()->json(['success' => 'File temporary deleted']);
+    }
+    
+    // Delete Default ID
+    public function delete_default_id(Request $request){
+        return response()->json(['success' => 'File temporary deleted']);
+    }
+
+    // Load the ID_template Template
+    public function load_id_template($source) {
+        $file = CourseIdTemplate::where('id', $source)->first();
+        $path = "";
+
+        if($file){
+            $path = public_path('storage/website/id_template/'.$file->course_id.'/'.$file->folder.'/' . $file->filename);
+        }
+        if (isset($path) && file_exists($path)) {
+            $headers = [
+                'Content-Disposition' => 'inline; filename="' . basename($path) . '"',
+                'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+            ];
+            // Use the file's last modified time as a cache buster
+            $cacheBuster = filemtime($path);
+            return response()->file($path, $headers)->setEtag($cacheBuster);
+        }
+        
+        return response()->json('no file');   
+        // dd($source);
+    }
+
+    // Upload ID_template
+    public function upload_id_template(Request $request){
+        $attachment = $request->file('image');
+        if($attachment){
+            $filename = "id_template.".$attachment->getClientOriginalExtension();
+            $folder = uniqid('id', true);
+            
+            $currentFile = CourseIdTemplate::where('course_id', $request->course_id)->first();
+
+            
+            if($currentFile){
+                $path = 'website/id_template/'.$request->course_id.'/'.$currentFile->folder.'/' . $currentFile->filename;
+                
+                if (Storage::exists($path)) {
+                    Storage::delete($path);
+                    $directory = dirname($path);
+                    Storage::deleteDirectory($directory);
+                }
+            }else{
+                $currentFile = new CourseIdTemplate();
+                $currentFile->course_id =  $request->course_id;
+            }
+            
+            $filePath = $attachment->storeAs('website/id_template/'.$request->course_id.'/'.$folder, $filename, 'public'); // Change 'uploads' to your desired directory
+            
+            $currentFile->folder = $folder;
+            $currentFile->filename = $filename;
+            $currentFile->save();   
+            return $folder;
+
+        }
+
+        return response()->json(['error' => 'File not found']);
+        
+    }
+    
+    // Revert ID_template
+    public function revert_id_template(Request $request){
+        return response()->json(['success' => 'File temporary deleted']);
+    }
+    
+    // Delete ID_template
+    public function delete_id_template(Request $request){
+        return response()->json(['success' => 'File temporary deleted']);
+    }
+
     // See Enrollees per Course
     public function enrollees($id, $page = 1)
     {

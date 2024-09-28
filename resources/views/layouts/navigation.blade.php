@@ -303,7 +303,7 @@
                 @if (auth()->check() && auth()->user()->role === 'instructor')
                     <ul class="space-y-2 font-medium">
                         <li>
-                            <x-responsive-nav-link :href="route('enrolled_course')" :active="request()->is('course*')"
+                            <x-responsive-nav-link :href="route('batch_list')" :active="request()->is('batch_list')"
                                 class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                                 <svg class="h-6 w-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

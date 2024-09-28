@@ -14,7 +14,7 @@
         </div>
 
     </x-slot>
-    <div x-data="dashboard" id="main-div" class="mx-4 pb-4 pt-28 text-white md:mx-8 md:pt-40">
+    <div x-data="dashboard" id="main-div" class="mx-4 pb-4  text-white md:mx-8 pt-40">
         <div class="grid grid-cols-3 gap-3">
             <div class="col-span-full flex flex-col md:col-span-1">
                 <div class="mb-3 flex basis-2/3 items-center justify-center rounded-lg bg-sky-500/50 p-2">

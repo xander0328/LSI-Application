@@ -11,179 +11,267 @@
             <div class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                 {{ __('Offered Courses') }}
             </div>
-            <div>
-                <button onclick="window.dispatchEvent(new CustomEvent('add-course-modal'))"
-                    class="flex items-center rounded-lg bg-sky-700 px-3.5 py-2.5 text-center text-xs font-medium text-white hover:bg-blue-800 md:px-5 md:text-sm"
-                    type="button">
-                    <svg class="h-4 w-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 12h14m-7 7V5" />
-                    </svg> Add Course
-                </button>
+            <div class="hidden md:flex space-x-1">
+                <div>
+                    <button onclick="window.dispatchEvent(new CustomEvent('add-course-modal'))"
+                        class="flex items-center rounded-lg bg-sky-700 px-3.5 py-2.5 text-center text-xs font-medium text-white hover:bg-blue-800 md:px-5 md:text-sm"
+                        type="button">
+                        <svg class="h-4 w-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 12h14m-7 7V5" />
+                        </svg> Add Course
+                    </button>
+                </div>
+                <div>
+                    <button onclick="window.dispatchEvent(new CustomEvent('show-settings-modal'))"
+                        class="flex space-x-1 items-center rounded-lg px-2 py-2.5 text-center text-sm font-medium text-white border border-gray-700 bg-gray-800  hover:bg-gray-800/50">
+                        <svg class="h-5 w-5 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24">
+                            <title>cog</title>
+                            <path
+                                d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+                        </svg>
+                        <span>
+                            Settings
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <div class="flex md:hidden items-center">
+                <x-dropdown width="40" align="right">
+                    <x-slot name="trigger">
+                        <button class="inline-flex p-1.5 items-center rounded-md hover:bg-gray-900/50">
+                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <title>dots-vertical-circle-outline</title>
+                                <path
+                                    d="M10.5,12A1.5,1.5 0 0,1 12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12M10.5,16.5A1.5,1.5 0 0,1 12,15A1.5,1.5 0 0,1 13.5,16.5A1.5,1.5 0 0,1 12,18A1.5,1.5 0 0,1 10.5,16.5M10.5,7.5A1.5,1.5 0 0,1 12,6A1.5,1.5 0 0,1 13.5,7.5A1.5,1.5 0 0,1 12,9A1.5,1.5 0 0,1 10.5,7.5M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z" />
+                            </svg>
+                        </button>
+                    </x-slot>
+
+                    <x-slot name="content">
+                        <div class="m-1.5">
+                            <div>
+                                <button onclick="window.dispatchEvent(new CustomEvent('add-course-modal'))"
+                                    class="flex items-center w-full rounded-lg bg-sky-700 py-2.5 text-center  font-medium text-white hover:bg-blue-800 px-5 text-sm"
+                                    type="button">
+                                    <svg class="h-4 w-6 text-white" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M5 12h14m-7 7V5" />
+                                    </svg> Add Course
+                                </button>
+                            </div>
+                            <div class="mt-1">
+                                <a onclick="window.dispatchEvent(new CustomEvent('show-settings-modal'))"
+                                    class="flex w-full justify-center cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                    <div class="mr-1">
+                                        <svg class="h-5 w-5 text-white" fill="currentColor"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <title>cog</title>
+                                            <path
+                                                d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
+                                        </svg>
+                                    </div>Settings
+                                </a>
+                            </div>
+                        </div>
+                    </x-slot>
+                </x-dropdown>
             </div>
         </div>
 
     </x-slot>
     <div x-data="manageCourse" id="main-div" class="mx-4 pb-4 pt-40 md:mx-8">
         <ul class="space-y-2 font-semibold text-white">
-            <template x-if="courses.length == 0">
-                <div>
-                    <div class="rounded-lg bg-sky-950 p-4 text-center text-slate-400">No course added
-                    </div>
-                </div>
-            </template>
-            <template x-if="courses.length > 0">
-                <template x-for="course in courses" :key="course.id">
-                    <li id="course-item" class="rounded-md bg-gray-800 p-2">
+            <template x-for="(courses, category) in groupedCourse" :key="category">
+                <div class="space-y-2 pb-4">
+                    <div class="text-lg font-bold uppercase text-white/75" x-text="category"></div>
+                    <template x-if="courses.length == 0">
                         <div>
-                            <div class="mb-px flex items-center justify-between">
-                                <div class="my-1 py-1 text-sm text-sky-400 md:text-base" x-text="course.name"></div>
-                                <div class="flex">
-
-                                    <div class="flex justify-between align-middle">
-                                        <div class="hidden rounded-lg p-2 hover:bg-gray-800 md:flex md:inline-flex">
-                                            <label class="inline-flex w-full cursor-pointer items-center">
-                                                <input @change="courseToggle(course.id)" type="checkbox"
-                                                    :checked="course.available" class="course-toggle peer sr-only">
-                                                <div
-                                                    class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
-                                                </div>
-                                                <span
-                                                    class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enrollment</span>
-                                            </label>
-                                        </div>
-
-                                        <div class="flex items-center">
-                                            <x-dropdown width="40" align="right">
-                                                <x-slot name="trigger">
-                                                    <button
-                                                        class="inline-flex items-center rounded-md border border-transparent bg-white text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-900 dark:text-gray-400 dark:hover:text-gray-300">
-                                                        <svg class="h-7 w-7 text-white hover:text-sky-500"
-                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                            <path fill="currentColor"
-                                                                d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" />
-                                                        </svg>
-                                                    </button>
-                                                </x-slot>
-
-                                                <x-slot name="content">
-                                                    <div class="m-1.5">
-                                                        <div class="flex rounded-lg p-2 hover:bg-gray-800 md:hidden">
-                                                            <label
-                                                                class="inline-flex w-full cursor-pointer items-center">
-                                                                <input @change="courseToggle(course.id)" type="checkbox"
-                                                                    :checked="course.available"
-                                                                    class="course-toggle peer sr-only">
-                                                                <div
-                                                                    class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
-                                                                </div>
-                                                                <span
-                                                                    class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enrollment</span>
-                                                            </label>
-                                                        </div>
-
-                                                        <div class="flex rounded-lg p-2 hover:bg-gray-800">
-                                                            <label
-                                                                class="inline-flex w-full cursor-pointer items-center">
-                                                                <input @change="featureToggle(course.id)"
-                                                                    type="checkbox" :checked="course.featured"
-                                                                    class="peer sr-only"
-                                                                    :class="'feature-toggle-' + course.id">
-                                                                <div
-                                                                    class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
-                                                                </div>
-                                                                <span
-                                                                    class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Feature</span>
-                                                            </label>
-                                                        </div>
-
-                                                        <hr class="my-1 opacity-50">
-
-                                                        <a @click="editCourse(course.id)"
-                                                            class="flex w-full cursor-pointer items-center space-x-1 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
-                                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg"
-                                                                viewBox="0 0 24 24">
-                                                                <path fill="currentColor"
-                                                                    d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                                                            </svg>
-                                                            <div>Edit</div>
-                                                        </a>
-
-                                                        <x-dropdown-link hover_bg="hover:bg-red-900"
-                                                            class="flex cursor-pointer items-center space-x-1 rounded-md px-1.5"
-                                                            @click.prevent="deleteCourseConfirmation(course.id)">
-                                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg"
-                                                                viewBox="0 0 24 24">
-                                                                <path fill="currentColor"
-                                                                    d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
-                                                            </svg>
-                                                            <div>
-                                                                Delete
-                                                            </div>
-                                                        </x-dropdown-link>
-
-                                                        <hr class="my-1 opacity-50">
-
-                                                        <div>
-                                                            <a :href=`/courses/${course.id}/enrollees`
-                                                                class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
-                                                                <div class="mr-1"><svg
-                                                                        class="h-5 w-5 text-gray-800 dark:text-white"
-                                                                        aria-hidden="true"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        fill="currentColor" viewBox="0 0 24 24">
-                                                                        <path fill-rule="evenodd"
-                                                                            d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4c0 1.1.9 2 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.8-3.1a5.5 5.5 0 0 0-2.8-6.3c.6-.4 1.3-.6 2-.6a3.5 3.5 0 0 1 .8 6.9Zm2.2 7.1h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1l-.5.8c1.9 1 3.1 3 3.1 5.2ZM4 7.5a3.5 3.5 0 0 1 5.5-2.9A5.5 5.5 0 0 0 6.7 11 3.5 3.5 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4c0 1.1.9 2 2 2h.5a6 6 0 0 1 3-5.2l-.4-.8Z"
-                                                                            clip-rule="evenodd" />
-                                                                    </svg>
-                                                                </div>Enrollees
-                                                                <span
-                                                                    class="ms-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-900 text-xs font-semibold text-white"
-                                                                    x-text="course.enrollees_count"></span>
-                                                            </a>
-                                                        </div>
-
-                                                        <div>
-                                                            <a @click.prevent="triggerBatchesModal(course.id)"
-                                                                class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
-                                                                <div class="mr-1">
-                                                                    <svg class="h-5 w-5 text-gray-800 dark:text-white"
-                                                                        xmlns="http://www.w3.org/2000/svg"
-                                                                        viewBox="0 0 24 24" fill="currentColor">
-                                                                        <path
-                                                                            d="M23,2H1A1,1 0 0,0 0,3V21A1,1 0 0,0 1,22H23A1,1 0 0,0 24,21V3A1,1 0 0,0 23,2M22,20H20V19H15V20H2V4H22V20M10.29,9.71A1.71,1.71 0 0,1 12,8C12.95,8 13.71,8.77 13.71,9.71C13.71,10.66 12.95,11.43 12,11.43C11.05,11.43 10.29,10.66 10.29,9.71M5.71,11.29C5.71,10.58 6.29,10 7,10A1.29,1.29 0 0,1 8.29,11.29C8.29,12 7.71,12.57 7,12.57C6.29,12.57 5.71,12 5.71,11.29M15.71,11.29A1.29,1.29 0 0,1 17,10A1.29,1.29 0 0,1 18.29,11.29C18.29,12 17.71,12.57 17,12.57C16.29,12.57 15.71,12 15.71,11.29M20,15.14V16H16L14,16H10L8,16H4V15.14C4,14.2 5.55,13.43 7,13.43C7.55,13.43 8.11,13.54 8.6,13.73C9.35,13.04 10.7,12.57 12,12.57C13.3,12.57 14.65,13.04 15.4,13.73C15.89,13.54 16.45,13.43 17,13.43C18.45,13.43 20,14.2 20,15.14Z" />
-                                                                    </svg>
-                                                                </div>Batches
-                                                                <span
-                                                                    class="ms-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-900 text-sm font-semibold text-white"
-                                                                    x-text="course.batches_count"></span>
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </x-slot>
-                                            </x-dropdown>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                            <hr class="border border-gray-500">
-                            <div @click="$('#description-'+course.id).toggleClass('line-clamp-3')"
-                                :id="'description-' + course.id"
-                                class="my-2 line-clamp-3 cursor-pointer text-xs font-thin md:text-sm">
-                                <span class="" x-text="course.description"></span>
-                            </div>
-                            <div class="text-xs font-thin">
-                                <span>Code:</span> <span x-text="course.code"></span>
-                            </div>
-                            <div class="text-xs font-thin">
-                                <span>Duration:</span> <span x-text="course.training_hours"></span>
-                                hours
+                            <div class="rounded-lg bg-sky-950 p-4 text-center text-slate-400">No course added
                             </div>
                         </div>
-                    </li>
-                </template>
+                    </template>
+                    <template x-if="courses.length > 0">
+                        <template x-for="course in courses" :key="course.id">
+                            <li id="course-item" class="rounded-md bg-gray-800 p-2">
+                                <div>
+                                    <div class="mb-px flex items-center justify-between">
+                                        <div class="my-1 py-1 text-sm text-sky-400 md:text-base" x-text="course.name">
+                                        </div>
+                                        <div class="flex">
+
+                                            <div class="flex justify-between align-middle">
+                                                <div
+                                                    class="hidden rounded-lg p-2 hover:bg-gray-800 md:flex md:inline-flex">
+                                                    <label class="inline-flex w-full cursor-pointer items-center">
+                                                        <input @change="courseToggle(course.id)" type="checkbox"
+                                                            :checked="course.available"
+                                                            class="course-toggle peer sr-only">
+                                                        <div
+                                                            class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
+                                                        </div>
+                                                        <span
+                                                            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enrollment</span>
+                                                    </label>
+                                                </div>
+
+                                                <div class="flex items-center">
+                                                    <x-dropdown width="40" align="right">
+                                                        <x-slot name="trigger">
+                                                            <button
+                                                                class="inline-flex items-center rounded-md hover:bg-gray-900/50">
+                                                                <svg class="h-7 w-7 text-white hover:text-sky-500"
+                                                                    xmlns="http://www.w3.org/2000/svg"
+                                                                    viewBox="0 0 24 24">
+                                                                    <path fill="currentColor"
+                                                                        d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" />
+                                                                </svg>
+                                                            </button>
+                                                        </x-slot>
+
+                                                        <x-slot name="content">
+                                                            <div class="m-1.5">
+                                                                <div
+                                                                    class="flex rounded-lg p-2 hover:bg-gray-800 md:hidden">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center">
+                                                                        <input @change="courseToggle(course.id)"
+                                                                            type="checkbox" :checked="course.available"
+                                                                            class="course-toggle peer sr-only">
+                                                                        <div
+                                                                            class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
+                                                                        </div>
+                                                                        <span
+                                                                            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enrollment</span>
+                                                                    </label>
+                                                                </div>
+
+                                                                <div class="flex rounded-lg p-2 hover:bg-gray-800">
+                                                                    <label
+                                                                        class="inline-flex w-full cursor-pointer items-center">
+                                                                        <input @change="featureToggle(course.id)"
+                                                                            type="checkbox" :checked="course.featured"
+                                                                            class="peer sr-only"
+                                                                            :class="'feature-toggle-' + course.id">
+                                                                        <div
+                                                                            class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
+                                                                        </div>
+                                                                        <span
+                                                                            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Feature</span>
+                                                                    </label>
+                                                                </div>
+
+                                                                <hr class="my-1 opacity-50">
+
+                                                                <a @click="editCourse(course.id)"
+                                                                    class="flex w-full cursor-pointer items-center space-x-1 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                                    <svg class="h-5 w-5"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 24 24">
+                                                                        <path fill="currentColor"
+                                                                            d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+                                                                    </svg>
+                                                                    <div>Edit</div>
+                                                                </a>
+
+                                                                <x-dropdown-link hover_bg="hover:bg-red-900"
+                                                                    class="flex cursor-pointer items-center space-x-1 rounded-md px-1.5"
+                                                                    @click.prevent="deleteCourseConfirmation(course.id)">
+                                                                    <svg class="h-5 w-5"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        viewBox="0 0 24 24">
+                                                                        <path fill="currentColor"
+                                                                            d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                                                    </svg>
+                                                                    <div>
+                                                                        Delete
+                                                                    </div>
+                                                                </x-dropdown-link>
+
+                                                                <hr class="my-1 opacity-50">
+
+                                                                <div>
+                                                                    <a :href=`/courses/${course.id}/enrollees`
+                                                                        class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                                        <div class="mr-1"><svg
+                                                                                class="h-5 w-5 text-gray-800 dark:text-white"
+                                                                                aria-hidden="true"
+                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                fill="currentColor"
+                                                                                viewBox="0 0 24 24">
+                                                                                <path fill-rule="evenodd"
+                                                                                    d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4c0 1.1.9 2 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.8-3.1a5.5 5.5 0 0 0-2.8-6.3c.6-.4 1.3-.6 2-.6a3.5 3.5 0 0 1 .8 6.9Zm2.2 7.1h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1l-.5.8c1.9 1 3.1 3 3.1 5.2ZM4 7.5a3.5 3.5 0 0 1 5.5-2.9A5.5 5.5 0 0 0 6.7 11 3.5 3.5 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4c0 1.1.9 2 2 2h.5a6 6 0 0 1 3-5.2l-.4-.8Z"
+                                                                                    clip-rule="evenodd" />
+                                                                            </svg>
+                                                                        </div>Enrollees
+                                                                        <span
+                                                                            class="ms-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-900 text-xs font-semibold text-white"
+                                                                            x-text="course.enrollees_count"></span>
+                                                                    </a>
+                                                                </div>
+
+                                                                <div>
+                                                                    <a @click.prevent="triggerBatchesModal(course.id)"
+                                                                        class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                                        <div class="mr-1">
+                                                                            <svg class="h-5 w-5 text-gray-800 dark:text-white"
+                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                viewBox="0 0 24 24"
+                                                                                fill="currentColor">
+                                                                                <path
+                                                                                    d="M23,2H1A1,1 0 0,0 0,3V21A1,1 0 0,0 1,22H23A1,1 0 0,0 24,21V3A1,1 0 0,0 23,2M22,20H20V19H15V20H2V4H22V20M10.29,9.71A1.71,1.71 0 0,1 12,8C12.95,8 13.71,8.77 13.71,9.71C13.71,10.66 12.95,11.43 12,11.43C11.05,11.43 10.29,10.66 10.29,9.71M5.71,11.29C5.71,10.58 6.29,10 7,10A1.29,1.29 0 0,1 8.29,11.29C8.29,12 7.71,12.57 7,12.57C6.29,12.57 5.71,12 5.71,11.29M15.71,11.29A1.29,1.29 0 0,1 17,10A1.29,1.29 0 0,1 18.29,11.29C18.29,12 17.71,12.57 17,12.57C16.29,12.57 15.71,12 15.71,11.29M20,15.14V16H16L14,16H10L8,16H4V15.14C4,14.2 5.55,13.43 7,13.43C7.55,13.43 8.11,13.54 8.6,13.73C9.35,13.04 10.7,12.57 12,12.57C13.3,12.57 14.65,13.04 15.4,13.73C15.89,13.54 16.45,13.43 17,13.43C18.45,13.43 20,14.2 20,15.14Z" />
+                                                                            </svg>
+                                                                        </div>Batches
+                                                                        <span
+                                                                            class="ms-2 inline-flex h-4 w-4 items-center justify-center rounded-full bg-sky-900 text-sm font-semibold text-white"
+                                                                            x-text="course.batches_count"></span>
+                                                                    </a>
+                                                                </div>
+                                                                <div>
+                                                                    <a @click.prevent="triggerIdTemplateModal(course.id)"
+                                                                        class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                                        <div class="mr-1">
+                                                                            <svg class="h-5 w-5 text-white"
+                                                                                fill="currentColor"
+                                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                                viewBox="0 0 24 24">
+                                                                                <title>badge-account-outline</title>
+                                                                                <path
+                                                                                    d="M17,3H14V5H17V21H7V5H10V3H7A2,2 0 0,0 5,5V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V5A2,2 0 0,0 17,3M12,7A2,2 0 0,1 14,9A2,2 0 0,1 12,11A2,2 0 0,1 10,9A2,2 0 0,1 12,7M16,15H8V14C8,12.67 10.67,12 12,12C13.33,12 16,12.67 16,14V15M16,18H8V17H16V18M12,20H8V19H12V20M13,5H11V1H13V5Z" />
+                                                                            </svg>
+                                                                        </div>ID Template
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                        </x-slot>
+                                                    </x-dropdown>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <hr class="border border-gray-500">
+                                    <div @click="$('#description-'+course.id).toggleClass('line-clamp-3')"
+                                        :id="'description-' + course.id"
+                                        class="my-2 line-clamp-3 cursor-pointer text-xs font-thin md:text-sm">
+                                        <span class="" x-text="course.description"></span>
+                                    </div>
+                                    <div class="text-xs font-thin">
+                                        <span>Code:</span> <span x-text="course.code"></span>
+                                    </div>
+                                    <div class="text-xs font-thin">
+                                        <span>Duration:</span> <span x-text="course.training_hours"></span>
+                                        hours
+                                    </div>
+                                </div>
+                            </li>
+                        </template>
+                    </template>
+                </div>
             </template>
         </ul>
 
@@ -252,9 +340,9 @@
                                 <select name="category" id="category" required
                                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                     <option selected="">Select</option>
-                                    @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
+                                    <template x-for="category in course_categories" :key="category.id">
+                                        <option :value="category.id" x-text="category.name"></option>
+                                    </template>
                                 </select>
                             </div>
                             <div class="col-span-2 sm:col-span-1">
@@ -715,14 +803,267 @@
                             Assign
                         </button>
                         <button
-                            @click="showInstructorsModal = !showInstructorsModal; document.body.classList.remove('no-scroll');"
+                            @click="showInstructorsModal = !showInstructorsModal; document.body.classList.remove('no-scroll');dataLoading=false"
                             type="button"
                             class="basis-1/2 rounded-lg border border-gray-600 bg-gray-800 px-5 py-2.5 text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Cancel</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        {{-- Settings Modal --}}
+        <div x-cloak x-show="showSettingsModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
+            <div class="relative max-h-full w-full max-w-lg p-4">
+                <!-- Modal content -->
+                <div class="relative rounded-lg bg-gray-700">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            Course Settings
+                        </h3>
+                        <button type="button"
+                            @click="showSettingsModal = !showSettingsModal; document.body.classList.remove('no-scroll');"
+                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                            <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="relative p-4 md:p-5">
+                        <div class="mb-4 grid grid-cols-2 gap-4 text-white">
+                            <div class="col-span-2 ">
+                                <div class="mb-8">
+                                    <div class="text-white/75 mb-1.5 text-sm font-bold">Default ID Template</div>
+                                    <div>
+                                        <input type="file" name="" id="default_id">
+                                    </div>
+                                </div>
+                                <div class="rounded-lg p-4 bg-gray-800">
+                                    <div class="flex items-center justify-between text-white/75 mb-4 text-sm">
+                                        <div class="flex space-x-1 items-center">
+                                            <span>
+                                                <svg class="h-6 w-6 text-white" fill="currentColor"
+                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                    <title>shape</title>
+                                                    <path
+                                                        d="M11,13.5V21.5H3V13.5H11M12,2L17.5,11H6.5L12,2M17.5,13C20,13 22,15 22,17.5C22,20 20,22 17.5,22C15,22 13,20 13,17.5C13,15 15,13 17.5,13Z" />
+                                                </svg>
+                                            </span>
+                                            <span class="text-base font-bold uppercase">
+                                                Categories
+                                            </span>
+                                        </div>
+                                        <span>
+                                            <button @click="showAddCategory = true"
+                                                class="inline-flex p-1.5 items-center rounded-md hover:bg-sky-700">
+                                                <svg class="h-4 w-4 text-white" fill="currentColor"
+                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                    <title>plus-thick</title>
+                                                    <path d="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z" />
+                                                </svg>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <div class="flex-col space-y-2">
+                                        <template x-for="category in course_categories" :key="category.id">
+                                            <div
+                                                class="px-2 flex justify-between items-center py-1 bg-gray-600 rounded-md text-sm">
+                                                <div x-text="category.name">
+                                                </div>
+                                                <div class="flex items-center space-x-1">
+                                                    <span
+                                                        @click="categoryName = category.name ; showEditCategory = true; selectedCourseCategoryId = category.id"
+                                                        class="p-1 rounded hover:bg-gray-800">
+                                                        <svg class="h-5 w-5 cursor-pointer text-white"
+                                                            fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24">
+                                                            <title>pencil</title>
+                                                            <path
+                                                                d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+                                                        </svg>
+                                                    </span>
+                                                    <span @click="deleteCategory(category.id)"
+                                                        class="p-1 rounded hover:bg-red-800">
+                                                        <svg class="h-5 w-5 cursor-pointer text-white"
+                                                            fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24">
+                                                            <title>delete</title>
+                                                            <path
+                                                                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div role="status" x-show="dataLoading"
+                            class="absolute inset-0 z-50 flex items-center justify-center bg-black/25">
+                            <svg aria-hidden="true"
+                                class="h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor" />
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentFill" />
+                            </svg>
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {{-- Course Category Modal --}}
+        <div x-cloak x-show="showAddCategory" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
+            <div class="relative max-h-full w-full max-w-lg p-4">
+                <!-- Modal content -->
+                <div class="relative rounded-lg bg-gray-700">
+
+                    <!-- Modal body -->
+                    <div class="p-4 md:p-5">
+                        <div class="mb-4 grid grid-cols-2 gap-4">
+                            <div class="col-span-2">
+
+                                <label for="category"
+                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Name of new
+                                    course category:</label>
+                                <input type="text"
+                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    placeholder="Course Category Name" required x-model="categoryName"
+                                    id="category">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-4 px-4 pb-4 text-center">
+                        <button @click="addNewCategory()" type="button"
+                            class="basis-1/2 items-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-sky-800">
+                            Assign
+                        </button>
+                        <button @click="showAddCategory = !showAddCategory; dataLoading=false" type="button"
+                            class="basis-1/2 rounded-lg border border-gray-600 bg-gray-800 px-5 py-2.5 text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Edit Course Category Modal --}}
+        <div x-cloak x-show="showEditCategory" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
+            <div class="relative max-h-full w-full max-w-lg p-4">
+                <!-- Modal content -->
+                <div class="relative rounded-lg bg-gray-700">
+
+                    <!-- Modal body -->
+                    <div class="p-4 md:p-5">
+                        <div class="mb-4 grid grid-cols-2 gap-4">
+                            <div class="col-span-2">
+
+                                <label for="category"
+                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">New name of
+                                    the category:</label>
+                                <input type="text"
+                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    placeholder="Course Category Name" required x-model="categoryName"
+                                    id="category">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-4 px-4 pb-4 text-center">
+                        <button @click="editCategory()" type="button"
+                            class="basis-1/2 items-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-sky-800">
+                            Save
+                        </button>
+                        <button @click="showEditCategory = !showEditCategory; dataLoading=false" type="button"
+                            class="basis-1/2 rounded-lg border border-gray-600 bg-gray-800 px-5 py-2.5 text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Id Template Modal --}}
+        <div x-cloak x-show="showIdTemplateModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
+            <div class="relative max-h-full w-full max-w-lg p-4">
+                <!-- Modal content -->
+                <div class="relative rounded-lg bg-gray-700">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+                            ID Template
+                        </h3>
+                        <button type="button"
+                            @click="showIdTemplateModal = !showIdTemplateModal; document.body.classList.remove('no-scroll');"
+                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                            <svg class="h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                            <span class="sr-only">Close modal</span>
+                        </button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="relative p-4 md:p-5">
+                        <div class="mb-4 grid grid-cols-2 gap-4 text-white">
+                            <div class="col-span-2 ">
+                                <div class="mb-8">
+                                    <div>
+                                        <input type="file" name="course_id_template" id="id_template">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div role="status" x-show="dataLoading"
+                            class="absolute inset-0 z-50 flex items-center justify-center bg-black/25">
+                            <svg aria-hidden="true"
+                                class="h-8 w-8 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor" />
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentFill" />
+                            </svg>
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+
 
     <!-- Main modal -->
     <div id="edit-modal" tabindex="-1" aria-hidden="true"
@@ -779,9 +1120,9 @@
                             <select name="category" id="edit_category"
                                 class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                 <option selected="">Select</option>
-                                @foreach ($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                @endforeach
+                                <template x-for="category in course_categories" :key="category.id">
+                                    <option :value="category.id" x-text="category.name"></option>
+                                </template>
                             </select>
                         </div>
                         <div class="col-span-2">
@@ -811,14 +1152,19 @@
         <script type="text/javascript">
             function manageCourse() {
                 return {
-                    courses: @json($courses),
+                    courses: @json($courses ?? ''),
+                    course_categories: @json($categories ?? ''),
                     courseModal: false,
                     selectedCourse: [],
                     selectedBatch: [],
                     edit: false,
                     filepond: '',
+                    filepondDefaultID: '',
+                    filepondIdTemplate: '',
                     modalTitle: '',
-                    tempImage: @json($temp_image),
+                    tempImage: @json($temp_image ?? null),
+                    courseDefaults: @json($course_defaults ?? null),
+                    defaultIdTemplate: '',
                     instructors: [],
                     selectedInstructorId: '',
 
@@ -826,6 +1172,8 @@
                     showBatchesModal: false,
                     showBatchDataModal: false,
                     showInstructorsModal: false,
+                    showSettingsModal: false,
+                    showIdTemplateModal: false,
 
                     // Loading Utility
                     xhr: null,
@@ -837,16 +1185,56 @@
                         window.addEventListener('add-course-modal', () => {
                             this.addCourse();
                         });
+                        window.addEventListener('show-settings-modal', () => {
+                            this.triggerSettingsModal();
+                            document.body.classList.add('no-scroll');
+                        });
 
                         @if (session('status'))
                             this.notification("{{ session('status') }}", "{{ session('message') }}",
                                 "{{ session('title') ?? session('title') }}");
                         @endif
+
+                        if (this.courseDefaults) {
+                            this.defaultIdTemplate = this.courseDefaults.find(item => item.purpose === "id_template");
+                            console.log(this.defaultIdTemplate);
+                        }
+
+
+                    },
+                    get groupedCourse() {
+                        let grouped = this.courses.reduce((group, course) => {
+                            const categoryName = course.course_category.name;
+                            if (!group[categoryName]) {
+                                group[categoryName] = [];
+                            }
+                            group[categoryName].push(course);
+                            return group;
+                        }, {});
+
+                        // Step 2: Sort courses within each category by name
+                        for (let category in grouped) {
+                            grouped[category].sort((a, b) => a.name.localeCompare(b.name));
+                        }
+
+                        // Step 3: Sort categories by name
+                        return Object.keys(grouped)
+                            .sort((a, b) => a.localeCompare(b)) // Sort categories by name
+                            .reduce((sortedGroup, category) => {
+                                sortedGroup[category] = grouped[category];
+                                return sortedGroup;
+                            }, {});
                     },
                     filepondInit() {
                         FilePond.registerPlugin(FilePondPluginImagePreview, FilePondPluginGetFile);
                         const input_element = document.querySelector('#image');
                         this.filepond = FilePond.create(input_element);
+
+                        const default_id = document.querySelector('#default_id')
+                        this.filepondDefaultID = FilePond.create(default_id);
+
+                        const id_template = document.querySelector('#id_template')
+                        this.filepondIdTemplate = FilePond.create(id_template);
                     },
                     addCourse() {
                         this.edit = false;
@@ -855,7 +1243,6 @@
                         $('#courseModalForm')[0].reset();
                         $('#course_id').val('');
                         this.selectedCourse = [];
-
 
                         document.body.classList.add('no-scroll');
 
@@ -1009,65 +1396,75 @@
                             }
                         });
                     },
+                    numberFeaturedCourses: 0,
                     featureToggle(courseId) {
                         var thisFunction = this
 
-                        var featuredCourses = this.courses.filter(course => course.featured);
+                        Object.keys(this.groupedCourse).forEach(group => {
+                            this.numberFeaturedCourses += this.groupedCourse[group].filter(course => course
+                                    .available === 1)
+                                .length;
+                            console.log(this.numberFeaturedCourses);
+
+                        });
                         this.selectedCourse = this.courses.find(course => course.id === courseId)
+                        console.log(this.numberFeaturedCourses);
+
 
                         // Check if the selected course is already featured
-                        if (this.selectedCourse.featured) {
-                            // If the course is already featured, remove it from the featured list
-                            this.abortFetch('ajax');
-                            this.xhr = $.ajax({
-                                url: '{{ route('feature_toggle') }}',
-                                method: 'POST',
-                                data: {
-                                    _token: '{{ csrf_token() }}',
-                                    course_id: courseId
-                                },
-                                success: function(response) {
-                                    thisFunction.selectedCourse.featured = false;
-                                    thisFunction.notification('success', 'Course is removed from featured list',
-                                        thisFunction.selectedCourse.name);
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error(xhr.responseText);
-                                }
-                            });
-                        } else {
-                            // If not featured yet, check the number of featured courses
-                            if (featuredCourses.length < 3) {
-                                // Mark the course as featured
-                                this.abortFetch('ajax');
-                                this.xhr = $.ajax({
-                                    url: '{{ route('feature_toggle') }}',
-                                    method: 'POST',
-                                    data: {
-                                        _token: '{{ csrf_token() }}',
-                                        course_id: courseId
-                                    },
-                                    success: function(response) {
-                                        thisFunction.selectedCourse.featured = true;
-                                        thisFunction.notification('success', 'Course is now in featured list',
-                                            thisFunction.selectedCourse.name);
-                                    },
-                                    error: function(xhr, status, error) {
-                                        console.error(xhr.responseText);
-                                    }
-                                });
-                            } else {
-                                // If the limit is reached, notify the user and revert the checkbox
-                                this.notification('error',
-                                    `Sorry, the number of featured courses is limited to 3. Current: ${featuredCourses[0].name}, ${featuredCourses[1].name}, and ${featuredCourses[2].name}`,
-                                    '');
+                        // if (this.selectedCourse.featured) {
+                        //     // If the course is already featured, remove it from the featured list
+                        //     this.abortFetch('ajax');
+                        //     this.xhr = $.ajax({
+                        //         url: '{{ route('feature_toggle') }}',
+                        //         method: 'POST',
+                        //         data: {
+                        //             _token: '{{ csrf_token() }}',
+                        //             course_id: courseId
+                        //         },
+                        //         success: function(response) {
+                        //             thisFunction.selectedCourse.featured = false;
+                        //             thisFunction.notification('success', 'Course is removed from featured list',
+                        //                 thisFunction.selectedCourse.name);
+                        //         },
+                        //         error: function(xhr, status, error) {
+                        //             console.error(xhr.responseText);
+                        //         }
+                        //     });
+                        // } else {
+                        //     // If not featured yet, check the number of featured courses
 
-                                this.$nextTick(() => {
-                                    // Ensure Alpine.js reactivity updates the UI accordingly
-                                    document.querySelector(`.feature-toggle-${courseId}`).checked = false;
-                                });
-                            }
-                        }
+                        //     if (featuredCourses.length < 3) {
+                        //         // Mark the course as featured
+                        //         this.abortFetch('ajax');
+                        //         this.xhr = $.ajax({
+                        //             url: '{{ route('feature_toggle') }}',
+                        //             method: 'POST',
+                        //             data: {
+                        //                 _token: '{{ csrf_token() }}',
+                        //                 course_id: courseId
+                        //             },
+                        //             success: function(response) {
+                        //                 thisFunction.selectedCourse.featured = true;
+                        //                 thisFunction.notification('success', 'Course is now in featured list',
+                        //                     thisFunction.selectedCourse.name);
+                        //             },
+                        //             error: function(xhr, status, error) {
+                        //                 console.error(xhr.responseText);
+                        //             }
+                        //         });
+                        //     } else {
+                        //         // If the limit is reached, notify the user and revert the checkbox
+                        //         this.notification('error',
+                        //             `Sorry, the number of featured courses is limited to 3. Current: ${featuredCourses[0].name}, ${featuredCourses[1].name}, and ${featuredCourses[2].name}`,
+                        //             '');
+
+                        //         this.$nextTick(() => {
+                        //             // Ensure Alpine.js reactivity updates the UI accordingly
+                        //             document.querySelector(`.feature-toggle-${courseId}`).checked = false;
+                        //         });
+                        //     }
+                        // }
                     },
                     notification(status, message, title) {
                         status === 'success' ? toastr.success(message, title ?? title) : toastr.error(message, title ??
@@ -1265,6 +1662,8 @@
                                     course.instructor_id = null
                                 }
 
+                                t.dataLoading = false;
+
                                 // console.log(t.selectedBatch);
 
                                 // t.selectedCourse.batches = response.course.batches
@@ -1329,6 +1728,7 @@
                                             'Instructor Assigning')
                                         t.showInstructorsModal = false
                                         t.selectedInstructorId = ''
+                                        t.dataLoading = false;
                                     }
 
                                 },
@@ -1341,6 +1741,250 @@
                             this.notification('error', 'Select an instructor first', '')
                         }
 
+                    },
+
+                    // Create Category Modal
+                    showAddCategory: false,
+                    categoryName: null,
+                    addNewCategory() {
+                        if (this.categoryName) {
+                            this.abortFetch('ajax')
+                            this.dataLoading = true
+                            var t = this
+                            this.xhr = $.ajax({
+                                url: '{{ route('add_course_category') }}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    new_category: t.categoryName
+                                },
+                                success: function(response) {
+                                    console.log(response);
+                                    if (response.status == 'success') {
+                                        t.course_categories.push(response.category)
+                                        t.notification('success', 'New course category added', 'Course Category');
+                                        t.dataLoading = false
+                                        t.categoryName = null
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(xhr.responseText);
+                                    t.notification('error', 'Connection error', '')
+                                }
+                            });
+                        } else {
+                            this.notification('error', 'Enter course category name first', '')
+                        }
+
+                        this.showAddCategory = false;
+
+                    },
+
+                    // Edit category
+                    selectedCourseCategoryId: null,
+                    showEditCategory: false,
+                    editCategory() {
+                        let category = this.course_categories.find(categ => categ.id === this.selectedCourseCategoryId)
+                        if (this.categoryName) {
+                            this.abortFetch('ajax')
+                            this.dataLoading = true
+                            var t = this
+                            this.xhr = $.ajax({
+                                url: '{{ route('edit_course_category') }}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    category_id: category.id,
+                                    category_name: this.categoryName
+                                },
+                                success: function(response) {
+                                    console.log(response);
+                                    if (response.status == 'success') {
+                                        if (category) {
+                                            category.name = response.category.name;
+                                            t.notification('success', response.category.name + ' is the new name',
+                                                'Course Category');
+                                            t.dataLoading = false
+                                            t.categoryName = null
+                                            t.showEditCategory = false;
+                                        }
+                                    }
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(xhr.responseText);
+                                    t.notification('error', 'Connection error', '')
+                                }
+                            });
+                        }
+                    },
+
+
+                    //Delete course category
+                    deleteCategory(categoryId) {
+                        var t = this;
+                        let category = this.course_categories.find(categ => categ.id === categoryId)
+                        Swal.fire({
+                            title: "Are you sure?",
+                            text: "You won't be able to revert this! All data related to this will also be deleted.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes, delete it!"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.ajax({
+                                    url: '{{ route('delete_course_category') }}',
+                                    method: 'POST',
+                                    data: {
+                                        _token: '{{ csrf_token() }}',
+                                        category_id: category.id,
+                                    },
+                                    success: function(response) {
+                                        console.log(response);
+                                        if (response.status == 'success') {
+                                            if (category) {
+                                                const index = t.course_categories.findIndex(categ => categ
+                                                    .id ===
+                                                    categoryId)
+                                                t.course_categories.splice(index, 1);
+                                                t.notification('success',
+                                                    'Course category has been removed',
+                                                    'Course Category');
+                                                t.dataLoading = false
+                                            }
+                                        }
+
+
+
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error(xhr.responseText);
+                                        t.notification('error', 'Connection error', '')
+                                    }
+                                });
+                            }
+                        });
+                    },
+
+                    // Show Settings Modal
+                    triggerSettingsModal() {
+                        this.showSettingsModal = true;
+                        document.body.classList.add('no-scroll');
+
+                        var files = this.defaultIdTemplate ? [{
+                            source: this.defaultIdTemplate['id'],
+                            options: {
+                                type: 'local',
+                            },
+                        }, ] : [];
+
+                        this.filepondDefaultID.setOptions({
+                            labelIdle: `Drag & Drop image file or <span class="filepond--label-action">Browse</span>`,
+                            name: 'image',
+                            allowReorder: true,
+                            allowImagePreview: true,
+                            allowMultiple: false,
+                            required: true,
+                            files: files,
+
+                            server: {
+                                process: {
+                                    url: '{{ route('upload_default_id') }}',
+                                    ondata: (formData) => {
+                                        return formData;
+                                    },
+                                },
+                                revert: {
+                                    url: '{{ route('revert_default_id') }}',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                },
+                                load: `load_default_id/`,
+                                remove: (source, load, error) => {
+                                    fetch(`delete_default_id/${source}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            load();
+                                        } else {
+                                            error('Could not delete file');
+                                        }
+                                    }).catch(() => {
+                                        error('Could not delete file');
+                                    });
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            },
+                        });
+                    },
+
+                    // Show Id Template Modal
+                    triggerIdTemplateModal(courseId) {
+                        const course = this.courses.find(course => course.id === courseId)
+                        this.showIdTemplateModal = true;
+                        document.body.classList.add('no-scroll');
+
+                        var files = course.course_id_template ? [{
+                            source: course.course_id_template.id,
+                            options: {
+                                type: 'local',
+                            },
+                        }, ] : [];
+
+                        this.filepondIdTemplate.setOptions({
+                            labelIdle: `Drag & Drop image file or <span class="filepond--label-action">Browse</span>`,
+                            name: 'image',
+                            allowReorder: true,
+                            allowImagePreview: true,
+                            allowMultiple: false,
+                            required: true,
+                            files: files,
+
+                            server: {
+                                process: {
+                                    url: '{{ route('upload_id_template') }}',
+                                    ondata: (formData) => {
+                                        formData.append('course_id', courseId);
+                                        return formData;
+                                    },
+                                },
+                                revert: {
+                                    url: '{{ route('revert_id_template') }}',
+                                    method: 'DELETE',
+                                    headers: {
+                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                    },
+                                },
+                                load: `load_id_template/`,
+                                remove: (source, load, error) => {
+                                    fetch(`delete_id_template/${source}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            load();
+                                        } else {
+                                            error('Could not delete file');
+                                        }
+                                    }).catch(() => {
+                                        error('Could not delete file');
+                                    });
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            },
+                        });
                     },
 
                     // Utility

@@ -30,8 +30,6 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
 
     {{-- FilePond --}}
-    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css"
-        rel="stylesheet" />
     <link href="https://unpkg.com/filepond-plugin-image-edit/dist/filepond-plugin-image-edit.css" rel="stylesheet" />
 
     {{-- PWA --}}
@@ -89,70 +87,23 @@
 
 <body class="antialiased">
     <div x-data="welcomePage"
-        class="bg-dots-darker dark:bg-dots-lighter relative min-h-screen bg-gray-900 bg-center selection:bg-white selection:text-sky-400 dark:bg-gray-950 sm:items-center sm:justify-center">
+        class="bg-dots-darker dark:bg-dots-lighter relative bg-gray-900 bg-center selection:bg-white selection:text-sky-400 dark:bg-gray-950 sm:items-center sm:justify-center">
 
-        {{-- <div id="animation-carousel" class="relative w-full" data-carousel="static">
-            <!-- Carousel wrapper -->
-            <div class="relative h-56 overflow-hidden md:h-96">
-                <!-- Item 1 -->
-                <div class="hidden duration-200 ease-linear" data-carousel-item="active">
-                    <img src="images/carousel/image1.jpg"
-                        class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2" alt="...">
-                </div>
-                <!-- Item 2 -->
-                <div class="hidden duration-200 ease-linear" data-carousel-item>
-                    <img src="images/carousel/image2.jpg"
-                        class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2" alt="...">
-                </div>
-                <!-- Item 3 -->
-                <div class="hidden duration-200 ease-linear" data-carousel-item>
-                    <img src="images/carousel/image3.jpg"
-                        class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2" alt="...">
-                </div>
-            </div>
-            <!-- Slider controls -->
-            <button type="button"
-                class="group absolute start-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-                data-carousel-prev>
-                <span
-                    class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
-                    <svg class="h-4 w-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M5 1 1 5l4 4" />
-                    </svg>
-                    <span class="sr-only">Previous</span>
-                </span>
-            </button>
-            <button type="button"
-                class="group absolute end-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
-                data-carousel-next>
-                <span
-                    class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
-                    <svg class="h-4 w-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="m1 9 4-4-4-4" />
-                    </svg>
-                    <span class="sr-only">Next</span>
-                </span>
-            </button>
-        </div> --}}
 
         {{-- Temporary Comment --}}
         <div style="background-image: url('{{ asset('images/elements/ekonek_bg.png') }}');"
-            class="flex h-screen flex-col bg-cover bg-center">
+            class="flex flex-col bg-cover bg-center">
             <div class="bg-dots-darker flex items-center justify-between px-4 py-4">
                 <div class="flex">
                     <a href="/" class="mr-9 items-center">
                         <!-- <img src="images/icons/lsi-logo.png" alt="LSI" class="h-16 w-auto rounded-full dark:bg-gray-900" /> -->
-                        <div class="text-3xl font-black text-cyan-500">Language Skills Institute</div>
+                        <div class="text-lg md:text-3xl font-black text-cyan-500">Language Skills Institute</div>
                         <div class="bg-gradient-to-r from-gray-900 px-1 text-xs font-light text-cyan-300">Oriental
                             Mindoro
                         </div>
                     </a>
 
-                    <nav class="flex items-center justify-center space-x-4">
+                    <nav class="hidden md:flex items-center justify-center space-x-4">
                         <a href="#courses" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">Courses</a>
                         <a href="#" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">Community</a>
                         <a href="#" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">About</a>
@@ -163,17 +114,17 @@
                     <div class="flex items-center space-x-4">
                         @auth
 
-                            <a @if (Auth::user()->role == 'superadmin') href="{{ url('/website') }}" 
+                            <a @if (Auth::user()->role == 'superadmin') href="{{ url('/dashboard') }}" 
                                 @elseif (Auth::user()->role == 'student') href="{{ route('enrolled_course') }}"
                             @elseif (Auth::user()->role == 'instructor') href="{{ url('/batch_list') }}" @endif
-                                class="rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
+                                class="hidden md:inline-flex rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
                                 <img class="h-5 w-auto" src="{{ asset('/images/icons/lsi-logo.png') }}" alt="">
                             </a>
-                            <div class="relative">
+                            <div class="hidden md:inline-flex relative">
                                 <x-dropdown align="right" width="46">
                                     <x-slot name="trigger">
                                         <button
-                                            class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                                            class="inline-flex items-center rounded-md border border-transparent cg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
                                             <div>
                                                 {{ Auth::user()->role == 'instructor' ? 'Trainer ' : '' }}{{ Auth::user()->fname }}
                                                 {{ Auth::user()->lname }}</div>
@@ -187,6 +138,7 @@
                                                 </svg>
                                             </div>
                                         </button>
+
                                     </x-slot>
 
                                     <x-slot name="content">
@@ -226,40 +178,173 @@
                             </div>
                         @else
                             <a href="{{ route('login') }}"
-                                class="rounded-md border border-cyan-500 px-3 py-2 font-semibold text-sky-300">Log in</a>
+                                class="hidden md:inline-flex rounded-md border border-cyan-500 px-3 py-2 font-semibold text-sky-300">Log
+                                in</a>
 
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
-                                    class="ml-4 rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-2 font-semibold text-black">Register</a>
+                                    class="hidden md:inline-flex ml-4 rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-2 font-semibold text-black">Register</a>
                             @endif
                         @endauth
                     </div>
                 @endif
+
+                <button class="md:hidden text-white" aria-controls="drawer-navigation"
+                    data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation"
+                    data-drawer-placement="right">
+                    <svg class="h-6 w-6 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <title>menu</title>
+                        <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
+                    </svg>
+                </button>
+
+                <!-- drawer component -->
+                <div id="drawer-navigation"
+                    class="md:hidden fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform w-80 translate-x-full bg-gray-800"
+                    tabindex="-1" aria-labelledby="drawer-navigation-label">
+                    <h5 id="drawer-navigation-label"
+                        class="ms-2 text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Menu</h5>
+                    <button type="button" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation"
+                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                        <span class="sr-only">Close menu</span>
+                    </button>
+                    <div class="py-4 overflow-y-auto">
+                        <ul class="space-y-2 font-medium text-white">
+
+                            <li>
+                                <a href="#"
+                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+                                    <span class="flex-1 whitespace-nowrap">Courses</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+
+                                    <span class="flex-1 whitespace-nowrap">Updates</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+
+                                    <span class="flex-1 whitespace-nowrap">About Us</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+
+                                    <span class="flex-1 whitespace-nowrap">Contact</span>
+                                </a>
+                            </li>
+                            @if (Route::has('login'))
+                                @auth
+
+                                    <li class="">
+                                        <a @if (Auth::user()->role == 'superadmin') href="{{ url('/dashboard') }}" 
+                                    @elseif (Auth::user()->role == 'student') href="{{ route('enrolled_course') }}"
+                                    @elseif (Auth::user()->role == 'instructor') href="{{ url('/batch_list') }}" @endif
+                                            class="flex rounded-md text-white bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
+                                            <img class="h-5 w-auto" src="{{ asset('/images/icons/lsi-logo.png') }}"
+                                                alt="">
+                                        </a>
+                                    </li>
+                                    <hr class=" border-sky-800/50">
+                                    <li>
+                                        <div class="py-2">
+                                            <div class="text-white  text-center font-bold">
+                                                {{ Auth::user()->role == 'instructor' ? 'Trainer ' : '' }}{{ Auth::user()->fname }}
+                                                {{ Auth::user()->lname }}</div>
+                                            <div class="text-xs text-center text-white/50">{{ Auth::user()->email }}</div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('profile.edit') }}"
+                                            class=" p-2 text-gray-900 hover:bg-gray-600 dark:text-white  flex items-center space-x-1.5 rounded-md px-1.5">
+                                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                <path fill="currentColor"
+                                                    d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
+                                            </svg>
+                                            <div>
+                                                Profile
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <form class="cursor-pointer" method="POST" action="{{ route('logout') }}">
+                                            @csrf
+                                            <a class=" p-2 bg-red-800/50 hover:bg-red-900/50 hover:text-red-500 flex items-center space-x-1.5 rounded-md px-1.5"
+                                                onclick="event.preventDefault();
+                                                                this.closest('form').submit();">
+                                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24">
+                                                    <path fill="currentColor"
+                                                        d="M14.08,15.59L16.67,13H7V11H16.67L14.08,8.41L15.5,7L20.5,12L15.5,17L14.08,15.59M19,3A2,2 0 0,1 21,5V9.67L19,7.67V5H5V19H19V16.33L21,14.33V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19Z" />
+                                                </svg>
+                                                <div>
+                                                    Log Out
+                                                </div>
+                                            </a>
+                                        </form>
+                                    </li>
+                                @else
+                                    <li>
+
+
+                                        <a href="{{ route('login') }}"
+                                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+
+                                            <span class="flex-1 whitespace-nowrap">Log In</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('register') }}"
+                                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+
+                                            <span class="flex-1 whitespace-nowrap">Sign Up</span>
+                                        </a>
+                                    </li>
+                                @endauth
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="flex h-full flex-col items-center p-4">
-                <div class="flex">
+            <div class="h-full p-4">
+                <div class="flex-col space-y-4 h-full w-full flex md:flex items-center text-white">
                     <div x-data="{ show: false }" x-intersect:enter="show = true"
                         :class="{ 'opacity-100 translate-x-0': show, 'opacity-0 translate-x-full': !show }"
-                        class="w-1/2 translate-x-full transform opacity-0 transition-opacity transition-transform duration-500 ease-out">
-                        <h3 class="text-xl font-bold">Animated Element 1</h3>
-                        <p class="mt-4 text-gray-600">This element slides in from the right as you scroll down.</p>
+                        class="flex-1 flex items-center w-full md:w-1/2 translate-x-full transform opacity-0 transition-opacity transition-transform duration-500 ease-out">
+
+                        <div class="flex-col">
+                            <h3 class="text-xl font-bold">Unlock Your Future with Language Skills Institute</h3>
+                            <p class="text-gray-600">Boost your skills and enhance your career.
+                                Enroll today! </p>
+                        </div>
                     </div>
-                    <div class="flex w-1/2 items-center rounded">
-                        <swiper-container class="mySwiper h-full w-full" pagination="true"
-                            pagination-clickable="true" space-between="30" effect="fade" navigation="true"
-                            autoplay-delay="2500" autoplay-disable-on-interaction="false">
+                    <div class="flex-1 md:w-1/2 w-full items-center ">
+                        <swiper-container class="mySwiper h-64 " pagination="true" pagination-clickable="true"
+                            space-between="30" effect="fade" navigation="true" autoplay-delay="2500"
+                            autoplay-disable-on-interaction="false">
                             <swiper-slide>
-                                <img src=" https://swiperjs.com/demos/images/nature-1.jpg" />
+                                <img class="object-cover object-center"
+                                    src="{{ asset('images/carousel/image1-test.jpg') }}" />
                             </swiper-slide>
                             <swiper-slide>
-                                <img src="https://swiperjs.com/demos/images/nature-2.jpg" />
+                                <img class="object-cover object-center"
+                                    src="{{ asset('images/carousel/image2.jpg') }}" />
                             </swiper-slide>
                             <swiper-slide>
-                                <img src="https://swiperjs.com/demos/images/nature-3.jpg" />
-                            </swiper-slide>
-                            <swiper-slide>
-                                <img src="https://swiperjs.com/demos/images/nature-4.jpg" />
+                                <img class="object-cover object-center"
+                                    src="{{ asset('images/carousel/image3.jpg') }}" />
                             </swiper-slide>
                         </swiper-container>
                     </div>
@@ -270,7 +355,9 @@
         <h1
             class="my-4 text-center text-2xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
             Welcome to Language Skills Institute </h1>
-        <div class="mx-20 mb-10 text-center text-white">At LSI, we're dedicated to empowering individuals with the
+        <div class="text-sm mx-4 md:mx-20 mb-10 text-center text-white">At LSI, we're dedicated to empowering
+            individuals
+            with the
             essential
             skills they need to excel in today's dynamic world. Whether you're looking
             to enhance your communication abilities or boost your computer literacy,
@@ -281,9 +368,9 @@
 
             <div class="flex items-center justify-center">
                 <div :class="{
-                    'grid-cols-3': featuredCourses.length == 3,
-                    'grid-cols-2': featuredCourses.length == 2,
-                    'grid-cols-1': featuredCourses.length == 1,
+                    'md:grid-cols-3': featuredCourses.length == 3,
+                    'md:grid-cols-2': featuredCourses.length == 2,
+                    'md:grid-cols-1': featuredCourses.length == 1,
                 }"
                     class="grid gap-8">
                     <template x-for="course in featuredCourses" :key="course.id">

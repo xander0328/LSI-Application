@@ -136,10 +136,11 @@ class StudentController extends Controller
         
         $status = '';
         if($alreadyEnrolled){
-            if($alreadyEnrolled->completed != null){
+            if($alreadyEnrolled->batch == null || $alreadyEnrolled->batch->completed != null){
                 // Finished the course already
                 $status = 'completed';
-                return view('student.already_enrolled', compact('status'));
+                $course_name = $alreadyEnrolled->course->name;
+                return view('student.already_enrolled', compact('status', 'course_name'));
             }
             else{
                 if($alreadyEnrolled->batch_id == null){
@@ -163,18 +164,6 @@ class StudentController extends Controller
             // direct to enrolling phase
             return view('student.enroll', compact('id'));
         }
-
-
-        // if ($enrollee) {
-        //     if (!$hasBatchId) {
-        //         $enrollee = encrypt($enrollee->id);
-        //         return $this->enroll_requirements($enrollee);
-        //     } else {
-        //         return view('student.already_enrolled');
-        //     }
-        // } else {
-        //     return view('student.enroll');
-        // }
     }
 
     public function enroll_save(Request $request)

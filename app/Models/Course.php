@@ -34,4 +34,12 @@ class Course extends Model
     {
         return $this->hasMany(Batch::class);
     }
+
+    public function course_category(){
+        return $this->belongsTo(CourseCategory::class);
+    }
+
+    public function course_id_template(){
+        return $this->hasOne(CourseIdTemplate::class);
+    }
 }

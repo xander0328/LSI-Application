@@ -845,7 +845,7 @@ class InstructorController extends Controller
     }
 
     public function assignment_toggle(Request $request){
-        $assignment = Assignment::find($request->input('assignment_id'));
+        $assignment = Assignment::where('id',$request->input('assignment_id'))->first();
         $assignment->closed = !$assignment->closed;
 
         if($assignment->closing == true && $assignment->closed == false){
@@ -853,7 +853,7 @@ class InstructorController extends Controller
         }
         $assignment->save();
 
-        return response()->json(['status' => 'success', 'available' => $assignment->available]);
+        return response()->json(['status' => 'success', 'available' => !$assignment->closed]);
     }
 
     // Lesson
@@ -875,19 +875,6 @@ class InstructorController extends Controller
             }
 
             $lessons->unit_of_competency_id = $uc->id;
-
-            // if($course_structure == "small") {
-            //     $lesson = Lesson::where('unit_of_competency_id', $uc->id)->first();
-
-            //     if($lesson){
-            //         $lesson = new Lesson();
-            //         $lesson->unit_of_competency_id = $uc->id;
-            //         $lesson->title = $uc->id;
-            //         $lesson->save();
-            //     }else{
-
-            //     }
-            // }
         } 
 
         $lessons->title = $request->lesson_title;
@@ -989,18 +976,21 @@ class InstructorController extends Controller
                 $student_grade->assignment_id = $request->assignment_id;
                 $student_grade->enrollee_id = $request->enrollee_id;
                 $student_grade->grade = $request->grade;
-                $student_grade->type = 'auto';
+                $student_grade->remark = null;
                 $student_grade->save();
-                return response()->json(['status' => 'update grade working']);
             }elseif($student_grade){
                 $student_grade->grade = $request->grade;
                 $student_grade->save();
             }
+
         }elseif($request->grade == null || $request->grade == 0){
             if($student_grade){
                 $student_grade->delete();
             }
         }
+        $trainee_name = Enrollee::where('id', $request->enrollee_id)->select(['id', 'user_id'])->with(['user:id,lname,fname'])->first();
+        return response()->json(['status' => 'success', 'trainee' => $trainee_name]);
+
         // return response()->json(['status' => $request->grade]);
         // dd($request->grade);
 
@@ -1009,11 +999,11 @@ class InstructorController extends Controller
         $batch = Batch::where('id', $student_grade->batch_id)->first();
 
         // dd($student_grade['enrollee']['user_id']);
-        $token = User::where('id', $student_grade['enrollee']['user_id'])->pluck('device_token');
-        $title = '['.$batch->name.'] Trainer '.auth()->user()->fname.' '.auth()->user()->lname;
-        $body = 'you\'re work are graded';
-        // dd($token);
-        NotificationSendController::sendAppNotification($token, $title, $body, null);
+        // $token = User::where('id', $student_grade['enrollee']['user_id'])->pluck('device_token');
+        // $title = '['.$batch->name.'] Trainer '.auth()->user()->fname.' '.auth()->user()->lname;
+        // $body = 'your work is graded';
+        // // dd($token);
+        // NotificationSendController::sendAppNotification($token, $title, $body, null);
         
     }
 
