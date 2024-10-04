@@ -85,7 +85,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
             <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
-                <div>{{ __('Course') }}</div>
+                <div>{{ __('Stream') }}</div>
                 <div class="hidden md:block text-slate-600">|</div>
                 <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
             </div>
@@ -130,7 +130,7 @@
         </div>
 
     </x-slot>
-    <div x-data="stream" id="course_list" class="mx-4 md:mx-8 pt-40 md:pt-44 text-white">
+    <div x-data="stream" id="course_list" class="mx-4 md:mx-8 pt-40 md:pt-44 pb-20 text-white">
         <div class="flex flex-col-reverse py-6">
             <template x-if="posts.length > 0">
                 <template x-for="post in posts" :key="post.id">
@@ -247,6 +247,24 @@
                                     x-text="`Updated: ${moment(post.updated_at).format('lll')}`">
                                 </div>
                             </template>
+                            <div class="md:flex md:justify-end">
+                                <div class="mt-1.5 bg-sky-600 hover:bg-sky-700 rounded  md:w-1/5">
+                                    <a :href="`{{ route('instructor.comments', ['post_id' => ':id']) }}`.replace(':id', post.id)"
+                                        class="w-full p-1.5 flex space-x-1 items-center justify-center">
+                                        <span>
+                                            <svg class="h-4 w-4 mt-0.5" fill="currentColor"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                <title>comment</title>
+                                                <path
+                                                    d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9Z" />
+                                            </svg>
+                                        </span>
+                                        <span>
+                                            Comment
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -676,25 +694,18 @@
                         }
                     },
                     triggerPostModal() {
-                        this.postModal = !this.postModal;
+                        if (this.postModal == true) {
+                            var res = confirm("Are you sure you want to close? This will be discarded. ")
+                            if (res) {
+                                this.postModal = !this.postModal;
+                            }
+                        } else {
+                            this.postModal = !this.postModal;
+                        }
                     },
                     notification(status, message, title) {
                         status === 'success' ? toastr.success(message, title ?? title) : toastr.error(message,
                             title ?? title);
-                        toastr.options.closeButton = true;
-                        toastr.options = {
-                            "closeButton": true,
-                            "progressBar": true,
-                            "positionClass": "toast-bottom-right",
-                            "showDuration": "300",
-                            "hideDuration": "800",
-                            "timeOut": "5000",
-                            "extendedTimeOut": "1000",
-                            "showEasing": "swing",
-                            "hideEasing": "linear",
-                            "showMethod": "fadeIn",
-                            "hideMethod": "fadeOut"
-                        }
                     },
                     deletePostConfirmation() {
                         var form = event.target.closest('form');

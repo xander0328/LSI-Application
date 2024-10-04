@@ -11,10 +11,10 @@
         <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
         <input type="hidden" name="course_id" value="{{ $course_id }}">
         <div id="step1" x-cloak x-show="currentStep === 1" class="mb-4 grid grid-cols-2 gap-4">
-            <div class="col-span-2 mb-2 font-bold text-white">MAILING ADDRESS</div>
+            <div class="col-span-2 mb-2 font-bold text-black dark:text-white">MAILING ADDRESS</div>
             <div class="col-span-2">
-                <label for="region" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Region
-                    <span x-if="errors.region" class="text-xs text-red-500" x-text="errors.region"></span></label>
+                <label for="region" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Region <span
+                        class="text-red-500">*</span></label>
 
                 <select name="region" id="region" x-model="form.region" @change="regionSelect"
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -28,8 +28,8 @@
             </div>
 
             <div class="col-span-2">
-                <label for="province"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Province</label>
+                <label for="province" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Province<span
+                        class="text-red-500">*</span></label>
 
                 <select x-model="form.province" name="province" id="province" @change="provinceSelect"
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -42,8 +42,8 @@
             </div>
 
             <div class="col-span-2">
-                <label for="district"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">District</label>
+                <label for="district" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">District<span
+                        class="text-red-500">*</span></label>
 
                 <select x-model="form.district" name="district" id="district"
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -58,7 +58,8 @@
 
             <div class="col-span-2">
                 <label for="city"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">City/Municipality</label>
+                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">City/Municipality<span
+                        class="text-red-500">*</span></label>
 
                 <select x-model="form.city" name="city" id="city" @change="citySelect"
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -71,8 +72,8 @@
             </div>
 
             <div class="col-span-2">
-                <label for="barangay"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Barangay</label>
+                <label for="barangay" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Barangay<span
+                        class="text-red-500">*</span></label>
 
                 <select x-model="form.barangay" name="barangay" id="barangay"
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -85,10 +86,10 @@
             </div>
 
             <div class="col-span-2">
-                <label for="street"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Street</label>
+                <label for="street" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Street<span
+                        class="text-red-500">*</span></label>
                 <input x-model="form.street" type="text" name="street" id="street"
-                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    class=" capitalize focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
                 <template x-if="errors.street">
                     <p class="text-sm text-red-500" x-text="errors.street"></p>
@@ -97,7 +98,7 @@
 
             <div class="col-span-2">
                 <label for="zip" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Zip
-                    Code</label>
+                    Code<span class="text-red-500">*</span></label>
                 <input x-model="form.zip" type="text" name="zip" id="zip"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
@@ -113,7 +114,7 @@
         </div>
         <div id="step2" x-cloak x-show="currentStep === 2" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2">
-                <div class="mb-2 font-bold text-white">Sex</div>
+                <div class="mb-2 font-bold text-black dark:text-white">Sex<span class="text-red-500">*</span></div>
                 <div class="mb-2 flex items-center rounded border border-gray-200 ps-4 dark:border-gray-700">
                     <input x-model="form.sex" id="male" type="radio" value="male" name="sex"
                         class="h-4 w-4 border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
@@ -139,7 +140,8 @@
         </div>
         <div id="step3" x-cloak x-show="currentStep === 3" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2">
-                <div class="mb-2 font-bold text-white">Civil Status</div>
+                <div class="mb-2 font-bold text-black dark:text-white">Civil Status<span class="text-red-500">*</span>
+                </div>
                 <div class="mb-2 flex items-center rounded border border-gray-200 ps-4 dark:border-gray-700">
                     <input id="single" type="radio" x-model="form.civil_status" value="single"
                         name="civil_status"
@@ -181,7 +183,8 @@
         </div>
         <div id="step4" x-cloak x-show="currentStep === 4" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2">
-                <div class="mb-2 font-bold text-white">Employment Type</div>
+                <div class="mb-2 font-bold text-black dark:text-white">Employment Type<span
+                        class="text-red-500">*</span></div>
                 <div class="mb-2 flex items-center rounded border border-gray-200 ps-4 dark:border-gray-700">
                     <input id="employed" type="radio" value="employed" name="employment_type"
                         @change="updateEmploymentOptions()" x-model="form.employment_type"
@@ -213,7 +216,7 @@
                 <div class="col-span-2 mt-2">
                     <label for="employment_status"
                         class="mb-2 block font-bold text-gray-900 dark:text-white">Employment
-                        Status</label>
+                        Status <span x-show="form.employment_type == 'employed'" class="text-red-500">*</span></label>
                     <select x-model="form.employment_status" name="employment_status" id="employment_status"
                         class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                         <option selected="">Select</option>
@@ -236,10 +239,10 @@
 
         </div>
         <div id="step5" x-cloak x-show="currentStep === 5" class="mb-4 grid grid-cols-2 gap-4">
-            <div class="col-span-2 mb-2 font-bold text-white">PERSONAL INFORMATION</div>
+            <div class="col-span-2 mb-2 font-bold text-black dark:text-white">PERSONAL INFORMATION</div>
             <div class="col-span-2 mb-2">
                 <label for="birth_date" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Birth
-                    Date</label>
+                    Date<span class="text-red-500">*</span></label>
                 <div class="relative max-w-sm">
                     <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -256,17 +259,18 @@
             </div>
             <div class="col-span-2">
                 <label for="birth_place" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Birth
-                    Place</label>
+                    Place<span class="text-red-500">*</span></label>
                 <input type="text" x-model="form.birth_place" name="birth_place" id="birth_place"
-                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    class="capitalize focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
             </div>
             <div class="col-span-2">
                 <label for="citizenship"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Citizenship</label>
+                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Citizenship<span
+                        class="text-red-500">*</span></label>
                 <input list="nationality_list" x-model="form.citizenship" type="text" name="citizenship"
                     id="citizenship"
-                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    class="capitalize focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
                 <datalist id="nationality_list">
                     <template x-for="nationality in nationalities" :key="nationality">
@@ -276,9 +280,10 @@
             </div>
             <div class="col-span-2">
                 <label for="religion"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Religion</label>
+                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Religion<span
+                        class="text-red-500">*</span></label>
                 <input list="religion_list" x-model="form.religion" type="text" name="religion" id="religion"
-                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    class="capitalize focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
                 <datalist id="religion_list">
                     <template x-for="religion in religions" :key="religion">
@@ -287,16 +292,16 @@
                 </datalist>
             </div>
             <div class="col-span-1">
-                <label for="height"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Height</label>
+                <label for="height" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Height<span
+                        class="text-red-500">*</span></label>
                 <input x-model="form.height" @input="heightChanged()" placeholder="kilogram" type="text"
                     name="height" id="height"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
             </div>
             <div class="col-span-1">
-                <label for="weight"
-                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Weight</label>
+                <label for="weight" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Weight<span
+                        class="text-red-500">*</span></label>
                 <input x-model="form.weight" @input="weightChanged()" placeholder="centimeter" type="text"
                     name="weight" id="weight"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
@@ -304,7 +309,7 @@
             </div>
             <div class="col-span-2">
                 <label for="blood_type" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Blood
-                    Type</label>
+                    Type<span class="text-red-500">*</span></label>
                 <select x-model="form.blood_type" name="blood_type" id="blood_type"
                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                     <option value="" selected>Select</option>
@@ -327,32 +332,32 @@
             </div>
         </div>
         <div id="step6" x-cloak x-show="currentStep === 6" class="mb-4 grid grid-cols-2 gap-4">
-            <div class="col-span-2 mb-2 font-bold text-white">PERSONAL INFORMATION</div>
+            <div class="col-span-2 mb-2 font-bold text-black dark:text-white">PERSONAL INFORMATION</div>
             <div class="col-span-2">
                 <label for="sss" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">SSS
                     No.</label>
-                <input type="text" name="sss" id="sss" @input="part6Changed()"
+                <input type="text" name="sss" id="sss" @input="part6Changed()" x-model="form.sss"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="">
             </div>
             <div class="col-span-2">
                 <label for="gsis" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">GSIS
                     No.</label>
-                <input type="text" @input="part6Changed()" name="gsis" id="gsis"
+                <input type="text" @input="part6Changed()" name="gsis" id="gsis" x-model="form.gsis"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="">
             </div>
             <div class="col-span-2">
                 <label for="tin" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">TIN
                     No.</label>
-                <input type="text" @input="part6Changed()" name="tin" id="tin"
+                <input type="text" @input="part6Changed()" name="tin" id="tin" x-model="form.tin"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="">
             </div>
             <div class="col-span-2">
                 <label for="disting_marks"
                     class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Distinguishing Marks</label>
-                <input type="text" name="disting_marks" id="disting_marks"
+                <input type="text" name="disting_marks" id="disting_marks" x-model="form.disting_marks"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="">
             </div>
@@ -375,15 +380,15 @@
                         <div class="col-span-2">
                             <label :for="'schoolName_' + (index + 1)"
                                 class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">School
-                                Name</label>
+                                Name<span class="text-red-500">*</span></label>
                             <input :id="'schoolName_' + (index + 1)" type="text" x-model="education.schoolName"
-                                class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 required>
                         </div>
                         <div class="col-span-2">
                             <label :for="'educationLevel_' + (index + 1)"
                                 class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Education
-                                Level</label>
+                                Level<span class="text-red-500">*</span></label>
                             <select :id="'educationLevel_' + (index + 1)" x-model="education.educationLevel"
                                 x-on:change="toggleTertiaryFields(index)"
                                 class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -395,7 +400,7 @@
                         <div class="col-span-2">
                             <label :for="'schoolYear_' + (index + 1)"
                                 class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">School
-                                Year</label>
+                                Year<span class="text-red-500">*</span></label>
                             <input :id="'schoolYear_' + (index + 1)" type="text" @input="formatSchoolYear(index)"
                                 x-model="education.schoolYear"
                                 class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
@@ -405,9 +410,10 @@
                             x-show="education.educationLevel === 'Tertiary'">
                             <div class="col-span-2">
                                 <label :for="'degree_' + (index + 1)"
-                                    class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Degree</label>
+                                    class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Degree<span
+                                        class="text-red-500">*</span></label>
                                 <select :id="'degree_' + (index + 1)" x-model="education.degree"
-                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    class="focus:ring-primary-600  focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                     <option value="">Select</option>
                                     <option value="Bachelor's">Bachelor's</option>
                                     <option value="Master's">Master's</option>
@@ -418,21 +424,21 @@
                                 <label :for="'minor_' + (index + 1)"
                                     class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Minor</label>
                                 <input :id="'minor_' + (index + 1)" type="text" x-model="education.minor"
-                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                             </div>
                             <div class="col-span-1">
                                 <label :for="'major_' + (index + 1)"
                                     class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Major</label>
                                 <input :id="'major_' + (index + 1)" type="text" x-model="education.major"
-                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                             </div>
                             <div class="col-span-2">
                                 <label :for="'unitsEarned_' + (index + 1)"
                                     class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Units
-                                    Earned</label>
+                                    Earned<span class="text-red-500">*</span></label>
                                 <input :id="'unitsEarned_' + (index + 1)" type="number"
                                     x-model="education.unitsEarned"
-                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     required>
                             </div>
                             <div class="col-span-2">
@@ -441,7 +447,7 @@
                                     Received</label>
                                 <input :id="'honorsReceived_' + (index + 1)" type="text"
                                     x-model="education.honorsReceived"
-                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                             </div>
                         </div>
                         <button type="button"
@@ -460,7 +466,8 @@
         </div>
         <div id="step8" x-cloak x-show="currentStep === 8" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2 mb-2">
-                <div class="mb-2 font-bold text-white">Preferred Schedule (Training)</div>
+                <div class="mb-2 font-bold text-black dark:text-white">Preferred Schedule (Training)<span
+                        class="text-red-500">*</span></div>
                 <div class="mb-2 flex items-center rounded border border-gray-200 ps-4 dark:border-gray-700">
                     <input x-model="form.preferred_schedule" id="weekdays" type="radio" value="weekdays"
                         name="preferred_schedule"
@@ -487,7 +494,7 @@
             <div class="col-span-1 mb-2">
 
                 <label for="preferred_start" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Date
-                    Start</label>
+                    Start<span class="text-red-500">*</span></label>
                 <div class="relative max-w-sm">
                     <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -505,7 +512,7 @@
             <div class="col-span-1 mb-2">
                 <label for="preferred_finish"
                     class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Date
-                    Finish</label>
+                    Finish<span class="text-red-500">*</span></label>
                 <div class="relative max-w-sm">
                     <div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
                         <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -996,6 +1003,29 @@
                         document.cookie =
                             `currentStep=${this.currentStep};expires=${expirationDate.toUTCString()};path=/`;
                     },
+                    // loadProgress() {
+                    //     const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+                    //         const [key, value] = cookie.trim().split('=').map(decodeURIComponent);
+                    //         // const value = valueParts.join('=');
+                    //         acc[key] = value;
+                    //         return acc;
+                    //     }, {});
+                    //     if (cookies.formProgress) {
+                    //         const formProgress = JSON.parse(cookies.formProgress);
+                    //         const savedCourseId = formProgress.course_id; // Assuming this is how course_id is stored
+
+                    //         // Check if the course_id matches
+                    //         if (savedCourseId === this.form.course_id) {
+
+                    //             this.form = formProgress;
+                    //             if (cookies.currentStep) {
+                    //                 this.currentStep = parseInt(cookies.currentStep, 10);
+                    //             }
+                    //         } else {
+                    //             this.currentStep = 1;
+                    //         }
+                    //     }
+                    // },
                     loadProgress() {
                         const cookies = document.cookie.split(';').reduce((acc, cookie) => {
                             const [key, ...valueParts] = cookie.trim().split('=');
@@ -1005,17 +1035,30 @@
                         }, {});
                         if (cookies.formProgress) {
                             const formProgress = JSON.parse(cookies.formProgress);
-                            const savedCourseId = formProgress.course_id; // Assuming this is how course_id is stored
+                            const savedCourseId = formProgress.course_id;
 
-                            // Check if the course_id matches
-                            if (savedCourseId === this.form.course_id) {
+                            @php
+                                if (isset($_COOKIE['formProgress'])) {
+                                    // Decode the JSON string from the 'formProgress' cookie
+                                    $cookie_form = json_decode($_COOKIE['formProgress'], true);
+
+                                    // Decrypt the course_id and user_id if they exist and are encrypted
+                                    $decryptedCourseId = isset($cookie_form['course_id']) ? decrypt($cookie_form['course_id']) : null;
+                                } else {
+                                    $decryptedCourseId = null;
+                                }
+                            @endphp
+
+
+                            @if ($decryptedCourseId == $course_id)
                                 this.form = formProgress;
                                 if (cookies.currentStep) {
                                     this.currentStep = parseInt(cookies.currentStep, 10);
                                 }
-                            } else {
-                                this.currentStep = 1;
-                            }
+                            @endif
+                            // } else {
+                            //     this.currentStep = 1;
+                            // }
                         }
                     },
                     clearProgress() {
@@ -1026,7 +1069,7 @@
                         this.loadProgress();
                         this.fetchRegions();
                         // this.regionSelect();
-                        if (this.form.employment_type !== 'employed' || this.form.employment_type !== 'trainee') {
+                        if (this.form.employment_type !== 'employed') {
                             $('#employment_status').prop("disabled", true)
                         }
                         console.log(this.form);

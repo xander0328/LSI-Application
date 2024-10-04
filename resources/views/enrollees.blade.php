@@ -12,12 +12,15 @@
                 {{ __('Enrollees') }} <span class="text-slate-600">|</span> <span
                     class="text-lg font-normal text-sky-500">{{ $course->name }}</span>
             </div>
+            <div class="px-2 bg-gray-600 rounded">
+                <span>Enrollees: </span><span class="font-bold">{{ $course->enrollees_count }}</span>
+            </div>
         </div>
 
     </x-slot>
-    <div class="px-8 pt-36">
+    <div x-data="batchManager()" class="px-8 pt-36 pb-8">
 
-        <div class="overflow-x-auto shadow-md sm:rounded-lg" x-data="batchManager()">
+        <div class="overflow-x-auto shadow-md sm:rounded-lg">
             <div
                 class="flex flex-col items-center justify-between space-y-4 bg-white py-4 dark:bg-gray-900 md:flex-row md:space-y-0">
                 <label for="table-search" class="sr-only">Search</label>
@@ -77,28 +80,7 @@
                             </td>
                             <th @click="toggleUser(user.id)" scope="row" class="px-6 py-4">
                                 <div class="flex items-center whitespace-nowrap text-white">
-                                    <template x-if="user.enrollee_files && user.enrollee_files.length > 0">
-                                        <!-- Loop through enrollee_files if they exist -->
-                                        <template x-for="file in user.enrollee_files" :key="file.id">
-                                            <template x-if="file.credential_type === 'id_picture'">
-                                                <img :src="`{{ asset('storage/enrollee_files') }}/${user.course_id}/${user.id}/id_picture/${file.folder}/${file.filename}`"
-                                                    class="h-10 w-10 rounded-full" alt="profile">
-                                            </template>
-                                        </template>
-
-                                        <!-- Show temporary profile picture if no id_picture is found -->
-                                        <template
-                                            x-if="!user.enrollee_files.some(file => file.credential_type === 'id_picture')">
-                                            <img src="{{ asset('images/temporary/profile.png') }}"
-                                                class="h-10 w-10 rounded-full" alt="profile">
-                                        </template>
-                                    </template>
-                                    <!-- Show temporary profile picture if enrollee_files is null or empty -->
-                                    <template x-if="!user.enrollee_files || user.enrollee_files.length === 0">
-                                        <img src="{{ asset('images/temporary/profile.png') }}"
-                                            class="h-10 w-10 rounded-full" alt="profile">
-                                    </template>
-                                    <div class="pl-3">
+                                    <div class="">
                                         <div class="text-base font-semibold"
                                             x-text="`${user.user.lname}, ${user.user.fname} ${user.user.mname || ''}`">
                                         </div>
@@ -194,6 +176,7 @@
                 No enrollees
             </div>
 
+
             {{-- List of Batches Modal --}}
             <div x-cloak x-show="showBatchesModal" x-transition:enter="transition ease-out duration-200"
                 x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
@@ -271,7 +254,8 @@
                                                             <input type="hidden" name="batch_id"
                                                                 :value="batch.id">
 
-                                                            <button @click.prevent="confirmDelete()"
+                                                            <button
+                                                                @click.prevent="confirmDelete('Are you sure?', 'Batch will be removed and data related to this', 'Continue', null)"
                                                                 class="h-full w-full" type="button">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                                     viewBox="0 0 24 24">
@@ -928,13 +912,38 @@
                 </div>
             </div>
         </div>
+        <template x-if="course?.enrollees && course.enrollees.length < course.enrollees_count">
+            <div class="flex items-center justify-end pt-2">
+                <div x-cloak x-show="loadingFetch" class="p-2" role="status">
+                    <svg aria-hidden="true"
+                        class="inline h-6 w-6 animate-spin fill-gray-600 text-gray-200 dark:fill-gray-300 dark:text-gray-600"
+                        viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor" />
+                        <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill" />
+                    </svg>
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <button type="button" id="load_more_button" @click="loadMore" :disabled="loadingFetch"
+                    class="hover:text-primary-700 flex flex-shrink-0 items-center justify-center rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700">
+                    <svg class="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M2 12C2 16.97 6.03 21 11 21C13.39 21 15.68 20.06 17.4 18.4L15.9 16.9C14.63 18.25 12.86 19 11 19C4.76 19 1.64 11.46 6.05 7.05C10.46 2.64 18 5.77 18 12H15L19 16H19.1L23 12H20C20 7.03 15.97 3 11 3C6.03 3 2 7.03 2 12Z" />
+                    </svg>
+                    Load More
+                </button>
+            </div>
+        </template>
     </div>
     </div>
     @section('script')
         <script>
             function batchManager() {
                 return {
-                    course: [],
+                    course: @json($course ?? ''),
                     selectedUserIds: [],
                     allChecked: false,
                     batchId: null,
@@ -949,26 +958,53 @@
 
                     page: {{ $page }},
                     allLoaded: false,
+                    // async loadMore() {
+                    //     this.loading = true;
+                    //     try {
+                    //         const response = await axios.get(`/courses/${this.courseId}/enrollees/${this.page}`);
+                    //         const data = response.data;
+                    //         console.log(data);
+
+
+                    //         if (this.course.length == 0) {
+                    //             this.course = data;
+                    //             this.page++;
+                    //         } else {
+                    //             if (data.length > 0) {
+                    //                 this.course = [...this.course.enrollees, ...data];
+                    //                 this.page++;
+                    //             } else {
+                    //                 this.allLoaded = true;
+                    //             }
+                    //         }
+
+                    //     } catch (error) {
+                    //         console.error("Failed to load more enrollees:", error);
+                    //     }
+                    //     this.loading = false;
+                    // },
                     async loadMore() {
                         this.loading = true;
                         try {
                             const response = await axios.get(`/courses/${this.courseId}/enrollees/${this.page}`);
-                            const data = response.data;
-                            console.log(data);
+                            const enrollees = response.data;
 
+                            // If there are enrollees returned from the API
+                            if (enrollees.length > 0) {
+                                if (this.course.enrollees) {
+                                    // Append new enrollees to the existing list of enrollees
+                                    this.course.enrollees = [...this.course.enrollees, ...enrollees];
+                                } else {
+                                    // If no enrollees have been loaded before, set the initial list
+                                    this.course.enrollees = enrollees;
+                                }
 
-                            if (this.course.length == 0) {
-                                this.course = data;
+                                // Increment the page count for future loads
                                 this.page++;
                             } else {
-                                if (data.length > 0) {
-                                    this.course = [...this.course.enrollees, ...data];
-                                    this.page++;
-                                } else {
-                                    this.allLoaded = true;
-                                }
+                                // If no more enrollees, stop loading more
+                                this.allLoaded = true;
                             }
-
                         } catch (error) {
                             console.error("Failed to load more enrollees:", error);
                         }
@@ -1055,6 +1091,8 @@
                     create_new_batch(courseId) {
                         // console.log(this.courses.find(course => course.id === courseId));
                         var course = this.course
+                        console.log(course);
+
                         var i = this
                         $.ajax({
                             url: "{{ route('create_new_batch') }}",
@@ -1171,6 +1209,7 @@
                         }
                     },
                     confirmDelete(title, text, confirmButtonText, ajax) {
+                        var form = event.target.closest('form');
                         Swal.fire({
                             title: title,
                             text: text,
@@ -1181,7 +1220,11 @@
                             confirmButtonText: confirmButtonText
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                $.ajax(ajax)
+                                if (ajax) {
+                                    $.ajax(ajax)
+                                } else {
+                                    form.submit();
+                                }
                             }
                         });
                     },

@@ -83,6 +83,8 @@ class InstructorController extends Controller
     public function batch_assignments($batch_id){
         // $batch = Batch::find($batch_id);
         $assignments = Assignment::where('batch_id', $batch_id)->get();
+
+        // dd($assignments);
         // $course = $batch->course;
         $batch = Batch::with('unit_of_competency.lesson.assignment')->where('id', $batch_id)->first();
         
@@ -117,7 +119,7 @@ class InstructorController extends Controller
             })
             ->values(); 
 
-        // dd($all_lessons);
+        // dd($all_ucs);
 
         $temp_files = TempAssignment::where('batch_id',$batch_id)->get();
             // dd($batch);
@@ -151,34 +153,47 @@ class InstructorController extends Controller
         $assignment = Assignment::where('id', $assignment_id)->first();
         $batch = Batch::with('unit_of_competency.lesson.assignment.assignment_files')->where('id', $assignment->batch_id)->first();
 
-        $students = Enrollee::where('batch_id', '=', $batch->id)->get();
+        $students = Enrollee::where('batch_id', $batch->id)
+        ->with([
+            'enrollee_turn_in' => function ($q) use($assignment_id) {
+                $q->where('assignment_id', $assignment_id)
+                ->with('turn_in_files');
+            }, // Get turn-in files directly related to the enrollee's turn-ins
+            'user', 
+            'enrollee_grades' => function ($q) use($assignment_id) {
+                $q->where('assignment_id', $assignment_id);
+            }
+         ])
+        ->get();
+
+        // dd($students);
         
-        $turn_ins = TurnIn::whereIn('enrollee_id', $students->pluck('id')->filter())
-        ->where('assignment_id', $assignment_id)->get();
-        $turn_in_files = TurnInFile::whereIn('turn_in_id', $turn_ins->pluck('id')->filter())->get();
+        // $turn_ins = TurnIn::whereIn('enrollee_id', $students->pluck('id')->filter())
+        // ->where('assignment_id', $assignment_id)->get();
+        // $turn_in_files = TurnInFile::whereIn('turn_in_id', $turn_ins->pluck('id')->filter())->get();
         
-        $student_grades = StudentGrade::whereIn('enrollee_id', $students->pluck('id')->filter())
-        ->where('assignment_id', $assignment_id)->get();
+        // $student_grades = StudentGrade::whereIn('enrollee_id', $students->pluck('id')->filter())
+        // ->where('assignment_id', $assignment_id)->get();
 
-        $turn_ins->map(function ($turn_in) use ($turn_in_files) {
-            $turn_in->turn_in_files = $turn_in_files->where('turn_in_id', $turn_in->id)->values();
-            return $turn_in;
-        });
+        // $turn_ins->map(function ($turn_in) use ($turn_in_files) {
+        //     $turn_in->turn_in_files = $turn_in_files->where('turn_in_id', $turn_in->id)->values();
+        //     return $turn_in;
+        // });
 
-        $students->map(function ($student) use ($turn_ins, $student_grades) {
-            $student->turn_ins = $turn_ins->where('enrollee_id', $student->id)->values();
-            $student->grades = $student_grades->where('enrollee_id', $student->id)->values();
-            return $student;
-        });
+        // $students->map(function ($student) use ($turn_ins, $student_grades) {
+        //     $student->turn_ins = $turn_ins->where('enrollee_id', $student->id)->values();
+        //     $student->grades = $student_grades->where('enrollee_id', $student->id)->values();
+        //     return $student;
+        // });
 
-        $turn_ins = TurnIn::where('assignment_id', $assignment_id)->get();
-        $user = collect();
-        $files = collect();
-        $grade = collect();
+        // $turn_ins = TurnIn::where('assignment_id', $assignment_id)->get();
+        // $user = collect();
+        // $files = collect();
+        // $grade = collect();
 
-        foreach($students as $student){
-            $user = $user->merge([$student->user]);
-        }
+        // foreach($students as $student){
+        //     $user = $user->merge([$student->user]);
+        // }
         $assignment->unit_of_competency_id = $assignment->lesson->unit_of_competency_id;
 
         return view('instructor.list_turn_ins', compact('assignment', 'batch', 'students' ,'assignment'));
@@ -568,7 +583,12 @@ class InstructorController extends Controller
     }
     
     public function post_assignment(Request $request){
-        
+        $token = Enrollee::where('batch_id', $request->batch_id)
+        ->with(['user' => function ($q){
+            $q->with('device_tokens');
+        }])->get();
+        dd($token);
+
         $assignment_details = $request->only([
             'batch_id',
             'title',
@@ -577,7 +597,9 @@ class InstructorController extends Controller
             'due_hour',
         ]);
         
-        if($assignment_details['due_date'] != null){
+        $assignment_details['due_date'] = null;
+        if(isset($request->set_due)){
+            // dd('Hello');
             $assignment_details['due_date'] = date('Y-m-d', strtotime($assignment_details['due_date']));
         }
 
@@ -647,13 +669,10 @@ class InstructorController extends Controller
             }
         }
 
-        // $token = User::whereNotNull('device_token')
-        // ->whereHas('enrollee', function ($query) use ($batch_id) {
-        //     $query->where('batch_id', $batch_id);
-        // })->pluck('device_token');
-        // $body = $request->title .': '. $request->description;
+       
+        $body = $request->title .': '. $request->description;
 
-        // NotificationSendController::sendAppNotification($token, $title, $body, null);
+        NotificationSendController::sendAppNotification($token, $title, $body, null);
         return redirect()->back()->with('success', 'Assigned successfully.');;
     }
 
@@ -967,7 +986,6 @@ class InstructorController extends Controller
         ->where('batch_id', $request->batch_id)
         ->first();
 
-        // dd($request);
 
         if($request->grade != 0 && $request->grade != null){
             if(!$student_grade){
@@ -976,20 +994,21 @@ class InstructorController extends Controller
                 $student_grade->assignment_id = $request->assignment_id;
                 $student_grade->enrollee_id = $request->enrollee_id;
                 $student_grade->grade = $request->grade;
-                $student_grade->remark = null;
+                $student_grade->remark = $request->remark;
                 $student_grade->save();
             }elseif($student_grade){
                 $student_grade->grade = $request->grade;
+                $student_grade->remark = $request->remark;
                 $student_grade->save();
             }
 
         }elseif($request->grade == null || $request->grade == 0){
             if($student_grade){
-                $student_grade->delete();
+                $student_grade->update(["grade" => 0, "remark" => $request->remark]);
             }
         }
         $trainee_name = Enrollee::where('id', $request->enrollee_id)->select(['id', 'user_id'])->with(['user:id,lname,fname'])->first();
-        return response()->json(['status' => 'success', 'trainee' => $trainee_name]);
+        return response()->json(['status' => 'success', 'trainee' => $trainee_name, 'student_grade' => $student_grade]);
 
         // return response()->json(['status' => $request->grade]);
         // dd($request->grade);
@@ -997,14 +1016,6 @@ class InstructorController extends Controller
         $user = collect();
         $user = $user->merge($student_grade->enrollee);
         $batch = Batch::where('id', $student_grade->batch_id)->first();
-
-        // dd($student_grade['enrollee']['user_id']);
-        // $token = User::where('id', $student_grade['enrollee']['user_id'])->pluck('device_token');
-        // $title = '['.$batch->name.'] Trainer '.auth()->user()->fname.' '.auth()->user()->lname;
-        // $body = 'your work is graded';
-        // // dd($token);
-        // NotificationSendController::sendAppNotification($token, $title, $body, null);
-        
     }
 
     //Attendance
@@ -1069,6 +1080,14 @@ class InstructorController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    public function comments($post_id){
+        $post = Post::where('id', $post_id)
+        ->with('comments')
+        ->first();
+
+        return view('instructor.comments', compact('post'));
     }
 
 }

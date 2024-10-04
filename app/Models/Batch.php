@@ -41,6 +41,11 @@ class Batch extends Model
         return $this->hasMany(Assignment::class);
     }
 
+    public function enrollee_assignment()
+    {
+        return $this->hasOne(Assignment::class);
+    }
+
     public function course()
     {
         return $this->belongsTo(Course::class);

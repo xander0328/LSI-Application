@@ -5,7 +5,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
             <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
-                <div>{{ __('Course') }}</div>
+                <div>{{ __('Assignment') }}</div>
                 <div class="hidden md:block text-slate-600">|</div>
                 <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
             </div>
@@ -50,57 +50,7 @@
         </div>
 
     </x-slot>
-    <div x-data="assignmentList" id="course_list" class="mx-4 md:mx-8 pt-44 md:pt-48  text-white">
-        {{-- <div class="relative flex pt-2">
-            <x-dropdown width="lg" align="left">
-                <x-slot name="trigger">
-                    <button
-                        class="flex cursor-pointer rounded-md bg-sky-700 px-4 py-2 text-sm text-white transition duration-150 ease-in-out hover:bg-sky-800 focus:outline-none">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mr-1 h-5 w-5">
-                            <path fill="currentColor"
-                                d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" />
-                        </svg>
-                        Manage
-                    </button>
-                </x-slot>
-
-                <x-slot name="content">
-                    <div class="m-1.5">
-                        <a @click="triggerModal('assignment')"
-                            class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
-                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                <path fill="currentColor"
-                                    d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                            </svg>
-                            <div>Assignment</div>
-                        </a>
-
-                        <template x-if="course.structure != 'small'">
-                            <a @click="triggerModal('lesson')"
-                                class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path fill="currentColor"
-                                        d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                                </svg>
-                                <div>Lesson</div>
-                            </a>
-                        </template>
-
-                        <template x-if="course.structure == 'big'">
-                            <a @click="triggerModal('uc')"
-                                class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path fill="currentColor"
-                                        d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
-                                </svg>
-                                <div>Unit of Competency</div>
-                            </a>
-                        </template>
-
-                    </div>
-                </x-slot>
-            </x-dropdown>
-        </div> --}}
+    <div x-data="assignmentList" id="course_list" class="mx-4 md:mx-8 pt-44 md:pt-48  text-white pb-20">
         <template x-if="course.structure == 'big'">
             <div>
                 <template x-for="uc in uc" :key="uc.id">
@@ -108,12 +58,19 @@
                         <h2 :id="`accordion-collapse-heading-${uc.id}`" x-transition>
                             <button type="button" @click="open = !open" :class="open ? 'bg-sky-800' : 'bg-gray-700 '"
                                 class="mt-2 flex w-full items-center justify-between gap-3 rounded-b-md rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white">
-                                <div>
-                                    <div x-text="uc.title"></div>
+                                <div class="flex space-x-2 items-center">
+                                    <div class="flex items-center">
+                                        <span
+                                            class="text-white font-medium text-sm w-6 h-6 inline-flex justify-center items-center rounded-full "
+                                            :class="open ? 'bg-sky-950' : 'bg-sky-700'" x-text="uc.lesson.length">
+                                        </span>
+                                    </div>
+                                    <div class="text-start" x-text="uc.title"></div>
                                 </div>
+
                                 <div class="flex items-center">
-                                    <svg class="h-3 w-3 shrink-0 rotate-180" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 10 6">
+                                    <svg class="h-3 w-3 shrink-0 " :class="{ 'rotate-180': !open }"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="M9 5 5 1 1 5" />
                                     </svg>
@@ -124,12 +81,21 @@
                         <div x-show="open" x-transition>
                             <template x-if="uc.lesson.length < 1">
                                 <div class="my-2 rounded-md bg-gray-800 p-1.5 text-center text-sm text-white/75">No
-                                    Lesson
+                                    Learning Outcome
                                 </div>
                             </template>
                             <template x-for="lesson in uc.lesson" :key="lesson.id">
                                 <div class="px-2 py-1.5">
-                                    <div class="text-md my-1.5 rounded-md bg-sky-700 p-1.5" x-text="lesson.title">
+                                    <div class="flex space-x-2 items-center my-1.5 rounded-md bg-sky-700 p-1.5">
+                                        <div class="flex items-center">
+                                            <span
+                                                class="text-white font-medium text-sm w-6 h-6 inline-flex justify-center items-center rounded-full bg-sky-950"
+                                                x-text="lesson.assignment.length">
+                                            </span>
+                                        </div>
+                                        <div class="text-md" x-text="lesson.title">
+
+                                        </div>
                                     </div>
                                     <template x-if="lesson.assignment.length < 1">
                                         <div
@@ -146,18 +112,15 @@
                                                     <div class="flex items-center justify-start gap-4">
                                                         <div>
                                                             <div class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full p-2"
-                                                                :class="{
-                                                                    'bg-sky-700': !assignment.closed,
-                                                                    'bg-red-700': assignment.closed,
-                                                                }">
-                                                                <svg x-show="assignment.closed"
+                                                                :class="getAssignmentClass(assignment)">
+                                                                <svg x-show="getAssignmentClass(assignment) == 'bg-red-700'"
                                                                     xmlns="http://www.w3.org/2000/svg"
                                                                     viewBox="0 0 24 24">
                                                                     <title>book-cancel-outline</title>
                                                                     <path fill="white"
                                                                         d="M12.18 20C12.36 20.72 12.65 21.39 13.04 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H18C19.11 2 20 2.9 20 4V12.18C19.5 12.07 19 12 18.5 12C18.33 12 18.17 12 18 12.03V4H13V12L10.5 9.75L8 12V4H6V20H12.18M23 18.5C23 21 21 23 18.5 23S14 21 14 18.5 16 14 18.5 14 23 16 23 18.5M20 21.08L15.92 17C15.65 17.42 15.5 17.94 15.5 18.5C15.5 20.16 16.84 21.5 18.5 21.5C19.06 21.5 19.58 21.35 20 21.08M21.5 18.5C21.5 16.84 20.16 15.5 18.5 15.5C17.94 15.5 17.42 15.65 17 15.92L21.08 20C21.35 19.58 21.5 19.06 21.5 18.5Z" />
                                                                 </svg>
-                                                                <svg x-show="!assignment.closed"
+                                                                <svg x-show="getAssignmentClass(assignment) == 'bg-sky-700' || getAssignmentClass(assignment) == 'bg-yellow-700' "
                                                                     xmlns="http://www.w3.org/2000/svg"
                                                                     viewBox="0 0 24 24">
                                                                     <title>book-clock-outline</title>
@@ -173,8 +136,18 @@
                                                             </div> --}}
                                                         </div>
                                                     </div>
-                                                    <div class="text-sm text-gray-500"
-                                                        x-text=" assignment.due_date != null ? 'Due ' + moment(assignment.due_date).format('ll') : 'No due'">
+                                                    <div>
+                                                        <div class="text-sm text-gray-500"
+                                                            x-text="assignment.due_date != null ? 'Due ' + moment(assignment.due_date).format('ll'): 'No due'">
+                                                        </div>
+                                                        <template x-if="assignment.closing">
+                                                            <div class="text-end">
+                                                                <span
+                                                                    class=" text-xs px-2 rounded bg-red-700 text-white">
+                                                                    Closing
+                                                                </span>
+                                                            </div>
+                                                        </template>
                                                     </div>
                                                 </a>
 
@@ -236,10 +209,13 @@
                                                         <div class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full p-2"
                                                             :class="{
                                                                 'bg-sky-700': !assignment.closed,
-                                                                'bg-red-700': assignment.closed,
+                                                                'bg-red-700': assignment.closed || (moment(assignment
+                                                                            .due_date +" "+ assignment.due_hour).format() < moment()
+                                                                    .format()),
                                                             }">
                                                             <svg x-show="assignment.closed"
-                                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                viewBox="0 0 24 24">
                                                                 <title>book-cancel-outline</title>
                                                                 <path fill="white"
                                                                     d="M12.18 20C12.36 20.72 12.65 21.39 13.04 22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H18C19.11 2 20 2.9 20 4V12.18C19.5 12.07 19 12 18.5 12C18.33 12 18.17 12 18 12.03V4H13V12L10.5 9.75L8 12V4H6V20H12.18M23 18.5C23 21 21 23 18.5 23S14 21 14 18.5 16 14 18.5 14 23 16 23 18.5M20 21.08L15.92 17C15.65 17.42 15.5 17.94 15.5 18.5C15.5 20.16 16.84 21.5 18.5 21.5C19.06 21.5 19.58 21.35 20 21.08M21.5 18.5C21.5 16.84 20.16 15.5 18.5 15.5C17.94 15.5 17.42 15.65 17 15.92L21.08 20C21.35 19.58 21.5 19.06 21.5 18.5Z" />
@@ -292,8 +268,10 @@
                                             <div class="relative inline-flex h-10 w-10 items-center justify-center overflow-hidden rounded-full p-2"
                                                 :class="{
                                                     'bg-sky-700': !assignment.closed,
-                                                    'bg-red-700': assignment.closed,
-                                                }">
+                                                    'bg-red-700': assignment.closed || (moment(assignment
+                                                                .due_date +" "+ assignment.due_hour).format() < moment()
+                                                    .format()),
+                                            }">
                                                 <svg x-show="assignment.closed" xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 24 24">
                                                     <title>book-cancel-outline</title>
@@ -369,8 +347,8 @@
                                     class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                                     <div class="flex rounded-lg">
                                         <label class="inline-flex w-full cursor-pointer items-center">
-                                            <input @change="dueDateToggle()" type="checkbox" id="due_date_toggle"
-                                                class="peer sr-only">
+                                            <input @change="dueDateToggle()" name="set_due" type="checkbox"
+                                                id="due_date_toggle" class="peer sr-only">
                                             <div
                                                 class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600 dark:peer-focus:ring-blue-800">
                                             </div>
@@ -445,7 +423,8 @@
                                     </template>
                                     <div class="col-span-2">
                                         <label for="lesson"
-                                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Lesson</label>
+                                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Learning
+                                            Outcome</label>
 
                                         <select id="lesson" name="lesson" required
                                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
@@ -578,7 +557,7 @@
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Lessons
+                            Learning Outcome
                         </h3>
                         <button type="button" @click="showLessonModal = !showLessonModal"
                             class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -615,7 +594,8 @@
                                                         </button>
                                                     </div>
                                                     <template x-if="uc.lesson.length < 1">
-                                                        <div class="p-2 text-sm text-gray-400">No lesson</div>
+                                                        <div class="p-2 text-sm text-gray-400">No learning outcome
+                                                        </div>
                                                     </template>
 
                                                     <template x-for="lesson in uc.lesson" :key="lesson.id">
@@ -654,8 +634,9 @@
                                             </template>
                                             <template x-if="uc.length < 1">
                                                 <div class="p-2 text-center text-sm text-gray-400">
-                                                    No lessons yet. Create a unit of competency first before adding a
-                                                    lesson.
+                                                    No learning outcomes yet. Create a unit of competency first before
+                                                    adding a
+                                                    learning outcome.
                                                 </div>
                                             </template>
                                         </div>
@@ -667,7 +648,7 @@
                                                 <button
                                                     @click="showAddLesson = !showAddLesson; showLessonModal = !showLessonModal"
                                                     class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm hover:bg-sky-800">Add
-                                                    Lesson</button>
+                                                    Learning Outcome</button>
                                             </div>
                                             <template x-if="lesson.length > 0">
                                                 <template x-for="lesson in lesson" :key="lesson.id">
@@ -705,7 +686,7 @@
                                             </template>
                                             <template x-if="lesson.length < 1">
                                                 <div class="p-2 text-center text-sm text-gray-400">
-                                                    No lessons
+                                                    No learning outcomes
                                                 </div>
                                             </template>
                                         </div>
@@ -812,7 +793,7 @@
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Edit Lesson Name
+                            Edit Learning Outcome
                         </h3>
                         <button type="button"
                             @click="showEditLesson = !showEditLesson; showLessonModal = !showLessonModal"
@@ -841,7 +822,7 @@
                                         <div class="col-span-8">
                                             <input type="text" id="new_lesson_name" name="new_lesson_name"
                                                 class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                                placeholder="New Lesson Name" :value="selectedLesson.title"
+                                                placeholder="New Learning Outcome Title" :value="selectedLesson.title"
                                                 required />
                                         </div>
                                         <button @click.prevent="saveEdit('lesson')" type="button"
@@ -933,7 +914,7 @@
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                            Add Lesson
+                            Add Learning Outcome
                         </h3>
                         <button type="button"
                             @click="showAddLesson = !showAddLesson; showLessonModal = !showLessonModal"
@@ -959,7 +940,7 @@
                                         <input autocomplete="on" list="options" id="lesson_title"
                                             name="lesson_title"
                                             class="mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                            placeholder="Lesson Title" required />
+                                            placeholder="Learning Outcome Title" required />
                                         <datalist id="options">
                                             <template x-for="lesson in all_lessons" :key="lesson">
                                                 <option :value="lesson"></option>
@@ -1050,7 +1031,7 @@
 
         {{-- Speed Dial --}}
         <template x-if="batch.completed_at == null">
-            <div data-dial-init class="fixed bottom-6 end-6 group">
+            <div data-dial-init class=" fixed bottom-6 end-6 group">
                 <div id="speed-dial-menu-text-outside-button-square"
                     class="flex flex-col items-center hidden mb-4 space-y-2">
 
@@ -1152,7 +1133,10 @@
                     assignmentFiles: @json($temp_files),
                     filepondFiles: [],
                     init() {
-                        console.log($('#due_date_toggle'));
+                        console.log(this.assignments)
+                        this.assignments.forEach(function(ass) {
+                            console.log(!ass.closed && moment(ass.formattedDue).isSameOrAfter(moment()), )
+                        })
 
                         if (this.assignmentFiles) {
                             this.filepondFiles = this.assignmentFiles.map(file => {
@@ -1356,7 +1340,28 @@
 
                     toggleShowAddFile() {
 
+                    },
+
+                    getAssignmentClass(assignment) {
+                        const isClosed = assignment.closed;
+                        const isClosing = assignment.closing;
+                        const isDuePast = moment(assignment.formattedDue).isBefore(moment());
+
+
+                        if ((!isClosing || !isClosed) && !isDuePast) {
+                            console.log(assignment);
+                            return 'bg-sky-700'; // Sky blue if not closing or not closed
+                        } else if ((isClosed || isDuePast) && isClosing) {
+                            return 'bg-red-700'; // Red if closed or due date is past
+                        } else if (!isClosed && isDuePast) {
+                            return 'bg-yellow-700'; // Yellow if not closed and due date is past
+                        }
+
+                        return ''; // Default case, if none of the conditions are met
                     }
+
+
+
                 }
             }
         </script>

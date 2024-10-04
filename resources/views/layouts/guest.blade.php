@@ -66,7 +66,7 @@
 
             <div class="flex justify-center">
                 <div
-                    class="my-6 w-full overflow-hidden rounded-lg bg-white px-6 py-4 shadow-md dark:bg-gray-800 sm:max-w-md">
+                    class="my-6 w-full overflow-hidden rounded-lg bg-white/65 px-6 py-4 shadow-md dark:bg-gray-800 sm:max-w-md">
                     {{ $slot }}
                 </div>
             </div>

@@ -20,6 +20,6 @@ class Attendance extends Model
 
     public function student_attendance()
     {
-        return $this->belongsTo(StudentAttendance::class);
+        return $this->hasOne(StudentAttendance::class);
     }
 }

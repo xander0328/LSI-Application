@@ -81,6 +81,10 @@ class Enrollee extends Model
         return $this->hasMany(Education::class);        
     }
 
+    public function enrollee_grades(){
+        return $this->hasOne(StudentGrade::class);
+    }
+
     public function grades()
     {
         return $this->hasMany(StudentGrade::class);
@@ -89,8 +93,16 @@ class Enrollee extends Model
     public function turn_ins() {
         return $this->hasMany(TurnIn::class);
     }
+    
+    public function enrollee_turn_in() {
+        return $this->hasOne(TurnIn::class);
+    }
 
     public function payments() {
         return $this->hasMany(Payment::class);
+    }
+
+    public function assignment(){
+        return $this->hasMany(Assignment::class);
     }
 }

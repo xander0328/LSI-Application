@@ -32,16 +32,17 @@
                 <div class="mt-4">
                     <x-input-label for="fname" :value="__('First Name')" />
                     <x-text-input x-model="firstName" @input="validateName($event, 'first name')" id="fname"
-                        class="mt-1 block w-full border border-red-600" type="text" name="fname" :value="old('fname')"
-                        required autofocus autocomplete="fname" />
+                        class="mt-1 capitalize block w-full border border-red-600" type="text" name="fname"
+                        :value="old('fname')" required autofocus autocomplete="fname" />
                     {{-- <x-input-error :messages="$errors->get('fname')" class="mt-2" /> --}}
                 </div>
                 <div id="fnameError" x-show="fnameError" x-text="fnameError"
-                    class="error rounded-md p-1 text-sm text-red-500"></div>
+                    class="error rounded-md p-1 text-red-400 bg-gray-700 text-sm mt-1  dark:bg-transparent dark:text-red-500">
+                </div>
 
                 <div class="mt-4">
                     <x-input-label for="mname" :value="__('Middle Name (Optional)')" />
-                    <x-text-input id="mname" class="mt-1 block w-full" type="text" name="mname"
+                    <x-text-input id="mname" class=" capitalize mt-1 block w-full" type="text" name="mname"
                         :value="old('mname')" autocomplete="mname" />
                     <x-input-error :messages="$errors->get('mname')" class="mt-2" />
                 </div>
@@ -49,12 +50,13 @@
                 <div class="mt-4">
                     <x-input-label for="lname" :value="__('Last Name')" />
                     <x-text-input x-model="lastName" @input="validateName($event, 'last name')" id="lname"
-                        class="mt-1 block w-full" type="text" name="lname" :value="old('lname')" required
+                        class=" capitalize mt-1 block w-full" type="text" name="lname" :value="old('lname')" required
                         autocomplete="lname" />
                     {{-- <x-input-error :messages="$errors->get('lname')" class="mt-2" /> --}}
                 </div>
                 <div id="lnameError" x-show="lnameError" x-text="lnameError"
-                    class="error rounded-md p-1 text-sm text-red-500"></div>
+                    class="error rounded-md p-1 text-red-400 bg-gray-700 text-sm mt-1  dark:bg-transparent dark:text-red-500">
+                </div>
 
                 <div class="mt-4 text-end">
                     <a class="mr-3 rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
@@ -76,7 +78,8 @@
                     {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
                 </div>
                 <div id="lnameError" x-show="emailError" x-text="emailError"
-                    class="error rounded-md p-1 text-sm text-red-500"></div>
+                    class="error rounded-md p-1 text-red-400 bg-gray-700 text-sm mt-1  dark:bg-transparent dark:text-red-500">
+                </div>
 
                 <!-- Contact Number -->
                 <div class="mt-4">
@@ -86,7 +89,8 @@
                         autocomplete="username" />
                     {{-- <x-input-error :messages="$errors->get('email')" class="mt-2" /> --}}
                 </div>
-                <div x-show="contactError" x-text="contactError" class="error rounded-md p-1 text-sm text-red-500">
+                <div x-show="contactError" x-text="contactError"
+                    class="error rounded-md p-1 text-red-400 bg-gray-700 text-sm mt-1  dark:bg-transparent dark:text-red-500">
                 </div>
 
                 <!-- Password -->
@@ -99,7 +103,8 @@
                     <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
                 <div x-show="passwordError" x-text="passwordError" id="passwordError"
-                    class="error rounded-md p-1 text-sm text-red-500"></div>
+                    class="error rounded-md p-1 text-red-400 bg-gray-700 text-sm mt-1  dark:bg-transparent dark:text-red-500">
+                </div>
 
                 <!-- Confirm Password -->
                 <div class="mt-4">
@@ -112,7 +117,8 @@
                     <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                 </div>
                 <div x-show="confirmPasswordError" x-text="confirmPasswordError" id="confirm_passwordError"
-                    class="error rounded-md p-1 text-sm text-red-500"></div>
+                    class="error rounded-md p-1 text-red-400 bg-gray-700 text-sm mt-1  dark:bg-transparent dark:text-red-500">
+                </div>
 
                 <div class="mt-4 flex items-center justify-between">
                     <x-primary-button type="button" class="bg-gray-800 text-black"

@@ -4,29 +4,53 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="text-2xl font-semibold text-white">
-                {{ __('Enrolled Course') }} <span class="text-slate-600">|</span> <span
-                    class="text-lg font-normal text-sky-500">{{ $enrollee->course->name }}</span>
+            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+                <div>{{ __('Assignments') }}</div>
+                <div class="hidden md:block text-slate-600">|</div>
+                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
             </div>
-            <div>Batch: {{ $enrollee->batch->name }}</div>
+            <div class="hidden md:flex items-center">
+                <div class="flex space-x-1 mr-4">
+                    <div class="text-white/75"> Batch: </div>
+                    <div>
+                        {{ $batch->course->code }}-{{ $batch->name }}
+                    </div>
+                </div>
+            </div>
+            <div class="flex md:hidden items-center">
+                <x-dropdown width="40" align="right">
+                    <x-slot name="trigger">
+                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
+                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <title>dots-vertical</title>
+                                <path
+                                    d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
+                            </svg>
+                        </button>
+                    </x-slot>
+
+                    <x-slot name="content">
+                        <div class="m-1.5 flex-row">
+                            <div class="my-2 flex justify-center text-xs space-x-1">
+                                <div class="text-white/75"> Batch: </div>
+                                <div>
+                                    {{ $batch->course->code }}-{{ $batch->name }}
+                                </div>
+                            </div>
+                            <x-course-nav :selected="'assignment'" :batch="$batch->id"></x-course-nav>
+                        </div>
+                    </x-slot>
+                </x-dropdown>
+            </div>
         </div>
-        @if ($enrollee->batch)
-            <x-course-nav :selected="'assignment'"></x-course-nav>
-        @endif
+        <div class="hidden md:block">
+
+            <x-course-nav :selected="'assignment'" :batch="$batch->id"></x-course-nav>
+        </div>
 
     </x-slot>
-    <div x-data="assignmentComponent()" id="course_list" class="mx-8 pb-4 pt-44 text-white">
-        {{-- <div>
-            <a href="{{ route('enrolled_course_assignment') }}">
-                <button class="flex items-center justify-center rounded-full p-2 text-white hover:bg-gray-700">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="mr-1 h-5 w-5">
-                        <title>arrow-left</title>
-                        <path fill="white"
-                            d="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z" />
-                    </svg>
-                </button></a>
-        </div> --}}
+    <div x-data="assignmentComponent()" id="course_list" class="mx-8 pb-4 pt-44  md:pt-48 text-white">
 
         <div class="my-4">
             <div x-cloak id="status"
@@ -67,7 +91,7 @@
                         :class="{
                             'bg-sky-900/75': status == 'completed',
                             'bg-yellow-900/75': status === 'pending',
-                            'bg-red-900/75': status === 'pending',
+                            'bg-red-900/75': status === 'closed',
                             'cursor-not-allowed': assignmentButton.disable,
                         }"
                         :disabled="assignmentButton.disable">
@@ -123,31 +147,43 @@
                     </span>
                 @endif
             </div>
-            @if ($student_grade)
-                <span class="rounded-md bg-sky-800 p-2 text-sm">
-                    Your grade: {{ $student_grade->grade }}
-                </span>
-            @else
-                <div class="p-px text-xs">
-                    Not graded yet
-                </div>
-            @endif
-            <div class="p-px text-xs">
+            <div class="mb-1.5 p-px text-xs">
                 @if (!$assignment->closed)
                     @if ($assignment->closing)
                         Submission will be closed after due
                     @endif
                 @endif
             </div>
+            @if ($student_grade && $student_grade->grade != 0)
+                <span class="rounded-md bg-sky-800 p-2 text-sm">
+                    Your grade: {{ $student_grade->grade }}
+                </span>
+            @else
+                <div class=" text-xs">
+                    <span class="bg-yellow-700 rounded px-2 py-1">
+                        Not graded yet
+                    </span>
+                </div>
+            @endif
+
 
         </div>
+        @if ($student_grade && $student_grade->remark != null)
+            <div class="rounded-lg bg-gray-700/50 p-2 mb-4">
+                <div class="text-sm font-bold">Facilitator's Remarks</div>
+                <pre class="text-wrap p-px font-sans text-sm italic">" {{ $student_grade->remark }} "</pre>
+            </div>
+        @endif
         <div>
             <div class="text-sm font-bold">Instructions</div>
-            @if ($assignment->description == null)
-                <div class="mb-4 p-px text-sm text-gray-700">None</div>
-            @else
-                <pre class="mb-4 p-px font-sans text-sm">{{ $assignment->description }}</pre>
-            @endif
+            <div x-data="{ open: false }">
+                @if ($assignment->description == null)
+                    <div class="mb-4 p-px text-sm text-gray-700">None</div>
+                @else
+                    <pre :class="open ? '' : 'cursor-pointer line-clamp-6'" @click="open = !open"
+                        class="text-wrap mb-4 p-px font-sans text-sm  ">{{ $assignment->description }}</pre>
+                @endif
+            </div>
             <div class="mb-6">
                 @foreach ($assignment->assignment_files as $files)
                     <x-file-type-checker :files="$files" :path="asset(
@@ -317,7 +353,7 @@
                                 this.assignment = data.assignment;
 
                                 if (data.status == 'completed') {
-                                    this.info = 'Turned in '
+                                    this.info = 'Turned in ' + (data.late ? 'late' : '')
                                     this.assignmentButton.text = 'Undo turn in'
                                     this.assignmentStatus = 'Completed'
                                 } else {
@@ -332,7 +368,7 @@
                                 if (data.assignment == 'closed') {
                                     this.info += '. Assignment closed.'
                                     this.assignmentButton.disable = true;
-                                    this.assignmentStatus = data.status !== 'completed' ? 'Closed' : ''
+                                    this.assignmentStatus = data.status !== 'completed' ? 'Closed' : 'Completed'
                                 }
                                 this.isPending = false;
 
@@ -357,7 +393,7 @@
                             })
                             .then(response => response.json())
                             .then(data => {
-                                // Handle response
+
 
                             })
                             .catch(error => console.error('Error:', error))
@@ -420,9 +456,12 @@
 
                         this.getTurnInFiles();
                     },
-                    updateFiles() {
-                        // this.submittedFiles =
-                    }
+
+                    messages: [
+                        "🎉 Awesome job! Your assignment has been submitted! Keep shining! ✨",
+                        "🚀 Well done! You've turned in your assignment. Celebrate your success! 🎊",
+                        "🌟 Congratulations! Assignment submitted! You're one step closer to your goals! 🎈"
+                    ],
                 }
             }
         </script>

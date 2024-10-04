@@ -353,7 +353,7 @@
         </div>
 
         <h1
-            class="my-4 text-center text-2xl font-extrabold leading-none tracking-tight text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+            class="my-4 text-center text-2xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl">
             Welcome to Language Skills Institute </h1>
         <div class="text-sm mx-4 md:mx-20 mb-10 text-center text-white">At LSI, we're dedicated to empowering
             individuals
@@ -375,7 +375,7 @@
                     class="grid gap-8">
                     <template x-for="course in featuredCourses" :key="course.id">
                         <div x-data="{ show: false }" x-intersect="show = true" :class="{ 'opacity-100 ': show }"
-                            class="col-span-1 max-w-sm rounded-xl border-8 border-gray-200 bg-white opacity-0 shadow transition-opacity duration-700 ease-out dark:border-gray-800 dark:bg-gray-800">
+                            class="col-span-1 max-w-sm rounded-xl border-8  opacity-0 shadow transition-opacity duration-700 ease-out border-gray-800 bg-gray-800">
                             <div class="h-44 w-full overflow-hidden rounded-t-lg">
                                 <img class="h-full w-full object-cover object-center"
                                     :src="'{{ asset('storage/website/course_image/:course_id/:folder_name/:filename') }}'
@@ -386,10 +386,10 @@
                             </div>
                             <div class="p-5">
                                 <a href="#">
-                                    <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white"
-                                        x-text="course.name"></h5>
+                                    <h5 class="mb-2 text-lg font-bold tracking-tight text-white" x-text="course.name">
+                                    </h5>
                                 </a>
-                                <p class="mb-3 line-clamp-3 text-sm font-normal text-gray-700 dark:text-gray-400"
+                                <p class="mb-3 line-clamp-3 text-sm font-normal text-gray-400"
                                     x-text="course.description"></p>
                                 <a :href="'{{ route('enroll', ':id') }}'.replace(':id', course.id)"
                                     class="inline-flex items-center rounded-lg text-center text-sm font-semibold text-white hover:text-sky-500 focus:outline-none">
@@ -574,11 +574,11 @@
     </div>
 
     <footer
-        class="w-full border-t border-gray-200 bg-white p-4 shadow dark:border-gray-600 dark:bg-gray-800 md:flex md:items-center md:justify-between md:p-6">
-        <span class="text-sm text-gray-500 dark:text-gray-400 sm:text-center">© 2024 <a href="/"
-                class="hover:underline">Language Skills Institute</a>. All Rights Reserved.
+        class="w-full border-t  p-4 shadow border-gray-600 bg-gray-800 md:flex md:items-center md:justify-between md:p-6">
+        <span class="text-sm  text-gray-400 sm:text-center">© 2024 <a href="/" class="hover:underline">Language
+                Skills Institute</a>. All Rights Reserved.
         </span>
-        <ul class="mt-3 flex flex-wrap items-center text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+        <ul class="mt-3 flex flex-wrap items-center text-sm font-medium  text-gray-400 sm:mt-0">
             <li>
                 <a href="#" class="me-4 hover:underline md:me-6">About</a>
             </li>
@@ -637,6 +637,9 @@
                         this.filePond_config();
                         this.fetchRegions();
                     }
+
+                    this.getSavedToken();
+                    this.fetchToken();
 
                 },
                 filePond_config() {
@@ -866,6 +869,49 @@
                         "hideMethod": "fadeOut"
                     }
                 },
+                token: '',
+                getSavedToken() {
+                    const savedToken = localStorage.getItem('fcm_device_token');
+                    if (savedToken) {
+                        this.token = savedToken;
+                    } else {
+                        console.log('No saved token found.');
+                    }
+                },
+                fetchToken() {
+                    const savedToken = localStorage.getItem('fcm_device_token');
+                    if (!savedToken) {
+                        requestDeviceToken()
+                            .then((token) => {
+                                // Save the token locally and to the server
+                                this.token = token;
+                                localStorage.setItem('fcm_device_token', token);
+
+                                // Send token to your Laravel server
+                                fetch('/store-token', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                            .getAttribute('content')
+                                    },
+                                    body: JSON.stringify({
+                                        device_token: token
+                                    })
+                                }).then(() => {
+                                    console.log('Token saved to server.');
+                                }).catch((err) => {
+                                    console.error('Error saving token to server.', err);
+                                });
+                            })
+                            .catch((err) => {
+                                console.error('Error retrieving FCM token:', err);
+                            });
+                    } else {
+                        console.log('Token already saved locally:', savedToken);
+                    }
+                }
+
             }
         }
     </script>

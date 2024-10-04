@@ -129,6 +129,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
     
     });
 
+    //For testing only
+    Route::get('/updateAllPass', [SuperAdminController::class, 'updateAllPass'])->name('updateAllPass');
+
 
 
     Route::get('/scan_attendance', [SuperAdminController::class, 'scan_attendance'])->name('scan_attendance');
@@ -164,6 +167,10 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     // Attendance
     Route::get('/enrolled_course_attendance', [StudentController::class, 'enrolled_course_attendance'])->name('enrolled_course_attendance');
 
+    //Comments 
+    Route::prefix('comments')->group(function () {
+        Route::get('/{post_id}', [StudentController::class, 'comments'])->name('student.comments');
+    });
 
 
     //Message
@@ -251,6 +258,11 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     //Attendace
     Route::post('/save_attendance', [InstructorController::class, 'save_attendance'])->name('save_attendance');
     Route::post('/get_attendance_data', [InstructorController::class, 'get_attendance_data'])->name('get_attendance_data');
+
+    //Comments 
+    Route::prefix('comments')->group(function () {
+        Route::get('/{post_id}', [InstructorController::class, 'comments'])->name('instructor.comments');
+    });
 
 });
 

@@ -15,7 +15,7 @@
 
     </x-slot>
     <div x-data="dashboard" id="main-div" class="mx-4 pb-4  text-white md:mx-8 pt-40">
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid grid-cols-3 gap-3 mb-6">
             <div class="col-span-full flex flex-col md:col-span-1">
                 <div class="mb-3 flex basis-2/3 items-center justify-center rounded-lg bg-sky-500/50 p-2">
                     <div>
@@ -32,15 +32,15 @@
                     <div class="grid h-full grid-cols-3 gap-2">
                         <div class="flex flex-col rounded bg-gray-800/25 p-2">
                             <div class="text-center text-sm text-white/50">Today</div>
-                            <div class="flex h-full items-center justify-center text-xl">20</div>
+                            <div class="flex h-full items-center justify-center text-xl">{{ $today_enrollees }}</div>
                         </div>
                         <div class="flex flex-col rounded bg-gray-800/25 p-2">
                             <div class="text-center text-sm text-white/50">This Month</div>
-                            <div class="flex h-full items-center justify-center text-xl">20</div>
+                            <div class="flex h-full items-center justify-center text-xl">{{ $month_enrollees }}</div>
                         </div>
                         <div class="flex flex-col rounded bg-gray-800/25 p-2">
                             <div class="text-center text-sm text-white/50">This Year</div>
-                            <div class="flex h-full items-center justify-center text-xl">20</div>
+                            <div class="flex h-full items-center justify-center text-xl">{{ $year_enrollees }}</div>
                         </div>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
                                         Ongoing Enrollment
                                     </div>
                                     <div class="text-lg font-bold">
-                                        3
+                                        {{ $ongoing_courses }}
                                     </div>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                                         All Courses
                                     </div>
                                     <div class="text-lg font-bold">
-                                        10
+                                        {{ $all_courses }}
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +114,7 @@
                                         Active Batches
                                     </div>
                                     <div class="text-lg font-bold">
-                                        10
+                                        {{ $active_batches }}
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +135,7 @@
                                         All Batches
                                     </div>
                                     <div class="text-lg font-bold">
-                                        10
+                                        {{ $all_batches }}
                                     </div>
                                 </div>
                             </div>
@@ -161,6 +161,32 @@
 
             </div>
         </div>
+        <div class="col-span-4 mb-2">
+            CURRENT TRAINEES PER COURSE
+        </div>
+        <div class="grid grid-cols-4 gap-3">
+
+            <template x-for="course in courses" :key="course.id">
+                <div
+                    class=" flex justify-between md:col-span-1 col-span-4 p-4 space-x-4 bg-gray-600 rounded-lg items-center">
+                    <div class="flex space-x-2 items-center">
+                        <span><svg class="h-8 w-8 text-sky-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <title>book-outline</title>
+                                <path
+                                    d="M18,2A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H18M18,4H13V12L10.5,9.75L8,12V4H6V20H18V4Z" />
+                            </svg></span>
+                        <div>
+                            <div class="font-bold uppercase" x-text="course.code">BELL</div>
+                            <div class="text-xs" x-text="course.name">Basic English Language Learning</div>
+                        </div>
+                    </div>
+                    <div class="p-2 rounded bg-sky-600" x-text="course.enrollees_count">
+                        48
+                    </div>
+                </div>
+            </template>
+        </div>
     </div>
 
     @section('script')
@@ -170,6 +196,7 @@
                     webUsers: @json($web_users ?? ''),
                     yearlyEnrollees: @json($yearly_enrollees ?? ''),
                     monthlyEnrollees: @json($monthly_enrollees ?? ''),
+                    courses: @json($courses ?? ''),
                     init() {
                         console.log(this.monthlyEnrollees);
                         console.log(this.yearlyEnrollees);

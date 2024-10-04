@@ -116,12 +116,12 @@
             <div class="flex items-center justify-between px-4">
                 <div>
                     <div class="text-base font-medium text-gray-800 dark:text-gray-200">
-                        {{ (Auth::user()->role == 'instructor' ? 'Trainer ' . Auth::user()->fname . ' ' . Auth::user()->lname : Auth::user()->role == 'superadmin') ? 'Administrator' : Auth::user()->fname . ' ' . Auth::user()->lname }}
+                        {{ Auth::user()->role == 'instructor' ? 'Trainer ' . Auth::user()->fname . ' ' . Auth::user()->lname : (Auth::user()->role == 'superadmin' ? 'Administrator' : Auth::user()->fname . ' ' . Auth::user()->lname) }}
                     </div>
                     <div class="text-sm font-medium text-gray-500">{{ Auth::user()->email }}</div>
                 </div>
                 <div class="flex">
-                    <a class="me-1.5 flex" :href="route('profile.edit')">
+                    <a class="me-1.5 flex" href="{{ route('profile.edit') }}">
                         <span class="rounded bg-gray-700/75 p-2 hover:bg-sky-600">
                             <svg class="h-6 w-6 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24">

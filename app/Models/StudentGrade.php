@@ -10,7 +10,7 @@ class StudentGrade extends Model
     use HasFactory;
 
     protected $fillable = [
-        'batch_id', 'assignment_id', 'enrollee_id', 'grade', 'type'
+        'batch_id', 'assignment_id', 'enrollee_id', 'grade', 'type', 'remark'
     ];
 
     public function batch()

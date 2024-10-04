@@ -124,6 +124,30 @@ const messaging = getMessaging(app);
 
 window.messaging = messaging;
 
+export function requestDeviceToken() {
+    return new Promise((resolve, reject) => {
+        getToken(messaging, { vapidKey: "YOUR_PUBLIC_VAPID_KEY" })
+            .then((currentToken) => {
+                if (currentToken) {
+                    resolve(currentToken); // Token retrieved successfully
+                } else {
+                    reject(
+                        "No registration token available. Request permission to generate one."
+                    );
+                }
+            })
+            .catch((err) => {
+                console.error(
+                    "An error occurred while retrieving the token.",
+                    err
+                );
+                reject(err);
+            });
+    });
+}
+
+window.requestDeviceToken = requestDeviceToken;
+
 window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
@@ -131,19 +155,22 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
     // Show your custom install button
     const installButton = document.querySelector("#installButton");
-    installButton.classList.remove("hidden");
 
-    installButton.addEventListener("click", () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-            if (choiceResult.outcome === "accepted") {
-                console.log("User accepted the A2HS prompt");
-            } else {
-                console.log("User dismissed the A2HS prompt");
-            }
-            deferredPrompt = null;
+    if (installButton) {
+        installButton.classList.remove("hidden");
+
+        installButton.addEventListener("click", () => {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === "accepted") {
+                    console.log("User accepted the A2HS prompt");
+                } else {
+                    console.log("User dismissed the A2HS prompt");
+                }
+                deferredPrompt = null;
+            });
         });
-    });
+    }
 });
 
 Alpine.start();

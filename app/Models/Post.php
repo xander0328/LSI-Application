@@ -20,4 +20,8 @@ class Post extends Model
     {
         return $this->hasMany(Files::class);
     }
+
+    public function comments(){
+        return $this->hasMany(Comment::class);
+    }
 }

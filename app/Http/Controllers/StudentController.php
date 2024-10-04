@@ -26,6 +26,7 @@ use App\Models\TurnInFile;
 use App\Models\StudentGrade;
 use App\Models\StudentAttendance;
 use App\Models\Attendance;
+use App\Models\Comment;
 
 use App\Http\Controllers\NotificationSendController;
 
@@ -77,16 +78,13 @@ class StudentController extends Controller
             })->first();
 
         if ($enrollee) {
-            $course = $enrollee->course;
-            $batch = $enrollee->batch;
-            $assignments = $batch->assignment;
-            $files = collect(); // Initialize an empty collection for files
+            $batch = Batch::with(['unit_of_competency.lesson.assignment' => function ($q) use($enrollee){
+                $q->with(['turn_ins' => function ($q) use($enrollee){
+                    $q->where('enrollee_id', $enrollee->id);
+                }]);
+            }, 'course'])->where('id', $enrollee->batch_id)->first();
 
-            // Retrieve files for each post
-            foreach ($assignments as $assignment) {
-                $files = $files->merge($assignment->assignment_files);            }
-            
-            return view('student.enrolled_course_assignments', compact('enrollee', 'course', 'batch', 'assignments', 'files'));
+            return view('student.enrolled_course_assignments', compact('enrollee', 'batch'));
         } else {
             return redirect()->route('home');
         }
@@ -100,17 +98,21 @@ class StudentController extends Controller
                 $query->whereNull('completed_at');
             })->first();
 
-        $attendance_records = Attendance::where('batch_id', $enrollee->batch_id)->get();
-        $student_attendance = StudentAttendance::whereHas('enrollee', function ($query) use ($enrollee) {
-            $query->where('id', $enrollee->id);
-        })->get();
+        $attendance_records = Attendance::where('batch_id', $enrollee->batch_id)
+        ->with(['student_attendance' => function ($q) use($enrollee){
+            $q->where('enrollee_id', $enrollee->id);
+        }])
+        ->get();
+        // $student_attendance = StudentAttendance::whereHas('enrollee', function ($query) use ($enrollee) {
+        //     $query->where('id', $enrollee->id);
+        // })->get();
 
-        $attendance_records->map( function ($record) use ($student_attendance) {
-            $record->student_attendance = $student_attendance->where('attendance_id', $record->id)->values();
-            return $record;
-        });
+        // $attendance_records->map( function ($record) use ($student_attendance) {
+        //     $record->student_attendance = $student_attendance->where('attendance_id', $record->id)->values();
+        //     return $record;
+        // });
 
-        // dd($attendance_records);    
+        // dd($enrollee->id);    
         return view('student.enrolled_course_attendance', compact('attendance_records', 'enrollee'));
         
     }
@@ -118,52 +120,59 @@ class StudentController extends Controller
     // Enrollment
     public function enroll($id)
     {
-        $alreadyEnrolled = Enrollee::where('user_id', auth()->user()->id)
-        ->where('course_id', $id)
-        ->first();
-        
-        
         $enrollee = Enrollee::where('user_id', auth()->user()->id)
         ->where('course_id', $id)
+        ->with('enrollee_files')
         ->first();
-        
-        $hasRequirements = '';
         if ($enrollee) {
-            $hasRequirements = EnrolleeFile::where('enrollee_id', $enrollee->id)
-            ->whereNotNull('submitted')
-            ->first();
-        }
-        
-        $status = '';
-        if($alreadyEnrolled){
-            if($alreadyEnrolled->batch == null || $alreadyEnrolled->batch->completed != null){
-                // Finished the course already
-                $status = 'completed';
-                $course_name = $alreadyEnrolled->course->name;
-                return view('student.already_enrolled', compact('status', 'course_name'));
-            }
-            else{
-                if($alreadyEnrolled->batch_id == null){
-                    if(!$hasRequirements){
-                        // redirect to passing of requirements
-                        $enrollee = encrypt($enrollee->id);
-                        return $this->enroll_requirements($enrollee);
-                    }else{
-                        // waitlisted
-                        $status = 'waitlisted';
-                        return $this->enrolled_course();
+            $requiredCredentials = ['id_picture', 'valid_id_front', 'valid_id_back', 'diploma_tor', 'birth_certificate'];
+
+            // Check if the user has uploaded all required credentials
+            $uploadedCredentials = $enrollee->enrollee_files->pluck('credential_type')->toArray();
+
+            $allCredentialsUploaded = !array_diff($requiredCredentials, $uploadedCredentials);
+
+            $hasSubmitted = '';
+            if ($allCredentialsUploaded) {
+                
+                $hasSubmitted = EnrolleeFile::where('enrollee_id', $enrollee->id)
+                ->whereNotNull('submitted')
+                ->first();
+                
+                $status = '';
+                if($hasSubmitted){
+                    if($hasSubmitted->batch == null || $hasSubmitted->batch->completed != null){
+                        // Finished the course already
+                        $status = 'completed';
+                        $course_name = $hasSubmitted->enrollee->course->name;
+                        return view('student.already_enrolled', compact('status', 'course_name'));
                     }
-                }
-                else{
-                    // direct to ekonek
-                    return $this->enrolled_course();
-                }
+                    else{
+                        if($hasSubmitted->batch_id == null){
+                            if(!$hasSubmitted){
+                                // redirect to passing of requirements
+                                $enrollee = encrypt($enrollee->id);
+                                return $this->enroll_requirements($enrollee);
+                            }else{
+                                // waitlisted
+                                $status = 'waitlisted';
+                                return $this->enrolled_course();
+                            }
+                        }
+                        else{
+                            // direct to ekonek
+                            return $this->enrolled_course();
+                        }
+                    }
+                }            
+            }else{
+                $enrollee = encrypt($enrollee->id);
+                return $this->enroll_requirements($enrollee);
             }
+            
         }
-        else{
-            // direct to enrolling phase
             return view('student.enroll', compact('id'));
-        }
+            
     }
 
     public function enroll_save(Request $request)
@@ -663,40 +672,85 @@ class StudentController extends Controller
         return response()->json(['error' => 'File not found'], 404);
     }
 
-    public function turn_in_status(Request $request){
+    // public function turn_in_status(Request $request){
+    //     $enrollee = Enrollee::where('user_id', auth()->user()->id)
+    //         ->whereHas('batch', function($query) {
+    //             $query->whereNull('completed_at');
+    //         })
+    //         ->first();
+        
+    //     $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
+    //     ->where('enrollee_id', $enrollee->id)
+    //     ->first();
+
+    //     $assignment = Assignment::find($request->assignment_id);
+    //     if($turn_in){
+    //         if(!$assignment->closed){
+    //             if($turn_in->turned_in){
+    //                 return response()->json(['status'=>'completed', 'assignment' => 'open']);
+    //             }
+    //             else{
+    //                 return response()->json(['status'=>'pending', 'assignment' => 'open']);
+    //             }
+    //         }else{
+    //             if($turn_in->turned_in){
+    //                 return response()->json(['status'=>'completed', 'assignment' => 'closed']);
+    //             }
+    //             else{
+    //                 return response()->json(['status'=>'pending', 'assignment' => 'closed']);
+    //             }
+    //         }
+    //     }else{
+    //         if(!$assignment->closed){
+    //             return response()->json(['status'=>'pending', 'assignment' => 'open']);
+    //         }else{
+    //             return response()->json(['status'=>'pending', 'assignment' => 'closed']);
+    //         }
+    //     }
+    // }
+
+    public function turn_in_status(Request $request) {
         $enrollee = Enrollee::where('user_id', auth()->user()->id)
-            ->whereHas('batch', function($query) {
+            ->whereHas('batch', function ($query) {
                 $query->whereNull('completed_at');
             })
             ->first();
         
         $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
-        ->where('enrollee_id', $enrollee->id)
-        ->first();
-
+            ->where('enrollee_id', $enrollee->id)
+            ->first();
+    
         $assignment = Assignment::find($request->assignment_id);
-        if($turn_in){
-            if(!$assignment->closed){
-                if($turn_in->turned_in){
-                    return response()->json(['status'=>'completed', 'assignment' => 'open']);
-                }
-                else{
-                    return response()->json(['status'=>'pending', 'assignment' => 'open']);
-                }
-            }else{
-                if($turn_in->turned_in){
-                    return response()->json(['status'=>'completed', 'assignment' => 'closed']);
-                }
-                else{
-                    return response()->json(['status'=>'pending', 'assignment' => 'closed']);
-                }
+        $currentDateTime = Carbon::now();
+        $currentDate = Carbon::today(); 
+        
+        $dueDateTime = null;
+        if ($assignment->due_date && $assignment->due_hour) {
+            $dueDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $assignment->due_date . ' ' . $assignment->due_hour);
+        }
+    
+        $isClosed = $assignment->closed || ($dueDateTime && $currentDateTime->gt($dueDateTime) && $assignment->closing);
+        
+        if ($turn_in) {
+            $isLate = ($turn_in->turned_in_date && $dueDateTime && $dueDateTime->lt(Carbon::parse($turn_in->turned_in_date)));
+            if ($turn_in->turned_in) {
+                return response()->json([
+                    'status' => 'completed',
+                    'assignment' => $isClosed ? 'closed' : 'open',
+                    'late' => $isLate
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'pending',
+                    'assignment' => $isClosed ? 'closed' : 'open',
+                    'late' => $isLate
+                ]);
             }
-        }else{
-            if(!$assignment->closed){
-                return response()->json(['status'=>'pending', 'assignment' => 'open']);
-            }else{
-                return response()->json(['status'=>'pending', 'assignment' => 'closed']);
-            }
+        } else {
+            return response()->json([
+                'status' => 'pending', 
+                'assignment' => $isClosed ? 'closed' : 'open',
+            ]);
         }
     }
     
@@ -713,48 +767,56 @@ class StudentController extends Controller
         $turn_in = TurnIn::where('assignment_id', $assignment->id)
         ->where('enrollee_id', $enrollee->id)
         ->first();
-        // dd($assignment);
-
-        if($assignment->closing){
-            if($assignment->due_date != null){
-                if(($currentDate)->lte(Carbon::createFromFormat('Y-m-d', $assignment->due_date))){
-                    if(($currentDate)->eq(Carbon::createFromFormat('Y-m-d', $assignment->due_date))){
-                        if($current->lte(Carbon::createFromFormat('H:i:s',  $assignment->due_hour))){
-                            $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);                        
-                            return response()->json(['action'=>'done']);
-    
-                        }else{
-                            return response()->json(['assignment_status'=>'closed']);
-                        }
-                    }elseif (($currentDate)->lessThan(Carbon::createFromFormat('Y-m-d', $assignment->due_date))){
-                        $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);
-                        return response()->json(['action'=>'done']);
-    
-                    }else{
-                        return response()->json(['assignment_status'=>'closed']);
-                    }
-                }else{
-                    return response()->json(['now'=> $current, 'today'=>Carbon::today()]);
-    
-                }
-            }else{
-                $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);
-            }
-        }else{
-            $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);  
+        
+        if (!$assignment->closing) {
+            // If the assignment is not closing, check turn-in and return.
+            $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);
+            return response()->json(['action' => 'done']);
         }
         
+        // Handle assignments with due dates.
+        if ($assignment->due_date) {
+            $dueDate = Carbon::createFromFormat('Y-m-d', $assignment->due_date);
+            $dueHour = Carbon::createFromFormat('H:i:s', $assignment->due_hour);
+        
+            // Check if the current date is before or on the due date.
+            if ($currentDate->lt($dueDate)) {
+                // Before the due date, allow turn-in.
+                $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);
+                return response()->json(['action' => 'done']);
+            }
+        
+            if ($currentDate->eq($dueDate)) {
+                // On the due date, check the time.
+                if ($current->lte($dueHour)) {
+                    // Allow turn-in if it's before the due hour.
+                    $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);
+                    return response()->json(['action' => 'done']);
+                }
+        
+                // After the due hour, assignment is closed.
+                return response()->json(['assignment_status' => 'closed']);
+            }
+        
+            // After the due date, assignment is closed.
+            return response()->json(['assignment_status' => 'closed']);
+        }
+        
+        // If no due date, allow turn-in.
+        $this->check_turn_in($request, $turn_in, $assignment, $enrollee->id);
+        return response()->json(['action' => 'done']);
     }
 
     private function check_turn_in($request, $turn_in, $assignment, $enrollee_id){
         if($turn_in){
             if(!$turn_in->turned_in){
-            $turn_in->turned_in = true;
-            $turn_in->save();
+                $turn_in->turned_in = true;
+
             }else{
                 $turn_in->turned_in = false;
-                $turn_in->save();
             }
+            $turn_in->turned_in_date = Carbon::now();
+            $turn_in->save();
         }else{
             $data = [
                 'assignment_id' => $request->assignment_id,
@@ -766,72 +828,6 @@ class StudentController extends Controller
             return response()->json(['created'=>'new turn in']);
         }
     }
-
-
-
-    //TCPDF idcard
-    // public function generateIDCard($id)
-    // {
-    //     $enrollee = Enrollee::where('user_id', auth()->user()->id)
-    //     ->whereNotNull('batch_id')
-    //     ->whereNull('completed_at')
-    //     ->first();
-
-    //     $qr_code = EnrolleeQrcode::where('enrollee_id', $enrollee->id)->first();
-
-    //     $id_pic = EnrolleeFile::where('enrollee_id', $id)->where('credential_type', 'id_picture') ->first();
-
-    //     $id_pic_path = asset('storage/enrollee_files/'. $enrollee->course_id . '/'. $enrollee->id .'/id_picture'.'/' . $id_pic->folder . '/'. $id_pic->filename, 'public');
-    //     // dd($id_pic_url);
-    //     $filename = 'idcard.pdf';
-    //     // $html = view('idcard', compact('id_pic_url', 'qr_code'))->render();
-    //     $lsi_main_logo = public_path("images/icons/lsi-main-logo.png");
-    //     $lsi_logo = public_path("images/icons/lsi-logo.png");
-    //     $qr_code_image = 'data:image/png;base64,' . base64_encode($qr_code->qr_code);
-        
-    //     $html = '
-    //     <table style="width: 100%; height: 100%;">
-    //         <tr>
-    //             <td align="center" style="width: 50%; vertical-align: middle; padding: 5px;">
-    //                 <img src="' . $lsi_main_logo . '" alt="LSI" width="30px">
-    //             </td>
-    //             <td align="start" style="width: 50%; vertical-align: middle; padding: 5px;">
-    //                 <img src="' . $lsi_logo . '" alt="Ekonek" width="110px">
-    //             </td>
-    //         </tr>
-    //         <tr>
-    //             <td colspan="2" style="text-align: center;padding-top: 500px;">
-    //                 <img style="border-radius: 100%;" src="' . $id_pic_path . '" alt="Student Picture" width="100">
-    //             </td>
-    //         </tr>
-    //         <tr>
-    //             <td colspan="2" style="text-align: center; padding: 5px; font-weight: bold;">
-    //                 ' . auth()->user()->fname . ' ' . auth()->user()->lname . '
-    //             </td>
-    //         </tr>
-    //         <tr>
-    //             <td colspan="2" style="text-align: center; padding: 5px;">
-    //                 Batch Name: COMP-0001
-    //             </td>
-    //         </tr>
-    //         <tr>
-    //             <td colspan="2" style="text-align: center; padding: 10px;">
-    //                 <img src="{!!' . $qr_code_image . '!!}" alt="QR Code" width="150" height="150">
-    //             </td>
-    //         </tr>
-    //     </table>';
-
-    //     $pdf = new PDF;
-    //     PDF::SetTitle(auth()->user()->fname.'_'.auth()->user()->lname.'_IdCard');
-    //     PDF::AddPage();
-    //     PDF::writeHTML($html, true, false, true, false, '');
-    //     PDF::Output(public_path($filename), 'F');
-
-    //     return response()->file(public_path($filename), [
-    //         'Content-Type' => 'application/pdf',
-    //         'Content-Disposition' => 'inline; filename="' . $filename . '"',
-    //     ]);
-    // }
 
     public function id_card($id){
         return view('student.id_card');
@@ -865,5 +861,18 @@ class StudentController extends Controller
         // Stream the PDF content to the browser
         return $pdf->stream($enrollee->user->lname.'_ID.pdf');
         
+    }
+
+    public function comments($post_id){
+        $batch_id = Post::where('id', $post_id)->pluck('batch_id')->first();
+        $post = Post::where('id', $post_id)
+        ->with(['comments.user' => function ($q){
+                $q->with(['enrollee' => function ($q){
+                    $q->where('batch_id', $batch_id);
+                }]);
+        } ])
+        ->get();
+
+        dd($post);
     }
 }

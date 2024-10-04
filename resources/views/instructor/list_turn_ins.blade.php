@@ -31,7 +31,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <div class="m-1.5 flex-row">
+                        <div class="m-1.5 flex flex-col">
                             <div class="my-2 flex justify-center text-xs space-x-1">
                                 <div class="text-white/75"> Batch: </div>
                                 <div>
@@ -197,21 +197,26 @@
                                     <div x-text="student.user.lname + ', ' + student.user.fname "></div>
                                     <div class="flex justify-start" :id="`grade_status_${student.id}`">
                                         <span
-                                            :class="student.grades[0].grade != 0 || student.grades[0].grade == null ?
+                                            :class="student.enrollee_grades && (student.enrollee_grades.grade != 0 || student
+                                                    .enrollee_grades.grade ==
+                                                    null) ?
                                                 'bg-sky-600' :
                                                 'bg-yellow-600'"
                                             class="rounded-full p-1 px-2 text-xs"
-                                            x-text="student.grades[0].grade == 0 || student.grades[0].grade == null ? 'Not graded' : 'Graded'">
+                                            x-text="student.enrollee_grades && (student.enrollee_grades.grade != 0 || student
+                                                    .enrollee_grades.grade ==
+                                                    null) ? 'Graded' : 'Not Graded'">
                                         </span>
                                     </div>
                                 </div>
                                 <div class="flex items-center">
                                     <span class="me-2 text-sm italic"
-                                        x-text="student.turn_ins[0].turned_in ? 'Turned in' : 'Not turned in'">
+                                        x-text="student.enrollee_turn_in && student.enrollee_turn_in.turned_in ? 'Turned in' : 'Not turned in'">
 
                                     </span>
-                                    <svg class="h-3 w-3 shrink-0 rotate-180" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                    <svg class="h-3 w-3 shrink-0 " :class="!open ? 'rotate-180' : ''"
+                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 10 6">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="M9 5 5 1 1 5" />
                                     </svg>
@@ -228,15 +233,16 @@
                             <div class="rounded-b-md bg-gray-800 p-3">
                                 <div class="mb-2 text-sm">Submitted Files</div>
                                 <template
-                                    x-if="!student.turn_ins[0].turned_in || student.turn_ins[0].turned_in == false || student.turn_ins[0].turn_in_files.length == 0">
+                                    x-if="!student.enrollee_turn_in || student.enrollee_turn_in.turned_in == false || student.enrollee_turn_in.turn_in_files.length == 0">
                                     <div class="text-sm text-gray-500">
                                         None
                                     </div>
                                 </template>
 
-                                <template x-if="student.turn_ins[0].turned_in == true">
+                                <template
+                                    x-if="student.enrollee_turn_in && student.enrollee_turn_in.turned_in == true">
                                     <div>
-                                        <template x-for="file in student.turn_ins[0].turn_in_files"
+                                        <template x-for="file in student.enrollee_turn_in.turn_in_files"
                                             :key="file.id">
                                             <div class="mb-2" x-data="{ path: `{{ asset('storage/assignments/') }}/${student.batch_id}/${assignment_id}/${student.id}/${file.folder}/${file.filename}`, 'imageShow': false }">
                                                 <x-file-type-checker-alpine></x-file-type-checker-alpine>
@@ -247,36 +253,35 @@
 
                                 <hr class="mt-2 border-t-2 border-gray-600">
 
-                                <div x-data="{ initialGrade: student.grades[0].grade, currentGrade: student.grades[0].grade }" class="mt-2 flex items-center">
+                                <div class="mt-2 flex flex-col space-y-3 items-center">
                                     {{-- {{ $student }} --}}
-                                    <div class="me-2 text-sm">Grade:</div>
-                                    <input
-                                        class="me-2 block w-full rounded-lg p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                        type="number" x-model="student.grades[0].grade"
-                                        @input="console.log(`${initialGrade} ${currentGrade}`)" name="grade"
-                                        :id="`grade_${student.id}`">
-                                    <div @click="grade_changed(student.id)"
-                                        class="cursor-pointer rounded-md p-2 hover:bg-sky-800">
-                                        <svg class="w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                            <path fill="currentColor"
-                                                d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
-                                        </svg>
+                                    <div class="w-full">
+                                        <div class="me-2 text-sm mb-1.5">Remarks:</div>
+                                        <textarea required name="remarks" :id="`remarks_${student.id}`" :value="student.enrollee_grades?.remark ?? ''"
+                                            rows="4"
+                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            placeholder="Type your remarks"></textarea>
                                     </div>
-                                </div>
-                                <div x-data="{ initialGrade: student.grades[0].grade, currentGrade: student.grades[0].grade }" class="mt-2 flex items-center">
-                                    {{-- {{ $student }} --}}
-                                    <div class="me-2 text-sm">Grade:</div>
-                                    <input
-                                        class="me-2 block w-full rounded-lg p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                                        type="number" x-model="student.grades[0].grade"
-                                        @input="console.log(`${initialGrade} ${currentGrade}`)" name="grade"
-                                        :id="`grade_${student.id}`">
-                                    <div @click="grade_changed(student.id)"
-                                        class="cursor-pointer rounded-md p-2 hover:bg-sky-800">
-                                        <svg class="w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                            <path fill="currentColor"
-                                                d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
-                                        </svg>
+
+                                    <div class="w-full">
+                                        <div class="me-2 text-sm mb-1.5">Grade:</div>
+                                        <input
+                                            class="me-2 block w-full rounded-lg p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            type="number" :value="student.enrollee_grades?.grade ?? 0"
+                                            name="grade" :id="`grade_${student.id}`">
+                                    </div>
+                                    <div @click="grade_changed(student.id)" class="w-full flex justify-end">
+                                        <div
+                                            class="cursor-pointer rounded-md p-2 hover:bg-sky-800 bg-sky-800/20 flex space-x-2 items-center ">
+                                            <span>
+                                                <svg class="w-5" xmlns="http://www.w3.org/2000/svg"
+                                                    viewBox="0 0 24 24">
+                                                    <path fill="currentColor"
+                                                        d=" M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" />
+                                                </svg>
+                                            </span>
+                                            <span>Save</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -325,7 +330,8 @@
                                     class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">
                                     <div class="flex rounded-lg">
                                         <label class="inline-flex w-full cursor-pointer items-center">
-                                            <input type="checkbox" id="due_date_toggle" class="peer sr-only"
+                                            <input type="checkbox" id="due_date_toggle" name="set_due"
+                                                class="peer sr-only" @change="$('#due_inputs').toggle('hidden')"
                                                 :checked="assignment_details.due_date != null ? true : false">
                                             <div
                                                 class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600 dark:peer-focus:ring-blue-800">
@@ -550,8 +556,7 @@
                     selectedUc: [],
                     init() {
                         this.ucChanged();
-                        console.log(this.course);
-                        console.log(this.course.unit_of_competency[0].lesson);
+                        console.log(this.assignment_details);
                         this.students = this.students.map(student => {
                             if (!student.grades || student.grades.length === 0) {
                                 student.grades = [{
@@ -598,11 +603,17 @@
                             sortedRecords.sort((a, b) => {
                                 let modifier = this.sort_direction === 'asc' ? 1 : -1;
                                 if (this.sort_by === 'turned_in') {
-                                    if (a.turn_ins[0][this.sort_by] < b.turn_ins[0][this.sort_by]) return -1 * modifier;
-                                    if (a.turn_ins[0][this.sort_by] > b.turn_ins[0][this.sort_by]) return 1 * modifier;
+                                    let aTurnedIn = a.enrollee_turn_in ? a.enrollee_turn_in[this.sort_by] : 0;
+                                    let bTurnedIn = b.enrollee_turn_in ? b.enrollee_turn_in[this.sort_by] : 0;
+
+                                    if (aTurnedIn < bTurnedIn) return -1 * modifier;
+                                    if (aTurnedIn > bTurnedIn) return 1 * modifier;
                                 } else if (this.sort_by === 'grade') {
-                                    if (a.grades[0][this.sort_by] < b.grades[0][this.sort_by]) return -1 * modifier;
-                                    if (a.grades[0][this.sort_by] > b.grades[0][this.sort_by]) return 1 * modifier;
+                                    let aGrade = a.enrollee_grades ? a.enrollee_grades.grade : 0;
+                                    let bGrade = b.enrollee_grades ? b.enrollee_grades.grade : 0;
+
+                                    if (aGrade < bGrade) return -1 * modifier;
+                                    if (aGrade > bGrade) return 1 * modifier;
                                 } else {
                                     if (a.user[this.sort_by] < b.user[this.sort_by]) return -1 * modifier;
                                     if (a.user[this.sort_by] > b.user[this.sort_by]) return 1 * modifier;
@@ -618,8 +629,8 @@
                     },
                     grade_changed(enrollee_id) {
                         let student = this.students.find(s => s.id === enrollee_id);
-                        console.log(student);
-                        let grade = student.grades[0].grade;
+                        let remarks = $('#remarks_' + student.id).val();
+                        let grade = $('#grade_' + student.id).val();
                         let desc = '';
                         let color = '';
                         const t = this;
@@ -639,14 +650,16 @@
                                         enrollee_id: enrollee_id,
                                         assignment_id: {{ $assignment->id }},
                                         batch_id: {{ $batch->id }},
-                                        grade: grade
+                                        grade: grade,
+                                        remark: remarks,
                                     })
                                 })
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.status == "success") {
+                                        student.enrollee_grades = data.student_grade
                                         t.notification('success', data.trainee.user.fname + ' ' + data.trainee.user.lname,
-                                            'Grade Updated')
+                                            'Saved Changes')
                                     }
                                 })
                                 .catch(error => console.error('Error:', error));

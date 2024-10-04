@@ -33,6 +33,32 @@
     </a>
 </template>
 
+<template x-if="['ppt', 'pptx'].some(ext => file.filename.endsWith(ext))">
+    <a :href="path" target="_blank" download
+        class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+        <svg class="mr-2 h-6 w-6 text-orange-700" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24">
+            <title>PPT</title>
+            <path
+                d="M9.8,13.4H12.3C13.8,13.4 14.46,13.12 15.1,12.58C15.74,12.03 16,11.25 16,10.23C16,9.26 15.75,8.5 15.1,7.88C14.45,7.29 13.83,7 12.3,7H8V17H9.8V13.4M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5C3,3.89 3.9,3 5,3H19M9.8,12V8.4H12.1C12.76,8.4 13.27,8.65 13.6,9C13.93,9.35 14.1,9.72 14.1,10.24C14.1,10.8 13.92,11.19 13.6,11.5C13.28,11.81 12.9,12 12.22,12H9.8Z" />
+        </svg>
+        <span class="truncate" x-text="file.filename.replace('uploads/', '').split('_').slice(2).join('_')"></span>
+    </a>
+</template>
+
+<template x-if="['zip'].some(ext => file.filename.endsWith(ext))">
+    <a :href="path" target="_blank" download
+        class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+        <svg class="mr-2 h-6 w-6 text-yellow-600" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24">
+            <title>folder-zip-outline</title>
+            <path
+                d="M20 6H12L10 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V8C22 6.9 21.1 6 20 6M20 18H16V16H14V18H4V8H14V10H16V8H20V18M16 12V10H18V12H16M14 12H16V14H14V12M18 16H16V14H18V16Z" />
+        </svg>
+        <span class="truncate" x-text="file.filename.replace('uploads/', '').split('_').slice(2).join('_')"></span>
+    </a>
+</template>
+
 <template x-if="['txt'].some(ext => file.filename.endsWith(ext))">
     <a :href="path" target="_blank" download
         class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">

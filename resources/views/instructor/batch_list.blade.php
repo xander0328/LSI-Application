@@ -16,7 +16,7 @@
     </x-slot>
     <div x-data="batchList" id="course_list" class="mx-8 pb-8 pt-40">
         <div>
-            <div class="flex flex-col items-center justify-between space-y-3 pb-4 md:flex-row md:space-x-4 md:space-y-0">
+            <div class="flex flex-col items-center justify-between space-y-1 pb-4 md:flex-row md:space-x-4 md:space-y-0">
                 <div class="w-full md:w-1/2">
                     <form class="flex items-center">
                         <label for="simple-search" class="sr-only">Search</label>
@@ -30,7 +30,7 @@
                                 </svg>
                             </div>
                             <input type="text" id="simple-search" x-model="searchQuery" @input="filterBatches"
-                                class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+                                class=" block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                 placeholder="Search" required="">
                         </div>
                     </form>
@@ -40,7 +40,7 @@
 
                     <div class="flex w-full items-center space-x-3 md:w-auto">
                         <button id="filterDropdownButton" data-dropdown-toggle="filterDropdown"
-                            class="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:z-10 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white dark:focus:ring-gray-700 md:w-auto"
+                            class="hover:text-primary-700 flex w-full items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:z-10  dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white  md:w-auto"
                             type="button">
                             <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                                 class="mr-2 h-4 w-4 text-gray-400" viewbox="0 0 20 20" fill="currentColor">

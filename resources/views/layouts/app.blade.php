@@ -93,6 +93,23 @@
 
 <body class="bg-gray-900 font-sans antialiased">
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        @php
+            function getInitials($name)
+            {
+                // Trim the name and split it into an array based on spaces
+                $names = explode(' ', trim($name));
+
+                // Get the first letter of the first name
+                $initials = strtoupper($names[0][0]);
+
+                // Check if there is a second name and get its first letter
+                if (count($names) > 1) {
+                    $initials .= strtoupper($names[1][0]);
+                }
+
+                return $initials;
+            }
+        @endphp
         @include('layouts.navigation')
 
         @if (auth()->check() && auth()->user()->role != 'instructor')
@@ -209,8 +226,13 @@
                     @endif
                     @if (auth()->check() && auth()->user()->role === 'student')
                         <div class="mb-4 flex flex-col items-center">
-                            <img class="mb-3 h-24 w-24 rounded-full shadow-lg"
-                                src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image" />
+                            <div
+                                class="mb-3 relative inline-flex items-center justify-center w-24 h-24 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                <span
+                                    class="font-medium text-4xl text-gray-600 dark:text-gray-300">{{ getInitials(auth()->user()->fname) }}</span>
+                            </div>
+                            {{-- <img class="mb-3 h-24 w-24 rounded-full shadow-lg"
+                                src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image" /> --}}
                             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
                                 {{ auth()->user()->fname }}
                                 {{ auth()->user()->mname ? auth()->user()->mname[0] . '.' : '' }}
@@ -287,7 +309,7 @@
                 <header
                     class="{{ auth()->user()->role != 'instructor' ? 'md:left-60' : '' }} fixed left-0 right-0  top-16 z-10 shadow-lg">
                     <div
-                        class="{{ auth()->user()->role != 'instructor' ? 'max-w-7xl' : '' }} mx-auto border-gray-600 bg-gray-800 px-4 py-6 sm:px-6 lg:px-8">
+                        class="{{ auth()->user()->role != 'instructor' ? ' max-w-8xl' : '' }} mx-auto border-gray-600 bg-gray-800 px-4 py-6 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
@@ -339,7 +361,16 @@
                             }
                         }
                     });
+                },
+                function getInitials(name) {
+                    let names = name.trim().split(' ');
+                    let initials = names[0].charAt(0); // First letter of the first name
+                    if (names.length > 1) {
+                        initials += names[1].charAt(0); // First letter of the second name (if present)
+                    }
+                    return initials.toUpperCase(); // Return initials in uppercase
                 }
+
             }
         }
     </script>

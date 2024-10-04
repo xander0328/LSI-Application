@@ -25,7 +25,7 @@ class ProfileController extends Controller
         ->first();
 
         return view('profile.edit', [
-            'user' => $request->user(), 'enrollee_id' => $enrollee->id
+            'user' => $request->user(), 'enrollee_id' => $enrollee ? $enrollee->id : ''
         ]);
     }
 

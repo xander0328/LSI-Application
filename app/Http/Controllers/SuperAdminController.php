@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
@@ -477,47 +478,84 @@ class SuperAdminController extends Controller
     // See Enrollees per Course
     public function enrollees($id, $page = 1)
     {
-        $course = Course::where('id', $id)->first();
-        
+        $course = Course::where('id', $id)->with('batches')->withCount('enrollees')->first();
+        // dd($course);
         return view('enrollees', compact('course', 'page'));
     }
 
-    public function load_more_enrollees($id, $page){
-        $perPage = 20; 
-        $cacheKey = "course-enrollees-page-{$id}-{$page}";
+    // public function load_more_enrollees($id, $page){
+    //     $perPage = 20; 
+    //     $cacheKey = "course-enrollees-page-{$id}-{$page}";
 
-        $course = Cache::remember($cacheKey, 60, function () use ($id, $perPage, $page) {
-            $offset = ($page - 1) * $perPage; // Calculate offset
+    //     $course = Cache::remember($cacheKey, 60, function () use ($id, $perPage, $page) {
+    //         $offset = ($page - 1) * $perPage; // Calculate offset
             
 
-            return Course::with(['batches', 
-                'enrollees' => function ($query) use ($id, $perPage, $offset) {
-                    $query->select(['id', 'employment_status', 'employment_type', 'user_id', 'course_id', 'preferred_schedule', 'preferred_start', 'preferred_finish'])
-                        ->whereNull('batch_id')
-                        ->whereNotIn('user_id', function ($subQuery) use ($id) {
-                            $subQuery->select('user_id')
-                                    ->from('enrollees')
-                                    ->where('course_id', '!=', $id)
-                                    ->whereNotNull('batch_id');
-                        })
-                        ->whereNull('deleted_at')
-                        ->whereHas('user', function($query){
-                            $query->whereNull('deleted_at');
-                        })
-                        ->skip($offset)
-                        ->take($perPage);
-                },
-                'enrollees.user',
-                'enrollees.enrollee_files_submitted' => function ($query) {
-                    $query->select(['id', 'enrollee_id', 'credential_type']);
-                }
-            ])
-            ->where('id', $id)
-            ->first();
-        });
+    //         return Course::with(['batches', 
+    //             'enrollees' => function ($query) use ($id, $perPage, $offset) {
+    //                 $query->select(['id', 'employment_status', 'employment_type', 'user_id', 'course_id', 'preferred_schedule', 'preferred_start', 'preferred_finish'])
+    //                     ->whereNull('batch_id')
+    //                     ->whereNotIn('user_id', function ($subQuery) use ($id) {
+    //                         $subQuery->select('user_id')
+    //                                 ->from('enrollees')
+    //                                 ->where('course_id', '!=', $id)
+    //                                 ->whereNotNull('batch_id');
+    //                     })
+    //                     ->whereNull('deleted_at')
+    //                     ->whereHas('user', function($query){
+    //                         $query->whereNull('deleted_at');
+    //                     })
+    //                     ->skip($offset)
+    //                     ->take($perPage)
+    //                     ->get();
+    //             },
+    //             'enrollees.user',
+    //             'enrollees.enrollee_files_submitted' => function ($query) {
+    //                 $query->select(['id', 'enrollee_id', 'credential_type']);
+    //             }
+    //         ])
+    //         ->where('id', $id)
+    //         ->withCount('enrollees')
+    //         ->first();
+    //     });
 
-        return response()->json($course);
+    //     return response()->json($course);
+    // }
+
+    public function load_more_enrollees($id, $page) {
+        $perPage = 20; 
+        $cacheKey = "course-enrollees-page-{$id}-{$page}";
+    
+        $enrollees = Cache::remember($cacheKey, 60, function () use ($id, $perPage, $page) {
+            $offset = ($page - 1) * $perPage; // Calculate offset
+            
+            return Enrollee::select(['id', 'employment_status', 'employment_type', 'user_id', 'course_id', 'preferred_schedule', 'preferred_start', 'preferred_finish'])
+                ->where('course_id', $id)
+                ->whereNull('batch_id')
+                ->whereNotIn('user_id', function ($subQuery) use ($id) {
+                    $subQuery->select('user_id')
+                            ->from('enrollees')
+                            ->where('course_id', '!=', $id)
+                            ->whereNotNull('batch_id');
+                })
+                ->whereNull('deleted_at')
+                ->whereHas('user', function($query){
+                    $query->whereNull('deleted_at');
+                })
+                ->with([
+                    'user',
+                    'enrollee_files_submitted' => function ($query) {
+                        $query->select(['id', 'enrollee_id', 'credential_type']);
+                    }
+                ])
+                ->skip($offset)
+                ->take($perPage)
+                ->get();
+        });
+    
+        return response()->json($enrollees);
     }
+    
 
     // Remove Enrollee
     public function remove_enrollee(Request $request){
@@ -699,30 +737,35 @@ class SuperAdminController extends Controller
 
     // Add Enrollees to Batch
     public function add_to_batch(Request $request){
+
+        DB::beginTransaction();
+
         $enrollee_ids = $request->input('user_ids');
         $batchId = $request->input('batch_id');
         
         try {
             // Update enrollees table with the batch_id for each selected user ID
             foreach ($enrollee_ids as $enrollee_id) {
-                $result = Builder::create()
-                    ->writer(new PngWriter())
-                    ->writerOptions([])
-                    ->data(encrypt($enrollee_id))
-                    ->encoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
-                    // ->errorCorrectionLevel(new \Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh())
-                    ->size(300)
-                    ->margin(10)
-                    ->build();
+                // $result = Builder::create()
+                //     ->writer(new PngWriter())
+                //     ->writerOptions([])
+                //     ->data(encrypt($enrollee_id))
+                //     ->encoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
+                //     // ->errorCorrectionLevel(new \Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh())
+                //     ->size(300)
+                //     ->margin(10)
+                //     ->build();
         
-                $qrCode = base64_encode($result->getString());
-
+                // $qrCode = base64_encode($result->getString());
+                $courseId = Batch::where('id', $batchId)->pluck('course_id')->first();
                 $enrollee = Enrollee::where('id', $enrollee_id)->first();
                 $enrollee->update(['batch_id' => $batchId]);
-                EnrolleeQrcode::create([
-                    'enrollee_id' => $enrollee_id,
-                    'qr_code' => $qrCode
-                ]);
+                $user = User::where('id', $enrollee->user_id)->first();
+                $user->update(['role' => 'student']);
+                // EnrolleeQrcode::create([
+                //     'enrollee_id' => $enrollee_id,
+                //     'qr_code' => $qrCode
+                // ]);
                 $payment = new Payment();
                 $payment->enrollee_id = $enrollee_id;
 
@@ -737,11 +780,24 @@ class SuperAdminController extends Controller
                 $payment->save();
             }
 
+            $totalEnrollees = Enrollee::where('course_id', $courseId)
+                ->whereNull('batch_id')
+                ->whereNull('deleted_at')
+                ->count();
+            $perPage = 20;
+            $totalPages = ceil($totalEnrollees / $perPage); // Calculate total number of pages
+
+            for ($page = 1; $page <= $totalPages; $page++) {
+                $cacheKey = "course-enrollees-page-{$courseId}-{$page}";
+                Cache::forget($cacheKey);
+            }
+
+            DB::commit();
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
             // Log the error
             \Log::error('Error saving to batch: ' . $e->getMessage());
-
+            DB::rollBack();
             // Return error response
             return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
@@ -1141,12 +1197,49 @@ class SuperAdminController extends Controller
         ->groupBy('year', 'month')
         ->get();
         
+        $all_courses = Course::count();
+        $ongoing_courses = Course::where('available', true)->count();
+        $active_batches = Batch::whereNull('completed_at')->count();
+        $all_batches = Batch::count();
+
+        $today_enrollees = User::where('created_at', Carbon::today())->whereNotNull('email_verified_at')->count();
+        $month_enrollees = User::whereMonth('created_at', Carbon::now()->month)
+                           ->whereYear('created_at', Carbon::now()->year)
+                           ->whereNotNull('email_verified_at')->count();
+
+        $year_enrollees = User::whereYear('created_at', Carbon::now()->year)->whereNotNull('email_verified_at')->count();
+        // dd($ongoing_courses); 
         // dd($web_users);
-        return view('dashboard', compact('web_users', 'yearly_enrollees' , 'monthly_enrollees')); 
+        // Enrollees per course
+        $courses = Course::withCount('enrollees')->get();
+
+        return view('dashboard', 
+        compact(
+            'courses',
+        'today_enrollees',  
+        'month_enrollees',  
+        'year_enrollees',
+        'all_courses', 
+        'ongoing_courses',
+        'active_batches' , 
+        'all_batches',
+        'web_users', 
+        'yearly_enrollees',
+        'monthly_enrollees')); 
     }
 
     // Test Input
-    public function text_input_post(){
-        return view('test_input_post');
-    }
+    // public function updateAllPass()
+    // {
+    //     $newPassword = 'pass';
+    //     $hashedPassword = Hash::make($newPassword);
+
+    //     // Update the password for all users
+    //     User::query()->update(['password' => $hashedPassword]);
+
+    //     return response()->json(['message' => 'Passwords updated successfully!']);
+    // }
+
+
+
 }
