@@ -833,7 +833,7 @@
                             event.target.value = '';
                         } else {
                             // Append "kg" only if numeric value is not empty and not '0'
-                            event.target.value = numericValue + ' kg';
+                            event.target.value = numericValue + ' cm';
                         }
 
                         event.target.setSelectionRange(numericValue.length, numericValue.length);
@@ -848,7 +848,7 @@
                             event.target.value = '';
                         } else {
                             // Append "kg" only if numeric value is not empty and not '0'
-                            event.target.value = numericValue + ' cm';
+                            event.target.value = numericValue + ' kg';
                         }
                         event.target.setSelectionRange(numericValue.length, numericValue.length);
                     },

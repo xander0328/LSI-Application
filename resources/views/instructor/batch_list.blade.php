@@ -8,15 +8,34 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+            <div class="text-2xl font-semibold text-sky-950 dark:text-gray-200">
                 {{ __('Batch List') }}
+            </div>
+            <div class="hidden md:block">
+                <button id="installButton"
+                    class="hidden w-full rounded-lg bg-sky-700 p-2 px-4 text-center text-white hover:bg-sky-800">
+                    <div class="flex items-center justify-center">
+                        <span>
+                            <svg class="h-6 w-6 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
+                                <title>download-circle-outline</title>
+                                <path
+                                    d="M8 17V15H16V17H8M16 10L12 14L8 10H10.5V6H13.5V10H16M12 2C17.5 2 22 6.5 22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2M12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12C20 7.58 16.42 4 12 4Z" />
+                            </svg>
+                        </span>
+                        <span class="ms-2">
+                            Install App
+                        </span>
+                    </div>
+                </button>
             </div>
         </div>
 
     </x-slot>
     <div x-data="batchList" id="course_list" class="mx-8 pb-8 pt-40">
         <div>
-            <div class="flex flex-col items-center justify-between space-y-1 pb-4 md:flex-row md:space-x-4 md:space-y-0">
+            <div
+                class="flex flex-col items-center justify-between space-y-1 pb-4 md:flex-row md:space-x-4 md:space-y-0">
                 <div class="w-full md:w-1/2">
                     <form class="flex items-center">
                         <label for="simple-search" class="sr-only">Search</label>
@@ -96,8 +115,8 @@
 
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 <template x-for="(batch, index) in filteredBatches" :key="batch.id">
-                    <div>
-                        <div class="h-28 w-full overflow-hidden rounded-t-md bg-gray-700 p-1 pb-0">
+                    <div class="">
+                        <div class="h-28 w-full overflow-hidden rounded-t-md bg-white dark:bg-gray-700 p-1 pb-0">
                             <img class="h-full w-full rounded-t-md object-cover object-center"
                                 :src="'{{ asset('storage/website/course_image/:course_id/:folder_name/:filename') }}'
                                 .replace(':course_id', batch.course.id)
@@ -106,7 +125,7 @@
                                 alt="" />
                         </div>
                         <div
-                            class="batch-button flex w-full items-center rounded-md rounded-t-none bg-gray-700 p-4 text-start text-white hover:bg-gray-700/50">
+                            class="batch-button flex w-full items-center rounded-md rounded-t-none bg-white dark:bg-gray-700 p-4 text-start text-black dark:text-white dark:hover:bg-gray-700/50">
                             <div class="grow items-center">
                                 <a :href="'{{ route('batch_posts', ':id') }}'.replace(':id', batch.encrypted_id)"
                                     class="me-2 flex items-center">
@@ -122,7 +141,7 @@
                                     <x-slot name="trigger">
                                         <span
                                             class="inline-flex cursor-pointer items-center rounded-md border border-transparent p-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:bg-gray-500/50 hover:text-gray-700 focus:outline-none">
-                                            <svg class="h-5 w-5 text-white" fill="currentColor"
+                                            <svg class="h-5 w-5 text-black dark:text-white" fill="currentColor"
                                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                 <title>dots-horizontal</title>
                                                 <path
@@ -135,7 +154,7 @@
                                         <div class="m-1.5">
 
                                             <a @click="showBatchData(batch.id)"
-                                                class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-sky-950 dark:text-gray-300 transition duration-150 ease-in-out hover:text-white hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                                 <svg class="h-5 w-5" fill="currentColor"
                                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                     <title>information-outline</title>
@@ -160,7 +179,7 @@
 
                                             <template x-if="batch.completed_at == null">
                                                 <a @click="closeBatch(batch.id)"
-                                                    class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                    class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-sky-950 dark:text-gray-300 transition duration-150 ease-in-out hover:text-white hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                                     <svg class="h-5 w-5" fill="currentColor"
                                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                         <title>account-school-outline</title>

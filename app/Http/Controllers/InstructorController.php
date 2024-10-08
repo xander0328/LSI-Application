@@ -26,6 +26,10 @@ use App\Models\Attendance;
 use App\Models\Instructor;
 use App\Http\Controllers\NotificationSendController;
 
+// Mailing
+use App\Mail\Assignment as AssignmentMail;
+use Illuminate\Support\Facades\Mail;
+
 class InstructorController extends Controller
 {
     // Batch List
@@ -583,12 +587,6 @@ class InstructorController extends Controller
     }
     
     public function post_assignment(Request $request){
-        $token = Enrollee::where('batch_id', $request->batch_id)
-        ->with(['user' => function ($q){
-            $q->with('device_tokens');
-        }])->get();
-        dd($token);
-
         $assignment_details = $request->only([
             'batch_id',
             'title',
@@ -669,10 +667,41 @@ class InstructorController extends Controller
             }
         }
 
-       
-        $body = $request->title .': '. $request->description;
+        $enrollees = Enrollee::where('batch_id', $request->batch_id)
+        ->with(['user' => function ($q){
+            $q->with('device_tokens');
+        }])->get();
+        $body = $assignment->title;
 
-        NotificationSendController::sendAppNotification($token, $title, $body, null);
+        // Collect all device tokens into an array
+        $deviceTokens = [];
+        foreach ($enrollees as $enrollee) {
+            foreach ($enrollee->user->device_tokens as $deviceToken) {
+                $deviceTokens[] = $deviceToken->device_token; // Assuming 'token' is the field name in device_tokens
+            }
+        }
+
+        $emails = [];
+        foreach ($enrollees as $enrollee) {
+            $emails[] = $enrollee->user->email;
+        }
+
+        // dd($emails);
+        $data = [
+            'title' => $title,
+            'message' => $body,
+            'link' => route('view_assignment', ['id' => $assignment->id])
+        ];
+        Mail::to($emails)->send(new AssignmentMail($data));
+        
+        // if (!empty($deviceTokens)) {
+        //     // dd($deviceTokens);
+        //     NotificationSendController::sendAppNotification($deviceTokens, $title, $body, null);
+        // } else {
+        //     return response()->json(['message' => 'No device tokens found for this batch.'], 404);
+        // }
+
+
         return redirect()->back()->with('success', 'Assigned successfully.');;
     }
 

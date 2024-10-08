@@ -104,50 +104,127 @@ if ("serviceWorker" in navigator) {
             console.error("Service Worker registration failed:", error);
         });
 }
-let deferredPrompt;
 
-// Firebase
 import { initializeApp } from "firebase/app";
-import { getMessaging } from "firebase/messaging";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
+// Your Firebase configuration
 const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_APIKEY,
-    authDomain: import.meta.env.VITE_AUTH_DOMAIN,
-    projectId: import.meta.env.VITE_PROJECT_ID,
-    storageBucket: import.meta.env.VITE_STORAGE_BUCKET,
-    messagingSenderId: import.meta.env.VITE_MESSAGING_SENDER_ID,
-    appId: import.meta.env.VITE_APP_ID,
+    apiKey: "AIzaSyBi4oNVlyHAk6hdk42V7XugS_eR8_ianVw", // Replace with your actual API key
+    authDomain: "lsi-app-541ad.firebaseapp.com",
+    projectId: "lsi-app-541ad",
+    storageBucket: "lsi-app-541ad.appspot.com",
+    messagingSenderId: "740784195857",
+    appId: "1:740784195857:web:01c322ecbcf6cc18bda4b0",
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
-window.messaging = messaging;
+document.addEventListener("alpine:init", () => {
+    Alpine.data("notificationComponent", () => ({
+        async checkPermission() {
+            const permission = await Notification.permission;
+            if (permission === "granted") {
+                $("#toast-interactive").addClass("hidden");
+            }
+        },
+        async requestPermission() {
+            try {
+                // Request notification permission from the user
+                const permission = await Notification.requestPermission();
 
-export function requestDeviceToken() {
-    return new Promise((resolve, reject) => {
-        getToken(messaging, { vapidKey: "YOUR_PUBLIC_VAPID_KEY" })
-            .then((currentToken) => {
-                if (currentToken) {
-                    resolve(currentToken); // Token retrieved successfully
+                if (permission === "granted") {
+                    console.log("Notification permission granted.");
+
+                    // Get the FCM token
+                    const token = await getToken(messaging, {
+                        vapidKey:
+                            "BKIPwy0AfIkgcxZH_iGfH5AySmDRl-gLdWxqof-mC7SIOoYB06y9FlsXhForjmiL4E_cG-zehV-pyMA_zC4nsTk",
+                    });
+
+                    if (token) {
+                        console.log("FCM Token:", token);
+                        this.sendTokenToServer(token);
+                    } else {
+                        console.log(
+                            "No registration token available. Request permission to generate one."
+                        );
+                    }
                 } else {
-                    reject(
-                        "No registration token available. Request permission to generate one."
-                    );
+                    console.log("Notification permission not granted.");
                 }
-            })
-            .catch((err) => {
-                console.error(
-                    "An error occurred while retrieving the token.",
-                    err
-                );
-                reject(err);
-            });
-    });
-}
 
-window.requestDeviceToken = requestDeviceToken;
+                this.checkPermission();
+            } catch (error) {
+                console.error("Error getting permission or token:", error);
+            }
+        },
+        async sendTokenToServer(token) {
+            try {
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute("content");
+                const response = await fetch("/store-token", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": csrfToken,
+                    },
+                    body: JSON.stringify({ device_token: token }),
+                });
+                const data = await response.json();
+                console.log("Token sent to server:", data);
+            } catch (error) {
+                console.error("Error sending token to server:", error);
+            }
+        },
+    }));
+});
+// Handle incoming messages
+onMessage(messaging, (payload) => {
+    console.log("Message received: ", payload);
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+        body: payload.notification.body,
+        icon: payload.notification.icon,
+    };
 
+    new Notification(notificationTitle, notificationOptions);
+});
+
+// Request permission when the script is loaded
+// requestPermission();
+
+// async function sendTokenToServer(token) {
+//     try {
+//         const response = await fetch("/api/device-token", {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 "X-CSRF-Token": document
+//                     .querySelector('meta[name="csrf-token"]')
+//                     .getAttribute("content"), // If using CSRF protection
+//             },
+//             body: JSON.stringify({
+//                 token: token,
+//                 user_id: yourUserId, // Replace with actual user ID
+//             }),
+//         });
+
+//         const data = await response.json();
+//         console.log(data.message);
+//     } catch (error) {
+//         console.error("Error sending token to server:", error);
+//     }
+// }
+
+// requestNotificationPermission();
+// sendTokenToServer(deviceToken);
+
+// PWA Installation
+let deferredPrompt;
 window.addEventListener("beforeinstallprompt", (e) => {
     e.preventDefault();
     deferredPrompt = e;
@@ -155,6 +232,7 @@ window.addEventListener("beforeinstallprompt", (e) => {
 
     // Show your custom install button
     const installButton = document.querySelector("#installButton");
+    const installButtonHolder = document.querySelector("#installButtonHolder");
 
     if (installButton) {
         installButton.classList.remove("hidden");
@@ -170,6 +248,10 @@ window.addEventListener("beforeinstallprompt", (e) => {
                 deferredPrompt = null;
             });
         });
+    }
+    if (installButtonHolder) {
+        installButtonHolder.classList.remove("hidden");
+        installButtonHolder.classList.add("flex");
     }
 });
 

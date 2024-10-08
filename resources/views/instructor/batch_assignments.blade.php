@@ -4,7 +4,7 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-sky-950 dark:text-white">
                 <div>{{ __('Assignment') }}</div>
                 <div class="hidden md:block text-slate-600">|</div>
                 <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
@@ -105,8 +105,8 @@
                                         </div>
                                     </template>
                                     <template x-for="assignment in lesson.assignment" :key="assignment.id">
-                                        <div class="mb-2 rounded-md bg-gray-800 p-px">
-                                            <div class="my-2 w-full rounded-md bg-gray-800 px-3 py-px">
+                                        <div class="mb-2 rounded-md bg-white dark:bg-gray-800 p-px">
+                                            <div class="my-2 w-full rounded-md bg-white dark:bg-gray-800 px-3 py-px">
                                                 <a :href=`/list_turn_ins/${assignment.id}`
                                                     class="flex items-center justify-between">
                                                     <div class="flex items-center justify-start gap-4">
@@ -129,7 +129,7 @@
                                                                 </svg>
                                                             </div>
                                                         </div>
-                                                        <div class="w-full font-medium dark:text-white">
+                                                        <div class="w-full font-medium text-black/75 dark:text-white">
                                                             <div x-text="assignment.title"></div>
                                                             {{-- <div class="text-sm text-gray-500 dark:text-gray-400">
                                                                 {{ mb_strimwidth($assignment->description, 0, 70, '...') }}
@@ -393,7 +393,8 @@
                                         <input type="checkbox"
                                             class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
                                             name="closing" id="closing">
-                                        <label for="closing" class="ms-2">Close submissions after due
+                                        <label for="closing" class="ms-2 text-black dark:text-white">Close
+                                            submissions after due
                                             date</label>
                                     </div>
                                 </div>
@@ -462,12 +463,13 @@
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                     placeholder="Points" required />
                             </div>
-                            <div x-data="{ open: false }" class="text-xs text-white">
+                            <div x-data="{ open: false }" class="text-xs text-black dark:text-white">
                                 <a class="flex cursor-pointer items-center"
                                     @click="open = !open; showAddFile = !showAddFile">Attach File/s<svg
                                         id="icon_assignment" :class="{ 'rotate-180': open }"
-                                        class="ml-px h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
-                                        width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                        class="text-black dark:text-white ml-px h-4 w-4"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="m19 9-7 7-7-7" />
                                     </svg>
@@ -1048,7 +1050,7 @@
 
                     <template x-if="course.structure != 'small'">
                         <button type="button" @click="triggerModal('lesson')"
-                            class="relative w-[52px] h-[52px] text-gray-500 bg-white rounded-md border border-gray-600 hover:text-gray-900 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                            class="relative w-[52px] h-[52px] text-gray-500 bg-white rounded-md  hover:text-gray-900 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
                             <svg class="w-5 h-5 mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <title>book-education</title>
@@ -1065,7 +1067,7 @@
 
                     <template x-if="course.structure != 'small' && course.structure != 'medium'">
                         <button type="button" @click="triggerModal('uc')"
-                            class="relative w-[52px] h-[52px] text-gray-500 bg-white rounded-md border border-gray-600 hover:text-gray-900 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
+                            class="relative w-[52px] h-[52px] text-gray-500 bg-white rounded-md  hover:text-gray-900 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
                             <svg class="w-5 h-5 mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor" viewBox="0 0 18 20">
                                 <path

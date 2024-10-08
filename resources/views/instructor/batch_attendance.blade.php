@@ -104,7 +104,7 @@
                                         sameElse: ''
                                     })">
                                     </div>
-                                    <div class="text-xs text-gray-500" x-text="`Created at: `+ record.id">
+                                    <div class="text-xs text-gray-500" x-text="`Created at: `+ record.date">
                                     </div>
                                 </div>
                             </div>
@@ -331,9 +331,9 @@
                         </button>
                     </div>
 
-                    <div class="">
+                    <div class="mx-2">
                         <div class="flex p-2 text-sm">
-                            <label for="table-search-edit" class="sr-only">Search</label>
+                            <label for="table-search" class="sr-only">Search</label>
                             <div class="relative w-full">
                                 <div
                                     class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
@@ -344,7 +344,7 @@
                                     </svg>
                                 </div>
                                 <input autocomplete="off" type="text" @input="searchStudent($event)"
-                                    id="table-search-edit"
+                                    id="table-search"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 ps-10 pt-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                                     placeholder="Search">
                             </div>
@@ -353,8 +353,8 @@
                                 Clear
                             </button>
                         </div>
-                        <div class="ms-2 flex items-center p-2">
-                            <div class="mr-3 flex w-full items-center text-sm">
+                        <div class="grid grid-cols-2 gap-2 items-center p-2">
+                            <div class="flex col-span-2 md:col-span-1 items-center text-sm">
                                 <div class="me-1.5 whitespace-nowrap">Sort by:</div>
                                 <select x-model="sortColumn" @change="sortColumnChanged" id="sort_by"
                                     class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
@@ -366,7 +366,7 @@
                                 </select>
 
                             </div>
-                            <div class="flex w-full items-center text-sm">
+                            <div class="flex col-span-2 md:col-span-1 w-full items-center text-sm">
                                 <div class="me-1.5">Action:</div>
                                 <select x-model="selectedAction" id="action_dropdown"
                                     class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
@@ -397,7 +397,7 @@
                                         <th scope="col" class="px-6 py-3">
                                             Student
                                         </th>
-                                        <th scope="col" class="px-6 py-3">
+                                        <th scope="col" class="hidden md:table-cell px-6 py-3">
                                             Status
                                         </th>
 
@@ -420,11 +420,27 @@
                                                         class="sr-only">checkbox</label>
                                                 </div>
                                             </td>
-                                            <th @click="student.isChecked = !student.isChecked" scope="row"
-                                                x-text="student.last_name + ', ' + student.first_name"
-                                                class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                            <th scope="row"
+                                                class=" px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                                <div @click="student.isChecked = !student.isChecked"
+                                                    x-text="student.last_name + ', ' + student.first_name">
+
+                                                </div>
+                                                <select x-model="student.status"
+                                                    @change="updateStudentStatus(student.id, $event.target.value)"
+                                                    id="sort_by"
+                                                    :class="{
+                                                        'bg-red-800 text-white': student.status === 'absent',
+                                                        'bg-yellow-700 text-white': student.status === 'late',
+                                                        'bg-sky-800 text-white': student.status === 'present',
+                                                    }"
+                                                    class="w-full mt-1.5 md:hidden rounded-md bg-gray-700 px-2.5 py-1 text-xs md:text-sm text-white">
+                                                    <option value="absent">Absent</option>
+                                                    <option value="late">Late</option>
+                                                    <option value="present">Present</option>
+                                                </select>
                                             </th>
-                                            <td class="px-6 py-4">
+                                            <td class="hidden md:table-cell px-6 py-4">
                                                 <select x-model="student.status"
                                                     @change="updateStudentStatus(student.id, $event.target.value)"
                                                     id="sort_by"

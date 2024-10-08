@@ -83,15 +83,16 @@
     @section('style-links')
     @endsection
     <x-slot name="header">
-        <div class="flex items-center justify-between text-white">
-            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+        <div class="flex items-center justify-between  text-black dark:text-white">
+            <div
+                class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-sky-950 dark: text-black dark:text-white">
                 <div>{{ __('Stream') }}</div>
                 <div class="hidden md:block text-slate-600">|</div>
                 <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
             </div>
             <div class="hidden md:flex items-center">
                 <div class="flex space-x-1 mr-4">
-                    <div class="text-white/75"> Batch: </div>
+                    <div class=" text-black dark:text-white/75"> Batch: </div>
                     <div>
                         {{ $batch->course->code }}-{{ $batch->name }}
                     </div>
@@ -101,8 +102,8 @@
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
-                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
+                            <svg class="h-7 w-7  text-black dark:text-white" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <title>dots-vertical</title>
                                 <path
                                     d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
@@ -113,7 +114,7 @@
                     <x-slot name="content">
                         <div class="m-1.5 flex-row">
                             <div class="my-2 flex justify-center text-xs space-x-1">
-                                <div class="text-white/75"> Batch: </div>
+                                <div class=" text-black dark:text-white/75"> Batch: </div>
                                 <div>
                                     {{ $batch->course->code }}-{{ $batch->name }}
                                 </div>
@@ -130,17 +131,17 @@
         </div>
 
     </x-slot>
-    <div x-data="stream" id="course_list" class="mx-4 md:mx-8 pt-40 md:pt-44 pb-20 text-white">
+    <div x-data="stream" id="course_list" class="mx-4 md:mx-8 pt-40 md:pt-44 pb-20  text-black dark:text-white">
         <div class="flex flex-col-reverse py-6">
             <template x-if="posts.length > 0">
                 <template x-for="post in posts" :key="post.id">
-                    <div class="my-1.5 rounded-md bg-gray-800 p-3 shadow-md">
+                    <div class="my-1.5 rounded-md bg-white dark:bg-gray-800 p-3 shadow-md">
                         <div class="mb-1.5 flex items-center justify-between px-2 text-xs">
                             <div>
                                 <div>
                                     <div
                                         class="relative inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-sky-800 p-1">
-                                        <svg class="w-5 self-center text-white" xmlns="http://www.w3.org/2000/svg"
+                                        <svg class="w-5 self-center  text-white" xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 24 24">
                                             <path fill="currentColor"
                                                 d="M9 22C8.4 22 8 21.6 8 21V18H4C2.9 18 2 17.1 2 16V4C2 2.9 2.9 2 4 2H20C21.1 2 22 2.9 22 4V16C22 17.1 21.1 18 20 18H13.9L10.2 21.7C10 21.9 9.8 22 9.5 22H9M10 16V19.1L13.1 16H20V4H4V16H10M18 14V6H13V14L15.5 12.5L18 14Z" />
@@ -150,7 +151,7 @@
                             </div>
                             <div class="flex justify-between">
                                 <div class="me-2 flex items-center">
-                                    <svg class="mr-1 h-3 w-3 self-center text-white" aria-hidden="true"
+                                    <svg class="mr-1 h-3 w-3 self-center  text-black dark:text-white" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
@@ -161,8 +162,8 @@
                                     <x-dropdown width="40" align="right">
                                         <x-slot name="trigger">
                                             <button
-                                                class="inline-flex items-center rounded-md border border-transparent bg-white text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
-                                                <svg class="h-7 w-7 text-white hover:text-sky-500"
+                                                class="inline-flex items-center rounded-md border border-transparent bg-white text-sm font-medium leading-4 text-black  transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                                                <svg class="h-7 w-7  text-black dark:text-white hover:text-sky-500"
                                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                     <path fill="currentColor"
                                                         d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" />
@@ -173,7 +174,7 @@
                                         <x-slot name="content">
                                             <div class="m-1.5">
                                                 <a @click="editPost(post.id)"
-                                                    class="flex w-full items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                    class="flex w-full items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-black hover:text-white dark:text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                         viewBox="0 0 24 24">
                                                         <path fill="currentColor"
@@ -211,7 +212,7 @@
                                 <p x-html="sanitize(post.description)" class="description font-sans">
                                 </p>
                             </div>
-                            <div>
+                            <div class="text-black dark:text-white">
                                 <template x-if="post.files.length > 0">
                                     <div>
                                         <template x-for="file in post.files" :key="file.id">
@@ -243,12 +244,12 @@
                                 </template>
                             </div>
                             <template x-if="moment(post.created_at).format() != moment(post.updated_at).format()">
-                                <div class="pt-2 mt-3 border-t border-white/25 text-xs text-white/50"
+                                <div class="pt-2 mt-3 border-t border-gray-500 dark:border-white/25 text-xs  text-gray-500 dark:text-white/50"
                                     x-text="`Updated: ${moment(post.updated_at).format('lll')}`">
                                 </div>
                             </template>
                             <div class="md:flex md:justify-end">
-                                <div class="mt-1.5 bg-sky-600 hover:bg-sky-700 rounded  md:w-1/5">
+                                <div class="mt-1.5 text-white bg-sky-600 hover:bg-sky-700 rounded  md:w-1/5">
                                     <a :href="`{{ route('instructor.comments', ['post_id' => ':id']) }}`.replace(':id', post.id)"
                                         class="w-full p-1.5 flex space-x-1 items-center justify-center">
                                         <span>
@@ -300,7 +301,7 @@
                     </div>
                     <button type="button" data-dial-toggle="speed-dial-menu-text-inside-button-square"
                         aria-controls="speed-dial-menu-text-inside-button-square" aria-expanded="false"
-                        class="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                        class="flex h-14 w-14 items-center justify-center rounded-lg bg-blue-700   text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                         <svg class="h-5 w-5 transition-transform group-hover:rotate-45" aria-hidden="true"
                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -323,11 +324,11 @@
                 <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white" x-text="modalTitle">
+                        <h3 class="text-lg font-semibold text-gray-900  dark:text-white" x-text="modalTitle">
                             Create New Post
                         </h3>
                         <button type="button"
-                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white"
+                            class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600  dark:text-white"
                             @click="triggerPostModal(); showAddFile = false;">
                             <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 14 14">
@@ -353,10 +354,10 @@
                             </div>
                         </div>
                         <div class="mb-4 grid grid-cols-2 gap-4">
-                            <div class="rounded-full text-xs text-white">
+                            <div class="rounded-full text-xs  text-black dark:text-white">
                                 <a class="flex cursor-pointer items-center" @click="toggleShowAddFile()">Attach
                                     File/s
-                                    <svg x-show="showAddFile" class="ml-2 h-4 w-4 text-white"
+                                    <svg x-show="showAddFile" class="ml-2 h-4 w-4  text-black dark:text-white"
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -379,7 +380,7 @@
                                 x-transition:leave-end="opacity-0 scale-95" id="show_addFile_post"
                                 class="col-span-2">
                                 {{-- <label for="name"
-                            class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Attach
+                            class="mb-2 block text-sm font-medium text-gray-900  dark:text-white">Attach
                             File/s</label> --}}
                                 <input id="file"
                                     class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"

@@ -1,5 +1,6 @@
 <template x-if="file.file_type === 'application/pdf'">
-    <a :href="path" target="_blank" class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+    <a :href="path" target="_blank"
+        class="text-md flex rounded-md bg-gray-200 dark:bg-gray-700 p-2 dark:hover:bg-gray-700/75">
         <svg class="mr-2 h-6 w-6" fill="rgb(185 28 28)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <title>PDF</title>
             <path
@@ -11,7 +12,7 @@
 
 <template x-if="file.file_type.endsWith('document')">
     <a :href="path" target="_blank" download
-        class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+        class="text-md flex rounded-md bg-gray-200 dark:bg-gray-700 p-2 dark:hover:bg-gray-700/75">
         <svg class="mr-2 h-6 w-6" fill="rgb(2 132 199)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <title>WORD</title>
             <path
@@ -23,7 +24,7 @@
 
 <template x-if="['xlsx', 'xls', 'csv'].some(ext => file.filename.endsWith(ext))">
     <a :href="path" target="_blank" download
-        class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+        class="text-md flex rounded-md bg-gray-200 dark:bg-gray-700 p-2 dark:hover:bg-gray-700/75">
         <svg class="mr-2 h-6 w-6" fill="rgb(22 163 74)" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <title>EXCEL</title>
             <path
@@ -35,7 +36,7 @@
 
 <template x-if="['ppt', 'pptx'].some(ext => file.filename.endsWith(ext))">
     <a :href="path" target="_blank" download
-        class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+        class="text-md flex rounded-md bg-gray-200 dark:bg-gray-700 p-2 dark:hover:bg-gray-700/75">
         <svg class="mr-2 h-6 w-6 text-orange-700" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24">
             <title>PPT</title>
@@ -48,7 +49,7 @@
 
 <template x-if="['zip'].some(ext => file.filename.endsWith(ext))">
     <a :href="path" target="_blank" download
-        class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+        class="text-md flex rounded-md bg-gray-200 dark:bg-gray-700 p-2 dark:hover:bg-gray-700/75">
         <svg class="mr-2 h-6 w-6 text-yellow-600" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24">
             <title>folder-zip-outline</title>
@@ -61,7 +62,7 @@
 
 <template x-if="['txt'].some(ext => file.filename.endsWith(ext))">
     <a :href="path" target="_blank" download
-        class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+        class="text-md flex rounded-md bg-gray-200 dark:bg-gray-700 p-2 dark:hover:bg-gray-700/75">
         <svg class="mr-2 h-6 w-6" fill="gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <title>TXT</title>
             <path
@@ -93,7 +94,8 @@
 </template>
 
 <template x-if=" ['jpeg', 'jpg', 'png', 'jfif'].some(ext => file.filename.endsWith(ext)) && imageShow == false">
-    <a :href="path" target="_blank" class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+    <a :href="path" target="_blank"
+        class="text-md flex rounded-md bg-gray-200 dark:bg-gray-700 p-2 dark:hover:bg-gray-700/75">
         <svg class="mr-2 h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path fill="currentColor"
                 d="M8.5,13.5L11,16.5L14.5,12L19,18H5M21,19V5C21,3.89 20.1,3 19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19Z" />
@@ -106,7 +108,7 @@
     x-if="!['pdf', 'document', 'xlsx', 'xls', 'csv', 'txt'].some(ext => file.file_type.includes(ext) || file.filename.endsWith(ext))">
     
         <a :href="path" target="_blank" download
-            class="text-md flex rounded-md bg-gray-700 p-2 hover:bg-gray-700/75">
+            class="text-md flex rounded-md bg-gray-200 dark:bg-gray-700 p-2 dark:hover:bg-gray-700/75">
             <svg class="mr-2 h-6 w-6" fill="gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <title>FILE</title>
                 <path

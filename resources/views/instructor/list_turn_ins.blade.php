@@ -5,7 +5,7 @@
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
             <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
-                <div>{{ __('Course') }}</div>
+                <div>{{ __('Assignments') }}</div>
                 <div class="hidden md:block text-slate-600">|</div>
                 <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
             </div>
@@ -194,8 +194,12 @@
                                 :class="open ? 'bg-sky-800' : 'bg-gray-700 rounded-b-md'"
                                 class="mt-2 flex w-full items-center justify-between gap-3 rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white">
                                 <div>
-                                    <div x-text="student.user.lname + ', ' + student.user.fname "></div>
-                                    <div class="flex justify-start" :id="`grade_status_${student.id}`">
+                                    <div class="text-start leading-none mb-1.5"
+                                        x-text="student.user.lname + ', ' + student.user.fname ">
+                                    </div>
+
+                                    <div class="flex items-center space-x-1 justify-start"
+                                        :id="`grade_status_${student.id}`">
                                         <span
                                             :class="student.enrollee_grades && (student.enrollee_grades.grade != 0 || student
                                                     .enrollee_grades.grade ==
@@ -207,10 +211,14 @@
                                                     .enrollee_grades.grade ==
                                                     null) ? 'Graded' : 'Not Graded'">
                                         </span>
+                                        <span class="text-sm italic md:hidden text-white/75"
+                                            x-text="student.enrollee_turn_in && student.enrollee_turn_in.turned_in ? 'Turned in' : 'Not turned in'">
+
+                                        </span>
                                     </div>
                                 </div>
                                 <div class="flex items-center">
-                                    <span class="me-2 text-sm italic"
+                                    <span class="me-2 text-sm italic hidden md:block"
                                         x-text="student.enrollee_turn_in && student.enrollee_turn_in.turned_in ? 'Turned in' : 'Not turned in'">
 
                                     </span>

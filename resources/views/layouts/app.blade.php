@@ -92,7 +92,7 @@
 </head>
 
 <body class="bg-gray-900 font-sans antialiased">
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen bg-gray-200 dark:bg-gray-900">
         @php
             function getInitials($name)
             {
@@ -309,7 +309,7 @@
                 <header
                     class="{{ auth()->user()->role != 'instructor' ? 'md:left-60' : '' }} fixed left-0 right-0  top-16 z-10 shadow-lg">
                     <div
-                        class="{{ auth()->user()->role != 'instructor' ? ' max-w-8xl' : '' }} mx-auto border-gray-600 bg-gray-800 px-4 py-6 sm:px-6 lg:px-8">
+                        class="{{ auth()->user()->role != 'instructor' ? ' max-w-8xl' : '' }} mx-auto border-black dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-6 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>

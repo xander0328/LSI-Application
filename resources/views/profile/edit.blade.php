@@ -69,6 +69,17 @@
                     @include('profile.partials.delete-user-form')
                 </div>
             </div>
+
+            <div class="bg-white my-4 flex justify-between p-4 shadow dark:bg-gray-800 rounded-lg sm:p-8">
+                <div class="text-lg flex items-center font-medium text-gray-900 dark:text-gray-100">
+                    <span>
+                        In-app Notification
+                    </span>
+                </div>
+                <div class="max-w-xl">
+
+                </div>
+            </div>
         </div>
     </div>
     @section('script')
