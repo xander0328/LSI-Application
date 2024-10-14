@@ -15,8 +15,9 @@ class Assignment extends Mailable
 
     /**
      * Create a new message instance.
-     */
-    public function __construct()
+     */     
+    public $data;
+    public function __construct($data)
     {
         $this->data = $data;
     }
@@ -27,7 +28,7 @@ class Assignment extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: $this->data['subject'] ?? 'Assignment',
+            subject: $data['subject'] ?? 'Assignment',
         );
     }
 
@@ -37,12 +38,7 @@ class Assignment extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.assignment',
-            with: [
-                'title' => $this->data['title'],
-                'message' => $this->data['message'],
-                'link' => $this->data['link'],
-            ]
+            markdown: 'emails.assignment',
         );
     }
 

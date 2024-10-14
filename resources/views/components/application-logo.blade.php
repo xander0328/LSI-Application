@@ -1,1 +1,1 @@
-<img src="images\icons\lsi-logo.png" alt="">
+<img src="{{ asset('images\icons\lsi-logo.png') }}" alt="">

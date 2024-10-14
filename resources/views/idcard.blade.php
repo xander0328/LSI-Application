@@ -46,9 +46,8 @@
         <table style="border-collapse:collapse ;width: 100%">
             <tr>
                 <td colspan="2" style="text-align: center;padding-top: 99px;">
-                    <img style="border-radius: 100%;"
-                        src="{{ public_path('storage/enrollee_files/16/14/id_picture/ass6651a3640812f8.15701964/1716626276_4.png') }}"
-                        alt="Student Picture" width="200">
+                    <img style="border-radius: 100%;" {{-- src="{{ public_path('storage/enrollee_files/16/14/id_picture/ass6651a3640812f8.15701964/1716626276_4.png') }}" --}}
+                        src="{{ public_path('images/temporary/profile.png') }}" alt="Student Picture" width="200">
                 </td>
             </tr>
             <tr style="text-transform: uppercase">
@@ -65,7 +64,7 @@
             <tr>
                 <td colspan="2" style="text-align: center; padding: 0px;">
                     <span style="background-color: rgba(0, 0, 0, 0.1); padding: 0 3px 5px 5px; border-radius: 5px ">
-                        Batch:
+                        Batch: {{ $batch }}
                     </span>
                 </td>
             </tr>

@@ -3,26 +3,26 @@
         [x-cloak] { display: none !important; }
     @endsection
     <x-slot name="header">
-        <div class="flex items-center justify-between text-white">
-            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+        <div class="flex items-center justify-between text-black dark:text-white">
+            <div class="flex-row items-center text-2xl font-semibold text-sky-950 dark:text-white md:flex md:space-x-1">
                 <div>{{ __('Course') }}</div>
-                <div class="hidden md:block text-slate-600">|</div>
-                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
+                <div class="hidden text-slate-600 md:block">|</div>
+                <div class="text-sm font-normal leading-none text-sky-500 md:text-lg">{{ $batch->course->name }}</div>
             </div>
-            <div class="hidden md:flex items-center">
-                <div class="flex space-x-1 mr-4">
-                    <div class="text-white/75"> Batch: </div>
+            <div class="hidden items-center md:flex">
+                <div class="mr-4 flex space-x-1">
+                    <div class="text-black dark:text-white/75"> Batch: </div>
                     <div>
                         {{ $batch->course->code }}-{{ $batch->name }}
                     </div>
                 </div>
             </div>
-            <div class="flex md:hidden items-center">
+            <div class="flex items-center md:hidden">
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
-                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
+                        <button class="inline-flex items-center rounded-md p-1 hover:bg-gray-900/50">
+                            <svg class="h-7 w-7 text-black dark:text-white" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <title>dots-vertical</title>
                                 <path
                                     d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
@@ -32,8 +32,8 @@
 
                     <x-slot name="content">
                         <div class="m-1.5 flex-row">
-                            <div class="my-2 flex justify-center text-xs space-x-1">
-                                <div class="text-white/75"> Batch: </div>
+                            <div class="my-2 flex justify-center space-x-1 text-xs">
+                                <div class="text-black dark:text-white/75"> Batch: </div>
                                 <div>
                                     {{ $batch->course->code }}-{{ $batch->name }}
                                 </div>
@@ -50,7 +50,7 @@
         </div>
 
     </x-slot>
-    <div x-data="studentData()" id="course_list" class="mx-4 md:mx-8 mt-2 pt-44 md:pt-48  text-white">
+    <div x-data="studentData()" id="course_list" class="mx-4 mt-2 pt-44 text-black dark:text-white md:mx-8 md:pt-48">
         {{-- <div class="mb-2 flex">
             <a @click="createNew()"
                 class="block cursor-pointer rounded-md bg-sky-700 px-4 py-2 text-sm hover:bg-sky-800 hover:text-white">Create
@@ -60,7 +60,7 @@
             <div class="mr-3 flex w-full items-center text-sm">
                 <div class="me-1.5 whitespace-nowrap">Mode</div>
                 <select x-model="filterMode" @change="filterRecords"
-                    class="md:w-1/3 w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
+                    class="w-full rounded-md border border-gray-300 bg-white px-2.5 py-1 text-sm text-black dark:bg-gray-700 dark:text-white md:w-1/3">
                     <option value="">All</option>
                     <option value="online">Online</option>
                     <option value="f2f">Face-to-Face</option>
@@ -70,7 +70,7 @@
         </div>
         <div x-show="filteredRecords.length > 0">
             <template x-for="record in filteredRecords" :key="record.id">
-                <div class="mb-2 rounded-md bg-gray-800 p-px hover:bg-gray-800/75">
+                <div class="mb-2 rounded-md bg-white p-px hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-800/75">
 
                     <div class="my-2 w-full rounded-md px-3 py-px">
                         <a @click="getRecordData(record)" class="cursor-pointer"
@@ -137,7 +137,7 @@
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white"
                                 x-text="selectedDate ? 'Edit Attendance Record' : 'Create New Attendance Record'">
                             </h3>
-                            <div class="text-xs">Date: <span class="text-gray-300"
+                            <div class="text-xs">Date: <span class="text-gray-500 dark:text-gray-300"
                                     x-text="selectedDate ? moment(selectedDate).format('MMM D, YYYY') : moment().format('MMM D, YYYY')"></span>
                             </div>
                         </div>
@@ -153,7 +153,7 @@
                         </button>
                     </div>
 
-                    <div class="mx-2 ">
+                    <div class="mx-2">
                         <div class="flex p-2 text-sm">
                             <label for="table-search" class="sr-only">Search</label>
                             <div class="relative w-full">
@@ -175,11 +175,11 @@
                                 Clear
                             </button>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 items-center p-2">
-                            <div class="flex col-span-2 md:col-span-1 items-center text-sm">
+                        <div class="grid grid-cols-2 items-center gap-2 p-2">
+                            <div class="col-span-2 flex items-center text-sm md:col-span-1">
                                 <div class="me-1.5 whitespace-nowrap">Sort by:</div>
                                 <select x-model="sortColumn" @change="sortColumnChanged" id="sort_by"
-                                    class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
+                                    class="w-full rounded-md border-gray-300 bg-white px-2.5 py-1 text-sm text-black dark:bg-gray-700 dark:text-white">
                                     <option value="last_name">
                                         Surname
                                     </option>
@@ -188,10 +188,10 @@
                                 </select>
 
                             </div>
-                            <div class="flex col-span-2 md:col-span-1 w-full items-center text-sm">
+                            <div class="col-span-2 flex w-full items-center text-sm md:col-span-1">
                                 <div class="me-1.5">Action:</div>
                                 <select x-model="selectedAction" id="action_dropdown"
-                                    class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
+                                    class="w-full rounded-md border-gray-300 bg-white px-2.5 py-1 text-sm text-black dark:bg-gray-700 dark:text-white">
                                     <option value="">Select Action</option>
                                     <option value="absent">Mark Absent</option>
                                     <option value="late">Mark Late</option>
@@ -204,11 +204,11 @@
                             </div>
 
                         </div>
-                        <div class="p-2 ">
-                            <div class="rounded-md">
+                        <div class="p-2">
+                            <div class="relative overflow-hidden rounded-md">
                                 <table
                                     class="w-full rounded-md text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                                    <thead class="bg-gray-900 text-xs  uppercase text-white">
+                                    <thead class="bg-sky-500 text-xs uppercase text-white dark:bg-gray-900">
                                         <tr>
                                             <th scope="col" class="p-4">
                                                 <div class="flex items-center">
@@ -221,7 +221,7 @@
                                             <th scope="col" class="px-6 py-3">
                                                 Student
                                             </th>
-                                            <th scope="col" class="hidden md:table-cell px-6 py-3">
+                                            <th scope="col" class="hidden px-6 py-3 md:table-cell">
                                                 Status
                                             </th>
 
@@ -234,7 +234,8 @@
                                             </tr>
                                         </template>
                                         <template x-for="(student, index) in students" :key="student.id">
-                                            <tr class="border-gray-700 bg-gray-800 hover:bg-gray-800/50">
+                                            <tr
+                                                class="border-gray-700 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-800/50">
                                                 <td @click="student.isChecked = !student.isChecked" class="w-4 p-4">
                                                     <div class="flex items-center">
                                                         <input x-model="student.isChecked"
@@ -245,7 +246,7 @@
                                                     </div>
                                                 </td>
                                                 <th scope="row"
-                                                    class=" px-6 py-4 font-medium text-gray-900 dark:text-white">
+                                                    class="px-4 py-2 font-medium text-gray-900 dark:text-white">
                                                     <div @click="student.isChecked = !student.isChecked"
                                                         x-text="student.last_name + ', ' + student.first_name">
 
@@ -258,13 +259,13 @@
                                                             'bg-yellow-700 text-white': student.status === 'late',
                                                             'bg-sky-800 text-white': student.status === 'present',
                                                         }"
-                                                        class="w-full mt-1.5 md:hidden rounded-md bg-gray-700 px-2.5 py-1 text-xs md:text-sm text-white">
+                                                        class="mt-1.5 w-full rounded-md bg-gray-700 px-2.5 py-1 text-xs text-white md:hidden md:text-sm">
                                                         <option value="absent">Absent</option>
                                                         <option value="late">Late</option>
                                                         <option value="present">Present</option>
                                                     </select>
                                                 </th>
-                                                <td class="px-6 py-4 hidden md:table-cell">
+                                                <td class="hidden px-4 py-2 md:table-cell">
                                                     <select x-model="student.status"
                                                         @change="updateStudentStatus(student.id, $event.target.value)"
                                                         id="sort_by"
@@ -315,7 +316,7 @@
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white"
                                 x-text="selectedDate ? 'Edit Attendance Record' : 'Create New Attendance Record'">
                             </h3>
-                            <div class="text-xs">Date: <span class="text-gray-300"
+                            <div class="text-xs">Date: <span class="text-gray-500 dark:text-gray-300"
                                     x-text="selectedDate ? moment(selectedDate).format('MMM D, YYYY') : moment().format('MMM D, YYYY')"></span>
                             </div>
                         </div>
@@ -353,11 +354,11 @@
                                 Clear
                             </button>
                         </div>
-                        <div class="grid grid-cols-2 gap-2 items-center p-2">
-                            <div class="flex col-span-2 md:col-span-1 items-center text-sm">
+                        <div class="grid grid-cols-2 items-center gap-2 p-2">
+                            <div class="col-span-2 flex items-center text-sm md:col-span-1">
                                 <div class="me-1.5 whitespace-nowrap">Sort by:</div>
                                 <select x-model="sortColumn" @change="sortColumnChanged" id="sort_by"
-                                    class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
+                                    class="w-full rounded-md border border-gray-300 bg-white px-2.5 py-1 text-sm text-black dark:bg-gray-700 dark:text-white">
                                     <option value="last_name">
                                         Surname
                                     </option>
@@ -366,10 +367,10 @@
                                 </select>
 
                             </div>
-                            <div class="flex col-span-2 md:col-span-1 w-full items-center text-sm">
+                            <div class="col-span-2 flex w-full items-center text-sm md:col-span-1">
                                 <div class="me-1.5">Action:</div>
                                 <select x-model="selectedAction" id="action_dropdown"
-                                    class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
+                                    class="w-full rounded-md border border-gray-300 bg-white px-2.5 py-1 text-sm text-black dark:bg-gray-700 dark:text-white">
                                     <option value="">Select Action</option>
                                     <option value="absent">Mark Absent</option>
                                     <option value="late">Mark Late</option>
@@ -383,83 +384,87 @@
 
                         </div>
                         <div class="p-2">
-                            <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
-                                <thead class="bg-gray-900 text-xs uppercase text-white">
-                                    <tr>
-                                        <th scope="col" class="p-4">
-                                            <div class="flex items-center">
-                                                <input id="checkbox-all-search" type="checkbox"
-                                                    @change="toggleAllCheckboxes($event)"
-                                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
-                                                <label for="checkbox-all-search" class="sr-only">checkbox</label>
-                                            </div>
-                                        </th>
-                                        <th scope="col" class="px-6 py-3">
-                                            Student
-                                        </th>
-                                        <th scope="col" class="hidden md:table-cell px-6 py-3">
-                                            Status
-                                        </th>
-
-                                    </tr>
-                                </thead>
-                                <tbody x-cloak>
-                                    <template x-if="students.length === 0">
-                                        <tr class="text-gray-400">
-                                            <td colspan="3" class="p-4 text-center">No data</td>
-                                        </tr>
-                                    </template>
-                                    <template x-for="(student, index) in students" :key="student.id">
-                                        <tr class="border-gray-700 bg-gray-800 hover:bg-gray-800/50">
-                                            <td @click="student.isChecked = !student.isChecked" class="w-4 p-4">
+                            <div class="relative overflow-hidden rounded-md">
+                                <table
+                                    class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                                    <thead class="bg-sky-500 text-xs uppercase text-white dark:bg-gray-900">
+                                        <tr>
+                                            <th scope="col" class="p-4">
                                                 <div class="flex items-center">
-                                                    <input x-model="student.isChecked" id="checkbox-table-search-1"
-                                                        type="checkbox"
+                                                    <input id="checkbox-all-search" type="checkbox"
+                                                        @change="toggleAllCheckboxes($event)"
                                                         class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
-                                                    <label for="checkbox-table-search-1"
-                                                        class="sr-only">checkbox</label>
+                                                    <label for="checkbox-all-search" class="sr-only">checkbox</label>
                                                 </div>
-                                            </td>
-                                            <th scope="row"
-                                                class=" px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                                <div @click="student.isChecked = !student.isChecked"
-                                                    x-text="student.last_name + ', ' + student.first_name">
-
-                                                </div>
-                                                <select x-model="student.status"
-                                                    @change="updateStudentStatus(student.id, $event.target.value)"
-                                                    id="sort_by"
-                                                    :class="{
-                                                        'bg-red-800 text-white': student.status === 'absent',
-                                                        'bg-yellow-700 text-white': student.status === 'late',
-                                                        'bg-sky-800 text-white': student.status === 'present',
-                                                    }"
-                                                    class="w-full mt-1.5 md:hidden rounded-md bg-gray-700 px-2.5 py-1 text-xs md:text-sm text-white">
-                                                    <option value="absent">Absent</option>
-                                                    <option value="late">Late</option>
-                                                    <option value="present">Present</option>
-                                                </select>
                                             </th>
-                                            <td class="hidden md:table-cell px-6 py-4">
-                                                <select x-model="student.status"
-                                                    @change="updateStudentStatus(student.id, $event.target.value)"
-                                                    id="sort_by"
-                                                    :class="{
-                                                        'bg-red-800 text-white': student.status === 'absent',
-                                                        'bg-yellow-700 text-white': student.status === 'late',
-                                                        'bg-sky-800 text-white': student.status === 'present',
-                                                    }"
-                                                    class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
-                                                    <option value="absent">Absent</option>
-                                                    <option value="late">Late</option>
-                                                    <option value="present">Present</option>
-                                                </select>
-                                            </td>
-                                        </tr>
-                                    </template>
+                                            <th scope="col" class="px-6 py-3">
+                                                Student
+                                            </th>
+                                            <th scope="col" class="hidden px-6 py-3 md:table-cell">
+                                                Status
+                                            </th>
 
-                                </tbody>
-                            </table>
+                                        </tr>
+                                    </thead>
+                                    <tbody x-cloak>
+                                        <template x-if="students.length === 0">
+                                            <tr class="text-gray-400">
+                                                <td colspan="3" class="p-4 text-center">No data</td>
+                                            </tr>
+                                        </template>
+                                        <template x-for="(student, index) in students" :key="student.id">
+                                            <tr
+                                                class="border-gray-700 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-800/50">
+                                                <td @click="student.isChecked = !student.isChecked" class="w-4 p-4">
+                                                    <div class="flex items-center">
+                                                        <input x-model="student.isChecked"
+                                                            id="checkbox-table-search-1" type="checkbox"
+                                                            class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
+                                                        <label for="checkbox-table-search-1"
+                                                            class="sr-only">checkbox</label>
+                                                    </div>
+                                                </td>
+                                                <th scope="row"
+                                                    class="px-4 py-2 font-medium text-gray-900 dark:text-white">
+                                                    <div @click="student.isChecked = !student.isChecked"
+                                                        x-text="student.last_name + ', ' + student.first_name">
+
+                                                    </div>
+                                                    <select x-model="student.status"
+                                                        @change="updateStudentStatus(student.id, $event.target.value)"
+                                                        id="sort_by"
+                                                        :class="{
+                                                            'bg-red-800 text-white': student.status === 'absent',
+                                                            'bg-yellow-700 text-white': student.status === 'late',
+                                                            'bg-sky-800 text-white': student.status === 'present',
+                                                        }"
+                                                        class="mt-1.5 w-full rounded-md bg-gray-700 px-2.5 py-1 text-xs text-white md:hidden md:text-sm">
+                                                        <option value="absent">Absent</option>
+                                                        <option value="late">Late</option>
+                                                        <option value="present">Present</option>
+                                                    </select>
+                                                </th>
+                                                <td class="hidden px-4 py-2 md:table-cell">
+                                                    <select x-model="student.status"
+                                                        @change="updateStudentStatus(student.id, $event.target.value)"
+                                                        id="sort_by"
+                                                        :class="{
+                                                            'bg-red-800 text-white': student.status === 'absent',
+                                                            'bg-yellow-700 text-white': student.status === 'late',
+                                                            'bg-sky-800 text-white': student.status === 'present',
+                                                        }"
+                                                        class="w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-white">
+                                                        <option value="absent">Absent</option>
+                                                        <option value="late">Late</option>
+                                                        <option value="present">Present</option>
+                                                    </select>
+                                                </td>
+                                            </tr>
+                                        </template>
+
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                         <div class="p-2 pb-4 pt-0">
                             <button @click="submitStudentData"

@@ -4,25 +4,25 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-sky-950 dark:text-white">
+            <div class="flex-row items-center text-2xl font-semibold text-sky-950 dark:text-white md:flex md:space-x-1">
                 <div>{{ __('Assignment') }}</div>
-                <div class="hidden md:block text-slate-600">|</div>
-                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
+                <div class="hidden text-slate-600 md:block">|</div>
+                <div class="text-sm font-normal leading-none text-sky-500 md:text-lg">{{ $batch->course->name }}</div>
             </div>
-            <div class="hidden md:flex items-center">
-                <div class="flex space-x-1 mr-4">
-                    <div class="text-white/75"> Batch: </div>
+            <div class="hidden items-center md:flex">
+                <div class="mr-4 flex space-x-1 text-black dark:text-white/75">
+                    <div class=""> Batch: </div>
                     <div>
                         {{ $batch->course->code }}-{{ $batch->name }}
                     </div>
                 </div>
             </div>
-            <div class="flex md:hidden items-center">
+            <div class="flex items-center md:hidden">
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
-                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
+                        <button class="inline-flex items-center rounded-md p-1 hover:bg-gray-900/50">
+                            <svg class="h-7 w-7 text-black dark:text-white" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <title>dots-vertical</title>
                                 <path
                                     d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
@@ -31,9 +31,9 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <div class="m-1.5 flex-row">
-                            <div class="my-2 flex justify-center text-xs space-x-1">
-                                <div class="text-white/75"> Batch: </div>
+                        <div class="m-1.5 flex-row text-black dark:text-white/75">
+                            <div class="my-2 flex justify-center space-x-1 text-xs">
+                                <div class=""> Batch: </div>
                                 <div>
                                     {{ $batch->course->code }}-{{ $batch->name }}
                                 </div>
@@ -50,18 +50,19 @@
         </div>
 
     </x-slot>
-    <div x-data="assignmentList" id="course_list" class="mx-4 md:mx-8 pt-44 md:pt-48  text-white pb-20">
+    <div x-data="assignmentList" id="course_list" class="mx-4 pb-20 pt-44 text-white md:mx-8 md:pt-48">
         <template x-if="course.structure == 'big'">
             <div>
                 <template x-for="uc in uc" :key="uc.id">
                     <div x-data="{ open: false }">
                         <h2 :id="`accordion-collapse-heading-${uc.id}`" x-transition>
-                            <button type="button" @click="open = !open" :class="open ? 'bg-sky-800' : 'bg-gray-700 '"
-                                class="mt-2 flex w-full items-center justify-between gap-3 rounded-b-md rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white">
-                                <div class="flex space-x-2 items-center">
+                            <button type="button" @click="open = !open"
+                                :class="open ? 'bg-sky-800' : 'dark:bg-gray-700 bg-gray-500 '"
+                                class="mt-2 flex w-full items-center justify-between gap-3 rounded-b-md rounded-t-md p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white">
+                                <div class="flex items-center space-x-2">
                                     <div class="flex items-center">
                                         <span
-                                            class="text-white font-medium text-sm w-6 h-6 inline-flex justify-center items-center rounded-full "
+                                            class="inline-flex h-6 w-6 items-center justify-center rounded-full text-sm font-medium text-white"
                                             :class="open ? 'bg-sky-950' : 'bg-sky-700'" x-text="uc.lesson.length">
                                         </span>
                                     </div>
@@ -69,7 +70,7 @@
                                 </div>
 
                                 <div class="flex items-center">
-                                    <svg class="h-3 w-3 shrink-0 " :class="{ 'rotate-180': !open }"
+                                    <svg class="h-3 w-3 shrink-0" :class="{ 'rotate-180': !open }"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="M9 5 5 1 1 5" />
@@ -86,10 +87,10 @@
                             </template>
                             <template x-for="lesson in uc.lesson" :key="lesson.id">
                                 <div class="px-2 py-1.5">
-                                    <div class="flex space-x-2 items-center my-1.5 rounded-md bg-sky-700 p-1.5">
+                                    <div class="my-1.5 flex items-center space-x-2 rounded-md bg-sky-700 p-1.5">
                                         <div class="flex items-center">
                                             <span
-                                                class="text-white font-medium text-sm w-6 h-6 inline-flex justify-center items-center rounded-full bg-sky-950"
+                                                class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-950 text-sm font-medium text-white"
                                                 x-text="lesson.assignment.length">
                                             </span>
                                         </div>
@@ -105,8 +106,8 @@
                                         </div>
                                     </template>
                                     <template x-for="assignment in lesson.assignment" :key="assignment.id">
-                                        <div class="mb-2 rounded-md bg-white dark:bg-gray-800 p-px">
-                                            <div class="my-2 w-full rounded-md bg-white dark:bg-gray-800 px-3 py-px">
+                                        <div class="mb-2 rounded-md bg-white p-px dark:bg-gray-800">
+                                            <div class="my-2 w-full rounded-md bg-white px-3 py-px dark:bg-gray-800">
                                                 <a :href=`/list_turn_ins/${assignment.id}`
                                                     class="flex items-center justify-between">
                                                     <div class="flex items-center justify-start gap-4">
@@ -143,7 +144,7 @@
                                                         <template x-if="assignment.closing">
                                                             <div class="text-end">
                                                                 <span
-                                                                    class=" text-xs px-2 rounded bg-red-700 text-white">
+                                                                    class="rounded bg-red-700 px-2 text-xs text-white">
                                                                     Closing
                                                                 </span>
                                                             </div>
@@ -467,7 +468,7 @@
                                 <a class="flex cursor-pointer items-center"
                                     @click="open = !open; showAddFile = !showAddFile">Attach File/s<svg
                                         id="icon_assignment" :class="{ 'rotate-180': open }"
-                                        class="text-black dark:text-white ml-px h-4 w-4"
+                                        class="ml-px h-4 w-4 text-black dark:text-white"
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                         fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -555,7 +556,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -583,11 +584,11 @@
                                             <template x-for="uc in uc" :key="uc.id">
                                                 <div>
                                                     <div
-                                                        class="my-2 flex items-center justify-between bg-gradient-to-r from-sky-700 p-1.5">
+                                                        class="my-2 flex items-center justify-between bg-gradient-to-r from-sky-400 p-1.5 text-black dark:from-sky-700 dark:text-white">
                                                         <span x-text="uc.title"></span>
                                                         <button @click="addLesson(uc.id)"
-                                                            class="rounded-md p-2 hover:bg-sky-700">
-                                                            <svg class="h-4 w-4 text-white"
+                                                            class="rounded-md p-2 hover:bg-sky-400 dark:hover:bg-sky-700">
+                                                            <svg class="h-4 w-4 text-black dark:text-white"
                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                 viewBox="0 0 24 24">
                                                                 <path fill="currentColor"
@@ -602,31 +603,32 @@
 
                                                     <template x-for="lesson in uc.lesson" :key="lesson.id">
                                                         <div
-                                                            class="flex items-center justify-between rounded-md bg-gray-700 p-2 text-sm hover:bg-gray-800/75">
+                                                            class="flex items-center justify-between rounded-md bg-white p-2 text-sm text-black hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800/75">
                                                             <span x-text="lesson.title"></span>
                                                             <div class="flex">
                                                                 <button @click="editModal('lesson', uc.id, lesson.id)"
-                                                                    class="me-1 h-7 w-7 rounded-md p-1 hover:bg-gray-600">
+                                                                    class="me-1 h-7 w-7 rounded-md p-1 text-black hover:bg-gray-600/50 dark:text-white">
                                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                                         viewBox="0 0 24 24">
                                                                         <title>Edit</title>
-                                                                        <path fill="white"
+                                                                        <path fill="currentColor"
                                                                             d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
                                                                     </svg>
                                                                 </button>
                                                                 <form action="{{ route('delete_lesson') }}"
-                                                                    class="h-7 w-7 rounded-md p-1 hover:bg-gray-600"
+                                                                    class="h-7 w-7 rounded-md p-1 hover:bg-gray-600/50"
                                                                     method="post">
                                                                     @csrf
                                                                     <input type="hidden" name="lesson_id"
                                                                         :value="lesson.id">
 
                                                                     <button @click.prevent="confirmDelete()"
-                                                                        class="h-full w-full" type="button">
+                                                                        class="h-full w-full text-black dark:text-white"
+                                                                        type="button">
                                                                         <svg xmlns="http://www.w3.org/2000/svg"
                                                                             viewBox="0 0 24 24">
                                                                             <title>Delete</title>
-                                                                            <path fill="white"
+                                                                            <path fill="currentColor"
                                                                                 d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                                                                         </svg></button>
                                                                 </form>
@@ -709,7 +711,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -746,19 +748,19 @@
 
                                         <template x-for="uc in uc" :key="uc.id">
                                             <div
-                                                class="flex items-center justify-between rounded-md bg-gray-700 p-2 text-sm hover:bg-gray-800/75">
+                                                class="flex items-center justify-between rounded-md bg-white p-2 text-sm text-black hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800/75">
                                                 <span x-text="uc.title"></span>
                                                 <div class="flex">
                                                     <button @click="editModal('uc', uc.id, '')"
-                                                        class="me-1 h-7 w-7 rounded-md p-1 hover:bg-gray-600">
+                                                        class="me-1 h-7 w-7 rounded-md p-1 text-black hover:bg-gray-600 dark:text-white">
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                             <title>Edit</title>
-                                                            <path fill="white"
+                                                            <path fill="currentColor"
                                                                 d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
                                                         </svg>
                                                     </button>
                                                     <form action="{{ route('delete_uc') }}"
-                                                        class="h-7 w-7 rounded-md p-1 hover:bg-gray-600"
+                                                        class="h-7 w-7 rounded-md p-1 text-black hover:bg-gray-600 dark:text-white"
                                                         method="post">
                                                         @csrf
                                                         <input type="hidden" name="uc_id" :value="uc.id">
@@ -768,7 +770,7 @@
                                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                                 viewBox="0 0 24 24">
                                                                 <title>Delete</title>
-                                                                <path fill="white"
+                                                                <path fill="currentColor"
                                                                     d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                                                             </svg></button>
                                                     </form>
@@ -791,7 +793,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -814,9 +816,10 @@
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
                                 <form action="{{ route('edit_lesson') }}" method="post">
-                                    <div class="mb-2 block text-sm font-medium text-white">Current
+                                    <div class="mb-2 block text-sm font-medium text-black dark:text-white">Current
                                         name: <span class="font-bold" x-text="selectedLesson.title"></span></div>
-                                    <label for="lesson" class="mb-2 block text-sm font-medium text-white">Change
+                                    <label for="lesson"
+                                        class="mb-2 block text-sm font-medium text-black dark:text-white">Change
                                         to:</label>
                                     <div class="grid grid-cols-9">
                                         @csrf
@@ -852,7 +855,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -874,9 +877,10 @@
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
                                 <form action="{{ route('edit_uc') }}" method="post">
-                                    <div class="mb-2 block text-sm font-medium text-white">Current
+                                    <div class="mb-2 block text-sm font-medium text-black dark:text-white">Current
                                         name: <span class="font-bold" x-text="selectedUc.title"></span></div>
-                                    <label for="lesson" class="mb-2 block text-sm font-medium text-white">Change
+                                    <label for="lesson"
+                                        class="mb-2 block text-sm font-medium text-black dark:text-white">Change
                                         to:</label>
                                     <div class="grid grid-cols-9">
                                         @csrf
@@ -912,7 +916,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-gray-700 bg-white">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -951,7 +955,7 @@
                                         </datalist>
 
                                         <button type="submit"
-                                            class="flex w-full text-sm items-center justify-center rounded-md bg-sky-700 p-2 px-3">
+                                            class="flex w-full items-center justify-center rounded-md bg-sky-700 p-2 px-3 text-sm">
                                             <svg class="-ms-1 me-1 h-4 w-4" fill="currentColor"
                                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                 <title>check-circle-outline</title>
@@ -977,7 +981,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-gray-700 bg-white">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -1004,7 +1008,7 @@
                                         <input type="hidden" name="batch_id" value="{{ $batch->id }}">
                                         <input autocomplete="on" list="options_uc_title" id="uc_title"
                                             name="uc_title"
-                                            class="block w-full mb-2 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            class="mb-2 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                             placeholder="Unit of Competency Title" required />
                                         <datalist id="options_uc_title">
                                             <template x-for="uc in all_ucs" :key="uc">
@@ -1013,7 +1017,7 @@
                                         </datalist>
 
                                         <button type="submit"
-                                            class="flex w-full text-sm items-center justify-center rounded-md bg-sky-700 p-2 px-3">
+                                            class="flex w-full items-center justify-center rounded-md bg-sky-700 p-2 px-3 text-sm">
                                             <svg class="-ms-1 me-1 h-4 w-4" fill="currentColor"
                                                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                 <title>check-circle-outline</title>
@@ -1033,32 +1037,32 @@
 
         {{-- Speed Dial --}}
         <template x-if="batch.completed_at == null">
-            <div data-dial-init class=" fixed bottom-6 end-6 group">
+            <div data-dial-init class="group fixed bottom-6 end-6">
                 <div id="speed-dial-menu-text-outside-button-square"
-                    class="flex flex-col items-center hidden mb-4 space-y-2">
+                    class="mb-4 flex hidden flex-col items-center space-y-2">
 
                     <button type="button" @click="triggerModal('assignment')"
-                        class="relative w-[52px] h-[52px] text-gray-500 bg-white rounded-md border border-gray-200 dark:border-gray-600 hover:text-gray-900 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
-                        <svg class="w-5 h-5 mx-auto" aria-hidden="true" fill="currentColor"
+                        class="relative h-[52px] w-[52px] rounded-md border border-gray-200 bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-400">
+                        <svg class="mx-auto h-5 w-5" aria-hidden="true" fill="currentColor"
                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                             <path
                                 d="M21 10V9L15 3H5C3.89 3 3 3.89 3 5V19C3 20.11 3.9 21 5 21H11V19.13L19.39 10.74C19.83 10.3 20.39 10.06 21 10M14 4.5L19.5 10H14V4.5M22.85 14.19L21.87 15.17L19.83 13.13L20.81 12.15C21 11.95 21.33 11.95 21.53 12.15L22.85 13.47C23.05 13.67 23.05 14 22.85 14.19M19.13 13.83L21.17 15.87L15.04 22H13V19.96L19.13 13.83Z" />
                         </svg>
                         <span
-                            class="absolute block mb-px text-sm font-medium -translate-y-1/2   -start-24 text-start top-1/2">Assignment</span>
+                            class="absolute -start-24 top-1/2 mb-px block -translate-y-1/2 text-start text-sm font-medium">Assignment</span>
                     </button>
 
                     <template x-if="course.structure != 'small'">
                         <button type="button" @click="triggerModal('lesson')"
-                            class="relative w-[52px] h-[52px] text-gray-500 bg-white rounded-md  hover:text-gray-900 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
-                            <svg class="w-5 h-5 mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            class="relative h-[52px] w-[52px] rounded-md bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-400">
+                            <svg class="mx-auto h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <title>book-education</title>
                                 <path
                                     d="M8.82 17L13 19.28V22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H7V9L9.5 7.5L12 9V2H18C19.1 2 20 2.89 20 4V12.54L18.5 11.72L8.82 17M24 17L18.5 14L13 17L18.5 20L24 17M15 19.09V21.09L18.5 23L22 21.09V19.09L18.5 21L15 19.09Z" />
                             </svg>
                             <span
-                                class="absolute block mb-px text-sm font-medium -translate-y-1/2  -start-24 text-start top-1/2">
+                                class="absolute -start-24 top-1/2 mb-px block -translate-y-1/2 text-start text-sm font-medium">
                                 <div>Learning</div>
                                 <div> Outcome</div>
                             </span>
@@ -1067,8 +1071,8 @@
 
                     <template x-if="course.structure != 'small' && course.structure != 'medium'">
                         <button type="button" @click="triggerModal('uc')"
-                            class="relative w-[52px] h-[52px] text-gray-500 bg-white rounded-md  hover:text-gray-900 shadow-sm dark:hover:text-white dark:text-gray-400 hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:ring-4 focus:ring-gray-300 focus:outline-none dark:focus:ring-gray-400">
-                            <svg class="w-5 h-5 mx-auto" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            class="relative h-[52px] w-[52px] rounded-md bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-400">
+                            <svg class="mx-auto h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor" viewBox="0 0 18 20">
                                 <path
                                     d="M5 9V4.13a2.96 2.96 0 0 0-1.293.749L.879 7.707A2.96 2.96 0 0 0 .13 9H5Zm11.066-9H9.829a2.98 2.98 0 0 0-2.122.879L7 1.584A.987.987 0 0 0 6.766 2h4.3A3.972 3.972 0 0 1 15 6v10h1.066A1.97 1.97 0 0 0 18 14V2a1.97 1.97 0 0 0-1.934-2Z" />
@@ -1076,7 +1080,7 @@
                                     d="M11.066 4H7v5a2 2 0 0 1-2 2H0v7a1.969 1.969 0 0 0 1.933 2h9.133A1.97 1.97 0 0 0 13 18V6a1.97 1.97 0 0 0-1.934-2Z" />
                             </svg>
                             <span
-                                class="absolute block mb-px text-sm font-medium -translate-y-1/2  -start-24 text-start top-1/2">
+                                class="absolute -start-24 top-1/2 mb-px block -translate-y-1/2 text-start text-sm font-medium">
                                 <div>Unit of</div>
                                 <div>
                                     Competency
@@ -1087,8 +1091,8 @@
                 </div>
                 <button type="button" data-dial-toggle="speed-dial-menu-text-outside-button-square"
                     aria-controls="speed-dial-menu-text-outside-button-square" aria-expanded="false"
-                    class="flex items-center justify-center text-white bg-blue-700 rounded-md w-14 h-14 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none dark:focus:ring-blue-800">
-                    <svg class="w-5 h-5 transition-transform group-hover:rotate-45" aria-hidden="true"
+                    class="flex h-14 w-14 items-center justify-center rounded-md bg-blue-700 text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="h-5 w-5 transition-transform group-hover:rotate-45" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 1v16M1 9h16" />

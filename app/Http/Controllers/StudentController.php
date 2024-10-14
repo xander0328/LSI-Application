@@ -32,6 +32,12 @@ use App\Http\Controllers\NotificationSendController;
 
 use Barryvdh\DomPDF\Facade\Pdf;
 
+// Mailing
+use App\Mail\Enrollment as EnrollmentMail;
+use Illuminate\Support\Facades\Mail;
+
+// file
+use Symfony\Component\HttpFoundation\File\File;
 
 class StudentController extends Controller
 {
@@ -186,6 +192,9 @@ class StudentController extends Controller
         $data['preferred_start'] = date('Y-m-d', strtotime($request->preferred_start));
         $data['height'] = str_replace(' kg', '', $request->height);
         $data['weight'] = str_replace(' cm', '', $request->weight);
+        $data['street'] = ucwords(strtolower($request->street));
+        $data['citizenship'] = ucwords(strtolower($request->citizenship));
+        $data['religion'] = ucwords(strtolower($request->religion));
 
         $hasBatchId = Enrollee::where('user_id', $data['user_id'])
         ->where('course_id', $data['course_id'])
@@ -212,7 +221,7 @@ class StudentController extends Controller
             foreach ($request->education as $education) {
                 $edu = new Education();
                 $edu->enrollee_id = $enrollee->id;
-                $edu->school_name = $education['schoolName'];
+                $edu->school_name = ucwords(strtolower($education['schoolName']));
                 $edu->educational_level = $education['educationLevel'];
                 $edu->school_year = $education['schoolYear'];
                 $edu->degree = $education['degree'];
@@ -222,6 +231,13 @@ class StudentController extends Controller
                 $edu->honors_received = $education['honorsReceived'];
                 $edu->save();
             }
+
+            $data = [
+                "name" => auth()->user()->fname.' '.auth()->user()->lname,
+                "course_name" => Course::where('id', $data['course_id'])->pluck('name')->first()
+            ];
+
+            Mail::to(auth()->user()->email)->send(new EnrollmentMail($data));
             return response()->json(['id'=>encrypt($enrollee->id)]);
             // return redirect()->route('enroll_requirements', compact('enrollee'));
         }
@@ -308,7 +324,7 @@ class StudentController extends Controller
         $file = EnrolleeFile::where('id', $source)
         ->get();
         $enrollee = Enrollee::where('id', $file[0]->enrollee_id)->first();
-        $path = public_path('storage/enrollee_files/'. $enrollee->course_id . '/' . $enrollee->id . '/' . $type .'/' . $file[0]->folder.'/'. $file[0]->filename);
+        $path = new File(Storage::path('storage/enrollee_files/'. $enrollee->course_id . '/' . $enrollee->id . '/' . $type .'/' . $file[0]->folder.'/'. $file[0]->filename));
         $headers = [
             // 'Content-Type' => 'image/jpeg',
             'Content-Disposition' => 'inline; filename="'.$file[0]->filename.'"',
@@ -608,7 +624,7 @@ class StudentController extends Controller
         $turn_in = TurnIn::find($file->turn_in_id);
         
         if ($file) {
-            $filePath = public_path('storage/assignments/'.$batch_id .'/' . $turn_in->assignment_id.'/'. $turn_in->enrollee_id .'/'.  $file->folder.'/'. $file->filename);
+            $filePath = new File(Storage::path('storage/assignments/'.$batch_id .'/' . $turn_in->assignment_id.'/'. $turn_in->enrollee_id .'/'.  $file->folder.'/'. $file->filename));
             $headers = [
                 'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
             ];
@@ -844,8 +860,8 @@ class StudentController extends Controller
         ->first();
 
         $qr_code = EnrolleeQrcode::where('enrollee_id', $enrollee->id)->first();
-
-        // $id_pic = EnrolleeFile::where('enrollee_id', $id)->where('credential_type', 'id_picture') ->first();
+        $id_path = $enrollee->enrollee_files->where('credential_type', 'id_picture') ->first(); 
+        // dd($id_path);
 
         // $id_pic_path = asset('storage/enrollee_files/'. $enrollee->course_id . '/'. $enrollee->id .'/id_picture'.'/' . $id_pic->folder . '/'. $id_pic->filename, 'public');
 
@@ -854,6 +870,8 @@ class StudentController extends Controller
 
         $data = ['title' => 'Laravel PDF Example',
         'qr_code' => $qr_code,
+        'batch' => $enrollee->course->code.'-'.$enrollee->batch->name,
+        'id_path' => $id_path, 
         ];
         $pdf = Pdf::loadView('idcard', $data);
         $pdf->setPaper('A5');
@@ -871,8 +889,9 @@ class StudentController extends Controller
                     $q->where('batch_id', $batch_id);
                 }]);
         } ])
-        ->get();
+        ->first();
 
         dd($post);
+        return view('student.comments', compact('post', ))
     }
 }

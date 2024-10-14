@@ -3,26 +3,26 @@
         [x-cloak] { display: none !important; }
     @endsection
     <x-slot name="header">
-        <div class="flex items-center justify-between text-white">
-            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+        <div class="flex items-center justify-between text-black dark:text-white">
+            <div class="flex-row items-center text-2xl font-semibold text-black dark:text-white md:flex md:space-x-1">
                 <div>{{ __('Assignments') }}</div>
-                <div class="hidden md:block text-slate-600">|</div>
-                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
+                <div class="hidden text-slate-600 md:block">|</div>
+                <div class="text-sm font-normal leading-none text-sky-500 md:text-lg">{{ $batch->course->name }}</div>
             </div>
-            <div class="hidden md:flex items-center">
-                <div class="flex space-x-1 mr-4">
-                    <div class="text-white/75"> Batch: </div>
+            <div class="hidden items-center md:flex">
+                <div class="mr-4 flex space-x-1">
+                    <div class="text-black dark:text-white/75"> Batch: </div>
                     <div>
                         {{ $batch->course->code }}-{{ $batch->name }}
                     </div>
                 </div>
             </div>
-            <div class="flex md:hidden items-center">
+            <div class="flex items-center md:hidden">
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
-                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
+                        <button class="inline-flex items-center rounded-md p-1 hover:bg-gray-900/50">
+                            <svg class="h-7 w-7 text-black dark:text-white" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <title>dots-vertical</title>
                                 <path
                                     d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
@@ -32,7 +32,7 @@
 
                     <x-slot name="content">
                         <div class="m-1.5 flex flex-col">
-                            <div class="my-2 flex justify-center text-xs space-x-1">
+                            <div class="my-2 flex justify-center space-x-1 text-xs">
                                 <div class="text-white/75"> Batch: </div>
                                 <div>
                                     {{ $batch->course->code }}-{{ $batch->name }}
@@ -50,22 +50,23 @@
         </div>
 
     </x-slot>
-    <div x-data="turnIns()" class="mx-4 md:mx-8 mt-2 pt-44 md:pt-48 text-white">
+    <div x-data="turnIns()" class="mx-4 mt-2 pt-44 text-black dark:text-white md:mx-8 md:pt-48">
         <div class="mb-2 flex items-center justify-end">
-            <div class="mx-1 my-1 flex rounded-lg p-2 hover:bg-gray-800">
+            <div
+                class="mx-1 my-1 flex rounded-lg bg-white p-2 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-800">
                 <label class="inline-flex w-full cursor-pointer items-center">
                     <input @change="closeSubmission()" type="checkbox"
                         :checked="assignment_details.closed ? true : false" class="assignment-toggle peer sr-only">
                     <div
-                        class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-yellow-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
+                        class="peer relative h-5 w-9 rounded-full border-gray-500 bg-gray-400 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-sky-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none rtl:peer-checked:after:translate-x-[-100%]">
                     </div>
-                    <span class="ms-3 text-sm font-medium text-gray-300">Close submissions</span>
+                    <span class="ms-3 text-sm font-medium text-black dark:text-gray-300">Close submissions</span>
                 </label>
             </div>
             <button id="dropdownMenuIconHorizontalButton" data-dropdown-toggle="dropdownDotsHorizontal"
                 class="my-1 inline-flex items-center rounded-lg bg-white p-2 text-center text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800"
                 type="button">
-                <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="white"
+                <svg class="h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                     viewBox="0 0 16 3">
                     <path
                         d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
@@ -79,7 +80,7 @@
                     <li>
                         <a href="javascript:void(0)" data-action="{{ route('get_assignment', $assignment->id) }}"
                             @click="triggerModal()"
-                            class="m-1 flex items-center rounded-lg p-2 py-1 align-middle hover:bg-gray-700">
+                            class="m-1 flex items-center rounded-lg p-2 py-1 align-middle hover:bg-gray-200 dark:hover:bg-gray-700">
                             <svg class="h-5 w-6 text-gray-800 dark:text-white" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24">
                                 <path fill="currentColor"
@@ -94,7 +95,7 @@
                             @csrf
                             <input type="hidden" name="assignment_id" :value="assignment_details.id">
                             <button @click.prevent="confirmDelete()" type="submit"
-                                class="flex w-full items-center rounded-lg p-1 px-2 align-text-bottom hover:bg-gray-700">
+                                class="flex w-full items-center rounded-lg p-1 px-2 align-text-bottom hover:bg-gray-200 dark:hover:bg-gray-700">
                                 <svg class="h-5 w-6 text-gray-800 dark:text-white" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd"
@@ -108,14 +109,14 @@
                 </ul>
             </div>
         </div>
-        <div class="rounded-lg bg-gray-700 p-4">
-            <div class="text-2xl font-semibold text-white"> {{ $assignment->title }}
+        <div class="rounded-lg bg-white p-4 dark:bg-gray-700">
+            <div class="text-2xl font-semibold text-black dark:text-white"> {{ $assignment->title }}
             </div>
             <div class="flex items-center p-px text-sm">
                 <span
                     class="relative mr-px inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path fill="white"
+                        <path fill="currentColor"
                             d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
                     </svg>
                 </span>
@@ -123,7 +124,7 @@
                 <span
                     class="relative mx-px ml-2 inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path fill="white"
+                        <path fill="currentColor"
                             d="M9,10V12H7V10H9M13,10V12H11V10H13M17,10V12H15V10H17M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H6V1H8V3H16V1H18V3H19M19,19V8H5V19H19M9,14V16H7V14H9M13,14V16H11V14H13M17,14V16H15V14H17Z" />
                     </svg>
                 </span>
@@ -168,11 +169,11 @@
         </div>
         <br>
         <div class="pb-6">
-            <div class="md:flex flex-row space-y-1 md:space-x-2 md:space-y-0 mb-2 items">
-                <div class="flex w-full md:w-1/2 items-center space-x-1">
+            <div class="items mb-2 flex-row space-y-1 md:flex md:space-x-2 md:space-y-0">
+                <div class="flex w-full items-center space-x-1 md:w-1/2">
                     <span class="text-sm">Sort by</span>
                     <select x-model="sort_by" @change="filterRecords"
-                        class="flex-1 w-full rounded-md bg-gray-700 px-2.5 py-1 text-sm text-center text-white">
+                        class="w-full flex-1 rounded-md bg-white px-2.5 py-1 text-center text-sm text-black dark:bg-gray-700 dark:text-white">
                         <option value="lname">Surname</option>
                         <option value="fname">First name</option>
                         <option value="turned_in">Turn in status</option>
@@ -180,7 +181,7 @@
                     </select>
                 </div>
                 <select x-model="sort_direction"
-                    class="w-full md:w-1/2 rounded-md bg-gray-700 px-2.5 py-1 text-sm text-center text-white"
+                    class="w-full rounded-md bg-white px-2.5 py-1 text-center text-sm text-black dark:bg-gray-700 dark:text-white md:w-1/2"
                     @change="filterRecords">
                     <option value="desc">Descending</option>
                     <option value="asc">Ascending</option>
@@ -191,14 +192,15 @@
                     <div x-data="{ open: false }">
                         <h2 :id="`accordion-collapse-heading-${student.id}`" x-transition>
                             <button type="button" @click="open = !open"
-                                :class="open ? 'bg-sky-800' : 'bg-gray-700 rounded-b-md'"
-                                class="mt-2 flex w-full items-center justify-between gap-3 rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white">
+                                :class="open ? 'bg-sky-800 text-white' :
+                                    'bg-white dark:bg-gray-700 rounded-b-md text-black dark:text-white'"
+                                class="mt-2 flex w-full items-center justify-between gap-3 rounded-t-md p-2 px-3 font-medium hover:bg-sky-700 hover:text-white dark:bg-gray-700">
                                 <div>
-                                    <div class="text-start leading-none mb-1.5"
+                                    <div class="mb-1.5 text-start leading-none"
                                         x-text="student.user.lname + ', ' + student.user.fname ">
                                     </div>
 
-                                    <div class="flex items-center space-x-1 justify-start"
+                                    <div class="flex items-center justify-start space-x-1"
                                         :id="`grade_status_${student.id}`">
                                         <span
                                             :class="student.enrollee_grades && (student.enrollee_grades.grade != 0 || student
@@ -206,23 +208,23 @@
                                                     null) ?
                                                 'bg-sky-600' :
                                                 'bg-yellow-600'"
-                                            class="rounded-full p-1 px-2 text-xs"
+                                            class="rounded-full p-1 px-2 text-xs text-white"
                                             x-text="student.enrollee_grades && (student.enrollee_grades.grade != 0 || student
                                                     .enrollee_grades.grade ==
                                                     null) ? 'Graded' : 'Not Graded'">
                                         </span>
-                                        <span class="text-sm italic md:hidden text-white/75"
+                                        <span class="text-sm italic md:hidden"
                                             x-text="student.enrollee_turn_in && student.enrollee_turn_in.turned_in ? 'Turned in' : 'Not turned in'">
 
                                         </span>
                                     </div>
                                 </div>
                                 <div class="flex items-center">
-                                    <span class="me-2 text-sm italic hidden md:block"
+                                    <span class="me-2 hidden text-sm italic md:block"
                                         x-text="student.enrollee_turn_in && student.enrollee_turn_in.turned_in ? 'Turned in' : 'Not turned in'">
 
                                     </span>
-                                    <svg class="h-3 w-3 shrink-0 " :class="!open ? 'rotate-180' : ''"
+                                    <svg class="h-3 w-3 shrink-0" :class="!open ? 'rotate-180' : ''"
                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                         viewBox="0 0 10 6">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -238,7 +240,7 @@
                             x-transition:leave="transition ease-in duration-300"
                             x-transition:leave-start="opacity-100 transform translate-y-0"
                             x-transition:leave-end="opacity-0 transform -translate-y-4">
-                            <div class="rounded-b-md bg-gray-800 p-3">
+                            <div class="rounded-b-md bg-white p-3 dark:bg-gray-800">
                                 <div class="mb-2 text-sm">Submitted Files</div>
                                 <template
                                     x-if="!student.enrollee_turn_in || student.enrollee_turn_in.turned_in == false || student.enrollee_turn_in.turn_in_files.length == 0">
@@ -261,10 +263,10 @@
 
                                 <hr class="mt-2 border-t-2 border-gray-600">
 
-                                <div class="mt-2 flex flex-col space-y-3 items-center">
+                                <div class="mt-2 flex flex-col items-center space-y-3">
                                     {{-- {{ $student }} --}}
                                     <div class="w-full">
-                                        <div class="me-2 text-sm mb-1.5">Remarks:</div>
+                                        <div class="mb-1.5 me-2 text-sm">Remarks:</div>
                                         <textarea required name="remarks" :id="`remarks_${student.id}`" :value="student.enrollee_grades?.remark ?? ''"
                                             rows="4"
                                             class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
@@ -272,15 +274,15 @@
                                     </div>
 
                                     <div class="w-full">
-                                        <div class="me-2 text-sm mb-1.5">Grade:</div>
+                                        <div class="mb-1.5 me-2 text-sm">Grade:</div>
                                         <input
                                             class="me-2 block w-full rounded-lg p-2 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                             type="number" :value="student.enrollee_grades?.grade ?? 0"
                                             name="grade" :id="`grade_${student.id}`">
                                     </div>
-                                    <div @click="grade_changed(student.id)" class="w-full flex justify-end">
+                                    <div @click="grade_changed(student.id)" class="flex w-full justify-end">
                                         <div
-                                            class="cursor-pointer rounded-md p-2 hover:bg-sky-800 bg-sky-800/20 flex space-x-2 items-center ">
+                                            class="flex cursor-pointer items-center space-x-2 rounded-md bg-sky-800/20 p-2 hover:bg-sky-800">
                                             <span>
                                                 <svg class="w-5" xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 24 24">
@@ -462,7 +464,7 @@
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                     placeholder="Points" required />
                             </div>
-                            <div class="text-xs text-white">
+                            <div class="text-xs">
                                 <a class="flex cursor-pointer items-center" @click="toggleShowAddFile()">Attach
                                     File/s
                                     <svg x-show="showAddFileModal" class="ml-2 h-4 w-4 text-white"

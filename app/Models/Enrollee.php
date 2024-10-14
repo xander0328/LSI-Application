@@ -105,4 +105,8 @@ class Enrollee extends Model
     public function assignment(){
         return $this->hasMany(Assignment::class);
     }
+
+    public function enrollee_attendances(){
+        return $this->hasMany(StudentAttendance::class);
+    }
 }

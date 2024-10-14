@@ -32,23 +32,23 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+            <div class="flex-row items-center text-2xl font-semibold text-white md:flex md:space-x-1">
                 <div>{{ __('Stream') }}</div>
-                <div class="hidden md:block text-slate-600">|</div>
-                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
+                <div class="hidden text-slate-600 md:block">|</div>
+                <div class="text-sm font-normal leading-none text-sky-500 md:text-lg">{{ $batch->course->name }}</div>
             </div>
-            <div class="hidden md:flex items-center">
-                <div class="flex space-x-1 mr-4">
+            <div class="hidden items-center md:flex">
+                <div class="mr-4 flex space-x-1">
                     <div class="text-white/75"> Batch: </div>
                     <div>
                         {{ $batch->course->code }}-{{ $batch->name }}
                     </div>
                 </div>
             </div>
-            <div class="flex md:hidden items-center">
+            <div class="flex items-center md:hidden">
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
+                        <button class="inline-flex items-center rounded-md p-1 hover:bg-gray-900/50">
                             <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24">
                                 <title>dots-vertical</title>
@@ -60,7 +60,7 @@
 
                     <x-slot name="content">
                         <div class="m-1.5 flex-row">
-                            <div class="my-2 flex justify-center text-xs space-x-1">
+                            <div class="my-2 flex justify-center space-x-1 text-xs">
                                 <div class="text-white/75"> Batch: </div>
                                 <div>
                                     {{ $batch->course->code }}-{{ $batch->name }}
@@ -78,7 +78,7 @@
         </div>
 
     </x-slot>
-    <div x-data="stream" id="course_list" class="md:mx-8 mx-4 flex flex-col-reverse pb-4 pt-48 text-white">
+    <div x-data="stream" id="course_list" class="mx-4 flex flex-col-reverse pb-4 pt-48 text-white md:mx-8">
         <template x-if="posts.length > 0">
             <template x-for="post in posts" :key="post.id">
                 <div class="my-1.5 rounded-md bg-gray-800 p-3 shadow-md">
@@ -136,6 +136,24 @@
                                     </template>
                                 </div>
                             </template>
+                        </div>
+                        <div class="md:flex md:justify-end">
+                            <div class="mt-1.5 rounded bg-sky-600 text-white hover:bg-sky-700 md:w-1/5">
+                                <a :href="`{{ route('instructor.comments', ['post_id' => ':id']) }}`.replace(':id', post.id)"
+                                    class="flex w-full items-center justify-center space-x-1 p-1.5">
+                                    <span>
+                                        <svg class="mt-0.5 h-4 w-4" fill="currentColor"
+                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <title>comment</title>
+                                            <path
+                                                d="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9Z" />
+                                        </svg>
+                                    </span>
+                                    <span>
+                                        Comment
+                                    </span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

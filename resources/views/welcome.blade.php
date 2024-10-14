@@ -89,7 +89,6 @@
     <div x-data="welcomePage"
         class="bg-dots-darker dark:bg-dots-lighter relative bg-gray-900 bg-center selection:bg-white selection:text-sky-400 dark:bg-gray-950 sm:items-center sm:justify-center">
 
-
         {{-- Temporary Comment --}}
         <div style="background-image: url('{{ asset('images/elements/ekonek_bg.png') }}');"
             class="flex flex-col bg-cover bg-center">
@@ -97,13 +96,13 @@
                 <div class="flex">
                     <a href="/" class="mr-9 items-center">
                         <!-- <img src="images/icons/lsi-logo.png" alt="LSI" class="h-16 w-auto rounded-full dark:bg-gray-900" /> -->
-                        <div class="text-lg md:text-3xl font-black text-cyan-500">Language Skills Institute</div>
+                        <div class="text-lg font-black text-cyan-500 md:text-3xl">Language Skills Institute</div>
                         <div class="bg-gradient-to-r from-gray-900 px-1 text-xs font-light text-cyan-300">Oriental
                             Mindoro
                         </div>
                     </a>
 
-                    <nav class="hidden md:flex items-center justify-center space-x-4">
+                    <nav class="hidden items-center justify-center space-x-4 md:flex">
                         <a href="#courses" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">Courses</a>
                         <a href="#" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">Community</a>
                         <a href="#" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">About</a>
@@ -117,14 +116,14 @@
                             <a @if (Auth::user()->role == 'superadmin') href="{{ url('/dashboard') }}" 
                                 @elseif (Auth::user()->role == 'student') href="{{ route('enrolled_course') }}"
                             @elseif (Auth::user()->role == 'instructor') href="{{ url('/batch_list') }}" @endif
-                                class="hidden md:inline-flex rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
+                                class="hidden rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none md:inline-flex">
                                 <img class="h-5 w-auto" src="{{ asset('/images/icons/lsi-logo.png') }}" alt="">
                             </a>
-                            <div class="hidden md:inline-flex relative">
+                            <div class="relative hidden md:inline-flex">
                                 <x-dropdown align="right" width="46">
                                     <x-slot name="trigger">
                                         <button
-                                            class="inline-flex items-center rounded-md border border-transparent cg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                                            class="cg-white inline-flex items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
                                             <div>
                                                 {{ Auth::user()->role == 'instructor' ? 'Trainer ' : '' }}{{ Auth::user()->fname }}
                                                 {{ Auth::user()->lname }}</div>
@@ -178,18 +177,18 @@
                             </div>
                         @else
                             <a href="{{ route('login') }}"
-                                class="hidden md:inline-flex rounded-md border border-cyan-500 px-3 py-2 font-semibold text-sky-300">Log
+                                class="hidden rounded-md border border-cyan-500 px-3 py-2 font-semibold text-sky-300 md:inline-flex">Log
                                 in</a>
 
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
-                                    class="hidden md:inline-flex ml-4 rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-2 font-semibold text-black">Register</a>
+                                    class="ml-4 hidden rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-2 font-semibold text-black md:inline-flex">Register</a>
                             @endif
                         @endauth
                     </div>
                 @endif
 
-                <button class="md:hidden text-white" aria-controls="drawer-navigation"
+                <button class="text-white md:hidden" aria-controls="drawer-navigation"
                     data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation"
                     data-drawer-placement="right">
                     <svg class="h-6 w-6 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -200,45 +199,45 @@
 
                 <!-- drawer component -->
                 <div id="drawer-navigation"
-                    class="md:hidden fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform w-80 translate-x-full bg-gray-800"
+                    class="fixed right-0 top-0 z-40 h-screen w-80 translate-x-full overflow-y-auto bg-gray-800 p-4 transition-transform md:hidden"
                     tabindex="-1" aria-labelledby="drawer-navigation-label">
                     <h5 id="drawer-navigation-label"
-                        class="ms-2 text-base font-semibold text-gray-500 uppercase dark:text-gray-400">Menu</h5>
+                        class="ms-2 text-base font-semibold uppercase text-gray-500 dark:text-gray-400">Menu</h5>
                     <button type="button" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation"
-                        class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        class="absolute end-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
+                        <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 14 14">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                 stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                         </svg>
                         <span class="sr-only">Close menu</span>
                     </button>
-                    <div class="py-4 overflow-y-auto">
+                    <div class="overflow-y-auto py-4">
                         <ul class="space-y-2 font-medium text-white">
 
                             <li>
                                 <a href="#"
-                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
                                     <span class="flex-1 whitespace-nowrap">Courses</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#"
-                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
 
                                     <span class="flex-1 whitespace-nowrap">Updates</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#"
-                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
 
                                     <span class="flex-1 whitespace-nowrap">About Us</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#"
-                                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
 
                                     <span class="flex-1 whitespace-nowrap">Contact</span>
                                 </a>
@@ -250,23 +249,23 @@
                                         <a @if (Auth::user()->role == 'superadmin') href="{{ url('/dashboard') }}" 
                                     @elseif (Auth::user()->role == 'student') href="{{ route('enrolled_course') }}"
                                     @elseif (Auth::user()->role == 'instructor') href="{{ url('/batch_list') }}" @endif
-                                            class="flex rounded-md text-white bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
+                                            class="flex rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 text-white hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
                                             <img class="h-5 w-auto" src="{{ asset('/images/icons/lsi-logo.png') }}"
                                                 alt="">
                                         </a>
                                     </li>
-                                    <hr class=" border-sky-800/50">
+                                    <hr class="border-sky-800/50">
                                     <li>
                                         <div class="py-2">
-                                            <div class="text-white  text-center font-bold">
+                                            <div class="text-center font-bold text-white">
                                                 {{ Auth::user()->role == 'instructor' ? 'Trainer ' : '' }}{{ Auth::user()->fname }}
                                                 {{ Auth::user()->lname }}</div>
-                                            <div class="text-xs text-center text-white/50">{{ Auth::user()->email }}</div>
+                                            <div class="text-center text-xs text-white/50">{{ Auth::user()->email }}</div>
                                         </div>
                                     </li>
                                     <li>
                                         <a href="{{ route('profile.edit') }}"
-                                            class=" p-2 text-gray-900 hover:bg-gray-600 dark:text-white  flex items-center space-x-1.5 rounded-md px-1.5">
+                                            class="flex items-center space-x-1.5 rounded-md p-2 px-1.5 text-gray-900 hover:bg-gray-600 dark:text-white">
                                             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
                                                     d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
@@ -279,7 +278,7 @@
                                     <li>
                                         <form class="cursor-pointer" method="POST" action="{{ route('logout') }}">
                                             @csrf
-                                            <a class=" p-2 bg-red-800/50 hover:bg-red-900/50 hover:text-red-500 flex items-center space-x-1.5 rounded-md px-1.5"
+                                            <a class="flex items-center space-x-1.5 rounded-md bg-red-800/50 p-2 px-1.5 hover:bg-red-900/50 hover:text-red-500"
                                                 onclick="event.preventDefault();
                                                                 this.closest('form').submit();">
                                                 <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg"
@@ -296,16 +295,15 @@
                                 @else
                                     <li>
 
-
                                         <a href="{{ route('login') }}"
-                                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+                                            class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
 
                                             <span class="flex-1 whitespace-nowrap">Log In</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('register') }}"
-                                            class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:text-sky-500 group">
+                                            class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
 
                                             <span class="flex-1 whitespace-nowrap">Sign Up</span>
                                         </a>
@@ -318,22 +316,23 @@
 
             </div>
 
-            <div class="h-full p-4">
-                <div class="flex-col space-y-4 h-full w-full flex md:flex items-center text-white">
+            <div class="flex-col items-center space-y-4 p-4">
+                <div class="">
                     <div x-data="{ show: false }" x-intersect:enter="show = true"
                         :class="{ 'opacity-100 translate-x-0': show, 'opacity-0 translate-x-full': !show }"
-                        class="flex-1 flex items-center w-full md:w-1/2 translate-x-full transform opacity-0 transition-opacity transition-transform duration-500 ease-out">
+                        class="mb-2 flex w-full flex-1 translate-x-full transform items-center opacity-0 transition-opacity transition-transform duration-500 ease-out md:w-1/2">
 
                         <div class="flex-col">
-                            <h3 class="text-xl font-bold">Unlock Your Future with Language Skills Institute</h3>
+                            <h3 class="text-xl font-bold text-white">Unlock Your Future with Language Skills Institute
+                            </h3>
                             <p class="text-gray-600">Boost your skills and enhance your career.
                                 Enroll today! </p>
                         </div>
                     </div>
-                    <div class="flex-1 md:w-1/2 w-full items-center ">
-                        <swiper-container class="mySwiper h-64 " pagination="true" pagination-clickable="true"
-                            space-between="30" effect="fade" navigation="true" autoplay-delay="2500"
-                            autoplay-disable-on-interaction="false">
+                    <div class="">
+                        <swiper-container class="mySwiper h-96 md:h-80" pagination="true" pagination-clickable="true"
+                            zoom="true" space-between="30" effect="fade" navigation="true"
+                            autoplay-delay="2500" autoplay-disable-on-interaction="false">
                             <swiper-slide>
                                 <img class="object-cover object-center"
                                     src="{{ asset('images/carousel/image1-test.jpg') }}" />
@@ -348,6 +347,7 @@
                             </swiper-slide>
                         </swiper-container>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -355,7 +355,7 @@
         <h1
             class="my-4 text-center text-2xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl">
             Welcome to Language Skills Institute </h1>
-        <div class="text-sm mx-4 md:mx-20 mb-10 text-center text-white">At LSI, we're dedicated to empowering
+        <div class="mx-4 mb-10 text-center text-sm text-white md:mx-20">At LSI, we're dedicated to empowering
             individuals
             with the
             essential
@@ -375,7 +375,7 @@
                     class="grid gap-8">
                     <template x-for="course in featuredCourses" :key="course.id">
                         <div x-data="{ show: false }" x-intersect="show = true" :class="{ 'opacity-100 ': show }"
-                            class="col-span-1 max-w-sm rounded-xl border-8  opacity-0 shadow transition-opacity duration-700 ease-out border-gray-800 bg-gray-800">
+                            class="col-span-1 max-w-sm rounded-xl border-8 border-gray-800 bg-gray-800 opacity-0 shadow transition-opacity duration-700 ease-out">
                             <div class="h-44 w-full overflow-hidden rounded-t-lg">
                                 <img class="h-full w-full object-cover object-center"
                                     :src="'{{ asset('storage/website/course_image/:course_id/:folder_name/:filename') }}'
@@ -413,16 +413,15 @@
 
         @if (auth()->user() && auth()->user()->role == 'student')
             <div x-data="notificationComponent" x-init="checkPermission" id="toast-interactive"
-                class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x rtl:divide-x-reverse divide-gray-200 rounded-lg shado-lg bottom-5 right-5 dark:text-gray-400 dark:divide-gray-700 dark:bg-gray-800"
+                class="shado-lg fixed bottom-5 right-5 flex w-full max-w-xs items-center space-x-4 divide-x divide-gray-200 rounded-lg bg-white p-4 text-gray-500 rtl:divide-x-reverse dark:divide-gray-700 dark:bg-gray-800 dark:text-gray-400"
                 role="alert">
 
-
-                <div class="w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg dark:bg-gray-800 dark:text-gray-400"
+                <div class="w-full max-w-xs rounded-lg bg-white p-4 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
                     role="alert">
                     <div class="flex">
                         <div
-                            class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-blue-500 bg-blue-100 rounded-lg dark:text-blue-300 dark:bg-blue-900">
-                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            class="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-500 dark:bg-blue-900 dark:text-blue-300">
+                            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 18 20">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2"
@@ -437,20 +436,20 @@
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <a href="#" @click="requestPermission()"
-                                        class="inline-flex justify-center w-full px-2 py-1.5 text-xs font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">Update</a>
+                                        class="inline-flex w-full justify-center rounded-lg bg-blue-600 px-2 py-1.5 text-center text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">Update</a>
                                 </div>
                                 <div>
                                     <a href="#"
-                                        class="inline-flex justify-center w-full px-2 py-1.5 text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-600 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700">Not
+                                        class="inline-flex w-full justify-center rounded-lg border border-gray-300 bg-white px-2 py-1.5 text-center text-xs font-medium text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:border-gray-600 dark:bg-gray-600 dark:text-white dark:hover:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-700">Not
                                         now</a>
                                 </div>
                             </div>
                         </div>
                         <button type="button"
-                            class="ms-auto -mx-1.5 -my-1.5 bg-white items-center justify-center flex-shrink-0 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700"
+                            class="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-gray-300 dark:bg-gray-800 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-white"
                             data-dismiss-target="#toast-interactive" aria-label="Close">
                             <span class="sr-only">Close</span>
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 14 14">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
@@ -458,7 +457,6 @@
                         </button>
                     </div>
                 </div>
-
 
             </div>
         @endif
@@ -626,11 +624,11 @@
     </div>
 
     <footer
-        class="w-full border-t  p-4 shadow border-gray-600 bg-gray-800 md:flex md:items-center md:justify-between md:p-6">
-        <span class="text-sm  text-gray-400 sm:text-center">© 2024 <a href="/" class="hover:underline">Language
+        class="w-full border-t border-gray-600 bg-gray-800 p-4 shadow md:flex md:items-center md:justify-between md:p-6">
+        <span class="text-sm text-gray-400 sm:text-center">© 2024 <a href="/" class="hover:underline">Language
                 Skills Institute</a>. All Rights Reserved.
         </span>
-        <ul class="mt-3 flex flex-wrap items-center text-sm font-medium  text-gray-400 sm:mt-0">
+        <ul class="mt-3 flex flex-wrap items-center text-sm font-medium text-gray-400 sm:mt-0">
             <li>
                 <a href="#" class="me-4 hover:underline md:me-6">About</a>
             </li>

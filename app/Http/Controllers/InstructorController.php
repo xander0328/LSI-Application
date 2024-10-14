@@ -30,6 +30,9 @@ use App\Http\Controllers\NotificationSendController;
 use App\Mail\Assignment as AssignmentMail;
 use Illuminate\Support\Facades\Mail;
 
+// File
+use Symfony\Component\HttpFoundation\File\File;
+
 class InstructorController extends Controller
 {
     // Batch List
@@ -286,7 +289,7 @@ class InstructorController extends Controller
 
     public function load_instructor_picture($source) {
         $instructor = Instructor::where('id', $source)->first();
-        $path = public_path('storage/instructor_files/'. $instructor->user_id.'/'.$instructor->folder.'/'. $instructor->id_picture);
+        $path = new File(Storage::path('instructor_files/'. $instructor->user_id.'/'.$instructor->folder.'/'. $instructor->id_picture));
         $headers = [
             // 'Content-Type' => 'image/jpeg',
             'Content-Disposition' => 'inline; filename="'.$instructor->id_picture.'"',
@@ -485,7 +488,7 @@ class InstructorController extends Controller
             $file = Files::where('id', $source)->first();
 
             if($file){
-                $path = public_path('storage/uploads/'. $batch->id . '/' . $file->post_id  .'/' . $file->filename);
+                $path = new File(Storage::path('uploads/'. $batch->id . '/' . $file->post_id  .'/' . $file->filename));
                 $headers = [
                     'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
                 ];
@@ -595,13 +598,17 @@ class InstructorController extends Controller
             'due_hour',
         ]);
         
-        $assignment_details['due_date'] = null;
-        if(isset($request->set_due)){
+        if(!isset($request->set_due)){
+            $assignment_details['due_date'] = null;
+            $assignment_details['closing'] = 0;
+
             // dd('Hello');
+        }else{
             $assignment_details['due_date'] = date('Y-m-d', strtotime($assignment_details['due_date']));
+            $assignment_details['closing'] = $request->input('closing') ? 1 : 0;
+
         }
 
-        $assignment_details['closing'] = $request->input('closing') ? 1 : 0;
         $assignment_details['points'] = $request->max_point;
         
         if($request->lesson != null){
@@ -626,14 +633,16 @@ class InstructorController extends Controller
         }
 
         $batch_id = $request->batch_id;
-        $batch_name = Batch::where('id', $batch_id)->pluck('name')->first();
+        $batch_name = Batch::where('id', $batch_id)->select('course_id', 'name')->first();
 
         if($request->assignment_id != null){
             $assignment = Assignment::where('id', $request->assignment_id)->first();
-            $title = $batch_name.' | Assignment Updated';
+            $subject = 'Assignment Updated';
+            $batch = $batch_name->course->code.'-'.$batch_name->name.' | Assignment Updated';
         }else{
             $assignment = new Assignment();
-            $title = $batch_name.' | New Assignment Posted';
+            $subject = 'New Assignment Posted';
+            $batch = $batch_name->course->code.'-'.$batch_name->name.' | New Assignment Posted';
         }
 
         $assignment->fill($assignment_details);
@@ -668,18 +677,17 @@ class InstructorController extends Controller
         }
 
         $enrollees = Enrollee::where('batch_id', $request->batch_id)
-        ->with(['user' => function ($q){
-            $q->with('device_tokens');
-        }])->get();
-        $body = $assignment->title;
+        ->with(['user'])->get();
+        $title = $assignment->title;
+        $instruction = $assignment->description;
 
         // Collect all device tokens into an array
-        $deviceTokens = [];
-        foreach ($enrollees as $enrollee) {
-            foreach ($enrollee->user->device_tokens as $deviceToken) {
-                $deviceTokens[] = $deviceToken->device_token; // Assuming 'token' is the field name in device_tokens
-            }
-        }
+        // $deviceTokens = [];
+        // foreach ($enrollees as $enrollee) {
+        //     foreach ($enrollee->user->device_tokens as $deviceToken) {
+        //         $deviceTokens[] = $deviceToken->device_token; // Assuming 'token' is the field name in device_tokens
+        //     }
+        // }
 
         $emails = [];
         foreach ($enrollees as $enrollee) {
@@ -688,8 +696,10 @@ class InstructorController extends Controller
 
         // dd($emails);
         $data = [
+            'subject' => $subject,
+            'batch' => $batch,
             'title' => $title,
-            'message' => $body,
+            'instruction' => $instruction,
             'link' => route('view_assignment', ['id' => $assignment->id])
         ];
         Mail::to($emails)->send(new AssignmentMail($data));
@@ -779,7 +789,7 @@ class InstructorController extends Controller
         $file = TempAssignment::where('id', $source)->first();
         
         if ($file) {
-            $filePath = public_path('storage/assignments/' . $batch_id . '/' . 'temp/'. $file->folder .'/'. $file->filename);
+            $filePath = new File(Storage::path('assignments/' . $batch_id . '/' . 'temp/'. $file->folder .'/'. $file->filename));
             $headers = [
                 'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
             ];
@@ -1084,20 +1094,13 @@ class InstructorController extends Controller
     }
 
     public function get_attendance_data(Request $request){
-        $record = Attendance::where('id', $request->id)->first();
-        $students = StudentAttendance::where('attendance_id', $record->id)->get();
-        $enrollee = collect();
-        $user = collect();
-
-        foreach($students as $student){
-            $enrollee = $enrollee->merge($student->enrollee);
-            $user = $user->merge($student->enrollee->user);
-        }
-
-        // dd($students);
-        $data;
+        $record = Attendance::where('id', $request->id)
+        ->with('student_attendances')
+        ->first();
+        // dd($record);
+        $data = null;
         $i = 0;
-        foreach ($students as $student) {
+        foreach ($record->student_attendances as $student) {
             $i++;
             $data[$i] = [
                 'id' => $student->enrollee_id,
@@ -1116,7 +1119,7 @@ class InstructorController extends Controller
         ->with('comments')
         ->first();
 
-        return view('instructor.comments', compact('post'));
+        return view('student.comments', compact('post'));
     }
 
 }

@@ -34,8 +34,12 @@ use App\Models\Instructor;
 use App\Models\CourseDefault;
 use App\Models\CourseIdTemplate;
 
+use App\Traits\DecryptionTrait;
+
 class SuperAdminController extends Controller
 {
+    use DecryptionTrait;
+
     public function website(){
         return view('website');
     }
@@ -746,26 +750,26 @@ class SuperAdminController extends Controller
         try {
             // Update enrollees table with the batch_id for each selected user ID
             foreach ($enrollee_ids as $enrollee_id) {
-                // $result = Builder::create()
-                //     ->writer(new PngWriter())
-                //     ->writerOptions([])
-                //     ->data(encrypt($enrollee_id))
-                //     ->encoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
-                //     // ->errorCorrectionLevel(new \Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh())
-                //     ->size(300)
-                //     ->margin(10)
-                //     ->build();
+                $result = Builder::create()
+                    ->writer(new PngWriter())
+                    ->writerOptions([])
+                    ->data(encrypt($enrollee_id))
+                    ->encoding(new \Endroid\QrCode\Encoding\Encoding('UTF-8'))
+                    // ->errorCorrectionLevel(new \Endroid\QrCode\ErrorCorrectionLevel\ErrorCorrectionLevelHigh())
+                    ->size(300)
+                    ->margin(10)
+                    ->build();
         
-                // $qrCode = base64_encode($result->getString());
+                $qrCode = base64_encode($result->getString());
                 $courseId = Batch::where('id', $batchId)->pluck('course_id')->first();
                 $enrollee = Enrollee::where('id', $enrollee_id)->first();
                 $enrollee->update(['batch_id' => $batchId]);
                 $user = User::where('id', $enrollee->user_id)->first();
                 $user->update(['role' => 'student']);
-                // EnrolleeQrcode::create([
-                //     'enrollee_id' => $enrollee_id,
-                //     'qr_code' => $qrCode
-                // ]);
+                EnrolleeQrcode::create([
+                    'enrollee_id' => $enrollee_id,
+                    'qr_code' => $qrCode
+                ]);
                 $payment = new Payment();
                 $payment->enrollee_id = $enrollee_id;
 
@@ -834,66 +838,89 @@ class SuperAdminController extends Controller
 
     //Returning the data of scanned ID
     public function get_scan_data(Request $request){
+        if (!$this->isDecryptable($request->qr_code)) {
+            return response()->json(['status'=>'error', 'message' => 'Invalid ID']);
+        }
+
         $enrollee_id = decrypt($request->qr_code);
-        $enrollee = Enrollee::where('id', $enrollee_id)->first();
-        $files = collect();
-        $user = collect();
-        $batch = collect();
+        $enrollee = Enrollee::where('id', $enrollee_id)
+        ->with(['user', 'enrollee_files', 'batch.course', 
+        'enrollee_attendances' => function ($q){
+            $q->whereDate('created_at', Carbon::today())
+            ->orderBy('created_at', 'desc');
+        }])
+        ->first();
+        
+        if(!$enrollee){
+            return response()->json(['status' => 'error', 'message' => 'Trainee not found']);
+        }
 
-            // Retrieve files for each post
-        $user = $user->merge($enrollee->user);
-        $files = $files->merge($enrollee->enrollee_files);
-        $batch = $batch->merge($enrollee->batch);
-
-        // dd($enrollee);
         return response()->json($enrollee);
     }
 
     //Creating a record of the scanned ID
     public function submit_f2f_attendance(Request $request){
-        $current_attendance = Attendance::where('date', Carbon::today())
-        ->where('batch_id', $request->batch_id)
-        ->first();
+        $trainee = Enrollee::where('id', $request->student_id)->first();
 
         $batch = Batch::where('id', $request->batch_id)->first();
 
-        if($current_attendance){
-            $already_recorded = StudentAttendance::where('attendance_id', $current_attendance->id)
-            ->where('enrollee_id', $request->student_id)
-            ->whereNot('status', 'absent')
+        $current_attendance = Attendance::where('batch_id', $batch->id)
+            ->whereDate('created_at', Carbon::today())
+            ->orderBy('created_at', 'desc')
             ->first();
 
-            if($already_recorded){
-                return response()->json(['status' => 'Batch '.$batch->name.': Already Recorded']);
-            }
-            else{
-                $new_attendee = StudentAttendance::where('attendance_id', $current_attendance->id)
+        $all_student = Enrollee::where('batch_id', $batch->id)->get();
+
+        if ($current_attendance) {
+            // Check if the student is already logged in the student_attendance relation
+            $student_attendance = $current_attendance->student_attendances()
                 ->where('enrollee_id', $request->student_id)
+                ->whereNot('status', 'absent')
                 ->first();
+            
+            if (!$student_attendance) {
+                // If the student is not yet logged, log them
+                $current_attendance->student_attendances()
+                ->where('enrollee_id', $request->student_id)
+                ->update([
+                    'status' => $request->status,
+                ]);
+            } else {
+                // Student is already logged in, handle this case if needed
+                $new_attendance = Attendance::create([
+                    'batch_id' => $batch->id,
+                    'date' => Carbon::today(),
+                    'mode' => 'f2f',
+                    'created_at' => Carbon::now(),
+                ]);
+        
+                foreach ($all_student as $student) {
+                    $new_attendance->student_attendances()->create([
+                        'enrollee_id' => $student->id,
+                        'status' => $request->student_id == $student->id ? $request->status : 'absent',
+                    ]);
+                }
+            }
 
-                $new_attendee->status = $request->status;
-                $new_attendee->save();
-                return response()->json(['status' => 'Batch '.$batch->name.': New attendee recorded']);
+        } else {
+            // If no attendance record for today, create a new one and log the student
+            $new_attendance = Attendance::create([
+                'batch_id' => $batch->id,
+                'date' => Carbon::today(),
+                'mode' => 'f2f',
+                'created_at' => Carbon::now(),
+            ]);
+
+
+            foreach ($all_student as $student) {
+                $new_attendance->student_attendance()->create([
+                    'enrollee_id' => $student->id,
+                    'status' => $request->student_id == $student->id ? $request->status : 'absent',
+                ]);
             }
         }
-        else {
-            $new_attendance_record = new Attendance();
-            $new_attendance_record->batch_id = $request->batch_id;
-            $new_attendance_record->date = Carbon::today();
-            $new_attendance_record->mode = "f2f";
-            $new_attendance_record->save();
 
-            $all_students = Enrollee::where('batch_id', $request->batch_id)->get();
-            foreach ($all_students as $student){
-                $attendee = new StudentAttendance();
-                $attendee->attendance_id = $new_attendance_record->id;
-                $attendee->enrollee_id = $student->id;
-                $attendee->status = $student->id == $request->student_id ? $request->status : 'absent';
-                $attendee->save();
-            }
-
-            return response()->json(['status' => 'Batch '.$batch->name.': First attendee recorded today']);
-        }
+        return response()->json(['status' => 'success', 'message' => 'You accepted '.$trainee->user->fname.' '.$trainee->user->lname.' as '.($request->status == 'present' ? 'On Time' : 'Late'), 'title' => 'Attendance']);
     }
 
     // Users Section

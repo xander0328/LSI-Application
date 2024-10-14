@@ -40,9 +40,9 @@ class RegisteredUserController extends Controller
 
         $user = User::create([
             'role' => $request->role,
-            'fname' => $request->fname,
-            'mname' => $request->mname,
-            'lname' => $request->lname,
+            'fname' => ucwords(strtolower($request->fname)),
+            'mname' => ucwords(strtolower($request->mname)),
+            'lname' => ucwords(strtolower($request->lname)),
             'email' => $request->email,
             'contact_number' => $request->contact_number,
             'password' => Hash::make($request->password),

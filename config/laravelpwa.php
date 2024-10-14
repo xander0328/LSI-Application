@@ -3,14 +3,14 @@
 return [
     'manifest' => [
         'name' => env('APP_NAME', 'My PWA App'),
-        'short_name' => 'PWA',
+        'short_name' => 'eKonek',
         // 'start_url' => 'https://lsi-ekonek.online/',
         'start_url' => 'http://localhost:8000/',
         'background_color' => '#ffffff',
-        'theme_color' => '#000000',
+        'theme_color' => '#0284c7',
         'display' => 'standalone',
         'orientation' => 'any',
-        'status_bar' => 'black',
+        'status_bar' => '#0284c7',
         'icons' => [
             '72x72' => [
                 'path' => '/images/icons/lsi-icon.png',

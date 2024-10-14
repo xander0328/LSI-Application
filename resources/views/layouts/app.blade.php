@@ -91,7 +91,7 @@
     {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> --}}
 </head>
 
-<body class="bg-gray-900 font-sans antialiased">
+<body class="bg-gray-200 font-sans antialiased dark:bg-gray-900">
     <div class="min-h-screen bg-gray-200 dark:bg-gray-900">
         @php
             function getInitials($name)
@@ -227,9 +227,9 @@
                     @if (auth()->check() && auth()->user()->role === 'student')
                         <div class="mb-4 flex flex-col items-center">
                             <div
-                                class="mb-3 relative inline-flex items-center justify-center w-24 h-24 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
+                                class="relative mb-3 inline-flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">
                                 <span
-                                    class="font-medium text-4xl text-gray-600 dark:text-gray-300">{{ getInitials(auth()->user()->fname) }}</span>
+                                    class="text-4xl font-medium text-gray-600 dark:text-gray-300">{{ getInitials(auth()->user()->fname) }}</span>
                             </div>
                             {{-- <img class="mb-3 h-24 w-24 rounded-full shadow-lg"
                                 src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image" /> --}}
@@ -307,9 +307,9 @@
             <!-- Page Heading -->
             @if (isset($header))
                 <header
-                    class="{{ auth()->user()->role != 'instructor' ? 'md:left-60' : '' }} fixed left-0 right-0  top-16 z-10 shadow-lg">
+                    class="{{ auth()->user()->role != 'instructor' ? 'md:left-60' : '' }} fixed left-0 right-0 top-16 z-10 shadow-lg">
                     <div
-                        class="{{ auth()->user()->role != 'instructor' ? ' max-w-8xl' : '' }} mx-auto border-black dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-6 sm:px-6 lg:px-8">
+                        class="{{ auth()->user()->role != 'instructor' ? ' max-w-8xl' : '' }} mx-auto border-black bg-white px-4 py-6 dark:border-gray-600 dark:bg-gray-800 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>
                 </header>
