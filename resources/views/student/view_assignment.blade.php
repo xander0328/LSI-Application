@@ -4,23 +4,23 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+            <div class="flex-row items-center text-2xl font-semibold text-sky-950 dark:text-white md:flex md:space-x-1">
                 <div>{{ __('Assignments') }}</div>
-                <div class="hidden md:block text-slate-600">|</div>
-                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
+                <div class="hidden text-slate-600 md:block">|</div>
+                <div class="text-sm font-normal leading-none text-sky-500 md:text-lg">{{ $batch->course->name }}</div>
             </div>
-            <div class="hidden md:flex items-center">
-                <div class="flex space-x-1 mr-4">
-                    <div class="text-white/75"> Batch: </div>
+            <div class="hidden items-center md:flex">
+                <div class="mr-4 flex space-x-1">
+                    <div class="text-black text-white/75"> Batch: </div>
                     <div>
                         {{ $batch->course->code }}-{{ $batch->name }}
                     </div>
                 </div>
             </div>
-            <div class="flex md:hidden items-center">
+            <div class="flex items-center md:hidden">
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
+                        <button class="inline-flex items-center rounded-md p-1 hover:bg-gray-900/50">
                             <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24">
                                 <title>dots-vertical</title>
@@ -32,8 +32,8 @@
 
                     <x-slot name="content">
                         <div class="m-1.5 flex-row">
-                            <div class="my-2 flex justify-center text-xs space-x-1">
-                                <div class="text-white/75"> Batch: </div>
+                            <div class="my-2 flex justify-center space-x-1 text-xs">
+                                <div class="text-black text-white/75"> Batch: </div>
                                 <div>
                                     {{ $batch->course->code }}-{{ $batch->name }}
                                 </div>
@@ -50,7 +50,7 @@
         </div>
 
     </x-slot>
-    <div x-data="assignmentComponent()" id="course_list" class="mx-8 pb-4 pt-44  md:pt-48 text-white">
+    <div x-data="assignmentComponent()" id="course_list" class="mx-8 pb-4 pt-44 text-black dark:text-white md:pt-48">
 
         <div class="my-4">
             <div x-cloak id="status"
@@ -117,7 +117,7 @@
             </div>
             <div class="flex justify-end p-2 text-xs italic" id="assignment_info" x-text="info"></div>
             <div>
-                <div class="text-2xl font-semibold text-white"> {{ $assignment->title }}
+                <div class="text-2xl font-semibold text-black dark:text-white"> {{ $assignment->title }}
                 </div>
             </div>
 
@@ -125,7 +125,7 @@
                 <span
                     class="relative mr-px inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path fill="white"
+                        <path fill="currentColor"
                             d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z" />
                     </svg>
                 </span>
@@ -133,7 +133,7 @@
                 <span
                     class="relative mx-px ml-2 inline-flex h-4 w-4 items-center justify-center overflow-hidden rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path fill="white"
+                        <path fill="currentColor"
                             d="M9,10V12H7V10H9M13,10V12H11V10H13M17,10V12H15V10H17M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H6V1H8V3H16V1H18V3H19M19,19V8H5V19H19M9,14V16H7V14H9M13,14V16H11V14H13M17,14V16H15V14H17Z" />
                     </svg>
                 </span>
@@ -155,21 +155,20 @@
                 @endif
             </div>
             @if ($student_grade && $student_grade->grade != 0)
-                <span class="rounded-md bg-sky-800 p-2 text-sm">
+                <span class="rounded-md bg-sky-800 p-2 text-sm text-white">
                     Your grade: {{ $student_grade->grade }}
                 </span>
             @else
-                <div class=" text-xs">
-                    <span class="bg-yellow-700 rounded px-2 py-1">
+                <div class="text-xs">
+                    <span class="rounded bg-yellow-700 px-2 py-1 text-white">
                         Not graded yet
                     </span>
                 </div>
             @endif
 
-
         </div>
         @if ($student_grade && $student_grade->remark != null)
-            <div class="rounded-lg bg-gray-700/50 p-2 mb-4">
+            <div class="mb-4 rounded-lg bg-gray-700/50 p-2">
                 <div class="text-sm font-bold">Facilitator's Remarks</div>
                 <pre class="text-wrap p-px font-sans text-sm italic">" {{ $student_grade->remark }} "</pre>
             </div>
@@ -181,7 +180,7 @@
                     <div class="mb-4 p-px text-sm text-gray-700">None</div>
                 @else
                     <pre :class="open ? '' : 'cursor-pointer line-clamp-6'" @click="open = !open"
-                        class="text-wrap mb-4 p-px font-sans text-sm  ">{{ $assignment->description }}</pre>
+                        class="text-wrap mb-4 p-px font-sans text-sm">{{ $assignment->description }}</pre>
                 @endif
             </div>
             <div class="mb-6">
@@ -199,15 +198,35 @@
                 @endforeach
             </div>
         </div>
-        <div>
+        <div class="rounded-md bg-white p-4 dark:bg-gray-800">
             <div class="mb-1.5 text-sm font-bold">Your work</div>
             <div id="works_container">
+                <template x-if="links.length > 0">
+                    <div class="mb-2">
+                        <div class="text-xs">Links</div>
+                        <template x-for="link in links">
+                            <div
+                                class="flex items-center space-x-3 rounded-md bg-gray-200 p-2 dark:bg-gray-700 dark:hover:bg-gray-700/75">
+                                <svg class="h-5 w-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24">
+                                    <title>link-variant</title>
+                                    <path
+                                        d="M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76V7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.54,8.71 19.54,6.81 18.36,5.64C17.19,4.46 15.29,4.46 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,9.17C13.8,8.78 14.44,8.78 14.83,9.17C16.78,11.12 16.78,14.29 14.83,16.24V16.24L11.29,19.78C9.34,21.73 6.17,21.73 4.22,19.78C2.27,17.83 2.27,14.66 4.22,12.71L5.71,11.22C5.7,12.04 5.83,12.86 6.11,13.65L5.64,14.12C4.46,15.29 4.46,17.19 5.64,18.36C6.81,19.54 8.71,19.54 9.88,18.36L13.41,14.83C14.59,13.66 14.59,11.76 13.41,10.59C13,10.2 13,9.56 13.41,9.17Z" />
+                                </svg>
+                                <a class="w-full" :href="link.url" x-text="link.url"></a>
+                            </div>
+                        </template>
+                    </div>
+                </template>
                 <template x-if="hasSubmittedFiles">
-                    <template x-for="file in submittedFiles" :key="file.id">
-                        <div class="mb-1.5" x-data="{ path: `{{ asset('storage/assignments/' . $batch->id . '/' . $assignment->id . '/' . $enrollee->id) }}/${file.folder}/${file.filename}`, imageShow: false }">
-                            <x-file-type-checker-alpine></x-file-type-checker-alpine>
-                        </div>
-                    </template>
+                    <div>
+                        <div class="text-xs">Files</div>
+                        <template x-for="file in submittedFiles" :key="file.id">
+                            <div class="mb-1.5" x-data="{ path: `{{ asset('storage/assignments/' . $batch->id . '/' . $assignment->id . '/' . $enrollee->id) }}/${file.folder}/${file.filename}`, imageShow: false }">
+                                <x-file-type-checker-alpine></x-file-type-checker-alpine>
+                            </div>
+                        </template>
+                    </div>
                 </template>
             </div>
 
@@ -239,7 +258,7 @@
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                            Upload files
+                            Attachments
                         </h3>
                         {{-- <button type="button" 
                             class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
@@ -257,7 +276,33 @@
                             @csrf
                             <input type="hidden" name="user_id" value="{{ $enrollee->id }}">
                             <input type="hidden" name="batch_id" value="{{ $batch->id }}">
-
+                            <div class="flex justify-between">
+                                <div class="text-black dark:text-white">Links</div>
+                                <button type="button" class="rounded bg-sky-600 px-3 py-1 text-sm text-white"
+                                    @click="addLink">
+                                    Add Link
+                                </button>
+                            </div>
+                            <div class="mb-4 space-y-2">
+                                <template x-for="(link, index) in links" :key="index">
+                                    <div class="flex items-center space-x-2">
+                                        <input type="url" name="links[]" x-model="link.url"
+                                            class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 px-2.5 py-1.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                            placeholder="Enter link" required />
+                                        <button type="button" class="rounded-md bg-red-500 p-1 text-white"
+                                            @click="removeLink(index)">
+                                            <svg class="h-5 w-5" fill="currentColor"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                <title>close</title>
+                                                <path
+                                                    d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </template>
+                            </div>
+                            <hr class="mb-4 text-white opacity-25">
+                            <div class="mb-1 text-black dark:text-white">Files</div>
                             <input type="file" name="turn_in_attachments[]" id="turn_in_attachments">
                         </form>
                         <div>
@@ -296,6 +341,7 @@
                     pondFiles: '',
                     submittedFiles: [],
                     hasSubmittedFiles: false,
+                    links: [],
 
                     init() {
                         // console.log(this.pondFiles);
@@ -307,14 +353,25 @@
 
                     },
 
+                    addLink() {
+                        this.links.push({
+                            url: ''
+                        });
+                    },
+                    removeLink(index) {
+                        this.links.splice(index, 1);
+                    },
+
                     async getTurnInFiles() {
+                        var t = this
+                        this.links = []
                         fetch("{{ route('get_files', $assignment->id) }}")
                             .then(response => response.json())
                             .then(data => {
-                                this.submittedFiles = data;
+                                this.submittedFiles = data.files;
                                 console.log(data);
-                                if (data != 'no turn in') {
-                                    this.pondFiles = data.map(file => {
+                                if (data.files != 'no files') {
+                                    this.pondFiles = data.files.map(file => {
                                         return {
                                             source: file.id,
                                             options: {
@@ -326,6 +383,17 @@
                                     this.hasSubmittedFiles = true;
                                 } else {
                                     this.hasSubmittedFiles = false;
+                                }
+
+                                if (data.links != 'no links') {
+
+                                    data.links.forEach(function(link) {
+                                        t.links.push({
+                                            url: link.link
+
+                                        }); // Each URL is wrapped in its own array
+                                    });
+                                    console.log(t.links);
                                 }
                             })
                             .catch(error => console.error('Error fetching files:', error));
@@ -388,7 +456,7 @@
                                 },
                                 body: JSON.stringify({
                                     batch_id: {{ $enrollee->batch->id }},
-                                    assignment_id: {{ $assignment->id }}
+                                    assignment_id: {{ $assignment->id }},
                                 })
                             })
                             .then(response => response.json())
@@ -454,7 +522,10 @@
                             },
                         });
 
-                        this.getTurnInFiles();
+                        if (!this.openModal) {
+                            this.uploadLinks();
+                            this.getTurnInFiles();
+                        }
                     },
 
                     messages: [
@@ -462,6 +533,33 @@
                         "🚀 Well done! You've turned in your assignment. Celebrate your success! 🎊",
                         "🌟 Congratulations! Assignment submitted! You're one step closer to your goals! 🎈"
                     ],
+
+                    uploadLinks() {
+                        this.isPending = true;
+                        this.assignmentButton.disable = true;
+                        var t = this;
+                        fetch('/course/upload_links', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({
+                                    batch_id: {{ $enrollee->batch->id }},
+                                    assignment_id: {{ $assignment->id }},
+                                    links: t.links,
+                                })
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+
+
+                            })
+                            .catch(error => console.error('Error:', error))
+                            .finally(() => {
+                                // t.isPending = false;
+                            });
+                    }
                 }
             }
         </script>

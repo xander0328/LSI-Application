@@ -82,13 +82,14 @@
             width: 500px;
         }
 
+        [x-cloak] {
+            display: none !important;
+        }
+
         @yield('style')
     </style>
     @yield('style-links')
 
-    {{-- Flatpickr --}}
-    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
-    {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> --}}
 </head>
 
 <body class="bg-gray-200 font-sans antialiased dark:bg-gray-900">

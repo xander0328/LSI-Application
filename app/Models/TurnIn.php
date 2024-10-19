@@ -28,4 +28,8 @@ class TurnIn extends Model
     public function turn_in_files(){
         return $this->hasMany(TurnInFile::class);
     }
+    
+    public function turn_in_links(){
+        return $this->hasMany(TurnInLink::class);
+    }
 }

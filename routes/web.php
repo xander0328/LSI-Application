@@ -155,6 +155,7 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
         Route::get('/view_assignment/{id}', [StudentController::class, 'view_assignment'])->name('view_assignment');
         Route::post('/turn_in_status', [StudentController::class, 'turn_in_status'])->name('turn_in_status');
         Route::post('/assignment_action', [StudentController::class, 'assignment_action'])->name('assignment_action');
+        Route::post('/upload_links', [StudentController::class, 'upload_links'])->name('upload_links');
     
     //Comments
         Route::get('/comments/{post_id}', [StudentController::class, 'comments'])->name('student.comments');

@@ -135,10 +135,21 @@
                                                             {{-- <div class="text-sm text-gray-500 dark:text-gray-400">
                                                                 {{ mb_strimwidth($assignment->description, 0, 70, '...') }}
                                                             </div> --}}
+                                                            <div class="text-sm text-gray-700 dark:text-gray-500 sm:hidden"
+                                                                x-text="assignment.due_date != null ? 'Due ' + moment(assignment.formattedDue).calendar(): 'No due'">
+                                                            </div>
+                                                            <template x-if="assignment.closing">
+                                                                <div class="sm:hidden">
+                                                                    <span
+                                                                        class="rounded bg-red-700 px-2 text-xs text-white">
+                                                                        Closing
+                                                                    </span>
+                                                                </div>
+                                                            </template>
                                                         </div>
                                                     </div>
-                                                    <div>
-                                                        <div class="text-sm text-gray-500"
+                                                    <div class="hidden sm:block">
+                                                        <div class="text-sm text-gray-700 dark:text-gray-500"
                                                             x-text="assignment.due_date != null ? 'Due ' + moment(assignment.due_date).format('ll'): 'No due'">
                                                         </div>
                                                         <template x-if="assignment.closing">
@@ -185,8 +196,8 @@
                                     <div class="flex items-center">
                                         <svg class="h-3 w-3 shrink-0 rotate-180" xmlns="http://www.w3.org/2000/svg"
                                             fill="none" viewBox="0 0 10 6">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="M9 5 5 1 1 5" />
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2" d="M9 5 5 1 1 5" />
                                         </svg>
                                     </div>
 

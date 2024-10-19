@@ -1,25 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
-                <div>{{ __('Assignments') }}</div>
-                <div class="hidden md:block text-slate-600">|</div>
-                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $batch->course->name }}</div>
+            <div class="flex-row items-center text-2xl font-semibold text-sky-950 dark:text-white md:flex md:space-x-1">
+                <div>{{ __('Assignment') }}</div>
+                <div class="hidden text-slate-600 md:block">|</div>
+                <div class="text-sm font-normal leading-none text-sky-500 md:text-lg">{{ $batch->course->name }}</div>
             </div>
-            <div class="hidden md:flex items-center">
-                <div class="flex space-x-1 mr-4">
-                    <div class="text-white/75"> Batch: </div>
+            <div class="hidden items-center md:flex">
+                <div class="mr-4 flex space-x-1 text-black dark:text-white/75">
+                    <div class=""> Batch: </div>
                     <div>
                         {{ $batch->course->code }}-{{ $batch->name }}
                     </div>
                 </div>
             </div>
-            <div class="flex md:hidden items-center">
+            <div class="flex items-center md:hidden">
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
-                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
+                        <button class="inline-flex items-center rounded-md p-1 hover:bg-gray-900/50">
+                            <svg class="h-7 w-7 text-black dark:text-white" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <title>dots-vertical</title>
                                 <path
                                     d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
@@ -28,9 +28,9 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <div class="m-1.5 flex-row">
-                            <div class="my-2 flex justify-center text-xs space-x-1">
-                                <div class="text-white/75"> Batch: </div>
+                        <div class="m-1.5 flex-row text-black dark:text-white/75">
+                            <div class="my-2 flex justify-center space-x-1 text-xs">
+                                <div class=""> Batch: </div>
                                 <div>
                                     {{ $batch->course->code }}-{{ $batch->name }}
                                 </div>
@@ -48,18 +48,19 @@
 
     </x-slot>
     <div x-data="assignmentList" id="course_list"
-        class="mx-4 mt-4 flex flex-col-reverse md:pt-44 pt-40 pb-20  text-white">
+        class="mx-4 mt-4 flex flex-col-reverse pb-20 pt-40 text-white md:pt-44">
         <template x-if="batch.course.structure == 'big'">
             <div>
                 <template x-for="uc in batch.unit_of_competency" :key="uc.id">
                     <div x-data="{ open: false }">
                         <h2 :id="`accordion-collapse-heading-${uc.id}`" x-transition>
-                            <button type="button" @click="open = !open" :class="open ? 'bg-sky-800' : 'bg-gray-700 '"
+                            <button type="button" @click="open = !open"
+                                :class="open ? 'bg-sky-800' : 'dark:bg-gray-700 bg-gray-500 '"
                                 class="mt-2 flex w-full items-center justify-between gap-3 rounded-b-md rounded-t-md bg-gray-700 p-2 px-3 font-medium text-white hover:bg-sky-700 hover:text-white">
-                                <div class="flex space-x-2 items-center">
+                                <div class="flex items-center space-x-2">
                                     <div class="flex items-center">
                                         <span
-                                            class="text-white font-medium text-sm w-6 h-6 inline-flex justify-center items-center rounded-full "
+                                            class="inline-flex h-6 w-6 items-center justify-center rounded-full text-sm font-medium text-white"
                                             :class="open ? 'bg-sky-950' : 'bg-sky-700'" x-text="uc.lesson.length">
                                         </span>
                                     </div>
@@ -67,7 +68,7 @@
                                 </div>
 
                                 <div class="flex items-center">
-                                    <svg class="h-3 w-3 shrink-0 " :class="{ 'rotate-180': !open }"
+                                    <svg class="h-3 w-3 shrink-0" :class="{ 'rotate-180': !open }"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2" d="M9 5 5 1 1 5" />
@@ -84,10 +85,10 @@
                             </template>
                             <template x-for="lesson in uc.lesson" :key="lesson.id">
                                 <div class="px-2 py-1.5">
-                                    <div class="flex space-x-2 items-center my-1.5 rounded-md bg-sky-700 p-1.5">
+                                    <div class="my-1.5 flex items-center space-x-2 rounded-md bg-sky-700 p-1.5">
                                         <div class="flex items-center">
                                             <span
-                                                class="text-white font-medium text-sm w-6 h-6 inline-flex justify-center items-center rounded-full bg-sky-950"
+                                                class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sky-950 text-sm font-medium text-white"
                                                 x-text="lesson.assignment.length">
                                             </span>
                                         </div>
@@ -139,13 +140,13 @@
                                                             {{-- <div class="text-sm text-gray-500 dark:text-gray-400">
                                                                 {{ mb_strimwidth($assignment->description, 0, 70, '...') }}
                                                             </div> --}}
-                                                            <div class="text-sm sm:hidden text-gray-500"
+                                                            <div class="text-sm text-gray-500 sm:hidden"
                                                                 x-text="assignment.due_date != null ? 'Due ' + moment(assignment.formattedDue).calendar(): 'No due'">
                                                             </div>
                                                             <template x-if="assignment.closing">
                                                                 <div class="sm:hidden">
                                                                     <span
-                                                                        class=" text-xs px-2 rounded bg-red-700 text-white">
+                                                                        class="rounded bg-red-700 px-2 text-xs text-white">
                                                                         Closing
                                                                     </span>
                                                                 </div>
@@ -153,13 +154,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="hidden sm:block">
-                                                        <div class="text-sm  text-gray-500"
+                                                        <div class="text-sm text-gray-500"
                                                             x-text="assignment.due_date != null ? 'Due ' + moment(assignment.formattedDue).calendar(): 'No due'">
                                                         </div>
                                                         <template x-if="assignment.closing">
                                                             <div class="text-end">
                                                                 <span
-                                                                    class=" text-xs px-2 rounded bg-red-700 text-white">
+                                                                    class="rounded bg-red-700 px-2 text-xs text-white">
                                                                     Closing
                                                                 </span>
                                                             </div>

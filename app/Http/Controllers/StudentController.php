@@ -23,6 +23,7 @@ use App\Models\Assignment;
 use App\Models\AssignmentFile;
 use App\Models\TurnIn;
 use App\Models\TurnInFile;
+use App\Models\TurnInLink;
 use App\Models\StudentGrade;
 use App\Models\StudentAttendance;
 use App\Models\Attendance;
@@ -593,11 +594,6 @@ class StudentController extends Controller
         return '';
     }
 
-    //To be applied
-    public function turn_in_links(){
-        //to do
-    }
-
     public function get_files($assignment_id){
         $enrollee = Enrollee::where('user_id', auth()->user()->id)
             ->whereHas('batch', function($query) {
@@ -613,10 +609,12 @@ class StudentController extends Controller
             $files = TurnInFile::where('turn_in_id', $turn_in->id)
             ->get();
 
-            return response()->json($files);
+            $links = TurnInLink::where('turn_in_id', $turn_in->id)->get();
+
+            return response()->json(['files' => $files, 'links' =>$links]);
         }
 
-        return response()->json('no turn in');
+        return response()->json(['files' => 'no files', 'links' => 'no links']);
     }
     
     public function load_files($batch_id, $assignment_id, $file_id){
@@ -624,7 +622,7 @@ class StudentController extends Controller
         $turn_in = TurnIn::find($file->turn_in_id);
         
         if ($file) {
-            $filePath = new File(Storage::path('storage/assignments/'.$batch_id .'/' . $turn_in->assignment_id.'/'. $turn_in->enrollee_id .'/'.  $file->folder.'/'. $file->filename));
+            $filePath = new File(Storage::path('assignments/'.$batch_id .'/' . $turn_in->assignment_id.'/'. $turn_in->enrollee_id .'/'.  $file->folder.'/'. $file->filename));
             $headers = [
                 'Content-Disposition' => 'inline; filename="'.$file->filename.'"',
             ];
@@ -687,43 +685,6 @@ class StudentController extends Controller
     
         return response()->json(['error' => 'File not found'], 404);
     }
-
-    // public function turn_in_status(Request $request){
-    //     $enrollee = Enrollee::where('user_id', auth()->user()->id)
-    //         ->whereHas('batch', function($query) {
-    //             $query->whereNull('completed_at');
-    //         })
-    //         ->first();
-        
-    //     $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
-    //     ->where('enrollee_id', $enrollee->id)
-    //     ->first();
-
-    //     $assignment = Assignment::find($request->assignment_id);
-    //     if($turn_in){
-    //         if(!$assignment->closed){
-    //             if($turn_in->turned_in){
-    //                 return response()->json(['status'=>'completed', 'assignment' => 'open']);
-    //             }
-    //             else{
-    //                 return response()->json(['status'=>'pending', 'assignment' => 'open']);
-    //             }
-    //         }else{
-    //             if($turn_in->turned_in){
-    //                 return response()->json(['status'=>'completed', 'assignment' => 'closed']);
-    //             }
-    //             else{
-    //                 return response()->json(['status'=>'pending', 'assignment' => 'closed']);
-    //             }
-    //         }
-    //     }else{
-    //         if(!$assignment->closed){
-    //             return response()->json(['status'=>'pending', 'assignment' => 'open']);
-    //         }else{
-    //             return response()->json(['status'=>'pending', 'assignment' => 'closed']);
-    //         }
-    //     }
-    // }
 
     public function turn_in_status(Request $request) {
         $enrollee = Enrollee::where('user_id', auth()->user()->id)
@@ -823,6 +784,65 @@ class StudentController extends Controller
         return response()->json(['action' => 'done']);
     }
 
+    public function upload_links(Request $request){
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })
+            ->first();
+
+        $turn_in = TurnIn::where('assignment_id', $request->assignment_id)
+        ->where('enrollee_id', $enrollee->id)
+        ->first();
+
+        DB::beginTransaction();
+
+        try {
+            if(!$turn_in){
+                $turn_in = new TurnIn();
+                $turn_in->assignment_id = $request->assignment_id;
+                $turn_in->enrollee_id = $enrollee->id;
+                $turn_in->save();
+            }
+
+            $links = $request->links;
+            $error_links = 0;
+
+            TurnInLink::where('turn_in_id', $turn_in->id)->delete();
+            
+            foreach ($links as $link) {
+                if (!preg_match('/^https?:\/\//', $link['url'])) {
+                    $link['url'] = 'https://' . $link['url'];
+                }
+            
+                // Validate the link to check if it's a valid URL
+                if (!filter_var($link['url'], FILTER_VALIDATE_URL)) {
+                    $error_links++; // Increment the counter if the link is invalid
+                    continue; // Skip this invalid link and move to the next
+                }
+                // Save the valid link to the database
+
+                TurnInLink::create([
+                    'turn_in_id' => $turn_in->id,
+                    'link' => $link['url'],
+                ]);
+            }
+
+            DB::commit();
+
+            if ($error_links > 0) {
+                return response()->json(['status' => 'warning', 'message' => "$error_links invalid links were skipped."]);
+            } else {
+                return response()->json(['status' => 'success', 'message' => 'All links saved successfully!']);
+            }
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback the transaction in case of an error
+    
+            return response()->json(['status'=>'error', 'message' => 'Something went wrong: ' . $e->getMessage()]);
+        }
+        
+    }
+
     private function check_turn_in($request, $turn_in, $assignment, $enrollee_id){
         if($turn_in){
             if(!$turn_in->turned_in){
@@ -834,13 +854,13 @@ class StudentController extends Controller
             $turn_in->turned_in_date = Carbon::now();
             $turn_in->save();
         }else{
-            $data = [
-                'assignment_id' => $request->assignment_id,
-                'enrollee_id' => $enrollee_id,
-                'turned_in' => true,
-                'turned_in_date' => Carbon::now()
-            ];
-            TurnIn::create($data);
+                $data = [
+                    'assignment_id' => $request->assignment_id,
+                    'enrollee_id' => $enrollee_id,
+                    'turned_in' => true,
+                    'turned_in_date' => Carbon::now()
+                ];
+                TurnIn::create($data);
             return response()->json(['created'=>'new turn in']);
         }
     }
@@ -881,17 +901,17 @@ class StudentController extends Controller
         
     }
 
-    public function comments($post_id){
-        $batch_id = Post::where('id', $post_id)->pluck('batch_id')->first();
-        $post = Post::where('id', $post_id)
-        ->with(['comments.user' => function ($q){
-                $q->with(['enrollee' => function ($q){
-                    $q->where('batch_id', $batch_id);
-                }]);
-        } ])
-        ->first();
+    // public function comments($post_id){
+    //     $batch_id = Post::where('id', $post_id)->pluck('batch_id')->first();
+    //     $post = Post::where('id', $post_id)
+    //     ->with(['comments.user' => function ($q){
+    //             $q->with(['enrollee' => function ($q){
+    //                 $q->where('batch_id', $batch_id);
+    //             }]);
+    //     } ])
+    //     ->first();
 
-        dd($post);
-        return view('student.comments', compact('post', ))
-    }
+    //     dd($post);
+    //     return view('student.comments', compact('post', ))
+    // }
 }

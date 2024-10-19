@@ -164,7 +164,7 @@ class InstructorController extends Controller
         ->with([
             'enrollee_turn_in' => function ($q) use($assignment_id) {
                 $q->where('assignment_id', $assignment_id)
-                ->with('turn_in_files');
+                ->with(['turn_in_files', 'turn_in_links']);
             }, // Get turn-in files directly related to the enrollee's turn-ins
             'user', 
             'enrollee_grades' => function ($q) use($assignment_id) {
@@ -699,7 +699,6 @@ class InstructorController extends Controller
             'subject' => $subject,
             'batch' => $batch,
             'title' => $title,
-            'instruction' => $instruction,
             'link' => route('view_assignment', ['id' => $assignment->id])
         ];
         Mail::to($emails)->send(new AssignmentMail($data));
@@ -1114,12 +1113,12 @@ class InstructorController extends Controller
         return response()->json($data);
     }
 
-    public function comments($post_id){
-        $post = Post::where('id', $post_id)
-        ->with('comments')
-        ->first();
+    // public function comments($post_id){
+    //     $post = Post::where('id', $post_id)
+    //     ->with('comments')
+    //     ->first();
 
-        return view('student.comments', compact('post'));
-    }
+    //     return view('student.comments', compact('post'));
+    // }
 
 }

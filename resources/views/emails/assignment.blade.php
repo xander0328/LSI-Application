@@ -1,14 +1,9 @@
 <x-mail::message>
-    # Introduction
+    # {{ $data['batch'] }}
 
-    Hi! Your instructor just posted a new assignment.
+    Hi! Assignment titled {{ $data['title'] }} has been assigned to you in Basic English Language Learning. Please
+    complete and submit it by the due date.
 
-    <h2>{{}}</h2>
-    <p></p>
-
-    <x-mail::button :url="{{ $data['link'] }}">
-        View Assignment
-    </x-mail::button>
-
+    Thanks,<br>
     {{ config('app.name') }}
 </x-mail::message>

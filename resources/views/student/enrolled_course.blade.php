@@ -29,17 +29,18 @@
         list-style-type: disc; /* Or circle, square, etc. for different bullet styles */
         padding-left: 20px; /* Adjust the indentation as needed */
         }
+        [x-cloak] { display: none !important; }
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="flex-row items-center text-2xl font-semibold text-white md:flex md:space-x-1">
+            <div class="flex-row items-center text-2xl font-semibold text-sky-950 dark:text-white md:flex md:space-x-1">
                 <div>{{ __('Stream') }}</div>
                 <div class="hidden text-slate-600 md:block">|</div>
                 <div class="text-sm font-normal leading-none text-sky-500 md:text-lg">{{ $batch->course->name }}</div>
             </div>
             <div class="hidden items-center md:flex">
-                <div class="mr-4 flex space-x-1">
-                    <div class="text-white/75"> Batch: </div>
+                <div class="mr-4 flex space-x-1 text-black dark:text-white/75">
+                    <div class=""> Batch: </div>
                     <div>
                         {{ $batch->course->code }}-{{ $batch->name }}
                     </div>
@@ -49,8 +50,8 @@
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center rounded-md p-1 hover:bg-gray-900/50">
-                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
+                            <svg class="h-7 w-7 text-black dark:text-white" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <title>dots-vertical</title>
                                 <path
                                     d="M12,16A2,2 0 0,1 14,18A2,2 0 0,1 12,20A2,2 0 0,1 10,18A2,2 0 0,1 12,16M12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12A2,2 0 0,1 12,10M12,4A2,2 0 0,1 14,6A2,2 0 0,1 12,8A2,2 0 0,1 10,6A2,2 0 0,1 12,4Z" />
@@ -59,9 +60,9 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <div class="m-1.5 flex-row">
+                        <div class="m-1.5 flex-row text-black dark:text-white/75">
                             <div class="my-2 flex justify-center space-x-1 text-xs">
-                                <div class="text-white/75"> Batch: </div>
+                                <div class=""> Batch: </div>
                                 <div>
                                     {{ $batch->course->code }}-{{ $batch->name }}
                                 </div>
@@ -78,10 +79,11 @@
         </div>
 
     </x-slot>
-    <div x-data="stream" id="course_list" class="mx-4 flex flex-col-reverse pb-4 pt-48 text-white md:mx-8">
+    <div x-data="stream" id="course_list"
+        class="mx-4 flex flex-col-reverse pb-4 pt-48 text-black dark:text-white md:mx-8">
         <template x-if="posts.length > 0">
             <template x-for="post in posts" :key="post.id">
-                <div class="my-1.5 rounded-md bg-gray-800 p-3 shadow-md">
+                <div class="my-1.5 rounded-md bg-white p-3 shadow-md dark:bg-gray-800">
                     <div class="mb-1.5 flex items-center justify-between px-2 text-xs">
                         <div>
                             <div>
@@ -96,8 +98,8 @@
                             </div>
                         </div>
                         <div class="flex items-center">
-                            <svg class="mr-1 h-3 w-3 self-center text-white" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <svg class="mr-1 h-3 w-3 self-center" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                             </svg>
@@ -159,12 +161,15 @@
                 </div>
             </template>
         </template>
-        <template x-if="posts.length == 0">
-            <div class="mt-4 rounded-md bg-gray-700 p-2.5 text-center text-sm text-gray-300">No Post
+        <template x-if="posts && posts.length == 0">
+            <div
+                class="rounded-md bg-white p-2.5 text-center text-sm text-black/50 dark:bg-gray-700 dark:text-gray-300">
+                No Post
             </div>
         </template>
-        <template x-if="batch.length == 0">
-            <div class="mt-4 rounded-md bg-gray-700 p-2.5 text-center text-sm text-gray-300">We will
+        <template x-if="!batch || batch.length == 0">
+            <div class="rounded-md bg-white p-2.5 text-center text-sm text-black dark:bg-gray-700 dark:text-gray-300">
+                We will
                 contact you as
                 soon as
                 possible, feel free

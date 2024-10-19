@@ -255,4 +255,34 @@ window.addEventListener("beforeinstallprompt", (e) => {
     }
 });
 
+window.addEventListener("beforeinstallpromptresponsive", (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    console.log("install button");
+
+    // Show your custom install button
+    const installButton = document.querySelector("#installButtonRes");
+    const installButtonHolder = document.querySelector("#installButtonHolderRes");
+
+    if (installButton) {
+        installButton.classList.remove("hidden");
+
+        installButton.addEventListener("click", () => {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === "accepted") {
+                    console.log("User accepted the A2HS prompt");
+                } else {
+                    console.log("User dismissed the A2HS prompt");
+                }
+                deferredPrompt = null;
+            });
+        });
+    }
+    if (installButtonHolder) {
+        installButtonHolder.classList.remove("hidden");
+        installButtonHolder.classList.add("flex");
+    }
+});
+
 Alpine.start();
