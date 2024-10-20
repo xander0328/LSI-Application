@@ -89,7 +89,7 @@
                 <label for="street" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Street<span
                         class="text-red-500">*</span></label>
                 <input x-model="form.street" type="text" name="street" id="street"
-                    class=" capitalize focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
                 <template x-if="errors.street">
                     <p class="text-sm text-red-500" x-text="errors.street"></p>
@@ -261,7 +261,7 @@
                 <label for="birth_place" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Birth
                     Place<span class="text-red-500">*</span></label>
                 <input type="text" x-model="form.birth_place" name="birth_place" id="birth_place"
-                    class="capitalize focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
             </div>
             <div class="col-span-2">
@@ -270,7 +270,7 @@
                         class="text-red-500">*</span></label>
                 <input list="nationality_list" x-model="form.citizenship" type="text" name="citizenship"
                     id="citizenship"
-                    class="capitalize focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
                 <datalist id="nationality_list">
                     <template x-for="nationality in nationalities" :key="nationality">
@@ -283,7 +283,7 @@
                     class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Religion<span
                         class="text-red-500">*</span></label>
                 <input list="religion_list" x-model="form.religion" type="text" name="religion" id="religion"
-                    class="capitalize focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
                 <datalist id="religion_list">
                     <template x-for="religion in religions" :key="religion">
@@ -294,7 +294,7 @@
             <div class="col-span-1">
                 <label for="height" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Height<span
                         class="text-red-500">*</span></label>
-                <input x-model="form.height" @input="heightChanged()" placeholder="kilogram" type="text"
+                <input x-model="form.height" @input="heightChanged()" placeholder="centimeters" type="text"
                     name="height" id="height"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
@@ -302,7 +302,7 @@
             <div class="col-span-1">
                 <label for="weight" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Weight<span
                         class="text-red-500">*</span></label>
-                <input x-model="form.weight" @input="weightChanged()" placeholder="centimeter" type="text"
+                <input x-model="form.weight" @input="weightChanged()" placeholder="kilograms" type="text"
                     name="weight" id="weight"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
@@ -382,7 +382,7 @@
                                 class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">School
                                 Name<span class="text-red-500">*</span></label>
                             <input :id="'schoolName_' + (index + 1)" type="text" x-model="education.schoolName"
-                                class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 required>
                         </div>
                         <div class="col-span-2">
@@ -413,7 +413,7 @@
                                     class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Degree<span
                                         class="text-red-500">*</span></label>
                                 <select :id="'degree_' + (index + 1)" x-model="education.degree"
-                                    class="focus:ring-primary-600  focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                     <option value="">Select</option>
                                     <option value="Bachelor's">Bachelor's</option>
                                     <option value="Master's">Master's</option>
@@ -424,13 +424,13 @@
                                 <label :for="'minor_' + (index + 1)"
                                     class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Minor</label>
                                 <input :id="'minor_' + (index + 1)" type="text" x-model="education.minor"
-                                    class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                             </div>
                             <div class="col-span-1">
                                 <label :for="'major_' + (index + 1)"
                                     class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Major</label>
                                 <input :id="'major_' + (index + 1)" type="text" x-model="education.major"
-                                    class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                             </div>
                             <div class="col-span-2">
                                 <label :for="'unitsEarned_' + (index + 1)"
@@ -438,7 +438,7 @@
                                     Earned<span class="text-red-500">*</span></label>
                                 <input :id="'unitsEarned_' + (index + 1)" type="number"
                                     x-model="education.unitsEarned"
-                                    class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
+                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     required>
                             </div>
                             <div class="col-span-2">
@@ -447,7 +447,7 @@
                                     Received</label>
                                 <input :id="'honorsReceived_' + (index + 1)" type="text"
                                     x-model="education.honorsReceived"
-                                    class="focus:ring-primary-600 capitalize focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                             </div>
                         </div>
                         <button type="button"

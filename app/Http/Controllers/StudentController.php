@@ -191,8 +191,8 @@ class StudentController extends Controller
         $data['birth_date'] = date('Y-m-d', strtotime($request->birth_date));
         $data['preferred_finish'] = date('Y-m-d', strtotime($request->preferred_finish));
         $data['preferred_start'] = date('Y-m-d', strtotime($request->preferred_start));
-        $data['height'] = str_replace(' kg', '', $request->height);
-        $data['weight'] = str_replace(' cm', '', $request->weight);
+        $data['height'] = str_replace(' cm', '', $request->height);
+        $data['weight'] = str_replace(' kg', '', $request->weight);
         $data['street'] = ucwords(strtolower($request->street));
         $data['citizenship'] = ucwords(strtolower($request->citizenship));
         $data['religion'] = ucwords(strtolower($request->religion));
