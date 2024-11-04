@@ -213,6 +213,9 @@
                     <label for="trainee"
                         class="ms-2 w-full py-4 text-sm font-medium text-gray-900 dark:text-gray-300">Trainee/OJT</label>
                 </div>
+                <template x-if="errors.employment_type">
+                    <p class="text-sm text-red-500" x-text="errors.employment_type"></p>
+                </template>
                 <div class="col-span-2 mt-2">
                     <label for="employment_status"
                         class="mb-2 block font-bold text-gray-900 dark:text-white">Employment
@@ -229,6 +232,9 @@
                         <option value="permanent">Permanent</option>
                     </select>
                 </div>
+                <template x-if="errors.employment_status">
+                    <p class="text-sm text-red-500" x-text="errors.employment_status"></p>
+                </template>
             </div>
             <div class="col-span-2 flex justify-between">
                 <x-primary-button id="step4_prev" @click="prevStep" onclick="prevStep(4)"
@@ -256,6 +262,9 @@
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         placeholder="Select date" autocomplete="false" required>
                 </div>
+                <template x-if="errors.birth_date">
+                    <p class="text-sm text-red-500" x-text="errors.birth_date"></p>
+                </template>
             </div>
             <div class="col-span-2">
                 <label for="birth_place" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Birth
@@ -263,6 +272,9 @@
                 <input type="text" x-model="form.birth_place" name="birth_place" id="birth_place"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
+                <template x-if="errors.birth_place">
+                    <p class="text-sm text-red-500" x-text="errors.birth_place"></p>
+                </template>
             </div>
             <div class="col-span-2">
                 <label for="citizenship"
@@ -272,6 +284,7 @@
                     id="citizenship"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
+
                 <datalist id="nationality_list">
                     <template x-for="nationality in nationalities" :key="nationality">
                         <option :value="nationality" x-text="nationality"></option>
@@ -285,6 +298,9 @@
                 <input list="religion_list" x-model="form.religion" type="text" name="religion" id="religion"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
+                <template x-if="errors.religion">
+                    <p class="text-sm text-red-500" x-text="errors.religion"></p>
+                </template>
                 <datalist id="religion_list">
                     <template x-for="religion in religions" :key="religion">
                         <option :value="religion" x-text="religion"></option>
@@ -298,6 +314,9 @@
                     name="height" id="height"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
+                <template x-if="errors.height">
+                    <p class="text-sm text-red-500" x-text="errors.height"></p>
+                </template>
             </div>
             <div class="col-span-1">
                 <label for="weight" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Weight<span
@@ -306,6 +325,9 @@
                     name="weight" id="weight"
                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                     placeholder="" required="">
+                <template x-if="errors.weight">
+                    <p class="text-sm text-red-500" x-text="errors.weight"></p>
+                </template>
             </div>
             <div class="col-span-2">
                 <label for="blood_type" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Blood
@@ -323,6 +345,9 @@
                     <option value="o_plus">O+</option>
                     <option value="o_minus">O-</option>
                 </select>
+                <template x-if="errors.blood_type">
+                    <p class="text-sm text-red-500" x-text="errors.blood_type"></p>
+                </template>
             </div>
             <div class="col-span-2 flex justify-between">
                 <x-primary-button id="step5_prev" @click="prevStep" class="col-span-1 text-white"
@@ -370,24 +395,31 @@
         </div>
         <div id="step7" x-cloak x-show="currentStep === 7" class="mb-4 grid grid-cols-2 gap-4">
             <div class="col-span-2 mb-2 flex justify-between font-bold text-white">
-                <div class="content-center">EDUCATIONAL BACKGROUND</div>
-                <button class="col-span-1 text-white" type="button" @click="addField">Add</button>
+                <div class="content-center text-black dark:text-white">EDUCATIONAL BACKGROUND</div>
+                <button class="col-span-1 rounded bg-gray-200 px-2 text-black dark:bg-gray-700 dark:text-white"
+                    type="button" @click="addField">Add</button>
             </div>
             <div class="col-span-2 grid grid-cols-2 gap-4" id="formContainer">
                 <template x-for="(education, index) in form.education" :key="index">
                     <div :id="'education-form_' + (index + 1)"
-                        class="col-span-2 grid grid-cols-2 gap-2 rounded-lg bg-gray-700 p-2.5">
+                        class="col-span-2 grid grid-cols-2 gap-2 rounded-lg bg-white p-2.5 dark:bg-gray-700">
+                        <div x-text="'No. '+ (index+1)"></div>
                         <div class="col-span-2">
                             <label :for="'schoolName_' + (index + 1)"
-                                class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">School
-                                Name<span class="text-red-500">*</span></label>
+                                class="mb-1 block text-sm font-medium dark:text-white">School
+                                Name<span class="text-red-500">*</span> <span class="text-xs italic text-gray-800">(Do
+                                    not abbreviate)</span></label>
                             <input :id="'schoolName_' + (index + 1)" type="text" x-model="education.schoolName"
                                 class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 required>
+                            <template x-if="missingFields['schoolName_' + (index + 1)]">
+                                <p class="text-sm text-red-500" x-text="missingFields['schoolName_' + (index + 1)]">
+                                </p>
+                            </template>
                         </div>
                         <div class="col-span-2">
                             <label :for="'educationLevel_' + (index + 1)"
-                                class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">Education
+                                class="mb-1 block text-sm font-medium dark:text-white">Education
                                 Level<span class="text-red-500">*</span></label>
                             <select :id="'educationLevel_' + (index + 1)" x-model="education.educationLevel"
                                 x-on:change="toggleTertiaryFields(index)"
@@ -399,12 +431,18 @@
                         </div>
                         <div class="col-span-2">
                             <label :for="'schoolYear_' + (index + 1)"
-                                class="mb-1 block text-sm font-medium text-gray-900 dark:text-white">School
-                                Year<span class="text-red-500">*</span></label>
+                                class="mb-1 block text-sm font-medium dark:text-white">School
+                                Year<span class="text-red-500">*</span> <span
+                                    class="text-xs italic text-gray-800">(Last academic
+                                    year attended)</span></label>
                             <input :id="'schoolYear_' + (index + 1)" type="text" @input="formatSchoolYear(index)"
                                 x-model="education.schoolYear"
                                 class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                 placeholder="XXXX-XXXX" required>
+                            <template x-if="missingFields['schoolYear_' + (index + 1)]">
+                                <p class="text-sm text-red-500" x-text="missingFields['schoolYear_' + (index + 1)]">
+                                </p>
+                            </template>
                         </div>
                         <div :id="'tertiaryFieldsContainer_' + (index + 1)" class="col-span-2 grid grid-cols-2 gap-2"
                             x-show="education.educationLevel === 'Tertiary'">
@@ -419,6 +457,10 @@
                                     <option value="Master's">Master's</option>
                                     <option value="PhD">PhD</option>
                                 </select>
+                                <template x-if="missingFields['degree_' + (index + 1)]">
+                                    <p class="text-sm text-red-500" x-text="missingFields['degree_' + (index + 1)]">
+                                    </p>
+                                </template>
                             </div>
                             <div class="col-span-1">
                                 <label :for="'minor_' + (index + 1)"
@@ -440,6 +482,11 @@
                                     x-model="education.unitsEarned"
                                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-xs capitalize text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     required>
+                                <template x-if="missingFields['unitsEarned_' + (index + 1)]">
+                                    <p class="text-sm text-red-500"
+                                        x-text="missingFields['unitsEarned_' + (index + 1)]">
+                                    </p>
+                                </template>
                             </div>
                             <div class="col-span-2">
                                 <label :for="'honorsReceived_' + (index + 1)"
@@ -489,8 +536,11 @@
                     <label for="both"
                         class="ms-2 w-full py-4 text-sm font-medium text-gray-900 dark:text-gray-300">Both</label>
                 </div>
+                <template x-if="errors.preferred_schedule">
+                    <p class="text-sm text-red-500" x-text="errors.preferred_schedule"></p>
+                </template>
             </div>
-            <div class="col-span-2 font-bold text-white">Duration (100 Hours)</div>
+            <div class="col-span-2 font-bold text-black dark:text-white">Duration (100 Hours)</div>
             <div class="col-span-1 mb-2">
 
                 <label for="preferred_start" class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Date
@@ -508,6 +558,9 @@
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         placeholder="Select date">
                 </div>
+                <template x-if="errors.preferred_start">
+                    <p class="text-sm text-red-500" x-text="errors.preferred_start"></p>
+                </template>
             </div>
             <div class="col-span-1 mb-2">
                 <label for="preferred_finish"
@@ -526,11 +579,14 @@
                         class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                         placeholder="Select date">
                 </div>
+                <template x-if="errors.preferred_finish">
+                    <p class="text-sm text-red-500" x-text="errors.preferred_finish"></p>
+                </template>
             </div>
             <div class="col-span-2 flex justify-between">
                 <x-primary-button id="step8_prev" @click="prevStep" class="col-span-1 text-white"
                     type="button">Previous</x-primary-button>
-                <x-primary-button @click="submitForm" class="col-span-1 text-white"
+                <x-primary-button ::disabled="submitButtonDisable" @click="submitForm" class="col-span-1 text-white"
                     type="button">Finish</x-primary-button>
             </div>
         </div>
@@ -934,25 +990,25 @@
 
                         this.form.education.forEach((edu, index) => {
                             if (!edu.schoolName) {
-                                this.missingFields.push(`Education No.${index + 1}: School Name`);
+                                this.missingFields[`schoolName_${index + 1}`] = `School name required`
                             }
                             if (!edu.educationLevel) {
-                                this.missingFields.push(`Education No.${index + 1}: Education Level`);
+                                this.missingFields[`educationLevel_${index + 1}`] = `Education level required`
                             }
                             if (!edu.schoolYear) {
-                                this.missingFields.push(`Education No.${index + 1}: School Year`);
+                                this.missingFields[`schoolYear_${index + 1}`] = `School year required (ex. 2014-2015)`
                             }
                             if (edu.educationLevel === "Tertiary") {
                                 if (!edu.unitsEarned) {
-                                    this.missingFields.push(`Education No.${index + 1}: Units Earned`);
+                                    this.missingFields[`unitsEarned_${index + 1}`] = `Units earned required`
                                 }
                                 if (!edu.degree) {
-                                    this.missingFields.push(`Education No.${index + 1}: Degree`);
+                                    this.missingFields[`degree_${index + 1}`] = `Degree required`
                                 }
                             }
                         });
 
-                        if (this.missingFields.length === 0) {
+                        if (Object.keys(this.missingFields).length === 0) {
                             this.nextStep()
                         }
                         console.log(this.missingFields);
@@ -964,10 +1020,12 @@
                     clearErrors() {
                         this.errors = {};
                     },
+                    submitButtonDisable: false,
                     submitForm() {
                         // this.clearErrors();
 
                         if (this.validateStep()) {
+                            this.submitButtonDisable = true;
                             const formData = JSON.stringify(this.form);
 
                             // Perform the submission (e.g., via AJAX)

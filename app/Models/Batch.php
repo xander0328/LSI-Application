@@ -20,8 +20,12 @@ class Batch extends Model
         return $this->hasMany(Enrollee::class);
     }
 
-    public function post()
+    public function only_post()
     {
+        return $this->hasOne(Post::class);
+    }
+
+    public function post(){
         return $this->hasMany(Post::class);
     }
 

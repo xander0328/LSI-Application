@@ -220,7 +220,8 @@
                             </template>
                             <div class="md:flex md:justify-end">
                                 <div class="mt-1.5 rounded bg-sky-600 text-white hover:bg-sky-700 md:w-1/5">
-                                    <a :href="`{{ route('instructor.comments', ['post_id' => ':id']) }}`.replace(':id', post.id)"
+                                    <a :href="`{{ route('instructor.comments', ['batch_id' => $batch->id, 'post_id' => ':post_id']) }}`
+                                    .replace(':post_id', post.id)"
                                         class="flex w-full items-center justify-center space-x-1 p-1.5">
                                         <span>
                                             <svg class="mt-0.5 h-4 w-4" fill="currentColor"
@@ -232,6 +233,9 @@
                                         </span>
                                         <span>
                                             Comment
+                                        </span>
+                                        <span x-text="post.comments_count"
+                                            class="ms-1 h-4 w-4 rounded-full bg-white text-black">
                                         </span>
                                     </a>
                                 </div>

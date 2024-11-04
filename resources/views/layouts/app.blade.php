@@ -93,24 +93,7 @@
 </head>
 
 <body class="bg-gray-200 font-sans antialiased dark:bg-gray-900">
-    <div class="min-h-screen bg-gray-200 dark:bg-gray-900">
-        @php
-            function getInitials($name)
-            {
-                // Trim the name and split it into an array based on spaces
-                $names = explode(' ', trim($name));
-
-                // Get the first letter of the first name
-                $initials = strtoupper($names[0][0]);
-
-                // Check if there is a second name and get its first letter
-                if (count($names) > 1) {
-                    $initials .= strtoupper($names[1][0]);
-                }
-
-                return $initials;
-            }
-        @endphp
+    <div x-data="sessionChecker" class="min-h-screen bg-gray-200 dark:bg-gray-900">
         @include('layouts.navigation')
 
         @if (auth()->check() && auth()->user()->role != 'instructor')
@@ -122,9 +105,8 @@
                         <ul class="space-y-2 font-medium">
                             <li>
                                 <x-nav-link :href="route('dashboard')" :active="request()->is('dashboard*')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                    <svg fill="currentColor"
-                                        class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
+                                    <svg fill="currentColor" class="h-6 w-6 flex-shrink-0 transition duration-75"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <title>view-dashboard-outline</title>
                                         <path
@@ -135,10 +117,9 @@
                             </li>
                             <li>
                                 <x-nav-link :href="route('website')" :active="request()->is('website*')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                    <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
+                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-width="2"
                                             d="M3 11h18m-9 0v8m-8 0h16c.6 0 1-.4 1-1V6c0-.6-.4-1-1-1H4a1 1 0 0 0-1 1v12c0 .6.4 1 1 1Z" />
                                     </svg>
@@ -147,10 +128,9 @@
                             </li>
                             <li>
                                 <x-nav-link :href="route('courses')" :active="request()->is('courses*')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                    <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
+                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2"
                                             d="M5 19V4c0-.6.4-1 1-1h12c.6 0 1 .4 1 1v13H7a2 2 0 0 0-2 2Zm0 0c0 1.1.9 2 2 2h12M9 3v14m7 0v4" />
@@ -162,7 +142,7 @@
                             </li>
                             <li>
                                 <x-nav-link :href="route('instructors')" :active="request()->is('instructors*')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
                                     <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <title>school-outline</title>
@@ -174,23 +154,9 @@
                                 class="ms-3 inline-flex items-center justify-center rounded-full bg-gray-100 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">Pro</span> --}}
                                 </x-nav-link>
                             </li>
-                            {{-- <li>
-                            <x-nav-link :href="route('instructors')" :active="request()->is('instructors*')"
-                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                    viewBox="0 0 20 20">
-                                    <path
-                                        d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
-                                </svg>
-                                <span class="ms-3 flex-1 whitespace-nowrap">Inbox</span>
-                                <span
-                                    class="ms-3 inline-flex h-3 w-3 items-center justify-center rounded-full bg-blue-100 p-3 text-sm font-medium text-blue-800 dark:bg-blue-900 dark:text-blue-300">3</span>
-                            </x-nav-link>
-                        </li> --}}
                             <li>
                                 <x-nav-link :href="route('users')" :active="request()->is('users*')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
                                     <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <path fill="currentColor"
@@ -201,7 +167,7 @@
                             </li>
                             <li>
                                 <x-nav-link :href="route('payments')" :active="request()->is('payments*')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
                                     <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <path fill="currentColor"
@@ -212,7 +178,7 @@
                             </li>
                             <li>
                                 <x-nav-link :href="route('scan_attendance')" :active="request()->is('scan_attendance*')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                         class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                         viewBox="0 0 24 24">
@@ -227,13 +193,21 @@
                     @endif
                     @if (auth()->check() && auth()->user()->role === 'student')
                         <div class="mb-4 flex flex-col items-center">
-                            <div
-                                class="relative mb-3 inline-flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">
-                                <span
-                                    class="text-4xl font-medium text-gray-600 dark:text-gray-300">{{ getInitials(auth()->user()->fname) }}</span>
-                            </div>
-                            {{-- <img class="mb-3 h-24 w-24 rounded-full shadow-lg"
-                                src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image" /> --}}
+                            <template x-if="!image_path">
+                                <div
+                                    class="relative mb-3 inline-flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">
+                                    <span class="text-4xl font-medium text-gray-600 dark:text-gray-300"
+                                        x-text="getInitials()"></span>
+                                </div>
+                            </template>
+                            <template x-if="image_path">
+                                <div
+                                    class="border-3 relative mb-3 inline-flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-sky-500 bg-gray-100 dark:bg-gray-600">
+                                    <img class=""
+                                        :src="`{{ asset(':image_path') }}`.replace(':image_path', image_path)">
+                                </div>
+                            </template>
+
                             <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
                                 {{ auth()->user()->fname }}
                                 {{ auth()->user()->mname ? auth()->user()->mname[0] . '.' : '' }}
@@ -243,9 +217,9 @@
                         </div>
                         <ul class="space-y-2 font-medium">
                             <li>
-                                <x-nav-link :href="route('enrolled_course')" :active="request()->is('course*')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                    <svg class="h-6 w-6 text-gray-800 dark:text-white" aria-hidden="true"
+                                <x-nav-link :href="route('enrolled_course')" :active="request()->is('course*') && !request()->is('course_completed')"
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
+                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                             stroke-width="2"
@@ -256,9 +230,9 @@
                             </li>
                             <li>
                                 <x-nav-link :href="route('course_completed')" :active="request()->routeIs('course_completed')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                    <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
+                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75" fill="currentColor"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <title>book-check-outline</title>
                                         <path
                                             d="M16.75 22.16L14 19.16L15.16 18L16.75 19.59L20.34 16L21.5 17.41L16.75 22.16M18 2C19.1 2 20 2.9 20 4V13.34C19.37 13.12 18.7 13 18 13V4H13V12L10.5 9.75L8 12V4H6V20H12.08C12.2 20.72 12.45 21.39 12.8 22H6C4.9 22 4 21.1 4 20V4C4 2.9 4.9 2 6 2H18Z" />
@@ -267,15 +241,68 @@
                                 </x-nav-link>
                             </li>
                             <li>
+                                <x-nav-link :href="route('enrollment')" :active="request()->is('enrollment*')"
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
+
+                                    <svg fill="currentColor" class="h-6 w-6 flex-shrink-0 transition duration-75"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <title>clipboard-clock-outline</title>
+                                        <path
+                                            d="M21 11.11V5C21 3.9 20.11 3 19 3H14.82C14.4 1.84 13.3 1 12 1S9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H11.11C12.37 22.24 14.09 23 16 23C19.87 23 23 19.87 23 16C23 14.09 22.24 12.37 21 11.11M12 3C12.55 3 13 3.45 13 4S12.55 5 12 5 11 4.55 11 4 11.45 3 12 3M5 19V5H7V7H17V5H19V9.68C18.09 9.25 17.08 9 16 9C12.13 9 9 12.13 9 16C9 17.08 9.25 18.09 9.68 19H5M16 21C13.24 21 11 18.76 11 16S13.24 11 16 11 21 13.24 21 16 18.76 21 16 21M16.5 16.25L19.36 17.94L18.61 19.16L15 17V12H16.5V16.25Z" />
+                                    </svg>
+                                    <span class="ms-3">Enrollment</span>
+                                </x-nav-link>
+                            </li>
+                            <li>
                                 <x-nav-link :href="route('message_list')" :active="request()->routeIs('message_list')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                    <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 24 24">
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
+                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75" fill="currentColor"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <title>message-processing-outline</title>
                                         <path
                                             d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2M20 16H5.2L4 17.2V4H20V16M17 11H15V9H17M13 11H11V9H13M9 11H7V9H9" />
                                     </svg>
                                     <span class="ms-3">Message</span>
+                                </x-nav-link>
+                            </li>
+                        </ul>
+                    @endif
+                    @if (auth()->check() && auth()->user()->role === 'guest')
+                        <div class="mb-4 flex flex-col items-center">
+                            <template x-if="!image_path">
+                                <div
+                                    class="relative mb-3 inline-flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gray-100 dark:bg-gray-600">
+                                    <span class="text-4xl font-medium text-gray-600 dark:text-gray-300"
+                                        x-text="getInitials()"></span>
+                                </div>
+                            </template>
+                            <template x-if="image_path">
+                                <div
+                                    class="border-3 relative mb-3 inline-flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-sky-500 bg-gray-100 dark:bg-gray-600">
+                                    <img class=""
+                                        :src="`{{ asset(':image_path') }}`.replace(':image_path', image_path)">
+                                </div>
+                            </template>
+
+                            <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">
+                                {{ auth()->user()->fname }}
+                                {{ auth()->user()->mname ? auth()->user()->mname[0] . '.' : '' }}
+                                {{ auth()->user()->lname }}
+                            </h5>
+                            <span class="text-sm text-gray-500 dark:text-gray-400">Guest</span>
+                        </div>
+                        <ul class="space-y-2 font-medium">
+                            <li>
+                                <x-nav-link :href="route('enrollment')" :active="request()->is('enrollment*')"
+                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
+                                    <svg fill="currentColor" class="h-6 w-6 flex-shrink-0 transition duration-75"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                        <title>clipboard-clock-outline</title>
+                                        <path
+                                            d="M21 11.11V5C21 3.9 20.11 3 19 3H14.82C14.4 1.84 13.3 1 12 1S9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H11.11C12.37 22.24 14.09 23 16 23C19.87 23 23 19.87 23 16C23 14.09 22.24 12.37 21 11.11M12 3C12.55 3 13 3.45 13 4S12.55 5 12 5 11 4.55 11 4 11.45 3 12 3M5 19V5H7V7H17V5H19V9.68C18.09 9.25 17.08 9 16 9C12.13 9 9 12.13 9 16C9 17.08 9.25 18.09 9.68 19H5M16 21C13.24 21 11 18.76 11 16S13.24 11 16 11 21 13.24 21 16 18.76 21 16 21M16.5 16.25L19.36 17.94L18.61 19.16L15 17V12H16.5V16.25Z" />
+                                    </svg>
+
+                                    <span class="ms-3">Enrollment</span>
                                 </x-nav-link>
                             </li>
                         </ul>
@@ -337,12 +364,25 @@
     <script>
         function sessionChecker() {
             return {
+                enrollee: @yield('enrollee', 'null'),
                 sessionMessage: '',
+                image_path: '',
                 init() {
-                    this.checkSession();
-                    setInterval(() => this.checkSession(), 60000); // Check every 60 seconds
+                    /* this.checkSession();
+                    setInterval(() => this.checkSession(), 60000); // Check every 60 seconds */
+                    if (this.enrollee && this.enrollee.enrollee_files) {
+                        const idPicture = this.enrollee.enrollee_files.find(file => file.credential_type === 'id_picture');
+
+                        if (idPicture) {
+                            this.image_path =
+                                `storage/enrollee_files/${this.enrollee.course_id}/${idPicture.enrollee_id}/${idPicture.credential_type}/${idPicture.folder}/${idPicture.filename}`
+                            console.log(this.image_path);
+                        } else {
+                            console.log("ID picture not found");
+                        }
+                    }
                 },
-                checkSession() {
+                /* checkSession() {
                     $.ajax({
                         url: '/check-session',
                         method: 'GET',
@@ -362,8 +402,9 @@
                             }
                         }
                     });
-                },
-                function getInitials(name) {
+                }, */
+                getInitials() {
+                    var name = '{{ auth()->user()->fname }}'
                     let names = name.trim().split(' ');
                     let initials = names[0].charAt(0); // First letter of the first name
                     if (names.length > 1) {

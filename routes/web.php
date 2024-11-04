@@ -102,6 +102,8 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         // Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
     });
     
+    Route::get('/show_enrollee_file/{id}', [SuperAdminController::class, 'show_diploma'])->name('show_enrollee_file');
+
     Route::prefix('users')->group(function () {
         Route::get('/', [SuperAdminController::class, 'all_users'])->name('users');
         Route::post('/disable_user', [SuperAdminController::class, 'disable_user'])->name('disable_user');
@@ -144,11 +146,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
 Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     Route::get('/course_completed', [StudentController::class, 'course_completed'])->name('course_completed');
 
-    
-
     Route::prefix('course')->group(function () {
     // Stream / Posts
-        Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
+        // Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
         Route::get('/enrolled_course_assignment', [StudentController::class, 'enrolled_course_assignment'])->name('enrolled_course_assignment');
         
     // Assignment
@@ -158,8 +158,10 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
         Route::post('/upload_links', [StudentController::class, 'upload_links'])->name('upload_links');
     
     //Comments
-        Route::get('/comments/{post_id}', [StudentController::class, 'comments'])->name('student.comments');
+        Route::get('/comments/{batch_id}/{post_id}', [StudentController::class, 'comments'])->name('student.comments');
+        Route::post('/add_comment', [InstructorController::class, 'add_comment'] )->name('student.add_comment');
     });
+
     //Filepond Assignment
     Route::post('/turn_in_files', [StudentController::class, 'turn_in_files'])->name('turn_in_files');
     Route::post('/turn_in_links', [StudentController::class, 'turn_in_links'])->name('turn_in_links');
@@ -170,9 +172,6 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
 
     // Attendance
     Route::get('/enrolled_course_attendance', [StudentController::class, 'enrolled_course_attendance'])->name('enrolled_course_attendance');
-
-    
-
 
     //Message
     Route::prefix('message')->group(function () {
@@ -189,17 +188,12 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     
 });
 
-Route::middleware(['auth', 'verified', 'role:guest'])->group(function () {
-    
-});
-
 Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     // Batch List
     Route::get('/batch_list', [InstructorController::class, 'batch_list'])->name('batch_list');
     Route::post('/get_batch_info', [InstructorController::class, 'get_batch_info'])->name('get_batch_info');
     Route::post('/close_batch', [InstructorController::class, 'close_batch'])->name('close_batch');
     
-
     Route::get('/batch_posts/{id}', [InstructorController::class, 'batch_posts'])->name('batch_posts');
     Route::get('/batch_members', [InstructorController::class, 'batch_members'])->name('batch_members');
     Route::get('/batch_assignments/{batch_id}', [InstructorController::class, 'batch_assignments'])->name('batch_assignments');
@@ -262,7 +256,8 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
 
     //Comments 
     Route::prefix('comments')->group(function () {
-        Route::get('/{post_id}', [InstructorController::class, 'comments'])->name('instructor.comments');
+        Route::get('/{batch_id}/{post_id}', [InstructorController::class, 'comments'])->name('instructor.comments');
+        Route::post('/add_comment', [InstructorController::class, 'add_comment'] )->name('add_comment');
     });
 
 });
@@ -293,6 +288,17 @@ Route::middleware(['auth', 'verified', 'role:guest,student'])->group(function ()
     Route::post('/check_user_requirements', [StudentController::class, 'check_user_requirements'])->name('check_user_requirements');
     Route::post('/enroll_requirements_save', [StudentController::class, 'enroll_requirements_save'])->name('enroll_requirements_save');
     Route::get('/formats', [StudentController::class, 'formats'])->name('formats');
+
+    
+    Route::prefix('course')->group(function () {
+        // Stream / Posts
+            Route::get('/enrolled_course', [StudentController::class, 'enrolled_course'])->name('enrolled_course');
+    });
+
+    Route::prefix('enrollment')->group(function () {
+        Route::get('/', [StudentController::class, 'enrollment'])->name('enrollment');
+        Route::post('/cancel', [StudentController::class, 'cancel_enrollment'])->name('cancel_enrollment');
+    });
 });
 
 

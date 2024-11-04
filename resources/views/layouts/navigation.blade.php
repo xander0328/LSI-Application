@@ -24,7 +24,7 @@
                 }" class="flex shrink-0 items-center">
                     <a :href="getHref()" class="items-center">
                         <!-- <img src="images/icons/lsi-logo.png" alt="LSI" class="h-16 w-auto rounded-full dark:bg-gray-900" /> -->
-                        <img src="../../images/icons/lsi-logo.png" alt="" class="h-9 w-auto">
+                        <img src="{{ asset('images/icons/lsi-logo.png') }}" alt="" class="h-9 w-auto">
                     </a>
                 </div>
 
@@ -153,7 +153,7 @@
                     <form class="cursor-pointer" method="POST" action="{{ route('logout') }}">
                         @csrf
 
-                        <a class="flex" :href="route('logout')"
+                        <a class="flex" href="{{ route('logout') }}"
                             onclick="event.preventDefault();
                                             this.closest('form').submit();">
                             <span class="rounded bg-red-600/50 p-2 hover:bg-red-600">
@@ -176,9 +176,8 @@
                     <ul class="space-y-2 font-medium">
                         <li>
                             <x-responsive-nav-link :href="route('dashboard')" :active="request()->is('dashboard*')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg fill="currentColor"
-                                    class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg fill="currentColor" class="h-6 w-6 flex-shrink-0 transition duration-75"
                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <title>view-dashboard-outline</title>
                                     <path
@@ -189,10 +188,9 @@
                         </li>
                         <li>
                             <x-responsive-nav-link :href="route('website')" :active="request()->is('website*')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24">
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-width="2"
                                         d="M3 11h18m-9 0v8m-8 0h16c.6 0 1-.4 1-1V6c0-.6-.4-1-1-1H4a1 1 0 0 0-1 1v12c0 .6.4 1 1 1Z" />
                                 </svg>
@@ -201,10 +199,9 @@
                         </li>
                         <li>
                             <x-responsive-nav-link :href="route('courses')" :active="request()->is('courses*')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 24 24">
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2"
                                         d="M5 19V4c0-.6.4-1 1-1h12c.6 0 1 .4 1 1v13H7a2 2 0 0 0-2 2Zm0 0c0 1.1.9 2 2 2h12M9 3v14m7 0v4" />
@@ -216,8 +213,8 @@
                         </li>
                         <li>
                             <x-responsive-nav-link :href="route('instructors')" :active="request()->is('instructors*')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 flex-shrink-0 transition duration-75"
                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <title>school-outline</title>
                                     <path fill="currentColor"
@@ -244,9 +241,9 @@
                         </li> --}}
                         <li>
                             <x-responsive-nav-link :href="route('users')" :active="request()->is('users*')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path fill="currentColor"
                                         d="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 4.59A5 5 0 0 1 13.07 10.41A3.39 3.39 0 0 0 15 11A3.5 3.5 0 0 0 15 4Z" />
                                 </svg>
@@ -255,8 +252,8 @@
                         </li>
                         <li>
                             <x-responsive-nav-link :href="route('payments')" :active="request()->is('payments*')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6 flex-shrink-0 transition duration-75"
                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <path fill="currentColor"
                                         d="M5,6H23V18H5V6M14,9A3,3 0 0,1 17,12A3,3 0 0,1 14,15A3,3 0 0,1 11,12A3,3 0 0,1 14,9M9,8A2,2 0 0,1 7,10V14A2,2 0 0,1 9,16H19A2,2 0 0,1 21,14V10A2,2 0 0,1 19,8H9M1,10H3V20H19V22H1V10Z" />
@@ -266,10 +263,9 @@
                         </li>
                         <li>
                             <x-responsive-nav-link :href="route('scan_attendance')" :active="request()->is('scan_attendance*')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                    class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                    viewBox="0 0 24 24">
+                                    class="h-6 w-6 flex-shrink-0 transition duration-75" viewBox="0 0 24 24">
 
                                     <path
                                         d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H11V13H9V11M15,11H17V13H19V11H21V13H19V15H21V19H19V21H17V19H13V21H11V17H15V15H17V13H15V11M19,19V15H17V19H19M15,3H21V9H15V3M17,5V7H19V5H17M3,3H9V9H3V3M5,5V7H7V5H5M3,15H9V21H3V15M5,17V19H7V17H5Z" />
@@ -282,10 +278,10 @@
                 @if (auth()->check() && auth()->user()->role === 'student')
                     <ul class="space-y-2 font-medium">
                         <li>
-                            <x-responsive-nav-link :href="route('enrolled_course')" :active="request()->is('course*')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <x-responsive-nav-link :href="route('enrolled_course')" :active="request()->is('course*') && !request()->is('course_completed')"
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2"
                                         d="M5 19V4c0-.6.4-1 1-1h12c.6 0 1 .4 1 1v13H7a2 2 0 0 0-2 2Zm0 0c0 1.1.9 2 2 2h12M9 3v14m7 0v4" />
@@ -295,8 +291,8 @@
                         </li>
                         <li>
                             <x-responsive-nav-link :href="route('course_completed')" :active="request()->routeIs('course_completed')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24">
                                     <title>book-check-outline</title>
                                     <path
@@ -306,9 +302,21 @@
                             </x-responsive-nav-link>
                         </li>
                         <li>
+                            <x-responsive-nav-link :href="route('enrollment')" :active="request()->is('enrollment*')"
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg fill="currentColor" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24">
+                                    <title>clipboard-clock-outline</title>
+                                    <path
+                                        d="M21 11.11V5C21 3.9 20.11 3 19 3H14.82C14.4 1.84 13.3 1 12 1S9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H11.11C12.37 22.24 14.09 23 16 23C19.87 23 23 19.87 23 16C23 14.09 22.24 12.37 21 11.11M12 3C12.55 3 13 3.45 13 4S12.55 5 12 5 11 4.55 11 4 11.45 3 12 3M5 19V5H7V7H17V5H19V9.68C18.09 9.25 17.08 9 16 9C12.13 9 9 12.13 9 16C9 17.08 9.25 18.09 9.68 19H5M16 21C13.24 21 11 18.76 11 16S13.24 11 16 11 21 13.24 21 16 18.76 21 16 21M16.5 16.25L19.36 17.94L18.61 19.16L15 17V12H16.5V16.25Z" />
+                                </svg>
+                                <span class="ms-3">Enrollment</span>
+                            </x-responsive-nav-link>
+                        </li>
+                        <li>
                             <x-responsive-nav-link :href="route('message_list')" :active="request()->routeIs('message_list')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6" fill="white" xmlns="http://www.w3.org/2000/svg"
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24">
                                     <title>message-processing-outline</title>
                                     <path
@@ -343,9 +351,9 @@
                     <ul class="space-y-2 font-medium">
                         <li>
                             <x-responsive-nav-link :href="route('batch_list')" :active="request()->is('batch_list')"
-                                class="group flex items-center p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <svg class="h-6 w-6 text-gray-800 dark:text-white" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                class="group flex items-center p-2 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                <svg class="h-6 w-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                    fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2"
                                         d="M5 19V4c0-.6.4-1 1-1h12c.6 0 1 .4 1 1v13H7a2 2 0 0 0-2 2Zm0 0c0 1.1.9 2 2 2h12M9 3v14m7 0v4" />

@@ -12,13 +12,13 @@
                 {{ __('Enrollees') }} <span class="text-slate-600">|</span> <span
                     class="text-lg font-normal text-sky-500">{{ $course->name }}</span>
             </div>
-            <div class="px-2 bg-gray-600 rounded">
+            <div class="rounded bg-gray-600 px-2">
                 <span>Enrollees: </span><span class="font-bold">{{ $course->enrollees_count }}</span>
             </div>
         </div>
 
     </x-slot>
-    <div x-data="batchManager()" class="px-8 pt-36 pb-8">
+    <div x-data="batchManager()" class="px-8 pb-8 pt-36">
 
         <div class="overflow-x-auto shadow-md sm:rounded-lg">
             <div
@@ -114,12 +114,16 @@
                             <td x-data="{ requiredTypes: ['id_picture', 'valid_id_front', 'valid_id_back', 'diploma_tor', 'birth_certificate'] }" @click="toggleUser(user.id)" class="px-6 py-4">
                                 <span class="rounded px-1 py-0.5 text-sm"
                                     :class="{
-                                        'bg-red-900 text-red-300': !user.enrollee_files || !requiredTypes.every(type =>
-                                            user.enrollee_files.some(file => file.credential_type === type)),
-                                        'bg-sky-900 text-sky-300': user.enrollee_files && requiredTypes.every(type =>
-                                            user.enrollee_files.some(file => file.credential_type === type))
+                                        'bg-red-900 text-red-300': !user.enrollee_files_submitted || !requiredTypes
+                                            .every(type =>
+                                                user.enrollee_files_submitted.some(file => file.credential_type ===
+                                                    type)),
+                                        'bg-sky-900 text-sky-300': user.enrollee_files_submitted && requiredTypes.every(
+                                            type =>
+                                            user.enrollee_files_submitted.some(file => file.credential_type ===
+                                                type))
                                     }"
-                                    x-text="user.enrollee_files && requiredTypes.every(type => user.enrollee_files.some(file => file.credential_type === type)) ? 'Complete' : 'Incomplete'">
+                                    x-text="user.enrollee_files_submitted && requiredTypes.every(type => user.enrollee_files_submitted.some(file => file.credential_type === type)) ? 'Submitted' : 'Pending'">
                                 </span>
                             </td>
                             <td class="px-6 py-4">
@@ -175,7 +179,6 @@
             <div class="my-4 text-center text-sm text-white/75" x-show="course?.enrollees?.length === 0">
                 No enrollees
             </div>
-
 
             {{-- List of Batches Modal --}}
             <div x-cloak x-show="showBatchesModal" x-transition:enter="transition ease-out duration-200"
@@ -288,11 +291,12 @@
                         <div
                             class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                             <div class="relative flex items-center whitespace-nowrap text-white">
-                                <template x-if="enrolleeProfile?.enrollee_files?.length < 1">
+                                <template x-if="enrolleeProfile?.enrollee_files_submitted?.length < 1">
                                     <img src="{{ asset('images/temporary/profile.png') }}"
                                         class="h-12 w-12 rounded-full" alt="profile">
                                 </template>
-                                <template x-for="file in enrolleeProfile.enrollee_files" :key="file.id">
+                                <template x-for="file in enrolleeProfile.enrollee_files_submitted"
+                                    :key="file.id">
                                     <template x-if="file.credential_type === 'id_picture'">
                                         <img :src="'{{ asset('storage/enrollee_files/') }}/' +
                                         enrolleeProfile?.course_id + '/' + enrolleeProfile?.id + '/id_picture' +
@@ -338,7 +342,7 @@
                             <div class="mb-4 grid grid-cols-2 gap-4">
                                 <div class="col-span-2">
 
-                                    <div class="relative mt-4 rounded-md bg-gray-800/75 text-white">
+                                    <div class="relative mt-4 rounded-md bg-gray-300 text-white dark:bg-gray-800/75">
                                         <div
                                             class="absolute -top-4 left-2 mb-2 flex w-1/3 items-center justify-center rounded-md bg-sky-700 py-2 text-white shadow-md">
                                             <svg class="h-7 w-7 pr-1.5" xmlns="http://www.w3.org/2000/svg"
@@ -354,7 +358,8 @@
 
                                         <div class="px-2 pb-4 pt-10">
                                             <div class="ps-4">
-                                                <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <div
+                                                    class="relative mb-2 rounded-md bg-gray-200 p-4 ps-10 text-sm text-black dark:bg-gray-800 dark:text-white">
                                                     <span
                                                         class="absolute -left-4 top-4 rounded-md bg-yellow-700 p-2 shadow-md"><svg
                                                             class="h-7 w-7 text-white"
@@ -365,55 +370,55 @@
                                                     <div class="mb-2 text-gray-300">MANPOWER PROFILE</div>
                                                     <div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">First
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">First
                                                                 Name:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile.user?.fname"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Middle
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Middle
                                                                 Name:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile.user?.mname ?? '---'"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Last Name:</span>
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Last Name:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile.user?.lname">
                                                             </span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Address:</span>
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Address:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="`${enrolleeProfile?.barangayName}, ${enrolleeProfile?.cityName}, ${enrolleeProfile?.provinceName}, ${enrolleeProfile?.regionName}, ${enrolleeProfile?.zip}`"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Sex:</span>
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Sex:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.sex ? capitalize(enrolleeProfile?.sex) : '---'"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Civil
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Civil
                                                                 Status:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.civil_status != null ? capitalize(enrolleeProfile?.civil_status) : '---'"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Employment
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Employment
                                                                 Type:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.employment_type ? capitalize(enrolleeProfile?.employment_type) : '---'"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Employment
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Employment
                                                                 Status:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.employment_status ? capitalize(enrolleeProfile?.employment_status) : '---'"></span>
@@ -645,8 +650,9 @@
                                                     <div class="mb-2 text-gray-300">ID PICTURE</div>
                                                     <div class="flex justify-center">
                                                         <template
-                                                            x-if="enrolleeProfile.enrollee_files && enrolleeProfile.enrollee_files.length > 0">
-                                                            <template x-for="file in enrolleeProfile.enrollee_files"
+                                                            x-if="enrolleeProfile.enrollee_files_submitted && enrolleeProfile.enrollee_files_submitted.length > 0">
+                                                            <template
+                                                                x-for="file in enrolleeProfile.enrollee_files_submitted"
                                                                 :key="file.id">
                                                                 <template x-if="file.credential_type == 'id_picture'">
                                                                     <img class="rounded-md"
@@ -660,7 +666,7 @@
                                                         </template>
 
                                                         <template
-                                                            x-if="!enrolleeProfile.enrollee_files || enrolleeProfile.enrollee_files.length === 0 || !enrolleeProfile.enrollee_files.some(file => file.credential_type === 'id_picture')">
+                                                            x-if="!enrolleeProfile.enrollee_files_submitted || enrolleeProfile.enrollee_files_submitted.length === 0 || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'id_picture')">
                                                             <div
                                                                 class="flex w-full flex-shrink-0 items-center text-white/50">
                                                                 <span class="me-1.5 flex items-center">
@@ -694,15 +700,16 @@
 
                                                     <!-- Check if enrollee_files is defined and not empty -->
                                                     <template
-                                                        x-if="enrolleeProfile.enrollee_files && enrolleeProfile.enrollee_files.length > 0">
-                                                        <template x-for="file in enrolleeProfile.enrollee_files"
+                                                        x-if="enrolleeProfile.enrollee_files_submitted && enrolleeProfile.enrollee_files_submitted.length > 0">
+                                                        <template
+                                                            x-for="file in enrolleeProfile.enrollee_files_submitted"
                                                             :key="file.id">
-                                                            <div class="flex justify-center">
+                                                            <div class="flex justify-center space-y-2">
                                                                 <div class="w-full flex-shrink-0">
                                                                     <!-- Display valid_id_front image if available -->
                                                                     <template
                                                                         x-if="file.credential_type === 'valid_id_front'">
-                                                                        <img class="m-2 rounded-md"
+                                                                        <img class="rounded-md"
                                                                             :src="'{{ asset('storage/enrollee_files/') }}/' +
                                                                             enrolleeProfile?.course_id + '/' +
                                                                                 enrolleeProfile?.id +
@@ -731,7 +738,7 @@
                                                     <div class="w-full flex-shrink-0">
                                                         <!-- Display missing front ID message -->
                                                         <template
-                                                            x-if="!enrolleeProfile.enrollee_files || !enrolleeProfile.enrollee_files.some(file => file.credential_type === 'valid_id_front')">
+                                                            x-if="!enrolleeProfile.enrollee_files_submitted || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'valid_id_front')">
                                                             <div
                                                                 class="mb-2 flex w-full flex-shrink-0 items-center text-white/50">
                                                                 <span class="me-1.5 flex items-center">
@@ -749,7 +756,7 @@
 
                                                         <!-- Display missing back ID message -->
                                                         <template
-                                                            x-if="!enrolleeProfile.enrollee_files || !enrolleeProfile.enrollee_files.some(file => file.credential_type === 'valid_id_back')">
+                                                            x-if="!enrolleeProfile.enrollee_files_submitted || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'valid_id_back')">
                                                             <div
                                                                 class="flex w-full flex-shrink-0 items-center text-white/50">
                                                                 <span class="me-1.5 flex items-center">
@@ -779,28 +786,43 @@
                                                         </svg>
                                                     </span>
                                                     <div class="mb-2 text-gray-300">DIPLOMA/TRANSCRIPT OF RECORDS</div>
-                                                    <div class="flex justify-center">
+                                                    <div class="flex">
                                                         <!-- Check if enrollee_files is defined and not empty -->
                                                         <template
-                                                            x-if="enrolleeProfile.enrollee_files && enrolleeProfile.enrollee_files.length > 0">
-                                                            <template x-for="file in enrolleeProfile.enrollee_files"
+                                                            x-if="enrolleeProfile.enrollee_files_submitted && enrolleeProfile.enrollee_files_submitted.length > 0">
+                                                            <template
+                                                                x-for="file in enrolleeProfile.enrollee_files_submitted"
                                                                 :key="file.id">
                                                                 <template
                                                                     x-if="file.credential_type === 'diploma_tor'">
-                                                                    <img class="rounded-md"
-                                                                        :src="'{{ asset('storage/enrollee_files/') }}/' +
-                                                                        enrolleeProfile?.course_id + '/' +
-                                                                            enrolleeProfile?.id +
-                                                                            '/diploma_tor/' + file.folder + '/' + file
-                                                                            .filename"
-                                                                        alt="" srcset="">
+                                                                    <div>
+                                                                        <template
+                                                                            x-if="file.file_type === 'application/pdf'">
+                                                                            <a class="rounded bg-sky-600 px-3 py-1.5"
+                                                                                target="_blank"
+                                                                                :href="`{{ route('show_enrollee_file', ['id' => ':id']) }}`
+                                                                                .replace(':id', file.id)">View
+                                                                                PDF</a>
+                                                                        </template>
+                                                                        <template
+                                                                            x-if="file.file_type !== 'application/pdf'">
+                                                                            <img class="rounded-md"
+                                                                                :src="'{{ asset('storage/enrollee_files/') }}/' +
+                                                                                enrolleeProfile?.course_id + '/' +
+                                                                                    enrolleeProfile?.id +
+                                                                                    '/diploma_tor/' + file.folder +
+                                                                                    '/' + file
+                                                                                    .filename"
+                                                                                alt="" srcset="">
+                                                                        </template>
+                                                                    </div>
                                                                 </template>
                                                             </template>
                                                         </template>
 
                                                         <!-- Check if enrollee_files is undefined, empty, or missing 'diploma_tor' -->
                                                         <template
-                                                            x-if="!enrolleeProfile.enrollee_files || !enrolleeProfile.enrollee_files.some(file => file.credential_type === 'diploma_tor')">
+                                                            x-if="!enrolleeProfile.enrollee_files_submitted || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'diploma_tor')">
                                                             <div
                                                                 class="flex w-full flex-shrink-0 items-center text-white/50">
                                                                 <span class="me-1.5 flex items-center">
@@ -831,28 +853,43 @@
                                                         </svg>
                                                     </span>
                                                     <div class="mb-2 text-gray-300">BIRTH CERTIFICATE</div>
-                                                    <div class="flex justify-center">
+                                                    <div class="flex">
                                                         <!-- Check if enrollee_files is defined and not empty -->
                                                         <template
-                                                            x-if="enrolleeProfile.enrollee_files && enrolleeProfile.enrollee_files.length > 0">
-                                                            <template x-for="file in enrolleeProfile.enrollee_files"
+                                                            x-if="enrolleeProfile.enrollee_files_submitted && enrolleeProfile.enrollee_files_submitted.length > 0">
+                                                            <template
+                                                                x-for="file in enrolleeProfile.enrollee_files_submitted"
                                                                 :key="file.id">
                                                                 <template
                                                                     x-if="file.credential_type === 'birth_certificate'">
-                                                                    <img class="rounded-md"
-                                                                        :src="'{{ asset('storage/enrollee_files/') }}/' +
-                                                                        enrolleeProfile?.course_id + '/' +
-                                                                            enrolleeProfile?.id +
-                                                                            '/birth_certificate/' + file.folder + '/' +
-                                                                            file.filename"
-                                                                        alt="" srcset="">
+                                                                    <div>
+                                                                        <template
+                                                                            x-if="file.file_type === 'application/pdf'">
+                                                                            <a class="rounded bg-sky-600 px-3 py-1.5"
+                                                                                target="_blank"
+                                                                                :href="`{{ route('show_enrollee_file', ['id' => ':id']) }}`
+                                                                                .replace(':id', file.id)">View
+                                                                                PDF</a>
+                                                                        </template>
+                                                                        <template
+                                                                            x-if="file.file_type !== 'application/pdf'">
+                                                                            <img class="rounded-md"
+                                                                                :src="'{{ asset('storage/enrollee_files/') }}/' +
+                                                                                enrolleeProfile?.course_id + '/' +
+                                                                                    enrolleeProfile?.id +
+                                                                                    '/birth_certificate/' + file
+                                                                                    .folder + '/' +
+                                                                                    file.filename"
+                                                                                alt="" srcset="">
+                                                                        </template>
+                                                                    </div>
                                                                 </template>
                                                             </template>
                                                         </template>
 
                                                         <!-- Check if enrollee_files is undefined, empty, or missing 'birth_certificate' -->
                                                         <template
-                                                            x-if="!enrolleeProfile.enrollee_files || !enrolleeProfile.enrollee_files.some(file => file.credential_type === 'birth_certificate')">
+                                                            x-if="!enrolleeProfile.enrollee_files_submitted || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'birth_certificate')">
                                                             <div
                                                                 class="flex w-full flex-shrink-0 items-center text-white/50">
                                                                 <span class="me-1.5 flex items-center">
@@ -1009,6 +1046,8 @@
                             console.error("Failed to load more enrollees:", error);
                         }
                         this.loading = false;
+                        console.log(this.course.enrollees);
+
                     },
 
 

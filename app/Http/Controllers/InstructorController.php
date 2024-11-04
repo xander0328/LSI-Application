@@ -24,6 +24,7 @@ use App\Models\StudentGrade;
 use App\Models\StudentAttendance;
 use App\Models\Attendance;
 use App\Models\Instructor;
+use App\Models\Comment;
 use App\Http\Controllers\NotificationSendController;
 
 // Mailing
@@ -331,7 +332,7 @@ class InstructorController extends Controller
     public function batch_posts($id){
         $user = auth()->user();
         $batch = Batch::findOrFail(decrypt($id));
-        $posts = $batch->post;
+        $posts = $batch->post()->withCount('comments')->get();
         $course = $batch->course;
         // $lessons = $batch->lesson;
 
@@ -343,6 +344,8 @@ class InstructorController extends Controller
         }
 
         $temp_files = TempFile::where('batch_id', $batch->id)->get();
+
+        // dd($posts);
 
         return view('instructor.batch_posts', compact('batch', 'posts', 'files', 'temp_files'));
     }
@@ -1113,12 +1116,52 @@ class InstructorController extends Controller
         return response()->json($data);
     }
 
-    // public function comments($post_id){
-    //     $post = Post::where('id', $post_id)
-    //     ->with('comments')
-    //     ->first();
+    public function comments($batch_id, $post_id){
+        $batch = Batch::where('id', $batch_id)
+        ->with([ 'only_post'=> function ($query) use ($post_id) {
+            $query->where('id', $post_id)->with(['comments' => function ($q){
+                $q->with(['user' => function ($q) {
+                    $q->with([
+                        'instructor_info','enrollee.enrollee_files'
+                    ]);                    
+                }]);
+            }, 'files']);
+        }])->first();
 
-    //     return view('student.comments', compact('post'));
-    // }
+        $batch->only_post->formatted_created_at = Carbon::parse($batch->only_post->created_at)->timezone('Asia/Manila')->format('Y-m-d H:i:s');
+        
+        if ($batch && $batch->only_post) {
+            foreach ($batch->only_post->comments as $comment) {
+                $comment->formatted_created_at = Carbon::parse($comment->created_at)
+                    ->timezone('Asia/Manila')
+                    ->format('Y-m-d H:i:s');
+            }
+        }
+
+        return view('student.comments', compact('batch'));
+    }
+
+
+    public function add_comment(Request $request){
+        $comment_text = $request->comment;
+
+        $post = Post::where('id', $request->post_id)->first();
+
+        if ($post) {
+            $comment = new Comment();
+            $comment->comment = $comment_text;
+            $comment->post_id = $post->id;
+            $comment->user_id = auth()->user()->id;
+            $comment->save();
+
+            if ($comment) {
+                return back()->with(['status' => 'success', 'message' => 'Comment posted succesfully']);
+            }else{
+                return back()->with(['status' => 'error', 'message' => 'Error posting a comment']);
+            }
+        }else{
+            return back()->with(['status'=> 'error', 'message' => 'Post does not exist']);
+        }
+    }
 
 }

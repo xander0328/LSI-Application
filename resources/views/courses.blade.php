@@ -11,7 +11,7 @@
             <div class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                 {{ __('Offered Courses') }}
             </div>
-            <div class="hidden md:flex space-x-1">
+            <div class="hidden space-x-1 md:flex">
                 <div>
                     <button onclick="window.dispatchEvent(new CustomEvent('add-course-modal'))"
                         class="flex items-center rounded-lg bg-sky-700 px-3.5 py-2.5 text-center text-xs font-medium text-white hover:bg-blue-800 md:px-5 md:text-sm"
@@ -25,7 +25,7 @@
                 </div>
                 <div>
                     <button onclick="window.dispatchEvent(new CustomEvent('show-settings-modal'))"
-                        class="flex space-x-1 items-center rounded-lg px-2 py-2.5 text-center text-sm font-medium text-white border border-gray-700 bg-gray-800  hover:bg-gray-800/50">
+                        class="flex items-center space-x-1 rounded-lg border border-gray-700 bg-gray-800 px-2 py-2.5 text-center text-sm font-medium text-white hover:bg-gray-800/50">
                         <svg class="h-5 w-5 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24">
                             <title>cog</title>
@@ -38,10 +38,10 @@
                     </button>
                 </div>
             </div>
-            <div class="flex md:hidden items-center">
+            <div class="flex items-center md:hidden">
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
-                        <button class="inline-flex p-1.5 items-center rounded-md hover:bg-gray-900/50">
+                        <button class="inline-flex items-center rounded-md p-1.5 hover:bg-gray-900/50">
                             <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24">
                                 <title>dots-vertical-circle-outline</title>
@@ -55,7 +55,7 @@
                         <div class="m-1.5">
                             <div>
                                 <button onclick="window.dispatchEvent(new CustomEvent('add-course-modal'))"
-                                    class="flex items-center w-full rounded-lg bg-sky-700 py-2.5 text-center  font-medium text-white hover:bg-blue-800 px-5 text-sm"
+                                    class="flex w-full items-center rounded-lg bg-sky-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800"
                                     type="button">
                                     <svg class="h-4 w-6 text-white" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -66,7 +66,7 @@
                             </div>
                             <div class="mt-1">
                                 <a onclick="window.dispatchEvent(new CustomEvent('show-settings-modal'))"
-                                    class="flex w-full justify-center cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                    class="flex w-full cursor-pointer items-center justify-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
                                     <div class="mr-1">
                                         <svg class="h-5 w-5 text-white" fill="currentColor"
                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -840,16 +840,16 @@
                     <!-- Modal body -->
                     <div class="relative p-4 md:p-5">
                         <div class="mb-4 grid grid-cols-2 gap-4 text-white">
-                            <div class="col-span-2 ">
+                            <div class="col-span-2">
                                 <div class="mb-8">
-                                    <div class="text-white/75 mb-1.5 text-sm font-bold">Default ID Template</div>
+                                    <div class="mb-1.5 text-sm font-bold text-white/75">Default ID Template</div>
                                     <div>
                                         <input type="file" name="" id="default_id">
                                     </div>
                                 </div>
-                                <div class="rounded-lg p-4 bg-gray-800">
-                                    <div class="flex items-center justify-between text-white/75 mb-4 text-sm">
-                                        <div class="flex space-x-1 items-center">
+                                <div class="rounded-lg bg-gray-800 p-4">
+                                    <div class="mb-4 flex items-center justify-between text-sm text-white/75">
+                                        <div class="flex items-center space-x-1">
                                             <span>
                                                 <svg class="h-6 w-6 text-white" fill="currentColor"
                                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -864,7 +864,7 @@
                                         </div>
                                         <span>
                                             <button @click="showAddCategory = true"
-                                                class="inline-flex p-1.5 items-center rounded-md hover:bg-sky-700">
+                                                class="inline-flex items-center rounded-md p-1.5 hover:bg-sky-700">
                                                 <svg class="h-4 w-4 text-white" fill="currentColor"
                                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                     <title>plus-thick</title>
@@ -876,13 +876,13 @@
                                     <div class="flex-col space-y-2">
                                         <template x-for="category in course_categories" :key="category.id">
                                             <div
-                                                class="px-2 flex justify-between items-center py-1 bg-gray-600 rounded-md text-sm">
+                                                class="flex items-center justify-between rounded-md bg-gray-600 px-2 py-1 text-sm">
                                                 <div x-text="category.name">
                                                 </div>
                                                 <div class="flex items-center space-x-1">
                                                     <span
                                                         @click="categoryName = category.name ; showEditCategory = true; selectedCourseCategoryId = category.id"
-                                                        class="p-1 rounded hover:bg-gray-800">
+                                                        class="rounded p-1 hover:bg-gray-800">
                                                         <svg class="h-5 w-5 cursor-pointer text-white"
                                                             fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                                             viewBox="0 0 24 24">
@@ -892,7 +892,7 @@
                                                         </svg>
                                                     </span>
                                                     <span @click="deleteCategory(category.id)"
-                                                        class="p-1 rounded hover:bg-red-800">
+                                                        class="rounded p-1 hover:bg-red-800">
                                                         <svg class="h-5 w-5 cursor-pointer text-white"
                                                             fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                                             viewBox="0 0 24 24">
@@ -927,7 +927,6 @@
                 </div>
             </div>
         </div>
-
 
         {{-- Course Category Modal --}}
         <div x-cloak x-show="showAddCategory" x-transition:enter="transition ease-out duration-200"
@@ -1034,7 +1033,7 @@
                     <!-- Modal body -->
                     <div class="relative p-4 md:p-5">
                         <div class="mb-4 grid grid-cols-2 gap-4 text-white">
-                            <div class="col-span-2 ">
+                            <div class="col-span-2">
                                 <div class="mb-8">
                                     <div>
                                         <input type="file" name="course_id_template" id="id_template">
@@ -1062,8 +1061,6 @@
         </div>
 
     </div>
-
-
 
     <!-- Main modal -->
     <div id="edit-modal" tabindex="-1" aria-hidden="true"
@@ -1180,7 +1177,6 @@
                     dataLoading: false,
 
                     init() {
-                        console.log(this.courses);
                         this.filepondInit();
                         window.addEventListener('add-course-modal', () => {
                             this.addCourse();
@@ -1202,13 +1198,19 @@
 
 
                     },
+                    featuredCourses: 0,
                     get groupedCourse() {
+                        this.featuredCourses = 0;
                         let grouped = this.courses.reduce((group, course) => {
                             const categoryName = course.course_category.name;
                             if (!group[categoryName]) {
                                 group[categoryName] = [];
                             }
                             group[categoryName].push(course);
+
+                            if (course.featured === 1) {
+                                this.featuredCourses++;
+                            }
                             return group;
                         }, {});
 
@@ -1218,12 +1220,16 @@
                         }
 
                         // Step 3: Sort categories by name
-                        return Object.keys(grouped)
+                        const sortedGroup = Object.keys(grouped)
                             .sort((a, b) => a.localeCompare(b)) // Sort categories by name
                             .reduce((sortedGroup, category) => {
                                 sortedGroup[category] = grouped[category];
                                 return sortedGroup;
                             }, {});
+
+                        console.log(this.featuredCourses);
+                        console.log(sortedGroup);
+                        return sortedGroup;
                     },
                     filepondInit() {
                         FilePond.registerPlugin(FilePondPluginImagePreview, FilePondPluginGetFile);
@@ -1396,75 +1402,67 @@
                             }
                         });
                     },
-                    numberFeaturedCourses: 0,
                     featureToggle(courseId) {
-                        var thisFunction = this
-
-                        Object.keys(this.groupedCourse).forEach(group => {
-                            this.numberFeaturedCourses += this.groupedCourse[group].filter(course => course
-                                    .available === 1)
-                                .length;
-                            console.log(this.numberFeaturedCourses);
-
-                        });
-                        this.selectedCourse = this.courses.find(course => course.id === courseId)
-                        console.log(this.numberFeaturedCourses);
-
+                        var thisFunction = this;
+                        // this.featuredCourses = 0
+                        // Find the selected course by ID
+                        this.selectedCourse = this.courses.find(course => course.id === courseId);
 
                         // Check if the selected course is already featured
-                        // if (this.selectedCourse.featured) {
-                        //     // If the course is already featured, remove it from the featured list
-                        //     this.abortFetch('ajax');
-                        //     this.xhr = $.ajax({
-                        //         url: '{{ route('feature_toggle') }}',
-                        //         method: 'POST',
-                        //         data: {
-                        //             _token: '{{ csrf_token() }}',
-                        //             course_id: courseId
-                        //         },
-                        //         success: function(response) {
-                        //             thisFunction.selectedCourse.featured = false;
-                        //             thisFunction.notification('success', 'Course is removed from featured list',
-                        //                 thisFunction.selectedCourse.name);
-                        //         },
-                        //         error: function(xhr, status, error) {
-                        //             console.error(xhr.responseText);
-                        //         }
-                        //     });
-                        // } else {
-                        //     // If not featured yet, check the number of featured courses
+                        if (this.selectedCourse.featured === 1) {
+                            // If the course is already featured, send a request to remove it
+                            this.abortFetch('ajax');
+                            this.xhr = $.ajax({
+                                url: '{{ route('feature_toggle') }}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    course_id: courseId
+                                },
+                                success: function(response) {
+                                    // Update the course's featured status and decrease featured count
+                                    thisFunction.selectedCourse.featured = 0;
+                                    // thisFunction.featuredCourses--;
+                                    thisFunction.notification('success', 'Course is removed from featured list',
+                                        thisFunction.selectedCourse.name);
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(xhr.responseText);
+                                }
+                            });
+                        } else {
+                            // If not featured yet, check the limit
+                            if (this.featuredCourses < 3) {
+                                // Mark the course as featured if within limit
+                                this.abortFetch('ajax');
+                                this.xhr = $.ajax({
+                                    url: '{{ route('feature_toggle') }}',
+                                    method: 'POST',
+                                    data: {
+                                        _token: '{{ csrf_token() }}',
+                                        course_id: courseId
+                                    },
+                                    success: function(response) {
+                                        // Update the course's featured status and increase featured count
+                                        thisFunction.selectedCourse.featured = 1;
+                                        // thisFunction.featuredCourses++;
+                                        thisFunction.notification('success', 'Course is now in featured list',
+                                            thisFunction.selectedCourse.name);
+                                    },
+                                    error: function(xhr, status, error) {
+                                        console.error(xhr.responseText);
+                                    }
+                                });
+                            } else {
+                                // If the limit is reached, notify the user and revert the checkbox
+                                this.notification('error', `Sorry, the number of featured courses is limited to 3.`, '');
 
-                        //     if (featuredCourses.length < 3) {
-                        //         // Mark the course as featured
-                        //         this.abortFetch('ajax');
-                        //         this.xhr = $.ajax({
-                        //             url: '{{ route('feature_toggle') }}',
-                        //             method: 'POST',
-                        //             data: {
-                        //                 _token: '{{ csrf_token() }}',
-                        //                 course_id: courseId
-                        //             },
-                        //             success: function(response) {
-                        //                 thisFunction.selectedCourse.featured = true;
-                        //                 thisFunction.notification('success', 'Course is now in featured list',
-                        //                     thisFunction.selectedCourse.name);
-                        //             },
-                        //             error: function(xhr, status, error) {
-                        //                 console.error(xhr.responseText);
-                        //             }
-                        //         });
-                        //     } else {
-                        //         // If the limit is reached, notify the user and revert the checkbox
-                        //         this.notification('error',
-                        //             `Sorry, the number of featured courses is limited to 3. Current: ${featuredCourses[0].name}, ${featuredCourses[1].name}, and ${featuredCourses[2].name}`,
-                        //             '');
-
-                        //         this.$nextTick(() => {
-                        //             // Ensure Alpine.js reactivity updates the UI accordingly
-                        //             document.querySelector(`.feature-toggle-${courseId}`).checked = false;
-                        //         });
-                        //     }
-                        // }
+                                this.$nextTick(() => {
+                                    // Revert checkbox state to ensure Alpine.js reactivity updates the UI
+                                    document.querySelector(`.feature-toggle-${courseId}`).checked = false;
+                                });
+                            }
+                        }
                     },
                     notification(status, message, title) {
                         status === 'success' ? toastr.success(message, title ?? title) : toastr.error(message, title ??

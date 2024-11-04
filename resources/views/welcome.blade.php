@@ -108,14 +108,28 @@
                         <a href="#" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">About</a>
                     </nav>
                 </div>
+                @php
+                    $user = Auth::user();
+
+                    $dashboardLink = url('/verify-email');
+                    if ($user) {
+                        $dashboardLink = !$user->hasVerifiedEmail()
+                            ? url('/verify-email')
+                            : match ($user->role) {
+                                'superadmin' => url('/dashboard'),
+                                'student' => route('enrolled_course'),
+                                'instructor' => url('/batch_list'),
+                                'guest' => route('enrolled_course'),
+                                default => url('/verify-email'),
+                            };
+                    }
+                @endphp
 
                 @if (Route::has('login'))
                     <div class="flex items-center space-x-4">
                         @auth
 
-                            <a @if (Auth::user()->role == 'superadmin') href="{{ url('/dashboard') }}" 
-                                @elseif (Auth::user()->role == 'student') href="{{ route('enrolled_course') }}"
-                            @elseif (Auth::user()->role == 'instructor') href="{{ url('/batch_list') }}" @endif
+                            <a href="{{ $dashboardLink }}"
                                 class="hidden rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none md:inline-flex">
                                 <img class="h-5 w-auto" src="{{ asset('/images/icons/lsi-logo.png') }}" alt="">
                             </a>
@@ -244,11 +258,8 @@
                             </li>
                             @if (Route::has('login'))
                                 @auth
-
                                     <li class="">
-                                        <a @if (Auth::user()->role == 'superadmin') href="{{ url('/dashboard') }}" 
-                                    @elseif (Auth::user()->role == 'student') href="{{ route('enrolled_course') }}"
-                                    @elseif (Auth::user()->role == 'instructor') href="{{ url('/batch_list') }}" @endif
+                                        <a href="{{ $dashboardLink }}"
                                             class="flex rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 text-white hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
                                             <img class="h-5 w-auto" src="{{ asset('/images/icons/lsi-logo.png') }}"
                                                 alt="">
@@ -676,7 +687,9 @@
                 },
 
                 init() {
-                    console.log(this.user);
+                    @if (session('status'))
+                        this.notification('{{ session('status') }}', '{{ session('message') }}', '')
+                    @endif
                     if (this.user && this.user.role == 'instructor' && (!this.user.instructor_info || !this.user
                             .instructor_info
                             .submitted)) {

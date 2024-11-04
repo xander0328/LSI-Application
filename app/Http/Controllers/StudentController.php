@@ -50,14 +50,17 @@ class StudentController extends Controller
             ->whereHas('batch', function($query) {
                 $query->whereNull('completed_at');
             })
+            ->with('enrollee_files')
+            ->orderBy('created_at')
             ->first();
 
         if ($enrollee) {
             $course = $enrollee->course;
             $batch = $enrollee->batch;
-            $posts = $batch ? $batch->post : '';
+            $posts = $batch ? $batch->post()->withCount('comments')->get() : '';
             $files = collect(); // Initialize an empty collection for files
             $instructor = collect();
+
 
             // Retrieve files for each post
             if($posts){
@@ -65,13 +68,22 @@ class StudentController extends Controller
                 foreach ($posts as $post) {
                     $post->formatted_created_at = Carbon::parse($post->created_at)->timezone('Asia/Manila')->format('Y-m-d H:i:s');
                     $files = $files->merge($post->files);
+
                 }
             }
 
             // dd($posts);
             return view('student.enrolled_course', compact('enrollee', 'course', 'batch', 'posts', 'files'));
         } else {
-            return redirect()->back()->with('error', 'not enrolled');
+            $enrollee = Enrollee::where('user_id', $user_id)
+            ->with('enrollee_files')
+            ->orderBy('created_at')
+            ->first();
+            if($enrollee){
+                // dd($enrollee);
+                return view('student.enrolled_course', compact('enrollee'));
+            }
+            return redirect()->back()->with(['status' => 'info', 'message'=>'You are not currently enrolled in, or previously enrolled in, any program or course.']);
         }
     }
 
@@ -195,6 +207,7 @@ class StudentController extends Controller
         $data['weight'] = str_replace(' kg', '', $request->weight);
         $data['street'] = ucwords(strtolower($request->street));
         $data['citizenship'] = ucwords(strtolower($request->citizenship));
+        $data['birth_place'] = ucwords(strtolower($request->birth_place));
         $data['religion'] = ucwords(strtolower($request->religion));
 
         $hasBatchId = Enrollee::where('user_id', $data['user_id'])
@@ -325,7 +338,7 @@ class StudentController extends Controller
         $file = EnrolleeFile::where('id', $source)
         ->get();
         $enrollee = Enrollee::where('id', $file[0]->enrollee_id)->first();
-        $path = new File(Storage::path('storage/enrollee_files/'. $enrollee->course_id . '/' . $enrollee->id . '/' . $type .'/' . $file[0]->folder.'/'. $file[0]->filename));
+        $path = new File(Storage::path('enrollee_files/'. $enrollee->course_id . '/' . $enrollee->id . '/' . $type .'/' . $file[0]->folder.'/'. $file[0]->filename));
         $headers = [
             // 'Content-Type' => 'image/jpeg',
             'Content-Disposition' => 'inline; filename="'.$file[0]->filename.'"',
@@ -416,9 +429,19 @@ class StudentController extends Controller
             ->whereHas('batch', function($query) {
                 $query->whereNotNull('completed_at');
             })
+            ->with(['course', 'batch'])
             ->get();
-            
-        return view('student.course_completed', compact('completed'));
+
+        $enrollee = Enrollee::where('user_id', $user->id)
+            ->whereHas('batch', function($query) {
+                $query->whereNull('completed_at');
+            })
+            ->with('enrollee_files')
+            ->orderBy('created_at')
+            ->first();
+        
+            // dd($completed);
+        return view('student.course_completed', compact('completed', 'enrollee'));
     }
 
     public function message($id)
@@ -901,17 +924,78 @@ class StudentController extends Controller
         
     }
 
-    // public function comments($post_id){
-    //     $batch_id = Post::where('id', $post_id)->pluck('batch_id')->first();
-    //     $post = Post::where('id', $post_id)
-    //     ->with(['comments.user' => function ($q){
-    //             $q->with(['enrollee' => function ($q){
-    //                 $q->where('batch_id', $batch_id);
-    //             }]);
-    //     } ])
-    //     ->first();
+    public function comments($batch_id, $post_id){
+        $batch = Batch::where('id', $batch_id)
+        ->with([ 'only_post'=> function ($query) use ($post_id) {
+            $query->where('id', $post_id)->with(['comments' => function ($q){
+                $q->with(['user' => function ($q) {
+                    $q->with([
+                        'instructor_info','enrollee.enrollee_files'
+                    ]);                    
+                }]);
+            }, 'files']);
+        }])->first();
 
-    //     dd($post);
-    //     return view('student.comments', compact('post', ))
-    // }
+        $batch->only_post->formatted_created_at = Carbon::parse($batch->only_post->created_at)->timezone('Asia/Manila')->format('Y-m-d H:i:s');
+        
+        if ($batch && $batch->only_post) {
+            foreach ($batch->only_post->comments as $comment) {
+                $comment->formatted_created_at = Carbon::parse($comment->created_at)
+                    ->timezone('Asia/Manila')
+                    ->format('Y-m-d H:i:s');
+            }
+        }
+
+        return view('student.comments', compact('batch'));
+    }
+
+    public function add_comment(Request $request){
+        $comment_text = $request->comment;
+
+        $post = Post::where('id', $request->post_id)->first();
+
+        if ($post) {
+            $comment = new Comment();
+            $comment->comment = $comment_text;
+            $comment->post_id = $post->id;
+            $comment->user_id = auth()->user()->id;
+            $comment->save();
+
+            if ($comment) {
+                return back()->with(['status' => 'success', 'message' => 'Comment posted succesfully']);
+            }else{
+                return back()->with(['status' => 'error', 'message' => 'Error posting a comment']);
+            }
+        }else{
+            return back()->with(['status'=> 'error', 'message' => 'Post does not exist']);
+        }
+    }
+
+    public function enrollment(){
+        $enrollments = Enrollee::where('user_id', auth()->user()->id)
+        ->with(['course', 'batch', 'user', 'enrollee_files_submitted', 'enrollee_education'])
+        ->orderBy('created_at')
+        ->withTrashed()
+        ->get();
+
+        $enrollee = Enrollee::where('user_id', auth()->user()->id)
+        ->with('enrollee_files')
+        ->orderBy('created_at')
+        ->first();
+
+        return view('student.enrollment', compact('enrollments', 'enrollee'));
+    }
+
+    public function cancel_enrollment(Request $request){
+        $enrollment = Enrollee::where('id', $request->enrollee_id)->first();
+
+        if($enrollment){
+            if($enrollment->delete()){
+                return redirect()->back()->with(['status' => 'success', 'message' => 'Enrollment has been successfully cancelled']);
+            }
+            return redirect()->back()->with(['status' => 'error', 'message' => 'An error occurred while attempting to cancel the enrollment. Please try again later.']);
+        }
+        return redirect()->back()->with(['status' => 'error', 'message' => 'Enrollment not found. Please check the enrollment details and try again.']);
+
+    }
 }

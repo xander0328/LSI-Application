@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 use App\Models\Course;
 use App\Models\CourseCategory;
 use App\Models\Enrollee;
-use App\Models\EnrolleeFiles;
+use App\Models\EnrolleeFile;
 use App\Models\EnrolleeQrcode;
 use App\Models\Batch;
 use App\Models\Files;
@@ -487,45 +487,6 @@ class SuperAdminController extends Controller
         return view('enrollees', compact('course', 'page'));
     }
 
-    // public function load_more_enrollees($id, $page){
-    //     $perPage = 20; 
-    //     $cacheKey = "course-enrollees-page-{$id}-{$page}";
-
-    //     $course = Cache::remember($cacheKey, 60, function () use ($id, $perPage, $page) {
-    //         $offset = ($page - 1) * $perPage; // Calculate offset
-            
-
-    //         return Course::with(['batches', 
-    //             'enrollees' => function ($query) use ($id, $perPage, $offset) {
-    //                 $query->select(['id', 'employment_status', 'employment_type', 'user_id', 'course_id', 'preferred_schedule', 'preferred_start', 'preferred_finish'])
-    //                     ->whereNull('batch_id')
-    //                     ->whereNotIn('user_id', function ($subQuery) use ($id) {
-    //                         $subQuery->select('user_id')
-    //                                 ->from('enrollees')
-    //                                 ->where('course_id', '!=', $id)
-    //                                 ->whereNotNull('batch_id');
-    //                     })
-    //                     ->whereNull('deleted_at')
-    //                     ->whereHas('user', function($query){
-    //                         $query->whereNull('deleted_at');
-    //                     })
-    //                     ->skip($offset)
-    //                     ->take($perPage)
-    //                     ->get();
-    //             },
-    //             'enrollees.user',
-    //             'enrollees.enrollee_files_submitted' => function ($query) {
-    //                 $query->select(['id', 'enrollee_id', 'credential_type']);
-    //             }
-    //         ])
-    //         ->where('id', $id)
-    //         ->withCount('enrollees')
-    //         ->first();
-    //     });
-
-    //     return response()->json($course);
-    // }
-
     public function load_more_enrollees($id, $page) {
         $perPage = 20; 
         $cacheKey = "course-enrollees-page-{$id}-{$page}";
@@ -570,6 +531,17 @@ class SuperAdminController extends Controller
             return response()->json(['status' => 'success', 'message' => "Enrollee {$enrollee->user->fname} {$enrollee->user->lname} has been successfully removed.", 'title' => 'Enrollee Removal']);
         
             return response()->json(['status' => 'error', 'message' => "Failed to remove {$enrollee->user->fname} {$enrollee->user->lname} in the enrollee list. Please try again.", 'title' => 'Enrollee Removal']);
+    }
+
+    public function show_diploma($id){
+        $diploma = EnrolleeFile::where('id', $id)
+        ->with(['enrollee.course'])
+        ->first();
+        if($diploma){
+            return view('view_enrollee_file', compact('diploma'));
+        }
+
+        return redirect()->back()->with(['status' => 'error', 'message' =>'File not found']);
     }
 
     public function create_new_batch(Request $request)
@@ -1254,19 +1226,5 @@ class SuperAdminController extends Controller
         'yearly_enrollees',
         'monthly_enrollees')); 
     }
-
-    // Test Input
-    // public function updateAllPass()
-    // {
-    //     $newPassword = 'pass';
-    //     $hashedPassword = Hash::make($newPassword);
-
-    //     // Update the password for all users
-    //     User::query()->update(['password' => $hashedPassword]);
-
-    //     return response()->json(['message' => 'Passwords updated successfully!']);
-    // }
-
-
 
 }
