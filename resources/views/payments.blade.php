@@ -4,7 +4,7 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between pr-4 text-white">
-            <div class="text-2xl font-semibold text-white">
+            <div class="text-2xl font-semibold text-sky-950 dark:text-white">
                 {{ __('Payments') }}
             </div>
             <div class="w-1/2">
@@ -77,7 +77,7 @@
                                     <tr class="border-b dark:border-gray-700">
                                         <th scope="row"
                                             class="whitespace-nowrap px-4 py-3 font-medium text-gray-900 dark:text-white">
-                                            <div class="flex items-center whitespace-nowrap text-white">
+                                            <div class="flex items-center whitespace-nowrap">
                                                 <template x-if="enrollee.enrollee_files?.length < 1">
                                                     <img src="{{ asset('images/temporary/profile.png') }}"
                                                         class="h-10 w-10 rounded-full" alt="profile">
@@ -117,7 +117,7 @@
                                                 <x-slot name="trigger">
                                                     <button
                                                         class="inline-flex items-center rounded-md border border-transparent bg-white text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
-                                                        <svg class="h-7 w-7 text-white"
+                                                        <svg class="h-7 w-7 text-gray-700 dark:text-white"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                             <path fill="currentColor"
                                                                 d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" />
@@ -128,7 +128,7 @@
                                                 <x-slot name="content">
                                                     <div class="m-1.5">
                                                         <a @click="triggerModal('history', enrollee.id)"
-                                                            class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                            class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-black transition duration-150 ease-in-out hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:outline-none dark:text-gray-300">
                                                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                                 viewBox="0 0 24 24">
                                                                 <title>history</title>
@@ -138,7 +138,7 @@
                                                             <div>History</div>
                                                         </a>
                                                         <a @click="triggerModal('pay', enrollee.id)"
-                                                            class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                            class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-black transition duration-150 ease-in-out hover:bg-gray-800 hover:text-white focus:bg-gray-800 focus:outline-none dark:text-gray-300">
                                                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                                 viewBox="0 0 24 24">
                                                                 <title>cash-payment</title>
@@ -148,7 +148,7 @@
                                                             <div>Pay</div>
                                                         </a>
                                                         <a @click="triggerModal('refund', enrollee.id)"
-                                                            class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-red-900 focus:bg-gray-800 focus:outline-none">
+                                                            class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-black transition duration-150 ease-in-out hover:bg-red-900 hover:text-white focus:bg-gray-800 focus:outline-none dark:text-gray-300">
                                                             <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
                                                                 viewBox="0 0 24 24">
                                                                 <title>cash-refund</title>
@@ -179,11 +179,12 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="flex items-center space-x-1 text-lg font-semibold text-gray-900 dark:text-white">
-                            <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <svg class="h-7 w-7 text-black dark:text-white" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
                                 <title>cash-payment</title>
                                 <path fill="currentColor"
                                     d="M15 15V17H18V20H20V17H23V15H20V12H18V15M14.97 11.61C14.85 10.28 13.59 8.97 12 9C10.3 9.03 9 10.3 9 12C9 13.7 10.3 14.94 12 15C12.38 15 12.77 14.92 13.14 14.77C13.41 13.67 13.86 12.63 14.97 11.61M13 16H7C7 14.9 6.11 14 5 14V10C6.11 10 7 9.11 7 8H17C17 9.11 17.9 10 19 10V10.06C19.67 10.06 20.34 10.18 21 10.4V6H3V18H13.32C13.1 17.33 13 16.66 13 16Z" />
@@ -212,9 +213,9 @@
                                             Current
                                             balance: Php <span class="font-bold"
                                                 x-text="selectedEnrollee?.payments[0]?.balance"></span></div>
-                                        <div class="grid grid-cols-2 rounded-md bg-gray-900/50 p-2">
+                                        <div class="grid grid-cols-2 rounded-md bg-gray-200 p-2 dark:bg-gray-900/50">
                                             <label for="lesson"
-                                                class="mb-2 block text-sm font-medium text-white">Payment
+                                                class="mb-2 block text-sm font-medium text-black dark:text-white">Payment
                                                 amount:</label>
                                             @csrf
                                             <input type="hidden" name="payment_id"
@@ -249,11 +250,12 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="flex items-center space-x-1 text-lg font-semibold text-gray-900 dark:text-white">
-                            <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <svg class="h-7 w-7 text-black dark:text-white" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24">
                                 <title>cash-refund</title>
                                 <path fill="currentColor"
                                     d="M3 6V18H13.32C13.1 17.33 13 16.66 13 16H7C7 14.9 6.11 14 5 14V10C6.11 10 7 9.11 7 8H17C17 9.11 17.9 10 19 10V10.06C19.67 10.06 20.34 10.18 21 10.4V6H3M12 9C10.3 9.03 9 10.3 9 12S10.3 14.94 12 15C12.38 15 12.77 14.92 13.14 14.77C13.41 13.67 13.86 12.63 14.97 11.61C14.85 10.28 13.59 8.97 12 9M19 11L21.25 13.25L19 15.5V14C17.15 14 15.94 15.96 16.76 17.62L15.67 18.71C13.91 16.05 15.81 12.5 19 12.5V11M19 22L16.75 19.75L19 17.5V19C20.85 19 22.06 17.04 21.24 15.38L22.33 14.29C24.09 16.95 22.19 20.5 19 20.5V22" />
@@ -283,9 +285,9 @@
                                             Current
                                             balance: Php <span class="font-bold"
                                                 x-text="selectedEnrollee?.payments[0]?.balance"></span></div>
-                                        <div class="grid grid-cols-1 rounded-md bg-gray-900/50 p-2">
+                                        <div class="grid grid-cols-1 rounded-md bg-gray-200 p-2 dark:bg-gray-900/50">
                                             <label for="lesson"
-                                                class="mb-1 block text-sm font-medium text-white">Refund
+                                                class="mb-1 block text-sm font-medium text-black dark:text-white">Refund
                                                 amount:</label>
                                             @csrf
                                             <input type="hidden" name="payment_id"
@@ -309,7 +311,7 @@
                                             </div>
                                             <div x-show="refundReason === 'other'" class="col-span-1 mb-2">
                                                 <label for="other_reason"
-                                                    class="mb-1 block text-sm font-medium text-white">Please
+                                                    class="mb-1 block text-sm font-medium text-black dark:text-white">Please
                                                     specify</label>
                                                 <input type="text" id="other_reason" name="other_reason"
                                                     :required="refundReason === 'other'"
@@ -340,7 +342,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-xl p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -362,7 +364,7 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div class="col-span-2">
 
-                                <div class="relative mt-4 rounded-md bg-gray-800/75 text-white">
+                                <div class="relative mt-4 rounded-md bg-gray-200 text-white dark:bg-gray-800/75">
                                     <div
                                         class="absolute -top-4 left-2 mb-2 flex w-1/3 items-center justify-center rounded-md bg-sky-700 py-2 text-white shadow-md">
                                         <svg class="h-7 w-7 pr-1.5" xmlns="http://www.w3.org/2000/svg"
@@ -378,17 +380,18 @@
                                     <template x-if="enrolleeHistory != null">
                                         <div class="px-2 pb-4 pt-10">
                                             <template x-if="enrolleeHistory.payment_logs.length < 1">
-                                                <div class="p-2 text-center text-sm text-gray-400">No Records</div>
+                                                <div class="p-2 text-center text-sm text-gray-600 dark:text-gray-400">
+                                                    No Records</div>
                                             </template>
 
                                             <template x-if="enrolleeHistory.payment_logs.length > 0">
                                                 <ol
-                                                    class="relative ms-5 border-s border-gray-700 p-2 text-sm text-gray-300">
+                                                    class="relative ms-5 border-s border-gray-700 p-2 text-sm text-black dark:text-gray-300">
                                                     <template x-for="log in enrolleeHistory.payment_logs"
                                                         :key="log.id">
                                                         <li class="mb-2 ms-4">
                                                             <div
-                                                                class="mb-1 flex items-center justify-between rounded-md bg-gray-800 p-2 hover:bg-gray-800/75">
+                                                                class="mb-1 flex items-center justify-between rounded-md bg-white p-2 dark:bg-gray-800">
                                                                 <span
                                                                     :class="log.refund_reason == null ? 'bg-sky-300' :
                                                                         'bg-sky-700'"
@@ -413,7 +416,8 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="pe-2 text-right text-xs text-white/50">
+                                                            <div
+                                                                class="pe-2 text-right text-xs text-gray-600 dark:text-white/50">
                                                                 <span class="normal-case"
                                                                     x-show="log.refund_reason != null"
                                                                     x-text="`Reason: ${log.refund_reason} | `"></span>

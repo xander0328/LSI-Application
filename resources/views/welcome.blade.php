@@ -231,27 +231,27 @@
 
                             <li>
                                 <a href="#"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
+                                    class="group flex items-center rounded-lg p-2 text-white hover:text-sky-500">
                                     <span class="flex-1 whitespace-nowrap">Courses</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
+                                    class="group flex items-center rounded-lg p-2 text-white hover:text-sky-500">
 
                                     <span class="flex-1 whitespace-nowrap">Updates</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
+                                    class="group flex items-center rounded-lg p-2 text-white hover:text-sky-500">
 
                                     <span class="flex-1 whitespace-nowrap">About Us</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
+                                    class="group flex items-center rounded-lg p-2 text-white hover:text-sky-500">
 
                                     <span class="flex-1 whitespace-nowrap">Contact</span>
                                 </a>
@@ -260,7 +260,7 @@
                                 @auth
                                     <li class="">
                                         <a href="{{ $dashboardLink }}"
-                                            class="flex rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 text-white hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
+                                            class="flex rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-white hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
                                             <img class="h-5 w-auto" src="{{ asset('/images/icons/lsi-logo.png') }}"
                                                 alt="">
                                         </a>
@@ -276,7 +276,7 @@
                                     </li>
                                     <li>
                                         <a href="{{ route('profile.edit') }}"
-                                            class="flex items-center space-x-1.5 rounded-md p-2 px-1.5 text-gray-900 hover:bg-gray-600 dark:text-white">
+                                            class="flex items-center space-x-1.5 rounded-md p-2 px-1.5 text-white hover:bg-gray-600">
                                             <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
                                                     d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
@@ -340,7 +340,8 @@
                                 Enroll today! </p>
                         </div>
                     </div>
-                    <div class="">
+                    <div class="hidden">
+
                         <swiper-container class="mySwiper h-96 md:h-80" pagination="true" pagination-clickable="true"
                             zoom="true" space-between="30" effect="fade" navigation="true"
                             autoplay-delay="2500" autoplay-disable-on-interaction="false">
@@ -357,6 +358,57 @@
                                     src="{{ asset('images/carousel/image3.jpg') }}" />
                             </swiper-slide>
                         </swiper-container>
+                    </div>
+
+                    <div id="controls-carousel" class="relative w-full" data-carousel="static">
+                        <!-- Carousel wrapper -->
+                        <div class="relative h-56 overflow-hidden rounded-lg md:h-96">
+                            <!-- Item 1 -->
+                            <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                                <img src="{{ asset('images/carousel/image1-test.jpg') }}"
+                                    class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
+                                    alt="...">
+                            </div>
+                            <!-- Item 2 -->
+                            <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
+                                <img src="{{ asset('images/carousel/image2.jpg') }}"
+                                    class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
+                                    alt="...">
+                            </div>
+                            <!-- Item 3 -->
+                            <div class="hidden duration-700 ease-in-out" data-carousel-item>
+                                <img src="{{ asset('images/carousel/image3.jpg') }}"
+                                    class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
+                                    alt="...">
+                            </div>
+                        </div>
+                        <!-- Slider controls -->
+                        <button type="button"
+                            class="group absolute start-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
+                            data-carousel-prev>
+                            <span
+                                class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
+                                <svg class="h-4 w-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="M5 1 1 5l4 4" />
+                                </svg>
+                                <span class="sr-only">Previous</span>
+                            </span>
+                        </button>
+                        <button type="button"
+                            class="group absolute end-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
+                            data-carousel-next>
+                            <span
+                                class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
+                                <svg class="h-4 w-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2" d="m1 9 4-4-4-4" />
+                                </svg>
+                                <span class="sr-only">Next</span>
+                            </span>
+                        </button>
                     </div>
 
                 </div>
@@ -396,7 +448,7 @@
                                     alt="" />
                             </div>
                             <div class="p-5">
-                                <a href="#">
+                                <a :href="'{{ route('enroll', ':id') }}'.replace(':id', course.id)">
                                     <h5 class="mb-2 text-lg font-bold tracking-tight text-white" x-text="course.name">
                                     </h5>
                                 </a>
@@ -471,13 +523,6 @@
 
             </div>
         @endif
-
-        {{-- <a href="#" x-data="{ showButton: false }" x-show="showButton"
-            @click.prevent="window.scrollTo({ top: 0, behavior: 'smooth' })"
-            @scroll.window="showButton = (window.scrollY > 200)" id="back-to-top"
-            class="fixed bottom-4 right-4 hidden rounded-full bg-blue-500 p-3 text-white shadow-lg">
-            Back to Top
-        </a> --}}
 
         {{-- Instructor Modal --}}
         <div x-cloak x-show="noInstructorInfo" x-transition:enter="transition ease-out duration-200"

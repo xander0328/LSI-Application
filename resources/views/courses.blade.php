@@ -7,7 +7,7 @@
         }
     @endsection
     <x-slot name="header">
-        <div class="flex items-center justify-between text-white">
+        <div class="flex items-center justify-between text-black dark:text-white">
             <div class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                 {{ __('Offered Courses') }}
             </div>
@@ -66,7 +66,7 @@
                             </div>
                             <div class="mt-1">
                                 <a onclick="window.dispatchEvent(new CustomEvent('show-settings-modal'))"
-                                    class="flex w-full cursor-pointer items-center justify-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                    class="flex w-full cursor-pointer items-center justify-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 transition duration-150 ease-in-out">
                                     <div class="mr-1">
                                         <svg class="h-5 w-5 text-white" fill="currentColor"
                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -85,28 +85,39 @@
 
     </x-slot>
     <div x-data="manageCourse" id="main-div" class="mx-4 pb-4 pt-40 md:mx-8">
-        <ul class="space-y-2 font-semibold text-white">
+        <ul class="space-y-2 font-semibold text-black dark:text-white">
             <template x-for="(courses, category) in groupedCourse" :key="category">
                 <div class="space-y-2 pb-4">
-                    <div class="text-lg font-bold uppercase text-white/75" x-text="category"></div>
+                    <div class="text-lg font-bold uppercase text-slate-500 dark:text-white/75" x-text="category"></div>
                     <template x-if="courses.length == 0">
                         <div>
-                            <div class="rounded-lg bg-sky-950 p-4 text-center text-slate-400">No course added
+                            <div class="rounded-lg bg-white p-4 text-center text-slate-400 dark:bg-gray-800">No course
+                                added
                             </div>
                         </div>
                     </template>
                     <template x-if="courses.length > 0">
                         <template x-for="course in courses" :key="course.id">
-                            <li id="course-item" class="rounded-md bg-gray-800 p-2">
+                            <li id="course-item" class="rounded-md bg-white p-2 dark:bg-gray-800">
                                 <div>
                                     <div class="mb-px flex items-center justify-between">
-                                        <div class="my-1 py-1 text-sm text-sky-400 md:text-base" x-text="course.name">
+                                        <div class="flex items-center">
+                                            <template x-if="course.featured">
+                                                <span class="flex h-4 w-4">
+                                                    <img width="48" height="48"
+                                                        src="https://img.icons8.com/fluency/48/filled-star.png"
+                                                        alt="filled-star" />
+                                                </span>
+                                            </template>
+                                            <span class="my-1 ms-1 py-1 text-sm text-sky-400 md:text-base"
+                                                x-text="course.name">
+                                            </span>
                                         </div>
                                         <div class="flex">
 
                                             <div class="flex justify-between align-middle">
                                                 <div
-                                                    class="hidden rounded-lg p-2 hover:bg-gray-800 md:flex md:inline-flex">
+                                                    class="hidden rounded-lg p-2 hover:bg-slate-300 dark:hover:bg-gray-800 md:flex md:inline-flex">
                                                     <label class="inline-flex w-full cursor-pointer items-center">
                                                         <input @change="courseToggle(course.id)" type="checkbox"
                                                             :checked="course.available"
@@ -114,8 +125,7 @@
                                                         <div
                                                             class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
                                                         </div>
-                                                        <span
-                                                            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enrollment</span>
+                                                        <span class="ms-3 text-sm font-medium">Enrollment</span>
                                                     </label>
                                                 </div>
 
@@ -123,8 +133,8 @@
                                                     <x-dropdown width="40" align="right">
                                                         <x-slot name="trigger">
                                                             <button
-                                                                class="inline-flex items-center rounded-md hover:bg-gray-900/50">
-                                                                <svg class="h-7 w-7 text-white hover:text-sky-500"
+                                                                class="inline-flex items-center rounded-md hover:bg-slate-300 dark:hover:bg-gray-900/50">
+                                                                <svg class="h-7 w-7 text-black hover:text-sky-500 dark:text-white"
                                                                     xmlns="http://www.w3.org/2000/svg"
                                                                     viewBox="0 0 24 24">
                                                                     <path fill="currentColor"
@@ -136,7 +146,7 @@
                                                         <x-slot name="content">
                                                             <div class="m-1.5">
                                                                 <div
-                                                                    class="flex rounded-lg p-2 hover:bg-gray-800 md:hidden">
+                                                                    class="flex rounded-lg p-2 hover:bg-slate-300 dark:hover:bg-gray-800 md:hidden">
                                                                     <label
                                                                         class="inline-flex w-full cursor-pointer items-center">
                                                                         <input @change="courseToggle(course.id)"
@@ -146,11 +156,12 @@
                                                                             class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
                                                                         </div>
                                                                         <span
-                                                                            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enrollment</span>
+                                                                            class="ms-3 text-sm font-medium">Enrollment</span>
                                                                     </label>
                                                                 </div>
 
-                                                                <div class="flex rounded-lg p-2 hover:bg-gray-800">
+                                                                <div
+                                                                    class="flex rounded-lg p-2 hover:bg-slate-300 dark:hover:bg-gray-800">
                                                                     <label
                                                                         class="inline-flex w-full cursor-pointer items-center">
                                                                         <input @change="featureToggle(course.id)"
@@ -161,14 +172,14 @@
                                                                             class="peer relative h-5 w-9 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white rtl:peer-checked:after:translate-x-[-100%] dark:border-gray-500 dark:bg-gray-600">
                                                                         </div>
                                                                         <span
-                                                                            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Feature</span>
+                                                                            class="ms-3 text-sm font-medium">Feature</span>
                                                                     </label>
                                                                 </div>
 
                                                                 <hr class="my-1 opacity-50">
 
                                                                 <a @click="editCourse(course.id)"
-                                                                    class="flex w-full cursor-pointer items-center space-x-1 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                                    class="flex w-full cursor-pointer items-center space-x-1 rounded-md px-4 py-2 text-start text-sm leading-5 transition duration-150 ease-in-out hover:bg-slate-300 dark:hover:bg-gray-800">
                                                                     <svg class="h-5 w-5"
                                                                         xmlns="http://www.w3.org/2000/svg"
                                                                         viewBox="0 0 24 24">
@@ -179,7 +190,7 @@
                                                                 </a>
 
                                                                 <x-dropdown-link hover_bg="hover:bg-red-900"
-                                                                    class="flex cursor-pointer items-center space-x-1 rounded-md px-1.5"
+                                                                    class="flex cursor-pointer items-center space-x-1 rounded-md px-1.5 hover:bg-red-700"
                                                                     @click.prevent="deleteCourseConfirmation(course.id)">
                                                                     <svg class="h-5 w-5"
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -196,7 +207,7 @@
 
                                                                 <div>
                                                                     <a :href=`/courses/${course.id}/enrollees`
-                                                                        class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                                        class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 transition duration-150 ease-in-out hover:bg-slate-300 dark:hover:bg-gray-800">
                                                                         <div class="mr-1"><svg
                                                                                 class="h-5 w-5 text-gray-800 dark:text-white"
                                                                                 aria-hidden="true"
@@ -216,7 +227,7 @@
 
                                                                 <div>
                                                                     <a @click.prevent="triggerBatchesModal(course.id)"
-                                                                        class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                                        class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 transition duration-150 ease-in-out hover:bg-slate-300 dark:hover:bg-gray-800">
                                                                         <div class="mr-1">
                                                                             <svg class="h-5 w-5 text-gray-800 dark:text-white"
                                                                                 xmlns="http://www.w3.org/2000/svg"
@@ -233,9 +244,9 @@
                                                                 </div>
                                                                 <div>
                                                                     <a @click.prevent="triggerIdTemplateModal(course.id)"
-                                                                        class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
+                                                                        class="flex w-full cursor-pointer items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 transition duration-150 ease-in-out hover:bg-slate-300 dark:hover:bg-gray-800">
                                                                         <div class="mr-1">
-                                                                            <svg class="h-5 w-5 text-white"
+                                                                            <svg class="h-5 w-5 text-gray-800 dark:text-white"
                                                                                 fill="currentColor"
                                                                                 xmlns="http://www.w3.org/2000/svg"
                                                                                 viewBox="0 0 24 24">
@@ -254,18 +265,28 @@
 
                                         </div>
                                     </div>
-                                    <hr class="border border-gray-500">
+                                    <hr class="border border-gray-300 dark:border-gray-500">
                                     <div @click="$('#description-'+course.id).toggleClass('line-clamp-3')"
                                         :id="'description-' + course.id"
                                         class="my-2 line-clamp-3 cursor-pointer text-xs font-thin md:text-sm">
                                         <span class="" x-text="course.description"></span>
                                     </div>
                                     <div class="text-xs font-thin">
-                                        <span>Code:</span> <span x-text="course.code"></span>
+                                        <span class="font-bold">Code:</span> <span x-text="course.code"></span>
                                     </div>
                                     <div class="text-xs font-thin">
-                                        <span>Duration:</span> <span x-text="course.training_hours"></span>
+                                        <span class="font-bold">Duration:</span> <span
+                                            x-text="course.training_hours"></span>
                                         hours
+                                    </div>
+                                    <div class="mt-2 text-sm font-bold">FEES</div>
+                                    <div class="text-xs font-thin">
+                                        <span class="font-bold">Registration:</span> Php <span
+                                            x-text="course.registration_fee"></span>
+                                    </div>
+                                    <div class="text-xs font-thin">
+                                        <span class="font-bold">Bond Deposit:</span> Php <span
+                                            x-text="course.bond_deposit"></span>
                                     </div>
                                 </div>
                             </li>
@@ -434,7 +455,7 @@
                                 </div>
                             </template>
                             <div x-cloak x-show="modalTitle !== 'Edit Course'" class="col-span-2">
-                                <div class="mb-2 block text-sm font-medium text-white">Course Structure</div>
+                                <div class="mb-2 block text-sm font-medium">Course Structure</div>
                                 <ul class="grid w-full gap-1">
                                     <li>
                                         <input type="radio" id="small" name="structure" value="small"
@@ -519,7 +540,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -542,10 +563,10 @@
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
 
-                                <div class="text-white">
+                                <div class="text-black dark:text-white">
                                     <div>
                                         <button @click="create_new_batch(selectedCourse.id)" :disabled="dataLoading"
-                                            class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm hover:bg-sky-800 disabled:cursor-not-allowed">Create
+                                            class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm text-white hover:bg-sky-800 disabled:cursor-not-allowed">Create
                                             New Batch</button>
                                     </div>
                                     <div id="list_uc">
@@ -555,7 +576,7 @@
 
                                         <template x-for="batch in selectedCourse.batches" :key="batch.id">
                                             <div
-                                                class="flex items-center justify-between rounded-md bg-gray-700 p-2 text-sm hover:bg-gray-800/75">
+                                                class="flex items-center justify-between rounded-md p-2 text-sm text-black hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-800/75">
                                                 <div class="flex items-center justify-between">
                                                     <span
                                                         :class="{
@@ -587,7 +608,7 @@
                                                         x-text="selectedCourse.code +'-'+ batch.name"></span>
                                                 </div>
                                                 <div class="flex">
-                                                    <a class="h-7 w-7 cursor-pointer rounded-md p-1 hover:bg-gray-600"
+                                                    <a class="h-7 w-7 cursor-pointer rounded-md p-1 hover:bg-gray-300 dark:hover:bg-gray-600"
                                                         @click="seeBatchData(batch.id); showBatchesModal = false">
                                                         <svg class="h-full w-full" fill="currentColor"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -597,7 +618,7 @@
                                                         </svg>
                                                     </a>
                                                     <form action="{{ route('delete_batch') }}"
-                                                        class="h-7 w-7 rounded-md p-1 hover:bg-red-900"
+                                                        class="h-7 w-7 rounded-md p-1 hover:bg-red-600 dark:hover:bg-red-900"
                                                         method="post">
                                                         @csrf
                                                         <input type="hidden" name="batch_id" :value="batch.id">
@@ -607,7 +628,7 @@
                                                             <svg xmlns="http://www.w3.org/2000/svg"
                                                                 viewBox="0 0 24 24">
                                                                 <title>Delete</title>
-                                                                <path fill="white"
+                                                                <path fill="currentColor"
                                                                     d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                                                             </svg></button>
                                                     </form>
@@ -644,7 +665,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -667,7 +688,7 @@
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
 
-                                <div class="text-white">
+                                <div class="text-black dark:text-white">
                                     <div>
                                         <div class="mb-2">
                                             <span>Course: </span><span x-text="selectedCourse.name"></span>
@@ -675,19 +696,20 @@
 
                                         <template x-if="!selectedBatch?.instructor">
                                             <div
-                                                class="mb-2 flex items-center justify-between rounded-lg border border-gray-700 bg-gray-800 p-2">
+                                                class="mb-2 flex items-center justify-between rounded-lg border border-gray-300 bg-sky-600 p-2 text-white dark:border-gray-700 dark:bg-gray-800">
                                                 <div
                                                     class="flex items-center justify-between whitespace-nowrap rounded-lg p-2 text-white">
                                                     <img src="{{ asset('images/temporary/profile.png') }}"
                                                         class="h-12 w-12 rounded-full" alt="profile">
                                                     <div class="pl-3">
-                                                        <h3 class="text-lg font-semibold text-white">No Instructor
+                                                        <h3 class="text-lg font-semibold text-white">No
+                                                            Instructor
                                                         </h3>
                                                     </div>
                                                 </div>
                                                 <div class="flex items-center">
                                                     <a @click="seeAssignInstructor(selectedBatch?.id)"
-                                                        class="cursor-pointer rounded border border-sky-700 px-2.5 py-1 text-sky-700 hover:bg-sky-700 hover:text-white">
+                                                        class="cursor-pointer rounded border border-sky-700 px-2.5 py-1 text-white hover:bg-sky-700 hover:text-white dark:text-sky-700">
                                                         Assign
                                                     </a>
                                                 </div>
@@ -696,7 +718,7 @@
 
                                         <template x-if="selectedBatch?.instructor">
                                             <div
-                                                class="mb-2 flex justify-between rounded-lg border border-gray-700 bg-gray-800 p-2 text-white">
+                                                class="mb-2 flex justify-between rounded-lg border border-gray-300 bg-sky-600 p-2 text-white dark:border-gray-700 dark:bg-gray-800">
                                                 <div class="flex items-center whitespace-nowrap rounded-lg">
                                                     <img :src="'{{ asset('storage/instructor_files/') }}/' +
                                                     selectedBatch?.instructor?.user_id + '/' + selectedBatch?.instructor
@@ -706,36 +728,43 @@
                                                         <h3 class="text-lg font-semibold text-white"
                                                             x-text="`${selectedBatch?.instructor?.user.fname ?? ''} ${selectedBatch?.instructor?.user.lname ?? ''}`">
                                                         </h3>
-                                                        <div class="font-normal text-gray-400"
+                                                        <div class="font-normal text-gray-600 dark:text-gray-400"
                                                             x-text="selectedBatch?.instructor?.user.email">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="flex items-center">
-                                                    <a @click="unassignInstructor(selectedBatch?.id)"
-                                                        class="cursor-pointer rounded border border-pink-700 p-1 text-pink-700 hover:bg-pink-700 hover:text-white">
+                                                    <a data-tooltip-target="unassign-instructor"
+                                                        @click="unassignInstructor(selectedBatch?.id)"
+                                                        class="border-red cursor-pointer rounded border border-red-700 p-1 text-red-700 hover:bg-red-700 hover:text-white dark:border-pink-700 dark:text-pink-700 dark:hover:bg-pink-700">
                                                         <svg class="h-4 w-4" fill="currentColor"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                             <title>minus</title>
                                                             <path d="M19,13H5V11H19V13Z" />
                                                         </svg>
                                                     </a>
+                                                    <div id="unassign-instructor" role="tooltip"
+                                                        class="tooltip invisible absolute z-10 inline-block rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white opacity-0 shadow-sm transition-opacity duration-300 dark:bg-gray-700">
+                                                        Unassign
+                                                        <div class="tooltip-arrow" data-popper-arrow></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </template>
                                         <template x-if="selectedBatch?.enrollee?.length > 0">
                                             <div>
-                                                <div class="rounded-t-lg bg-gray-800 p-2 text-sm text-white/50">
+                                                <div
+                                                    class="rounded-t-lg bg-gray-300 p-2 text-sm text-black dark:bg-gray-800 dark:text-white/50">
                                                     Trainees</div>
-                                                <div class="text-white">
+                                                <div class="text-black dark:text-white">
                                                     <template x-for="(enrollee, index) in selectedBatch.enrollee"
                                                         :key="enrollee.id">
                                                         <div
-                                                            class="border-white/25 p-2 last:rounded-b-lg odd:bg-gray-800 even:bg-gray-800/75">
+                                                            class="border-white/25 p-2 last:rounded-b-lg odd:bg-gray-300 even:bg-gray-200 dark:odd:bg-gray-800 dark:even:bg-gray-800/75">
                                                             <div
                                                                 x-text="`${enrollee.user.lname}, ${enrollee.user.fname} ${enrollee.user.mname ? enrollee.user.mname.charAt(0)+'.' : ''}`">
                                                             </div>
-                                                            <div class="text-sm text-white/50"
+                                                            <div class="text-sm dark:text-white/50"
                                                                 x-text="enrollee.user.email">
                                                             </div>
                                                         </div>
@@ -774,10 +803,10 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
 
                     <!-- Modal body -->
-                    <div class="p-4 md:p-5">
+                    <div class="px-4 pt-4 md:px-5 md:pt-5">
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
 
@@ -819,7 +848,7 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
@@ -842,16 +871,18 @@
                         <div class="mb-4 grid grid-cols-2 gap-4 text-white">
                             <div class="col-span-2">
                                 <div class="mb-8">
-                                    <div class="mb-1.5 text-sm font-bold text-white/75">Default ID Template</div>
+                                    <div class="mb-1.5 text-sm font-bold text-black dark:text-white/75">Default ID
+                                        Template</div>
                                     <div>
                                         <input type="file" name="" id="default_id">
                                     </div>
                                 </div>
-                                <div class="rounded-lg bg-gray-800 p-4">
-                                    <div class="mb-4 flex items-center justify-between text-sm text-white/75">
+                                <div class="rounded-lg bg-gray-200 p-4 dark:bg-gray-800">
+                                    <div
+                                        class="mb-4 flex items-center justify-between text-sm text-black dark:text-white/75">
                                         <div class="flex items-center space-x-1">
                                             <span>
-                                                <svg class="h-6 w-6 text-white" fill="currentColor"
+                                                <svg class="h-6 w-6 text-sky-700 dark:text-white" fill="currentColor"
                                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                     <title>shape</title>
                                                     <path
@@ -865,7 +896,7 @@
                                         <span>
                                             <button @click="showAddCategory = true"
                                                 class="inline-flex items-center rounded-md p-1.5 hover:bg-sky-700">
-                                                <svg class="h-4 w-4 text-white" fill="currentColor"
+                                                <svg class="h-4 w-4 text-black dark:text-white" fill="currentColor"
                                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                     <title>plus-thick</title>
                                                     <path d="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z" />
@@ -936,10 +967,10 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
 
                     <!-- Modal body -->
-                    <div class="p-4 md:p-5">
+                    <div class="px-4 pt-4 md:px-5 md:pt-5">
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
 
@@ -974,10 +1005,10 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
             <div class="relative max-h-full w-full max-w-lg p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
 
                     <!-- Modal body -->
-                    <div class="p-4 md:p-5">
+                    <div class="px-4 pt-4 md:px-5 md:pt-5">
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
 

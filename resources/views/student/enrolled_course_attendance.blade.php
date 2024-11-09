@@ -1,23 +1,23 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="md:flex flex-row items-center md:space-x-1 text-2xl font-semibold text-white">
+            <div class="flex-row items-center text-2xl font-semibold text-sky-950 dark:text-white md:flex md:space-x-1">
                 <div>{{ __('Attendance') }}</div>
-                <div class="hidden md:block text-slate-600">|</div>
-                <div class="md:text-lg text-sm leading-none font-normal text-sky-500">{{ $enrollee->course->name }}</div>
+                <div class="hidden text-slate-600 md:block">|</div>
+                <div class="text-sm font-normal leading-none text-sky-500 md:text-lg">{{ $enrollee->course->name }}</div>
             </div>
-            <div class="hidden md:flex items-center">
-                <div class="flex space-x-1 mr-4">
+            <div class="hidden items-center md:flex">
+                <div class="mr-4 flex space-x-1">
                     <div class="text-white/75"> Batch: </div>
                     <div>
                         {{ $enrollee->course->code }}-{{ $enrollee->batch->name }}
                     </div>
                 </div>
             </div>
-            <div class="flex md:hidden items-center">
+            <div class="flex items-center md:hidden">
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center p-1  rounded-md hover:bg-gray-900/50">
+                        <button class="inline-flex items-center rounded-md p-1 hover:bg-gray-900/50">
                             <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24">
                                 <title>dots-vertical</title>
@@ -29,7 +29,7 @@
 
                     <x-slot name="content">
                         <div class="m-1.5 flex-row">
-                            <div class="my-2 flex justify-center text-xs space-x-1">
+                            <div class="my-2 flex justify-center space-x-1 text-xs">
                                 <div class="text-white/75"> Batch: </div>
                                 <div>
                                     {{ $enrollee->course->code }}-{{ $enrollee->batch->name }}
@@ -47,30 +47,30 @@
         </div>
 
     </x-slot>
-    <div x-data="studentData()" id="course_list" class="mx-8 mt-2 pb-4 pt-44 md:pt-48 text-white">
+    <div x-data="studentData()" id="course_list" class="mx-8 mt-2 pb-4 pt-44 text-black dark:text-white md:pt-48">
         <div class="mb-4 text-sm">
-            <div class="mr-3 grid md:grid-cols-3 grid-cols-1 gap-2 w-full items-center text-xs">
+            <div class="mr-3 grid w-full grid-cols-1 items-center gap-2 text-xs md:grid-cols-3">
                 <div class="flex w-full items-center">
-                    <div class=" whitespace-nowrap">Mode:</div>
+                    <div class="whitespace-nowrap">Mode:</div>
                     <select x-model="filterMode" @change="filterRecords"
-                        class="rounded-md w-full ms-1 bg-gray-700 px-2.5 py-1 text-xs text-white">
+                        class="ms-1 w-full rounded-md bg-white px-2.5 py-1 text-xs dark:bg-gray-700">
                         <option value="">All</option>
                         <option value="online">Online</option>
                         <option value="f2f">Face-to-Face</option>
                     </select>
                 </div>
                 <div class="flex w-full items-center">
-                    <div class=" whitespace-nowrap">Sort by date:</div>
+                    <div class="whitespace-nowrap">Sort by date:</div>
                     <select x-model="filterDate" @change="filterRecords"
-                        class="rounded-md w-full ms-1 bg-gray-700 px-2.5 py-1 text-xs text-white">
+                        class="ms-1 w-full rounded-md bg-white px-2.5 py-1 text-xs dark:bg-gray-700">
                         <option value="latest">Newest first</option>
                         <option value="oldest">Oldest first</option>
                     </select>
                 </div>
                 <div class="flex w-full items-center">
-                    <div class=" whitespace-nowrap">Status:</div>
+                    <div class="whitespace-nowrap">Status:</div>
                     <select x-model="filterStatus" @change="filterRecords"
-                        class="rounded-md w-full ms-1 bg-gray-700 px-2.5 py-1 text-xs text-white">
+                        class="ms-1 w-full rounded-md bg-white px-2.5 py-1 text-xs dark:bg-gray-700">
                         <option value="">All</option>
                         <option value="present">Present</option>
                         <option value="absent">Absent</option>
@@ -82,11 +82,12 @@
         </div>
         <div x-show="filteredRecords.length > 0">
             <template x-for="record in filteredRecords" :key="record.id">
-                <div class="mb-2 rounded-md hover:bg-gray-800/75 bg-gray-800 p-px">
+                <div
+                    class="mb-2 rounded-md bg-white p-px hover:bg-slate-100 dark:bg-gray-800 dark:hover:bg-gray-800/75">
 
                     <div class="my-2 w-full rounded-md px-3 py-px">
-                        <div class="flex items-center w-full justify-between">
-                            <div class="flex justify-between w-full items-center">
+                        <div class="flex w-full items-center justify-between">
+                            <div class="flex w-full items-center justify-between">
                                 <div class="flex gap-4">
                                     <div>
                                         <div :class="record.mode == 'online' ? 'bg-sky-700' : 'bg-yellow-700'"
@@ -129,7 +130,7 @@
                                         'bg-sky-800': record.student_attendance.status === 'present',
                                         'bg-gray-500': !record.student_attendance
                                     }"
-                                        class="rounded-full text-xs  py-1.5 px-3"
+                                        class="rounded-full px-3 py-1.5 text-xs text-white"
                                         x-text="record.student_attendance == null ? 'Not enrolled yet' : record.student_attendance?.status.charAt(0).toUpperCase() + record.student_attendance?.status.slice(1);">
                                     </div>
                                 </div>
@@ -143,7 +144,6 @@
                 </div>
             </template>
         </div>
-
 
     </div>
     @section('script')

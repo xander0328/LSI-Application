@@ -74,4 +74,47 @@ class User extends Authenticatable implements MustVerifyEmail
     public function device_tokens(){
         return $this->hasMany(DeviceToken::class);
     }
+
+    public function has_ongoing_course(){
+        return $this->enrollee()
+        ->whereHas('batch', function ($query) {
+            $query->whereNull('completed_at');
+        })
+        ->exists();
+    }
+
+    public function get_profile_picture()
+    {
+        // Get the latest enrollee for the user
+        $latestEnrollee = $this->enrollee()->latest()->first(); // Fetch the latest enrollee
+
+        if ($latestEnrollee) {
+            // Fetch the latest submitted enrollee files for the specific enrollee
+            $profilePicture = $latestEnrollee->enrollee_files_submitted()
+                ->where('credential_type', 'id_picture') // Filter by credential type
+                ->latest() // Get the latest one
+                ->first();
+
+            if ($profilePicture) {
+                // Construct the path to the profile picture
+                $path = "storage/enrollee_files/{$latestEnrollee->course_id}/{$latestEnrollee->id}/id_picture/{$profilePicture->folder}/{$profilePicture->filename}";
+
+                return asset($path); // Return the full URL to the image
+            }
+        }
+
+        // Return a default profile picture if not found
+        return asset('images/temporary/profile.png'); 
+    }
+
+    public function completed_course_count(){
+        return $this->enrollee()
+        ->whereHas('batch', function ($query) {
+            $query->whereNotNull('completed_at');
+        })
+        ->count();
+    }
+
+
+
 }

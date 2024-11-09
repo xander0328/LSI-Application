@@ -143,7 +143,7 @@
                             <li>
                                 <x-nav-link :href="route('instructors')" :active="request()->is('instructors*')"
                                     class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
-                                    <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <title>school-outline</title>
                                         <path fill="currentColor"
@@ -157,8 +157,8 @@
                             <li>
                                 <x-nav-link :href="route('users')" :active="request()->is('users*')"
                                     class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
-                                    <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <path fill="currentColor"
                                             d="M16 17V19H2V17S2 13 9 13 16 17 16 17M12.5 7.5A3.5 3.5 0 1 0 9 11A3.5 3.5 0 0 0 12.5 7.5M15.94 13A5.32 5.32 0 0 1 18 17V19H22V17S22 13.37 15.94 13M15 4A3.39 3.39 0 0 0 13.07 4.59A5 5 0 0 1 13.07 10.41A3.39 3.39 0 0 0 15 11A3.5 3.5 0 0 0 15 4Z" />
                                     </svg>
@@ -168,7 +168,7 @@
                             <li>
                                 <x-nav-link :href="route('payments')" :active="request()->is('payments*')"
                                     class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
-                                    <svg class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
+                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75"
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <path fill="currentColor"
                                             d="M5,6H23V18H5V6M14,9A3,3 0 0,1 17,12A3,3 0 0,1 14,15A3,3 0 0,1 11,12A3,3 0 0,1 14,9M9,8A2,2 0 0,1 7,10V14A2,2 0 0,1 9,16H19A2,2 0 0,1 21,14V10A2,2 0 0,1 19,8H9M1,10H3V20H19V22H1V10Z" />
@@ -180,8 +180,7 @@
                                 <x-nav-link :href="route('scan_attendance')" :active="request()->is('scan_attendance*')"
                                     class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                        class="h-6 w-6 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                                        viewBox="0 0 24 24">
+                                        class="h-6 w-6 flex-shrink-0 transition duration-75" viewBox="0 0 24 24">
 
                                         <path
                                             d="M3,11H5V13H3V11M11,5H13V9H11V5M9,11H13V15H11V13H9V11M15,11H17V13H19V11H21V13H19V15H21V19H19V21H17V19H13V21H11V17H15V15H17V13H15V11M19,19V15H17V19H19M15,3H21V9H15V3M17,5V7H19V5H17M3,3H9V9H3V3M5,5V7H7V5H5M3,15H9V21H3V15M5,17V19H7V17H5Z" />
@@ -203,8 +202,7 @@
                             <template x-if="image_path">
                                 <div
                                     class="border-3 relative mb-3 inline-flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-sky-500 bg-gray-100 dark:bg-gray-600">
-                                    <img class=""
-                                        :src="`{{ asset(':image_path') }}`.replace(':image_path', image_path)">
+                                    <img class="" :src="image_path">
                                 </div>
                             </template>
 
@@ -279,8 +277,7 @@
                             <template x-if="image_path">
                                 <div
                                     class="border-3 relative mb-3 inline-flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-sky-500 bg-gray-100 dark:bg-gray-600">
-                                    <img class=""
-                                        :src="`{{ asset(':image_path') }}`.replace(':image_path', image_path)">
+                                    <img class="" :src="image_path">
                                 </div>
                             </template>
 
@@ -331,7 +328,6 @@
 
         @endif
         <div class="{{ auth()->user()->role != 'instructor' ? 'md:ml-60' : '' }}">
-            {{-- <div class="mt-14 rounded-lg border-2 border-dashed border-gray-200 p-4 dark:border-gray-700"> --}}
             <!-- Page Heading -->
             @if (isset($header))
                 <header
@@ -348,7 +344,7 @@
             <main>
                 {{ $slot }}
             </main>
-            {{-- </div> --}}
+
         </div>
 
     </div>
@@ -364,24 +360,9 @@
     <script>
         function sessionChecker() {
             return {
-                enrollee: @yield('enrollee', 'null'),
                 sessionMessage: '',
-                image_path: '',
-                init() {
-                    /* this.checkSession();
-                    setInterval(() => this.checkSession(), 60000); // Check every 60 seconds */
-                    if (this.enrollee && this.enrollee.enrollee_files) {
-                        const idPicture = this.enrollee.enrollee_files.find(file => file.credential_type === 'id_picture');
-
-                        if (idPicture) {
-                            this.image_path =
-                                `storage/enrollee_files/${this.enrollee.course_id}/${idPicture.enrollee_id}/${idPicture.credential_type}/${idPicture.folder}/${idPicture.filename}`
-                            console.log(this.image_path);
-                        } else {
-                            console.log("ID picture not found");
-                        }
-                    }
-                },
+                image_path: '{{ auth()->user()->get_profile_picture() }}',
+                init() {},
                 /* checkSession() {
                     $.ajax({
                         url: '/check-session',

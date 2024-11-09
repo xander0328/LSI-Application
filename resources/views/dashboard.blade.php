@@ -14,16 +14,16 @@
         </div>
 
     </x-slot>
-    <div x-data="dashboard" id="main-div" class="mx-4 pb-4  text-white md:mx-8 pt-40">
-        <div class="grid grid-cols-3 gap-3 mb-6">
+    <div x-data="dashboard" id="main-div" class="mx-4 pb-4 pt-40 text-black dark:text-white md:mx-8">
+        <div class="mb-6 grid grid-cols-3 gap-3">
             <div class="col-span-full flex flex-col md:col-span-1">
-                <div class="mb-3 flex basis-2/3 items-center justify-center rounded-lg bg-sky-500/50 p-2">
+                <div class="mb-3 flex basis-2/3 items-center justify-center rounded-lg bg-sky-600 p-2 text-white">
                     <div>
                         <div class="py-2 text-center">PLATFORM USERS</div>
-                        <canvas class="text-white" id="web-users-chart"></canvas>
+                        <canvas id="web-users-chart"></canvas>
                     </div>
                 </div>
-                <div class="flex basis-1/3 flex-col rounded-lg bg-gray-700 p-4">
+                <div class="flex basis-1/3 flex-col rounded-lg bg-white p-4 dark:bg-gray-700">
                     <div class="mb-2">
                         <span>
                             NEW USERS
@@ -31,22 +31,22 @@
                     </div>
                     <div class="grid h-full grid-cols-3 gap-2">
                         <div class="flex flex-col rounded bg-gray-800/25 p-2">
-                            <div class="text-center text-sm text-white/50">Today</div>
+                            <div class="text-center text-sm text-slate-600 dark:text-white/50">Today</div>
                             <div class="flex h-full items-center justify-center text-xl">{{ $today_enrollees }}</div>
                         </div>
                         <div class="flex flex-col rounded bg-gray-800/25 p-2">
-                            <div class="text-center text-sm text-white/50">This Month</div>
+                            <div class="text-center text-sm text-slate-600 dark:text-white/50">This Month</div>
                             <div class="flex h-full items-center justify-center text-xl">{{ $month_enrollees }}</div>
                         </div>
                         <div class="flex flex-col rounded bg-gray-800/25 p-2">
-                            <div class="text-center text-sm text-white/50">This Year</div>
+                            <div class="text-center text-sm text-slate-600 dark:text-white/50">This Year</div>
                             <div class="flex h-full items-center justify-center text-xl">{{ $year_enrollees }}</div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-span-full gap-3 md:col-span-2">
-                <div class="mb-3 rounded-lg bg-gray-700 p-4">
+                <div class="mb-3 rounded-lg bg-white p-4 dark:bg-gray-700">
                     <div class="mb-2 flex items-center justify-between">
                         <span>
                             COURSES / PROGRAMS
@@ -59,7 +59,7 @@
                         <div
                             class="flex items-center justify-between rounded-md border border-gray-800/25 bg-gray-800/25 px-1.5 py-2 hover:border-sky-500">
                             <div class="flex items-center justify-center space-x-2">
-                                <span class="rounded-full bg-sky-700 p-2">
+                                <span class="rounded-full bg-sky-700 p-2 text-white">
                                     <svg class="h-7 w-7" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24">
                                         <title>archive-clock</title>
@@ -68,7 +68,7 @@
                                     </svg>
                                 </span>
                                 <div>
-                                    <div class="text-sm text-white/50">
+                                    <div class="text-sm text-slate-600 dark:text-white/50">
                                         Ongoing Enrollment
                                     </div>
                                     <div class="text-lg font-bold">
@@ -80,7 +80,7 @@
                         <div
                             class="flex items-center justify-between rounded-md border border-gray-800/25 bg-gray-800/25 px-1.5 py-2 hover:border-sky-500">
                             <div class="flex items-center justify-center space-x-2">
-                                <span class="rounded-full bg-sky-700 p-2">
+                                <span class="rounded-full bg-sky-700 p-2 text-white">
                                     <svg class="h-7 w-7" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24">
                                         <title>bookshelf</title>
@@ -89,7 +89,7 @@
                                     </svg>
                                 </span>
                                 <div>
-                                    <div class="text-sm text-white/50">
+                                    <div class="text-sm text-slate-600 dark:text-white/50">
                                         All Courses
                                     </div>
                                     <div class="text-lg font-bold">
@@ -101,7 +101,7 @@
                         <div
                             class="flex items-center justify-between rounded-md border border-gray-800/25 bg-gray-800/25 px-1.5 py-2 hover:border-sky-500">
                             <div class="flex items-center justify-center space-x-2">
-                                <span class="rounded-full bg-sky-700 p-2">
+                                <span class="rounded-full bg-sky-700 p-2 text-white">
                                     <svg class="h-7 w-7" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24">
                                         <title>bookshelf</title>
@@ -110,7 +110,7 @@
                                     </svg>
                                 </span>
                                 <div>
-                                    <div class="text-sm text-white/50">
+                                    <div class="text-sm text-slate-600 dark:text-white/50">
                                         Active Batches
                                     </div>
                                     <div class="text-lg font-bold">
@@ -122,7 +122,7 @@
                         <div
                             class="flex items-center justify-between rounded-md border border-gray-800/25 bg-gray-800/25 px-1.5 py-2 hover:border-sky-500">
                             <div class="flex items-center justify-center space-x-2">
-                                <span class="rounded-full bg-sky-700 p-2">
+                                <span class="rounded-full bg-sky-700 p-2 text-white">
                                     <svg class="h-7 w-7" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24">
                                         <title>crowd</title>
@@ -131,7 +131,7 @@
                                     </svg>
                                 </span>
                                 <div>
-                                    <div class="text-sm text-white/50">
+                                    <div class="text-sm text-slate-600 dark:text-white/50">
                                         All Batches
                                     </div>
                                     <div class="text-lg font-bold">
@@ -143,7 +143,7 @@
                     </div>
 
                 </div>
-                <div class="col-span-2 row-span-1 rounded-lg bg-gray-700 p-4">
+                <div class="col-span-2 row-span-1 rounded-lg bg-white p-4 dark:bg-gray-700">
                     <div class="col-span-2 flex items-center justify-between">
                         <span>
                             ENROLLMENT
@@ -168,8 +168,8 @@
 
             <template x-for="course in courses" :key="course.id">
                 <div
-                    class=" flex justify-between md:col-span-1 col-span-4 p-4 space-x-4 bg-gray-600 rounded-lg items-center">
-                    <div class="flex space-x-2 items-center">
+                    class="col-span-4 flex items-center justify-between space-x-4 rounded-lg bg-white p-4 dark:bg-gray-600 md:col-span-1">
+                    <div class="flex items-center space-x-2">
                         <span><svg class="h-8 w-8 text-sky-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24">
                                 <title>book-outline</title>
@@ -181,7 +181,7 @@
                             <div class="text-xs" x-text="course.name">Basic English Language Learning</div>
                         </div>
                     </div>
-                    <div class="p-2 rounded bg-sky-600" x-text="course.enrollees_count">
+                    <div class="rounded bg-sky-600 p-2 text-white" x-text="course.enrollees_count">
                         48
                     </div>
                 </div>
@@ -255,6 +255,15 @@
                         var allCounts = this.yearlyEnrollees.all.map(item => item.count);
                         var acceptedCounts = this.yearlyEnrollees.accepted.map(item => item.count);
 
+
+                        function isDarkMode() {
+                            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        }
+
+                        // Set colors based on theme
+                        const textColor = isDarkMode() ? 'white' : 'black';
+                        const gridColor = isDarkMode() ? 'rgba(255, 255, 255, 0.36)' : 'rgba(0, 0, 0, 0.1)';
+
                         new Chart(ctx, {
                             type: 'line',
                             data: {
@@ -281,45 +290,40 @@
                                         title: {
                                             display: true,
                                             text: 'Year',
-                                            color: 'white',
+                                            color: textColor,
                                         },
                                         ticks: {
-                                            color: 'white' // Y-axis label color
+                                            color: textColor // X-axis label color
                                         },
                                         grid: {
-                                            color: 'rgba(255, 255, 255, 0.36)' // X-axis grid line color
+                                            color: gridColor // X-axis grid line color
                                         }
-
-
                                     },
                                     y: {
                                         title: {
                                             display: true,
                                             text: 'Enrollees',
-                                            color: 'white',
+                                            color: textColor,
                                         },
                                         ticks: {
-                                            color: 'white' // Y-axis label color
+                                            color: textColor // Y-axis label color
                                         },
                                         grid: {
-                                            color: 'rgba(255, 255, 255, 0.36)' // X-axis grid line color
+                                            color: gridColor // Y-axis grid line color
                                         }
-
-
                                     }
                                 },
                                 plugins: {
                                     legend: {
                                         position: 'bottom',
                                         labels: {
-                                            color: 'white',
+                                            color: textColor,
                                         }
                                     },
                                     tooltip: {
                                         titleColor: 'white', // Tooltip title color
                                         bodyColor: 'white' // Tooltip body text color
                                     }
-
                                 }
                             }
                         });

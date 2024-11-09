@@ -433,13 +433,15 @@ class StudentController extends Controller
             ->get();
 
         $enrollee = Enrollee::where('user_id', $user->id)
-            ->whereHas('batch', function($query) {
-                $query->whereNull('completed_at');
-            })
             ->with('enrollee_files')
             ->orderBy('created_at')
             ->first();
         
+        foreach ($completed as $e) {
+            $e->has_passed = $e->hasPassedCourse();
+            $e->overall_rating = $e->getOverallRating();
+        }
+        // dd($enrollee->hasPassedCourse());
             // dd($completed);
         return view('student.course_completed', compact('completed', 'enrollee'));
     }

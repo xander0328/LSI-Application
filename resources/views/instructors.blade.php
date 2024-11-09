@@ -11,9 +11,17 @@
 
     </x-slot>
 
-    <div x-data="manageInstructors" class="p-2 px-4 pb-16 pt-40 md:px-8">
+    <div x-data="manageInstructors" class="p-2 px-4 pb-16 pt-40">
         <div class="mb-4 flex items-center justify-end space-x-2">
-            <div class="w-full md:w-1/2">
+            <div class="relative w-full md:w-1/2">
+                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                    <svg class="h-4 w-4 text-black/50 dark:text-white/50" fill="currentColor"
+                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <title>magnify</title>
+                        <path
+                            d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+                    </svg>
+                </div>
                 <input autocomplete="off" type="text" id="table-search-users" x-model="searchQuery"
                     @keyup.enter="searchInstructor" @input="searchInstructor()"
                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 pl-10 pt-2 text-sm text-gray-900 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
@@ -38,9 +46,10 @@
         <div class="grid gap-2 md:grid-cols-2 lg:grid-cols-3">
             <template x-for="instructor in filteredInstructors" :key="instructor.id">
                 <a @click="getInstructorData(instructor.instructor_info && instructor.instructor_info.id ? instructor.instructor_info.id : null)"
-                    class="w-full cursor-pointer rounded-lg border border-gray-700 bg-gray-800 p-2 shadow hover:bg-gray-800/50">
+                    class="w-full cursor-pointer rounded-lg border border-gray-300 bg-white p-2 shadow hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-800/50">
                     <div class="m-1.5 flex items-center space-x-2">
-                        <div class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-full md:h-20 md:w-20">
+                        <div
+                            class="h-16 w-16 flex-shrink-0 overflow-hidden rounded-full border-2 border-sky-500 md:h-20 md:w-20">
                             <template x-if="!instructor.instructor_info">
                                 <img class="h-full w-full object-cover object-center"
                                     src="{{ asset('images/temporary/profile.png') }}" alt="">
@@ -54,9 +63,9 @@
                             </template>
                         </div>
                         <div>
-                            <div class="text-lg font-bold tracking-tight text-white md:text-xl"
+                            <div class="text-lg font-bold tracking-tight text-black dark:text-white md:text-xl"
                                 x-text="`${instructor.lname}, ${instructor.fname}`"></div>
-                            <div class="md:text-md text-sm text-white/50" x-text="instructor.email">
+                            <div class="md:text-md text-sm text-black/50 dark:text-white/50" x-text="instructor.email">
                             </div>
                         </div>
                     </div>
@@ -71,13 +80,13 @@
             class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50 pb-4">
             <div class="relative max-h-full w-full max-w-xl p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-gray-700">
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
                     <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
                         <div class="flex items-center whitespace-nowrap text-white">
                             <template x-if="!selectedInstructor?.instructorInfo">
-                                <img src="{{ asset('images/temporary/profile.png') }}" class="h-12 w-12 rounded-full"
-                                    alt="profile">
+                                <img src="{{ asset('images/temporary/profile.png') }}"
+                                    class="boder-sky-500 h-12 w-12 rounded-full border-2" alt="profile">
                             </template>
                             <template x-if="selectedInstructor?.instructorInfo">
                                 <img :src="'{{ asset('storage/instructor_files/') }}/' +
@@ -109,7 +118,8 @@
                         <div class="mb-4 grid grid-cols-2 gap-4">
                             <div class="col-span-2">
 
-                                <div class="relative mb-8 mt-4 rounded-md bg-gray-800/75 text-white">
+                                <div
+                                    class="relative mb-8 mt-4 rounded-md bg-gray-200 text-black dark:bg-gray-800/75 dark:text-white">
                                     <div
                                         class="absolute -top-4 left-2 mb-2 flex w-2/4 items-center justify-center rounded-md bg-sky-700 px-1.5 py-2 text-white shadow-md">
                                         <svg class="h-7 w-7 pr-1.5" xmlns="http://www.w3.org/2000/svg"
@@ -126,36 +136,42 @@
                                     <div class="px-2 pb-4 pt-10">
                                         <div class="ps-4 text-sm">
                                             <div>
-                                                <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                    <span class="basis-1/2 text-gray-300">First
+                                                <div
+                                                    class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                    <span class="basis-1/2">First
                                                         Name:</span>
                                                     <span class="basis-1/2 font-medium"
                                                         x-text="selectedInstructor?.fname"></span>
                                                 </div>
-                                                <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                    <span class="basis-1/2 text-gray-300">Middle
+                                                <div
+                                                    class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                    <span class="basis-1/2">Middle
                                                         Name:</span>
                                                     <span class="basis-1/2 font-medium"
                                                         x-text="selectedInstructor?.mname ?? '---'"></span>
                                                 </div>
-                                                <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                    <span class="basis-1/2 text-gray-300">Last Name:</span>
+                                                <div
+                                                    class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                    <span class="basis-1/2">Last Name:</span>
                                                     <span class="basis-1/2 font-medium"
                                                         x-text="selectedInstructor?.lname">
                                                     </span>
                                                 </div>
-                                                <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                    <span class="basis-1/2 text-gray-300">Sex:</span>
+                                                <div
+                                                    class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                    <span class="basis-1/2">Sex:</span>
                                                     <span class="basis-1/2 font-medium capitalize"
                                                         x-text="selectedInstructor?.instructorInfo?.sex"></span>
                                                 </div>
-                                                <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                    <span class="basis-1/2 text-gray-300">Contact Number:</span>
+                                                <div
+                                                    class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                    <span class="basis-1/2">Contact Number:</span>
                                                     <span class="basis-1/2 font-medium capitalize"
                                                         x-text="selectedInstructor?.contact_number ?? '---'"></span>
                                                 </div>
-                                                <div class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                    <span class="basis-1/2 text-gray-300">Address:</span>
+                                                <div
+                                                    class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                    <span class="basis-1/2">Address:</span>
                                                     <span class="basis-1/2 font-medium normal-case"
                                                         x-text="`${selectedInstructor?.instructorInfo?.barangayName}, ${selectedInstructor?.instructorInfo?.cityName}, ${selectedInstructor?.instructorInfo?.provinceName}, ${selectedInstructor?.instructorInfo?.regionName}`"></span>
                                                 </div>
@@ -164,7 +180,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="relative mb-8 mt-4 rounded-md bg-gray-800/75 text-white">
+                                <div
+                                    class="relative mb-8 mt-4 rounded-md bg-gray-200 text-black dark:bg-gray-800/75 dark:text-white">
                                     <div
                                         class="absolute -top-4 left-2 mb-2 flex w-2/4 items-center justify-center rounded-md bg-sky-700 px-1.5 py-2 text-white shadow-md">
                                         <svg class="h-7 w-7 pr-1.5" xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +199,7 @@
                                         <div class="ps-4 text-sm">
                                             <div>
                                                 <div
-                                                    class="flex items-center space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                    class="flex items-center space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
                                                     <span>
                                                         <svg class="h5 w-5" fill="currentColor"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -194,7 +211,7 @@
                                                     <span class="basis-1/2">Award 1</span>
                                                 </div>
                                                 <div
-                                                    class="flex items-center space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                    class="flex items-center space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
                                                     <span>
                                                         <svg class="h-5 w-5" fill="currentColor"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -206,7 +223,7 @@
                                                     <span class="basis-1/2">Award 2</span>
                                                 </div>
                                                 <div
-                                                    class="flex items-center space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                    class="flex items-center space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
                                                     <span>
                                                         <svg class="h-5 w-5" fill="currentColor"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -218,7 +235,7 @@
                                                     <span class="basis-1/2">Certificate 1 Holder</span>
                                                 </div>
                                                 <div
-                                                    class="flex items-center space-x-1 rounded-md px-1 hover:bg-gray-700/75">
+                                                    class="flex items-center space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
                                                     <span>
                                                         <svg class="h-5 w-5" fill="currentColor"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -233,7 +250,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="relative mb-8 mt-4 rounded-md bg-gray-800/75 text-white">
+                                <div
+                                    class="relative mb-8 mt-4 rounded-md bg-gray-200 text-black dark:bg-gray-800/75 dark:text-white">
                                     <div
                                         class="absolute -top-4 left-2 mb-2 flex w-1/2 items-center justify-center rounded-md bg-sky-700 py-2 text-white shadow-md">
                                         <svg class="h-7 w-7 pr-1.5" xmlns="http://www.w3.org/2000/svg"
@@ -253,7 +271,7 @@
                                                 x-for="batch in selectedInstructor.instructorInfo.batches.filter(batch => batch.completed_at == null)"
                                                 :key="batch.id">
                                                 <div
-                                                    class="mb-1.5 cursor-pointer rounded border border-white/25 bg-gray-700 px-2 py-0.5 text-white hover:bg-gray-700/50">
+                                                    class="mb-1.5 cursor-pointer rounded bg-gray-300 px-2 py-0.5 text-black hover:bg-gray-400 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-700/50">
                                                     <span
                                                         class="my-1.5 me-2 rounded bg-sky-900 px-2 py-0.5 text-xs text-sky-300"
                                                         x-text="batch.course.code"></span><span
@@ -269,7 +287,8 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="relative mt-4 rounded-md bg-gray-800/75 text-white">
+                                <div
+                                    class="relative mt-4 rounded-md bg-gray-200 text-black dark:bg-gray-800/75 dark:text-white">
                                     <div
                                         class="absolute -top-4 left-2 mb-2 flex w-1/2 items-center justify-center rounded-md bg-sky-700 py-2 text-white shadow-md">
                                         <svg class="h-7 w-7 pr-1.5" xmlns="http://www.w3.org/2000/svg"
@@ -289,7 +308,7 @@
                                                 x-for="batch in selectedInstructor.instructorInfo.batches.filter(batch => batch.completed_at != null)"
                                                 :key="batch.id">
                                                 <div
-                                                    class="mb-1.5 cursor-pointer rounded border border-white/25 bg-gray-700 px-2 py-0.5 text-white hover:bg-gray-700/50">
+                                                    class="mb-1.5 cursor-pointer rounded border bg-gray-300 px-2 py-0.5 text-black hover:bg-gray-400 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-700/50">
                                                     <span
                                                         class="my-1.5 me-2 rounded bg-sky-900 px-2 py-0.5 text-xs text-sky-300"
                                                         x-text="batch.course.code"></span><span

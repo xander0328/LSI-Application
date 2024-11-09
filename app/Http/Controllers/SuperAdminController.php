@@ -654,9 +654,10 @@ class SuperAdminController extends Controller
     }
 
     public function get_all_instructors(Request $request) {
-        $instructors = Instructor::with(['user' => function($query){
+        $instructors = Instructor::whereHas('user', function($query){
             $query->whereNull('deleted_at');
-        }])
+        })
+        ->with('user')
         ->get();
         
         return response()->json(['instructors' => $instructors]);

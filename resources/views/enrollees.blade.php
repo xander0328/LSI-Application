@@ -8,7 +8,7 @@
     @endsection
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="text-2xl font-semibold text-white">
+            <div class="text-2xl font-semibold text-sky-950 dark:text-white">
                 {{ __('Enrollees') }} <span class="text-slate-600">|</span> <span
                     class="text-lg font-normal text-sky-500">{{ $course->name }}</span>
             </div>
@@ -20,9 +20,9 @@
     </x-slot>
     <div x-data="batchManager()" class="px-8 pb-8 pt-36">
 
-        <div class="overflow-x-auto shadow-md sm:rounded-lg">
+        <div>
             <div
-                class="flex flex-col items-center justify-between space-y-4 bg-white py-4 dark:bg-gray-900 md:flex-row md:space-y-0">
+                class="flex flex-col items-center justify-between space-y-4 py-4 dark:bg-gray-900 md:flex-row md:space-y-0">
                 <label for="table-search" class="sr-only">Search</label>
                 <div class="relative">
                     <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -39,8 +39,8 @@
                 <div>
                     <button @click="triggerBatchesModal()" :disabled="selectedUserIds.length === 0"
                         class="flex items-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white focus:outline-none enabled:hover:bg-blue-800 disabled:opacity-50">
-                        <svg class="mr-2 h-5 w-5 text-gray-800 dark:text-white" aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg class="mr-2 h-5 w-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 21a9 9 0 1 1 3-17.5m-8 6 4 4L19.3 5M17 14v6m-3-3h6" />
                         </svg>
@@ -48,8 +48,10 @@
                     </button>
                 </div>
             </div>
-            <table class="w-full text-left text-sm text-white rtl:text-right">
-                <thead class="bg-gray-700 text-xs uppercase text-slate-100">
+        </div>
+        <div class="overflow-x-auto shadow-md sm:rounded-lg">
+            <table class="w-full text-left text-sm text-black rtl:text-right dark:text-white">
+                <thead class="bg-sky-300 text-xs uppercase text-black dark:bg-gray-700 dark:text-slate-100">
                     <tr>
                         <th scope="col" class="p-4">
                             <div class="flex items-center">
@@ -68,117 +70,127 @@
                     </tr>
                 </thead>
                 <tbody class="text-xs">
-                    <template x-for="user in course?.enrollees" :key="user.id">
-                        <tr class="border-gray-700 bg-gray-800 hover:bg-gray-800/75">
-                            <td class="w-4 p-4">
-                                <div class="flex items-center">
-                                    <input type="checkbox" @click.stop @change="toggleUser(user.id)"
-                                        :checked="isSelected(user.id)"
-                                        class="row-checkbox h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
-                                    <label class="sr-only">checkbox</label>
-                                </div>
-                            </td>
-                            <th @click="toggleUser(user.id)" scope="row" class="px-6 py-4">
-                                <div class="flex items-center whitespace-nowrap text-white">
-                                    <div class="">
-                                        <div class="text-base font-semibold"
-                                            x-text="`${user.user.lname}, ${user.user.fname} ${user.user.mname || ''}`">
-                                        </div>
-                                        <div class="font-normal text-gray-500" x-text="user.user.email"></div>
+                    <template x-if="course?.enrollees.length > 0">
+                        <template x-for="user in course?.enrollees" :key="user.id">
+                            <tr
+                                class="border-slate-300 bg-white hover:bg-gray-200 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-800/75">
+                                <td class="w-4 p-4">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" @click.stop @change="toggleUser(user.id)"
+                                            :checked="isSelected(user.id)"
+                                            class="row-checkbox h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800">
+                                        <label class="sr-only">checkbox</label>
                                     </div>
-                                </div>
-                            </th>
-                            <td @click="toggleUser(user.id)" class="px-6 py-4">
-                                <div class="flex items-center">
-                                    <span x-text="user.user.contact_number ?? '---'"></span>
-                                </div>
-                            </td>
-                            <td @click="toggleUser(user.id)" class="px-6 py-4">
-                                <div> <span class="text-white/50">Type: </span> <span
-                                        x-text="capitalize(user.employment_type)"></span></div>
-                                <div> <span class="text-white/50">Status: </span> <span
-                                        x-text="user.employment_type !== 'employed' ? '---' : capitalize(user.employment_status)"></span>
-                                </div>
-                            </td>
-                            <td @click="toggleUser(user.id)" class="px-6 py-4">
-                                <div class="capitalize"
-                                    x-text="user.preferred_schedule == 'both' ? 'All days' : user.preferred_schedule">
-                                </div>
-                                <div> <span class="text-white/50">Start: </span> <span
-                                        x-text="moment(user.preferred_start).format('MMM D, YYYY')"></span>
-                                </div>
-                                <div> <span class="text-white/50">Finish: </span> <span
-                                        x-text="moment(user.preferred_finish).format('MMM D, YYYY')"></span>
-                                </div>
-                            </td>
-                            <td x-data="{ requiredTypes: ['id_picture', 'valid_id_front', 'valid_id_back', 'diploma_tor', 'birth_certificate'] }" @click="toggleUser(user.id)" class="px-6 py-4">
-                                <span class="rounded px-1 py-0.5 text-sm"
-                                    :class="{
-                                        'bg-red-900 text-red-300': !user.enrollee_files_submitted || !requiredTypes
-                                            .every(type =>
-                                                user.enrollee_files_submitted.some(file => file.credential_type ===
-                                                    type)),
-                                        'bg-sky-900 text-sky-300': user.enrollee_files_submitted && requiredTypes.every(
-                                            type =>
-                                            user.enrollee_files_submitted.some(file => file.credential_type ===
-                                                type))
-                                    }"
-                                    x-text="user.enrollee_files_submitted && requiredTypes.every(type => user.enrollee_files_submitted.some(file => file.credential_type === type)) ? 'Submitted' : 'Pending'">
-                                </span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="cursor-pointer">
-                                    <x-dropdown width="40" align="right">
-                                        <x-slot name="trigger">
-                                            <button
-                                                class="inline-flex items-center rounded-md border border-transparent bg-white text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
-                                                <svg class="h-7 w-7 text-white" xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 24 24">
-                                                    <path fill="currentColor"
-                                                        d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" />
-                                                </svg>
-                                            </button>
-                                        </x-slot>
-
-                                        <x-slot name="content">
-                                            <div class="m-1.5">
-
-                                                <a @click="getUserRecord(user.id)"
-                                                    class="flex w-full items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-gray-300 transition duration-150 ease-in-out hover:bg-gray-800 focus:bg-gray-800 focus:outline-none">
-                                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24">
-                                                        <path fill="currentColor"
-                                                            d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
-                                                    </svg>
-                                                    <div>Records</div>
-                                                </a>
-
-                                                <x-dropdown-link hover_bg="hover:bg-red-900"
-                                                    class="flex items-center space-x-1.5 rounded-md px-1.5"
-                                                    @click.prevent="removeEnrollee(user.id)">
-                                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 24 24">
-                                                        <path fill="currentColor"
-                                                            d="M17,13H7V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
-                                                    </svg>
-                                                    <div>
-                                                        Remove
-                                                    </div>
-                                                </x-dropdown-link>
-
+                                </td>
+                                <th @click="toggleUser(user.id)" scope="row" class="px-6 py-4">
+                                    <div class="flex items-center whitespace-nowrap text-black dark:text-white">
+                                        <div class="">
+                                            <div class="text-base font-semibold"
+                                                x-text="`${user.user.lname}, ${user.user.fname} ${user.user.mname || ''}`">
                                             </div>
-                                        </x-slot>
-                                    </x-dropdown>
-                                </div>
-                            </td>
+                                            <div class="font-normal text-gray-700 dark:text-gray-500"
+                                                x-text="user.user.email"></div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <td @click="toggleUser(user.id)" class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <span x-text="user.user.contact_number ?? '---'"></span>
+                                    </div>
+                                </td>
+                                <td @click="toggleUser(user.id)" class="px-6 py-4">
+                                    <div> <span class="text-gray-600 dark:text-white/50">Type: </span> <span
+                                            x-text="capitalize(user.employment_type)"></span></div>
+                                    <div> <span class="text-gray-600 dark:text-white/50">Status: </span> <span
+                                            x-text="user.employment_type !== 'employed' ? '---' : capitalize(user.employment_status)"></span>
+                                    </div>
+                                </td>
+                                <td @click="toggleUser(user.id)" class="px-6 py-4">
+                                    <div class="capitalize"
+                                        x-text="user.preferred_schedule == 'both' ? 'All days' : user.preferred_schedule">
+                                    </div>
+                                    <div> <span class="text-gray-600 dark:text-white/50">Start: </span> <span
+                                            x-text="moment(user.preferred_start).format('MMM D, YYYY')"></span>
+                                    </div>
+                                    <div> <span class="text-gray-600 dark:text-white/50">Finish: </span> <span
+                                            x-text="moment(user.preferred_finish).format('MMM D, YYYY')"></span>
+                                    </div>
+                                </td>
+                                <td x-data="{ requiredTypes: ['id_picture', 'valid_id_front', 'valid_id_back', 'diploma_tor', 'birth_certificate'] }" @click="toggleUser(user.id)" class="px-6 py-4">
+                                    <span class="rounded px-1 py-0.5 text-sm"
+                                        :class="{
+                                            'bg-red-600 dark:bg-red-900 text-red-200': !user.enrollee_files_submitted ||
+                                                !
+                                                requiredTypes
+                                                .every(type =>
+                                                    user.enrollee_files_submitted.some(file => file.credential_type ===
+                                                        type)),
+                                            'bg-sky-600 dark:bg-sky-900 text-sky-200': user.enrollee_files_submitted &&
+                                                requiredTypes.every(
+                                                    type =>
+                                                    user.enrollee_files_submitted.some(file => file.credential_type ===
+                                                        type))
+                                        }"
+                                        x-text="user.enrollee_files_submitted && requiredTypes.every(type => user.enrollee_files_submitted.some(file => file.credential_type === type)) ? 'Submitted' : 'Pending'">
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="cursor-pointer">
+                                        <x-dropdown width="40" align="right">
+                                            <x-slot name="trigger">
+                                                <button
+                                                    class="inline-flex items-center rounded-md border border-transparent bg-white text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                                                    <svg class="h-7 w-7 text-gray-700 dark:text-white"
+                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                        <path fill="currentColor"
+                                                            d="M16,12A2,2 0 0,1 18,10A2,2 0 0,1 20,12A2,2 0 0,1 18,14A2,2 0 0,1 16,12M10,12A2,2 0 0,1 12,10A2,2 0 0,1 14,12A2,2 0 0,1 12,14A2,2 0 0,1 10,12M4,12A2,2 0 0,1 6,10A2,2 0 0,1 8,12A2,2 0 0,1 6,14A2,2 0 0,1 4,12Z" />
+                                                    </svg>
+                                                </button>
+                                            </x-slot>
+
+                                            <x-slot name="content">
+                                                <div class="m-1.5">
+
+                                                    <a @click="getUserRecord(user.id)"
+                                                        class="flex w-full items-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 text-black transition duration-150 ease-in-out hover:bg-gray-200 focus:bg-gray-800 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-800">
+                                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24">
+                                                            <path fill="currentColor"
+                                                                d="M10,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V8C22,6.89 21.1,6 20,6H12L10,4Z" />
+                                                        </svg>
+                                                        <div>Records</div>
+                                                    </a>
+
+                                                    <x-dropdown-link hover_bg="hover:bg-red-900"
+                                                        class="flex items-center space-x-1.5 rounded-md px-1.5"
+                                                        @click.prevent="removeEnrollee(user.id)">
+                                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24">
+                                                            <path fill="currentColor"
+                                                                d="M17,13H7V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" />
+                                                        </svg>
+                                                        <div>
+                                                            Remove
+                                                        </div>
+                                                    </x-dropdown-link>
+
+                                                </div>
+                                            </x-slot>
+                                        </x-dropdown>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+
+                    <template x-if="!course?.enrollees">
+                        <tr class="border-slate-300 bg-white dark:border-gray-700 dark:bg-gray-800">
+                            <td colspan="7" class="py-4 text-center text-sm text-black dark:text-white/75">No
+                                enrollees</td>
                         </tr>
                     </template>
-                    {{-- </template> --}}
                 </tbody>
             </table>
-            <div class="my-4 text-center text-sm text-white/75" x-show="course?.enrollees?.length === 0">
-                No enrollees
-            </div>
 
             {{-- List of Batches Modal --}}
             <div x-cloak x-show="showBatchesModal" x-transition:enter="transition ease-out duration-200"
@@ -188,7 +200,7 @@
                 class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
                 <div class="relative max-h-full w-full max-w-lg p-4">
                     <!-- Modal content -->
-                    <div class="relative rounded-lg bg-gray-700">
+                    <div class="relative rounded-lg bg-white dark:bg-gray-700">
                         <!-- Modal header -->
                         <div
                             class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
@@ -211,10 +223,10 @@
                             <div class="mb-4 grid grid-cols-2 gap-4">
                                 <div class="col-span-2">
 
-                                    <div class="text-white">
+                                    <div class="text-black dark:text-white">
                                         <div>
                                             <button @click="create_new_batch(course.id)"
-                                                class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm hover:bg-sky-800">Create
+                                                class="mb-1.5 w-full rounded-md bg-sky-700 p-2 text-sm text-white hover:bg-sky-800">Create
                                                 New Batch</button>
                                         </div>
                                         <div id="list_uc">
@@ -224,11 +236,11 @@
 
                                             <template x-for="batch in course.batches" :key="batch.id">
                                                 <div
-                                                    class="flex items-center justify-between rounded-md bg-gray-700 p-2 text-sm hover:bg-gray-800/75">
+                                                    class="flex items-center justify-between rounded-md p-2 text-sm hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-800/75">
                                                     <span x-text="course.code +'-'+ batch.name"></span>
                                                     <div class="flex">
                                                         <button :disabled="recordsLoading"
-                                                            class="h-7 w-7 cursor-pointer rounded-md p-1 hover:bg-gray-600 disabled:cursor-not-allowed"
+                                                            class="h-7 w-7 cursor-pointer rounded-md p-1 hover:bg-gray-200 disabled:cursor-not-allowed dark:hover:bg-gray-600"
                                                             @click="addToBatch(batch.id); document.body.classList.add('no-scroll');">
                                                             <svg x-cloak x-show="!recordsLoading"
                                                                 class="h-full w-full" fill="currentColor"
@@ -239,7 +251,7 @@
                                                             </svg>
                                                             <svg x-cloak x-show="recordsLoading" aria-hidden="true"
                                                                 role="status"
-                                                                class="me-3 inline h-4 w-4 animate-spin text-white"
+                                                                class="me-3 inline h-4 w-4 animate-spin text-black dark:text-white"
                                                                 viewBox="0 0 100 101" fill="none"
                                                                 xmlns="http://www.w3.org/2000/svg">
                                                                 <path
@@ -251,7 +263,7 @@
                                                             </svg>
                                                         </button>
                                                         <form action="{{ route('delete_batch') }}"
-                                                            class="h-7 w-7 rounded-md p-1 hover:bg-gray-600"
+                                                            class="h-7 w-7 rounded-md p-1 hover:bg-gray-200 dark:hover:bg-gray-600"
                                                             method="post">
                                                             @csrf
                                                             <input type="hidden" name="batch_id"
@@ -259,11 +271,12 @@
 
                                                             <button
                                                                 @click.prevent="confirmDelete('Are you sure?', 'Batch will be removed and data related to this', 'Continue', null)"
-                                                                class="h-full w-full" type="button">
+                                                                class="h-full w-full text-black dark:text-white"
+                                                                type="button">
                                                                 <svg xmlns="http://www.w3.org/2000/svg"
                                                                     viewBox="0 0 24 24">
                                                                     <title>Delete</title>
-                                                                    <path fill="white"
+                                                                    <path fill="currentColor"
                                                                         d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
                                                                 </svg></button>
                                                         </form>
@@ -286,7 +299,7 @@
                 class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50 pb-4">
                 <div class="relative max-h-full w-full max-w-xl p-4">
                     <!-- Modal content -->
-                    <div class="relative rounded-lg bg-gray-700">
+                    <div class="relative rounded-lg bg-white dark:bg-gray-700">
                         <!-- Modal header -->
                         <div
                             class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
@@ -367,7 +380,7 @@
                                                             <path fill="currentColor"
                                                                 d="M20,6C20.58,6 21.05,6.2 21.42,6.59C21.8,7 22,7.45 22,8V19C22,19.55 21.8,20 21.42,20.41C21.05,20.8 20.58,21 20,21H4C3.42,21 2.95,20.8 2.58,20.41C2.2,20 2,19.55 2,19V8C2,7.45 2.2,7 2.58,6.59C2.95,6.2 3.42,6 4,6H8V4C8,3.42 8.2,2.95 8.58,2.58C8.95,2.2 9.42,2 10,2H14C14.58,2 15.05,2.2 15.42,2.58C15.8,2.95 16,3.42 16,4V6H20M4,8V19H20V8H4M14,6V4H10V6H14Z" />
                                                         </svg></span>
-                                                    <div class="mb-2 text-gray-300">MANPOWER PROFILE</div>
+                                                    <div class="mb-2 dark:text-gray-300">MANPOWER PROFILE</div>
                                                     <div>
                                                         <div
                                                             class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
@@ -425,7 +438,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <div
+                                                    class="relative mb-2 rounded-md bg-gray-200 p-4 ps-10 text-sm text-black dark:bg-gray-800 dark:text-white">
                                                     <span
                                                         class="absolute -left-4 top-4 rounded-md bg-green-700 p-2 shadow-md">
                                                         <svg class="h-7 w-7 text-white"
@@ -433,84 +447,85 @@
                                                             <path fill="currentColor"
                                                                 d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
                                                         </svg></span>
-                                                    <div class="mb-2 text-gray-300">PERSONAL INFORMATION</div>
+                                                    <div class="mb-2 dark:text-gray-300">PERSONAL INFORMATION</div>
                                                     <div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Birth
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Birth
                                                                 Date:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="moment(enrolleeProfile?.birth_data).format('ll');"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Birth
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Birth
                                                                 Place:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.birth_place"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Citizenship:</span>
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Citizenship:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.citizenship"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Religion:</span>
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Religion:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.religion"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Height:</span>
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Height:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.height + ' cm'"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Weight:</span>
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Weight:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.weight + ' kg'"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Blood
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Blood
                                                                 Type:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.blood_type ? formatBloodType(enrolleeProfile?.blood_type) : ''"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">SSS
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">SSS
                                                                 Number:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.sss ?? '---'"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">GSIS
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">GSIS
                                                                 Number:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.gsis ?? '---'"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">TIN
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">TIN
                                                                 Number:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.tin ?? '---'"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Distinguishing
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2">Distinguishing
                                                                 Marks:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="enrolleeProfile?.disting_marks ?? '---'"></span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <div
+                                                    class="relative mb-2 rounded-md bg-gray-200 p-4 ps-10 text-sm text-black dark:bg-gray-800 dark:text-white">
                                                     <span
                                                         class="absolute -left-4 top-4 rounded-md bg-blue-700 p-2 shadow-md">
                                                         <svg class="h-7 w-7 text-white"
@@ -519,26 +534,27 @@
                                                             <path fill="currentColor"
                                                                 d="M12 3L1 9L5 11.18V17.18L12 21L19 17.18V11.18L21 10.09V17H23V9L12 3M18.82 9L12 12.72L5.18 9L12 5.28L18.82 9M17 16L12 18.72L7 16V12.27L12 15L17 12.27V16Z" />
                                                         </svg></span>
-                                                    <div class="mb-2 text-gray-300">EDUCATIONAL BACKGROUND</div>
+                                                    <div class="mb-2 dark:text-gray-300">EDUCATIONAL BACKGROUND</div>
                                                     <template x-for="education in enrolleeProfile?.enrollee_education"
                                                         :key="education.id">
-                                                        <div class="mb-1.5 rounded-md bg-gray-700/50 p-4">
+                                                        <div
+                                                            class="mb-1.5 rounded-md bg-gray-400 p-4 dark:bg-gray-700/50">
                                                             <div
-                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                                <span class="basis-1/2 text-gray-300">School:</span>
+                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                                <span class="basis-1/2">School:</span>
                                                                 <span class="basis-1/2 font-medium"
                                                                     x-text="education?.school_name"></span>
                                                             </div>
                                                             <div
-                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                                <span class="basis-1/2 text-gray-300">Educational
+                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                                <span class="basis-1/2">Educational
                                                                     Level:</span>
                                                                 <span class="basis-1/2 font-medium"
                                                                     x-text="education?.educational_level"></span>
                                                             </div>
                                                             <div
-                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                                <span class="basis-1/2 text-gray-300">School
+                                                                class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                                <span class="basis-1/2">School
                                                                     Year:</span>
                                                                 <span class="basis-1/2 font-medium"
                                                                     x-text="education?.school_year"></span>
@@ -547,36 +563,33 @@
                                                                 x-if="education?.educational_level == 'Tertiary'">
                                                                 <div>
                                                                     <div
-                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                                        <span
-                                                                            class="basis-1/2 text-gray-300">Degree:</span>
+                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                                        <span class="basis-1/2">Degree:</span>
                                                                         <span class="basis-1/2 font-medium"
                                                                             x-text="education?.degree ?? '---'"></span>
                                                                     </div>
                                                                     <div
-                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                                        <span
-                                                                            class="basis-1/2 text-gray-300">Minor:</span>
+                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                                        <span class="basis-1/2">Minor:</span>
                                                                         <span class="basis-1/2 font-medium"
                                                                             x-text="education?.minor ?? '---'"></span>
                                                                     </div>
                                                                     <div
-                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                                        <span
-                                                                            class="basis-1/2 text-gray-300">Major:</span>
+                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                                        <span class="basis-1/2">Major:</span>
                                                                         <span class="basis-1/2 font-medium"
                                                                             x-text="education?.major ?? '---'"></span>
                                                                     </div>
                                                                     <div
-                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                                        <span class="basis-1/2 text-gray-300">Units
+                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                                        <span class="basis-1/2">Units
                                                                             Earned:</span>
                                                                         <span class="basis-1/2 font-medium"
                                                                             x-text="education?.units_earned ?? '---' "></span>
                                                                     </div>
                                                                     <div
-                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                                        <span class="basis-1/2 text-gray-300">Honors
+                                                                        class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                                        <span class="basis-1/2">Honors
                                                                             Received:</span>
                                                                         <span class="basis-1/2 font-medium"
                                                                             x-text="education?.honors_received ?? '---'"></span>
@@ -586,7 +599,8 @@
                                                         </div>
                                                     </template>
                                                 </div>
-                                                <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <div
+                                                    class="relative mb-2 rounded-md bg-gray-200 p-4 ps-10 text-sm text-black dark:bg-gray-800 dark:text-white">
                                                     <span
                                                         class="absolute -left-4 top-4 rounded-md bg-sky-700 p-2 shadow-md">
                                                         <svg class="h-7 w-7 text-white"
@@ -594,18 +608,19 @@
                                                             <path fill="currentColor"
                                                                 d="M6 20H13V22H6C4.89 22 4 21.11 4 20V4C4 2.9 4.89 2 6 2H18C19.11 2 20 2.9 20 4V12.54L18.5 11.72L18 12V4H13V12L10.5 9.75L8 12V4H6V20M24 17L18.5 14L13 17L18.5 20L24 17M15 19.09V21.09L18.5 23L22 21.09V19.09L18.5 21L15 19.09Z" />
                                                         </svg></span>
-                                                    <div class="mb-2 text-gray-300">COURSE / TRAINING PROGRAM</div>
+                                                    <div class="mb-2 dark:text-gray-300">COURSE / TRAINING PROGRAM
+                                                    </div>
                                                     <div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Preffered
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2 dark:text-gray-300">Preffered
                                                                 Schedule:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="moment(enrolleeProfile?.preferred_start).format('ll')"></span>
                                                         </div>
                                                         <div
-                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-700/75">
-                                                            <span class="basis-1/2 text-gray-300">Preffered
+                                                            class="flex space-x-1 rounded-md px-1 hover:bg-gray-300 dark:hover:bg-gray-700/75">
+                                                            <span class="basis-1/2 dark:text-gray-300">Preffered
                                                                 Date:</span>
                                                             <span class="basis-1/2 font-medium"
                                                                 x-text="moment(enrolleeProfile?.preferred_finish).format('ll')"></span>
@@ -622,7 +637,7 @@
                             <div class="mb-4 grid grid-cols-2 gap-4">
                                 <div class="col-span-2">
 
-                                    <div class="relative mt-4 rounded-md bg-gray-800/75 text-white">
+                                    <div class="relative mt-4 rounded-md bg-gray-300 text-white dark:bg-gray-800/75">
                                         <div
                                             class="absolute -top-4 left-2 mb-2 flex w-1/3 items-center justify-center rounded-md bg-sky-700 py-2 text-white shadow-md">
                                             <svg class="h-7 w-7 pr-1.5" xmlns="http://www.w3.org/2000/svg"
@@ -637,7 +652,8 @@
 
                                         <div class="px-2 pb-4 pt-10">
                                             <div class="ps-4">
-                                                <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <div
+                                                    class="relative mb-2 rounded-md bg-gray-200 p-4 ps-10 text-sm text-black dark:bg-gray-800 dark:text-white">
                                                     <span
                                                         class="absolute -left-4 top-4 rounded-md bg-yellow-700 p-2 shadow-md">
                                                         <svg class="h-7 w-7 text-white"
@@ -647,7 +663,7 @@
                                                                 d="M19,19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M13.96,12.29L11.21,15.83L9.25,13.47L6.5,17H17.5L13.96,12.29Z" />
                                                         </svg>
                                                     </span>
-                                                    <div class="mb-2 text-gray-300">ID PICTURE</div>
+                                                    <div class="mb-2 dark:text-gray-300">ID PICTURE</div>
                                                     <div class="flex justify-center">
                                                         <template
                                                             x-if="enrolleeProfile.enrollee_files_submitted && enrolleeProfile.enrollee_files_submitted.length > 0">
@@ -668,7 +684,7 @@
                                                         <template
                                                             x-if="!enrolleeProfile.enrollee_files_submitted || enrolleeProfile.enrollee_files_submitted.length === 0 || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'id_picture')">
                                                             <div
-                                                                class="flex w-full flex-shrink-0 items-center text-white/50">
+                                                                class="flex w-full flex-shrink-0 items-center text-gray-600 dark:text-white/50">
                                                                 <span class="me-1.5 flex items-center">
                                                                     <svg class="h-5 w-5 text-red-500"
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -686,7 +702,8 @@
                                                     </div>
 
                                                 </div>
-                                                <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <div
+                                                    class="relative mb-2 rounded-md bg-gray-200 p-4 ps-10 text-sm text-black dark:bg-gray-800 dark:text-white">
                                                     <span
                                                         class="absolute -left-4 top-4 rounded-md bg-green-700 p-2 shadow-md">
                                                         <svg class="h-7 w-7 text-white"
@@ -696,7 +713,7 @@
                                                                 d="M22,3H2C0.91,3.04 0.04,3.91 0,5V19C0.04,20.09 0.91,20.96 2,21H22C23.09,20.96 23.96,20.09 24,19V5C23.96,3.91 23.09,3.04 22,3M22,19H2V5H22V19M14,17V15.75C14,14.09 10.66,13.25 9,13.25C7.34,13.25 4,14.09 4,15.75V17H14M9,7A2.5,2.5 0 0,0 6.5,9.5A2.5,2.5 0 0,0 9,12A2.5,2.5 0 0,0 11.5,9.5A2.5,2.5 0 0,0 9,7M14,7V8H20V7H14M14,9V10H20V9H14M14,11V12H18V11H14" />
                                                         </svg>
                                                     </span>
-                                                    <div class="mb-2 text-gray-300">VALID ID</div>
+                                                    <div class="mb-2 dark:text-gray-300">VALID ID</div>
 
                                                     <!-- Check if enrollee_files is defined and not empty -->
                                                     <template
@@ -740,7 +757,7 @@
                                                         <template
                                                             x-if="!enrolleeProfile.enrollee_files_submitted || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'valid_id_front')">
                                                             <div
-                                                                class="mb-2 flex w-full flex-shrink-0 items-center text-white/50">
+                                                                class="mb-2 flex w-full flex-shrink-0 items-center text-gray-600 dark:text-white/50">
                                                                 <span class="me-1.5 flex items-center">
                                                                     <svg class="h-5 w-5 text-red-500"
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -758,7 +775,7 @@
                                                         <template
                                                             x-if="!enrolleeProfile.enrollee_files_submitted || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'valid_id_back')">
                                                             <div
-                                                                class="flex w-full flex-shrink-0 items-center text-white/50">
+                                                                class="flex w-full flex-shrink-0 items-center text-gray-600 dark:text-gray-300 dark:text-white/50">
                                                                 <span class="me-1.5 flex items-center">
                                                                     <svg class="h-5 w-5 text-red-500"
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -775,7 +792,8 @@
 
                                                 </div>
 
-                                                <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <div
+                                                    class="relative mb-2 rounded-md bg-gray-200 p-4 ps-10 text-sm text-black dark:bg-gray-800 dark:text-white">
                                                     <span
                                                         class="absolute -left-4 top-4 rounded-md bg-blue-700 p-2 shadow-md">
                                                         <svg class="h-7 w-7 text-white"
@@ -785,7 +803,8 @@
                                                                 d="M21 10H17V8L12.5 6.2V4H15V2H11.5V6.2L7 8V10H3C2.45 10 2 10.45 2 11V22H10V17H14V22H22V11C22 10.45 21.55 10 21 10M8 20H4V17H8V20M8 15H4V12H8V15M12 8C12.55 8 13 8.45 13 9S12.55 10 12 10 11 9.55 11 9 11.45 8 12 8M14 15H10V12H14V15M20 20H16V17H20V20M20 15H16V12H20V15Z" />
                                                         </svg>
                                                     </span>
-                                                    <div class="mb-2 text-gray-300">DIPLOMA/TRANSCRIPT OF RECORDS</div>
+                                                    <div class="mb-2 dark:text-gray-300">DIPLOMA/TRANSCRIPT OF RECORDS
+                                                    </div>
                                                     <div class="flex">
                                                         <!-- Check if enrollee_files is defined and not empty -->
                                                         <template
@@ -824,7 +843,7 @@
                                                         <template
                                                             x-if="!enrolleeProfile.enrollee_files_submitted || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'diploma_tor')">
                                                             <div
-                                                                class="flex w-full flex-shrink-0 items-center text-white/50">
+                                                                class="flex w-full flex-shrink-0 items-center text-gray-600 dark:text-white/50">
                                                                 <span class="me-1.5 flex items-center">
                                                                     <svg class="h-5 w-5 text-red-500"
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -842,7 +861,8 @@
                                                     </div>
 
                                                 </div>
-                                                <div class="relative mb-2 rounded-md bg-gray-800 p-4 ps-10 text-sm">
+                                                <div
+                                                    class="relative mb-2 rounded-md bg-gray-200 p-4 ps-10 text-sm text-black dark:bg-gray-800 dark:text-white">
                                                     <span
                                                         class="absolute -left-4 top-4 rounded-md bg-sky-700 p-2 shadow-md">
                                                         <svg class="h-7 w-7 text-white"
@@ -852,7 +872,7 @@
                                                                 d="M7.5 5C9.43 5 11 6.57 11 8.5C11 10.43 9.43 12 7.5 12C5.57 12 4 10.43 4 8.5C4 6.57 5.57 5 7.5 5M1 19V16.5C1 14.57 4.46 13 7.5 13C8.68 13 9.92 13.24 11 13.64V15.56C10.18 15.22 8.91 15 7.5 15C5 15 3 15.67 3 16.5V17H11V19H1M22 19H14C13.45 19 13 18.55 13 18V6C13 5.45 13.45 5 14 5H19L23 9V18C23 18.55 22.55 19 22 19M15 7V17H21V10H18V7H15M7.5 7C6.67 7 6 7.67 6 8.5C6 9.33 6.67 10 7.5 10C8.33 10 9 9.33 9 8.5C9 7.67 8.33 7 7.5 7Z" />
                                                         </svg>
                                                     </span>
-                                                    <div class="mb-2 text-gray-300">BIRTH CERTIFICATE</div>
+                                                    <div class="mb-2 dark:text-gray-300">BIRTH CERTIFICATE</div>
                                                     <div class="flex">
                                                         <!-- Check if enrollee_files is defined and not empty -->
                                                         <template
@@ -891,7 +911,7 @@
                                                         <template
                                                             x-if="!enrolleeProfile.enrollee_files_submitted || !enrolleeProfile.enrollee_files_submitted.some(file => file.credential_type === 'birth_certificate')">
                                                             <div
-                                                                class="flex w-full flex-shrink-0 items-center text-white/50">
+                                                                class="flex w-full flex-shrink-0 items-center text-gray-600 dark:text-white/50">
                                                                 <span class="me-1.5 flex items-center">
                                                                     <svg class="h-5 w-5 text-red-500"
                                                                         xmlns="http://www.w3.org/2000/svg"
@@ -990,6 +1010,9 @@
                     recordsLoading: false,
 
                     async init() {
+                        console.log(this.course.enrollees);
+                        console.log(!this.course.enrollees);
+
                         await this.loadMore(); // Load the first batch on initialization
                     },
 

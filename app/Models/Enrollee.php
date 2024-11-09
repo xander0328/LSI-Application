@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Enrollee extends Model
 {
@@ -50,6 +51,11 @@ class Enrollee extends Model
         'preferred_start',
         'preferred_finish'
     ];
+
+    private const PASSING_ATTENDANCE_PERCENTAGE = 0.8;
+    private const PASSING_ASSIGNMENT_PERCENTAGE = 0.8;
+    private const PASSING_AVERAGE_SCORE = 80;
+
 
     public function user()
     {
@@ -109,4 +115,74 @@ class Enrollee extends Model
     public function enrollee_attendances(){
         return $this->hasMany(StudentAttendance::class);
     }
+
+    public function hasPassedCourse()
+    {
+        // Get batch and course details
+        $course = $this->batch->course;
+
+        $totalSessions = StudentAttendance::whereHas('attendance', function ($query) {
+            $query->where('batch_id', $this->batch->id);
+        })->where('enrollee_id', $this->id)->count();
+        // Calculate attendance rate
+        $attendedSessions = StudentAttendance::whereHas('attendance', function ($query) {
+            $query->where('batch_id', $this->batch->id);
+        })->where('enrollee_id', $this->id)
+            ->sum(DB::raw("CASE WHEN status = 'present' THEN 1 WHEN status = 'late' THEN 0.5 ELSE 0 END"));
+
+        $attendanceRate = $totalSessions > 0 ? $attendedSessions / $totalSessions : 0;
+
+        // Calculate assignment completion rate
+        $totalAssignments = $this->batch->assignment()->count();
+        
+        $completedAssignments = StudentGrade::where('batch_id', $this->batch->id)
+        ->where('enrollee_id', $this->id)
+        ->whereNotNull('grade')
+        ->whereNot('grade', 0)
+        ->count();
+
+        $assignmentRate = $totalAssignments > 0 ? $completedAssignments / $totalAssignments : 0;
+
+        // 3. Calculate Average Score
+        $averageScore = $this->grades()->avg('grade');
+
+        // Check if all criteria are met
+        return $attendanceRate >= self::PASSING_ATTENDANCE_PERCENTAGE &&
+            $assignmentRate >= self::PASSING_ASSIGNMENT_PERCENTAGE &&
+            $averageScore >= self::PASSING_AVERAGE_SCORE;
+        // return $assignmentRate;
+    }
+
+    public function getOverallRating()
+    {
+        $course = $this->batch->course;
+
+        // 1. Attendance Rate
+        $totalSessions = StudentAttendance::whereHas('attendance', function ($query) {
+            $query->where('batch_id', $this->batch->id);
+        })->where('enrollee_id', $this->id)->count();
+
+        $attendedSessions = StudentAttendance::whereHas('attendance', function ($query) {
+            $query->where('batch_id', $this->batch->id);
+        })->where('enrollee_id', $this->id)
+        ->sum(DB::raw("CASE WHEN status = 'present' THEN 1 WHEN status = 'late' THEN 0.5 ELSE 0 END"));
+
+        $attendanceRate = $totalSessions > 0 ? ($attendedSessions / $totalSessions) * 100 : 0;
+
+        // 2. Average Grade
+        $averageScore = $this->grades()->avg('grade');
+
+        // 3. Combine Attendance and Grade into Overall Rating
+        $attendanceWeight = 0.5; // 50%
+        $gradeWeight = 0.5;      // 50%
+
+        // Calculate weighted average
+        $overallRating = ($attendanceRate * $attendanceWeight) +
+                        ($averageScore * $gradeWeight);
+
+        return round($overallRating, 2); // Round to two decimal places
+    }
+
+    
+
 }

@@ -301,6 +301,9 @@ Route::middleware(['auth', 'verified', 'role:guest,student'])->group(function ()
     });
 });
 
+Route::get('/test_socket', function () {
+    return view('test_input_post');
+});
 
 
 require __DIR__.'/auth.php';

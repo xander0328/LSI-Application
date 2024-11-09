@@ -9,7 +9,7 @@
         </div>
 
     </x-slot>
-    <div id="course_list" class="mx-8 my-4 text-white">
+    <div x-data="test" id="course_list" class="mx-8 my-4 text-white">
         <form action="{{ route('post') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <label for="message">Message:</label><br>
@@ -33,6 +33,48 @@
             </div><br><br>
             <input type="submit" value="Submit">
         </form>
+        <button @click="sendTrigger">Notify </button>
     </div>
     <!-- The biggest battle is the war against ignorance. - Mustafa Kemal Atatürk -->
+    @section('script')
+        <script>
+            // JavaScript in your Blade view or a separate JS file
+            function test() {
+                return {
+                    ws: null,
+                    init() {
+                        this.websocket();
+                    },
+                    websocket() {
+                        this.ws = new WebSocket('ws://lsi-websocket.glitch.me');
+
+                        this.ws.onopen = () => {
+                            console.log('Connected to WebSocket server');
+
+                            this.ws.send(JSON.stringify({
+                                action: 'notify',
+                                username: 'JohnDoe'
+                            }));
+                        };
+
+                        this.ws.onmessage = (event) => {
+                            const message = JSON.parse(event.data);
+                            console.log('Received from server:', message.action);
+                        };
+
+                        this.ws.onclose = () => {
+                            console.log('Disconnected from WebSocket server');
+                            this.websocket();
+                        };
+                    },
+                    sendTrigger() {
+                        this.ws.send(JSON.stringify({
+                            action: 'notify',
+                            username: 'JohnDoe'
+                        }));
+                    }
+                }
+            }
+        </script>
+    @endsection
 </x-app-layout>

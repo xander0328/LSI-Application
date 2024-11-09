@@ -18,14 +18,29 @@
                 <template x-for="course in completed" :key="course.id">
                     <li id="course-item" class="rounded-md bg-white p-4 dark:bg-gray-700">
                         <div class="justify-between align-middle text-sm">
-                            <div class="mb-1 text-xl font-bold" x-text="course.course.name"></div>
+                            <div class="mb-1 text-xl font-bold text-sky-600 dark:text-sky-400"
+                                x-text="course.course.name"></div>
                             <div>
                                 <span class="font-semibold">Batch:</span>
                                 <span x-text="`${course.course.code}-${course.batch.name}`"></span>
                             </div>
                             <div>
-                                <span class="font-semibold">Date Completed:</span>
+                                <span class="font-semibold">Date Ended:</span>
                                 <span x-text="moment(course.completed_at).format('ll')"></span>
+                            </div>
+                            <div>
+                                <span class="font-bold">
+                                    Rating:
+                                </span>
+                                <span x-text="course.overall_rating + '%'"></span>
+                            </div>
+                            <div class="mt-2 text-right">
+                                <span class="rounded-md px-3 py-1.5 font-bold text-white"
+                                    :class="{
+                                        'bg-sky-500': course.has_passed,
+                                        'bg-red-500': !course.has_passed
+                                    }"
+                                    x-text="course.has_passed ? 'Completed' : 'Incomplete'"></span>
                             </div>
                         </div>
                     </li>

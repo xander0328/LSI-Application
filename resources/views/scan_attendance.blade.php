@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between text-white">
-            <div class="text-2xl font-semibold text-white">
+            <div class="text-2xl font-semibold text-sky-950 dark:text-white">
                 {{ __('Attendance') }} <span class="text-slate-600">
             </div>
         </div>
