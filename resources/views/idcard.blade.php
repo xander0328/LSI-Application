@@ -53,10 +53,10 @@
             <tr style="text-transform: uppercase">
                 <td colspan="2" style="text-align: center;padding-top: 15px;line-height: 0.6; ">
                     <div style="font-size: 50px; padding: 0px;margin:0px;font-weight: 500;">
-                        {{ auth()->user()->lname }}
+                        {{ $enrollee->user->lname }}
                     </div>
                     <div style="font-size:30px; padding: 0px;margin:0px;font-weight: 100; color: rgb(31 41 55);">
-                        {{ auth()->user()->fname }}
+                        {{ $enrollee->user->fname }}
                     </div>
 
                 </td>

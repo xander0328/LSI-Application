@@ -1010,8 +1010,6 @@
                     recordsLoading: false,
 
                     async init() {
-                        console.log(this.course.enrollees);
-                        console.log(!this.course.enrollees);
 
                         await this.loadMore(); // Load the first batch on initialization
                     },
@@ -1187,6 +1185,7 @@
                     addToBatch(batchId) {
                         this.recordsLoading = true
                         console.log(this.selectedUserIds);
+                        var t = this;
                         if (this.selectedUserIds.length < 1) {
                             this.notification('error', 'Please select at least one enrollee.');
                             return;
@@ -1204,15 +1203,32 @@
                                 batch_id: batchId,
                             },
                             success: function(response) {
-                                $('#success-alert').removeClass('hidden').delay(3000)
-                                    .fadeOut(); // Show for 3 seconds
-                                location.reload();
-                                console.log(this.selectedUserIds);
+                                t.course.enrollees = [];
+                                t.page = 1;
+                                t.loadMore();
+                                t.showBatchesModal = false;
+                                t.recordsLoading = false
+                                document.body.classList.remove('no-scroll');
+
+                                const batch = t.course.batches.find(batch => batch.id = batchId)
+
+                                t.notification('success',
+                                    `Enrollees have been successfully added to ${t.course.code}-${batch.name}`,
+                                    'Enrollment Successful')
+
+                                ws.send(JSON.stringify({
+                                    action: 'private',
+                                    targetUserIds: response.userIds
+                                }));
                                 // alert('Selected users have been saved to the batch.');
                             },
                             error: function(xhr, status, error) {
-                                console.error('Error saving to batch:', error);
-                                alert('An error occurred while saving to the batch.');
+                                t.showBatchesModal = false;
+                                t.recordsLoading = false
+                                document.body.classList.remove('no-scroll');
+                                t.notification('error',
+                                    `An error occurred while saving to the batch.`,
+                                    'Enrollment Failed')
                             }
                         });
                     },

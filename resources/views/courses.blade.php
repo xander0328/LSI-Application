@@ -41,9 +41,9 @@
             <div class="flex items-center md:hidden">
                 <x-dropdown width="40" align="right">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center rounded-md p-1.5 hover:bg-gray-900/50">
-                            <svg class="h-7 w-7 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
+                        <button class="inline-flex items-center rounded-md p-1.5">
+                            <svg class="h-7 w-7 text-black dark:text-white" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <title>dots-vertical-circle-outline</title>
                                 <path
                                     d="M10.5,12A1.5,1.5 0 0,1 12,10.5A1.5,1.5 0 0,1 13.5,12A1.5,1.5 0 0,1 12,13.5A1.5,1.5 0 0,1 10.5,12M10.5,16.5A1.5,1.5 0 0,1 12,15A1.5,1.5 0 0,1 13.5,16.5A1.5,1.5 0 0,1 12,18A1.5,1.5 0 0,1 10.5,16.5M10.5,7.5A1.5,1.5 0 0,1 12,6A1.5,1.5 0 0,1 13.5,7.5A1.5,1.5 0 0,1 12,9A1.5,1.5 0 0,1 10.5,7.5M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4Z" />
@@ -68,7 +68,7 @@
                                 <a onclick="window.dispatchEvent(new CustomEvent('show-settings-modal'))"
                                     class="flex w-full cursor-pointer items-center justify-center space-x-1.5 rounded-md px-4 py-2 text-start text-sm leading-5 transition duration-150 ease-in-out">
                                     <div class="mr-1">
-                                        <svg class="h-5 w-5 text-white" fill="currentColor"
+                                        <svg class="h-5 w-5 text-black dark:text-white" fill="currentColor"
                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                             <title>cog</title>
                                             <path
@@ -576,19 +576,32 @@
 
                                         <template x-for="batch in selectedCourse.batches" :key="batch.id">
                                             <div
-                                                class="flex items-center justify-between rounded-md p-2 text-sm text-black hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-800/75">
+                                                class="flex items-center justify-between rounded-md p-2 text-sm text-black hover:bg-gray-200 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800/75">
                                                 <div class="flex items-center justify-between">
                                                     <span
                                                         :class="{
                                                             'bg-lime-900 text-lime-300': batch.instructor_id,
                                                             'bg-red-900 text-red-300': !batch.instructor_id,
                                                         }"
-                                                        class="me-1 inline-flex items-center rounded px-2 py-0.5 text-sm font-medium">
+                                                        class="me-1 inline-flex items-center rounded px-1 py-0.5 text-sm font-medium">
                                                         <svg class="h-5 w-5" fill="currentColor"
                                                             xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                             <title>school</title>
                                                             <path
                                                                 d="M12,3L1,9L12,15L21,10.09V17H23V9M5,13.18V17.18L12,21L19,17.18V13.18L12,17L5,13.18Z" />
+                                                        </svg>
+                                                    </span>
+                                                    <span
+                                                        :class="{
+                                                            'bg-lime-900 text-lime-300': batch.orientation !== null,
+                                                            'bg-red-900 text-red-300': batch.orientation == null,
+                                                        }"
+                                                        class="me-1 inline-flex items-center rounded px-1 py-0.5 text-sm font-medium">
+                                                        <svg class="h-5 w-5" fill="currentColor"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <title>forum</title>
+                                                            <path
+                                                                d="M17,12V3A1,1 0 0,0 16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z" />
                                                         </svg>
                                                     </span>
                                                     <span
@@ -615,6 +628,15 @@
                                                             <title>eye-outline</title>
                                                             <path
                                                                 d="M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9M12,4.5C17,4.5 21.27,7.61 23,12C21.27,16.39 17,19.5 12,19.5C7,19.5 2.73,16.39 1,12C2.73,7.61 7,4.5 12,4.5M3.18,12C4.83,15.36 8.24,17.5 12,17.5C15.76,17.5 19.17,15.36 20.82,12C19.17,8.64 15.76,6.5 12,6.5C8.24,6.5 4.83,8.64 3.18,12Z" />
+                                                        </svg>
+                                                    </a>
+                                                    <a class="h-7 w-7 cursor-pointer rounded-md p-1 hover:bg-gray-300 dark:hover:bg-gray-600"
+                                                        @click="setOrientation(batch.id); showBatchesModal = false">
+                                                        <svg class="h-full w-full" fill="currentColor"
+                                                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                            <title>forum</title>
+                                                            <path
+                                                                d="M17,12V3A1,1 0 0,0 16,2H3A1,1 0 0,0 2,3V17L6,13H16A1,1 0 0,0 17,12M21,6H19V15H6V17A1,1 0 0,0 7,18H18L22,22V7A1,1 0 0,0 21,6Z" />
                                                         </svg>
                                                     </a>
                                                     <form action="{{ route('delete_batch') }}"
@@ -760,12 +782,27 @@
                                                     <template x-for="(enrollee, index) in selectedBatch.enrollee"
                                                         :key="enrollee.id">
                                                         <div
-                                                            class="border-white/25 p-2 last:rounded-b-lg odd:bg-gray-300 even:bg-gray-200 dark:odd:bg-gray-800 dark:even:bg-gray-800/75">
-                                                            <div
-                                                                x-text="`${enrollee.user.lname}, ${enrollee.user.fname} ${enrollee.user.mname ? enrollee.user.mname.charAt(0)+'.' : ''}`">
+                                                            class="flex justify-between border-white/25 p-2 last:rounded-b-lg odd:bg-gray-300 even:bg-gray-200 dark:odd:bg-gray-800 dark:even:bg-gray-800/75">
+                                                            <div>
+                                                                <div
+                                                                    x-text="`${enrollee.user.lname}, ${enrollee.user.fname} ${enrollee.user.mname ? enrollee.user.mname.charAt(0)+'.' : ''}`">
+                                                                </div>
+                                                                <div class="text-sm dark:text-white/50"
+                                                                    x-text="enrollee.user.email">
+                                                                </div>
                                                             </div>
-                                                            <div class="text-sm dark:text-white/50"
-                                                                x-text="enrollee.user.email">
+                                                            <div>
+                                                                <a :href="`{{ route('admin_id_card', ':id') }}`.replace(':id',
+                                                                    enrollee
+                                                                    .id)"
+                                                                    target="_blank"
+                                                                    class="flex rounded-md p-1 hover:bg-black/25">
+                                                                    <span class="h-8 w-8">
+                                                                        <img width="48" height="48"
+                                                                            src="https://img.icons8.com/fluency/48/security-pass.png"
+                                                                            alt="security-pass" />
+                                                                    </span>
+                                                                </a>
                                                             </div>
                                                         </div>
                                                     </template>
@@ -790,6 +827,74 @@
                             </svg>
                             <span class="sr-only">Loading...</span>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Orientation Modal --}}
+        <div x-cloak x-show="showOrientationModal" x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
+            x-transition:leave-end="opacity-0 scale-95" tabindex="-1"
+            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50">
+            <div class="relative max-h-full w-full max-w-lg p-4">
+                <!-- Modal content -->
+                <div class="relative rounded-lg bg-white dark:bg-gray-700">
+
+                    <!-- Modal body -->
+                    <div class="px-4 pt-4 md:px-5 md:pt-5">
+                        <div class="mb-4 grid grid-cols-2 gap-4">
+                            <div class="col-span-2">
+
+                                <label for="instructors"
+                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Select
+                                    orientation date</label>
+                                <div>
+                                    <div class="relative mb-2 w-full">
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+                                            <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                viewBox="0 0 20 20">
+                                                <path
+                                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                            </svg>
+                                        </div>
+                                        <input x-model="orientationDate" x-ref="datePickerOrientation"
+                                            id="datepicker"
+                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            placeholder="Select date">
+                                    </div>
+                                    <div class="relative w-full">
+                                        <div
+                                            class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+                                            <svg fill="currentColor" class="h-4 w-4 text-gray-500 dark:text-gray-400"
+                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                <title>clock-time-eight</title>
+                                                <path
+                                                    d="M12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17.5 22 22 17.5 22 12S17.5 2 12 2M7.7 15.5L7 14.2L11 11.9V7H12.5V12.8L7.7 15.5Z" />
+                                            </svg>
+                                        </div>
+                                        <input x-model="orientationTime" x-ref="timePickerOrientation"
+                                            id="timepicker"
+                                            class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                            placeholder="Select time">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex space-x-4 px-4 pb-4 text-center">
+                        <button @click="assignOrientationDate()" type="button"
+                            class="basis-1/2 items-center rounded-lg bg-sky-600 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-sky-800">
+                            Set
+                        </button>
+                        <button
+                            @click="showOrientationModal = !showOrientationModal; document.body.classList.remove('no-scroll');dataLoading=false"
+                            type="button"
+                            class="basis-1/2 rounded-lg border border-gray-600 bg-gray-800 px-5 py-2.5 text-sm font-medium text-gray-400 hover:bg-gray-700 hover:text-white">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -1195,6 +1300,8 @@
                     defaultIdTemplate: '',
                     instructors: [],
                     selectedInstructorId: '',
+                    selectedBatchOrientation: '',
+                    orientationDate: '',
 
                     // Modals
                     showBatchesModal: false,
@@ -1202,6 +1309,7 @@
                     showInstructorsModal: false,
                     showSettingsModal: false,
                     showIdTemplateModal: false,
+                    showOrientationModal: false,
 
                     // Loading Utility
                     xhr: null,
@@ -1227,7 +1335,17 @@
                             console.log(this.defaultIdTemplate);
                         }
 
-
+                        flatpickr(this.$refs.datePickerOrientation, {
+                            altInput: true,
+                            altFormat: "F j, Y",
+                            dateFormat: "Y-m-d",
+                            minDate: "today",
+                        })
+                        flatpickr(this.$refs.timePickerOrientation, {
+                            enableTime: true,
+                            noCalendar: true,
+                            dateFormat: "H:i",
+                        })
                     },
                     featuredCourses: 0,
                     get groupedCourse() {
@@ -1726,6 +1844,84 @@
                             }
                         });
                         this.showInstructorsModal = true
+                    },
+
+                    // Orientation Modal
+                    setOrientation(batchId) {
+                        document.body.classList.add('no-scroll');
+                        this.selectedBatch = this.selectedCourse.batches.find(batch => batch.id === batchId)
+                        this.abortFetch('ajax')
+                        this.dataLoading = true
+                        var t = this
+                        this.xhr = $.ajax({
+                            url: `{{ route('get_orientation_date', ':id') }}`.replace(':id', batchId),
+                            method: 'GET',
+                            data: {
+                                _token: '{{ csrf_token() }}',
+                            },
+                            success: function(response) {
+                                console.log(response);
+
+                                if (response.status == 'error') {
+                                    t.notification(response.status, response.message, '')
+                                }
+
+                                t.orientationDate = response.data.orientation_date;
+                                t.orientationTime = response.data.orientation_time;
+
+                                t.$refs.datePickerOrientation._flatpickr.setDate(t.orientationDate, true);
+                                t.$refs.timePickerOrientation._flatpickr.setDate(t.orientationTime, true);
+                            },
+                            error: function(xhr, status, error) {
+                                console.error(xhr.responseText);
+                                t.notification('error', 'Connection error', '')
+                            }
+                        });
+                        this.showOrientationModal = true
+                    },
+                    assignOrientationDate() {
+                        const isValidDate = !isNaN(Date.parse(this.orientationDate));
+
+                        console.log(this.orientationDate);
+                        console.log(this.selectedBatch);
+
+
+                        if (isValidDate) {
+                            this.abortFetch('ajax')
+                            this.dataLoading = true
+                            var t = this
+                            this.xhr = $.ajax({
+                                url: '{{ route('assign_orientation_date') }}',
+                                method: 'POST',
+                                data: {
+                                    _token: '{{ csrf_token() }}',
+                                    batch_id: t.selectedBatch.id,
+                                    orientation_date: t.orientationDate,
+                                    orientation_time: t.orientationTime
+                                },
+                                success: function(response) {
+                                    console.log(response);
+                                    if (response.status == 'success') {
+                                        t.notification('success',
+                                            `${moment(response.orientation.date_time).format('MMMM Do YYYY, h:mm a')}. Trainees of ${t.selectedCourse.code}-${t.selectedBatch.name} are notified.`,
+                                            'Orientation Scheduled')
+                                        t.showOrientationModal = false
+                                    }
+
+                                    ws.send(JSON.stringify({
+                                        action: 'private',
+                                        targetUserIds: response.userIds
+                                    }));
+
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error(xhr.responseText);
+                                    t.notification('error', 'Connection error', '')
+                                }
+                            });
+                        } else {
+                            this.notification('error', 'Please input valid date', 'Invalid Date')
+                        }
                     },
 
                     // Assign Instructor Modal

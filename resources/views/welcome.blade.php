@@ -307,16 +307,16 @@
                                     <li>
 
                                         <a href="{{ route('login') }}"
-                                            class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
+                                            class="rouned-md group flex items-center rounded-lg border-2 border-sky-500 p-2 text-white hover:border-sky-700 hover:bg-sky-700">
 
                                             <span class="flex-1 whitespace-nowrap">Log In</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('register') }}"
-                                            class="group flex items-center rounded-lg p-2 text-gray-900 hover:text-sky-500 dark:text-white">
+                                            class="rouned-md group flex items-center rounded-lg border-2 border-sky-500 bg-sky-500 p-2 text-white hover:border-sky-700 hover:bg-sky-700">
 
-                                            <span class="flex-1 whitespace-nowrap">Sign Up</span>
+                                            <span class="flex-1 whitespace-nowrap">Register</span>
                                         </a>
                                     </li>
                                 @endauth
@@ -715,8 +715,9 @@
     <script>
         function welcomePage() {
             return {
-                user: @json($user),
-                featuredCourses: @json($courses),
+                user: @json($user ?? ''),
+                instructor_info: @json($user->instructor_info ?? ''),
+                featuredCourses: @json($courses ?? ''),
                 noInstructorInfo: false,
                 tempIdPicture: null,
                 filePondInstance: null,
@@ -732,20 +733,22 @@
                 },
 
                 init() {
+                    console.log(this.user);
                     @if (session('status'))
                         this.notification('{{ session('status') }}', '{{ session('message') }}', '')
                     @endif
-                    if (this.user && this.user.role == 'instructor' && (!this.user.instructor_info || !this.user
-                            .instructor_info
-                            .submitted)) {
+                    if ((this.user && this.user.role == 'instructor' && (!this.instructor_info || !this.instructor_info
+                            .submitted))) {
                         this.noInstructorInfo = true;
                         document.body.classList.add('no-scroll');
                         this.notification('info',
-                            'This account promoted to Instructor Role. Please complete the form to proceed.',
+                            'This account is promoted to Instructor Role. Please complete the form to proceed.',
                             '')
                         this.filePond_config();
                         this.fetchRegions();
                     }
+
+
                 },
                 filePond_config() {
                     FilePond.registerPlugin(FilePondPluginImagePreview,

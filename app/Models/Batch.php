@@ -64,4 +64,8 @@ class Batch extends Model
         return $this->hasMany(UnitOfCompetency::class);
     }
 
+    public function orientation(){
+        return $this->hasOne(Orientation::class);
+    }
+
 }

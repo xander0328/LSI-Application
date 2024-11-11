@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }"
+<nav x-data="navigation"
     class="fixed top-0 z-50 w-full border-b border-gray-100 bg-blue-100 dark:border-gray-700 dark:bg-gray-800">
     <!-- Primary Navigation Menu -->
     <div class="px-4 sm:px-6 lg:px-8">
@@ -37,90 +37,167 @@
             </div>
 
             <!-- Menu Dropdown -->
-            <div class="relative hidden md:ms-6 md:flex md:items-center">
-                <x-dropdown align="right" width="46">
-                    <x-slot name="trigger">
-                        <button
-                            class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
-                            <div>
-                                {{ Auth::user()->role == 'instructor' ? 'Trainer ' . Auth::user()->fname . ' ' . Auth::user()->lname : (Auth::user()->role == 'superadmin' ? 'Administrator' : Auth::user()->fname . ' ' . Auth::user()->lname) }}
-                            </div>
-
-                            <div class="ms-1">
-                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
+            <div class="flex items-center">
+                <div @click="markRead()" class="me-2 md:me-4">
+                    <x-dropdown align="right" width="80" marginRight="md:me-32 me-10 ">
+                        <x-slot name="trigger">
+                            <span>
+                                <svg class="h-6 w-6 text-gray-500 dark:text-white/50" fill="currentColor"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <title>bell</title>
+                                    <path
+                                        d="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.1 14,4.19 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21" />
                                 </svg>
-                            </div>
-                        </button>
-                    </x-slot>
+                            </span>
+                        </x-slot>
 
-                    <x-slot name="content">
-                        <div class="m-1.5">
-
-                            <x-dropdown-link :href="'#'" id="installButtonHolder"
-                                class="hidden items-center space-x-1.5 rounded-md bg-sky-700 px-1.5 hover:bg-sky-600">
-                                <button id="installButton" class="hidden w-full rounded-lg text-center text-white">
-                                    <div class="flex items-center justify-center">
-                                        <span>
-                                            <svg class="h-4 w-4 text-white" fill="currentColor"
-                                                xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                                <title>download-circle-outline</title>
-                                                <path
-                                                    d="M8 17V15H16V17H8M16 10L12 14L8 10H10.5V6H13.5V10H16M12 2C17.5 2 22 6.5 22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2M12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12C20 7.58 16.42 4 12 4Z" />
-                                            </svg>
-                                        </span>
-                                        <span class="ms-2">
-                                            Install App
-                                        </span>
-                                    </div>
-                                </button>
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('profile.edit')" class="flex items-center space-x-1.5 rounded-md px-1.5">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                    <path fill="currentColor"
-                                        d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
-                                </svg>
+                        <x-slot name="content">
+                            <div class="m-1.5 text-black dark:text-white">
+                                <div
+                                    class="border-b border-gray-200 p-1 text-sm font-bold uppercase dark:border-gray-600">
+                                    Notifications</div>
                                 <div>
-                                    Profile
+                                    <template x-for="notif in notifications" :key="notif.id">
+                                        <template x-if="notif.data.subject == 'enrollment'">
+                                            <div class="flex rounded p-1 hover:bg-gray-200 dark:hover:bg-gray-600">
+                                                <div class="me-1.5 flex">
+                                                    <span class="me-1 h-6 w-6">
+                                                        <template x-if="notif.data.status === 'accepted'">
+                                                            <img width="48" height="48"
+                                                                src="https://img.icons8.com/color/48/check-file.png"
+                                                                alt="check-file" />
+                                                        </template>
+                                                        <template x-if="notif.data.status !== 'accepted'">
+                                                            <img width="48" height="48"
+                                                                src="https://img.icons8.com/color/48/file-delete--v1.png"
+                                                                alt="file-delete--v1" />
+                                                        </template>
+                                                    </span>
+                                                </div>
+                                                <div class="">
+                                                    <div class="flex items-center text-sm">
+                                                        <span class="font-bold">
+                                                            Enrollment
+                                                        </span>
+                                                    </div>
+                                                    <div class="text-xs">
+                                                        <div x-text="notif.data.message"></div>
+                                                        <div class="mt-1"> Download ID Card here: <a
+                                                                class="rounded bg-black/10 p-1 hover:bg-black/20"
+                                                                :href="notif.id_card_link" target="_blank"
+                                                                rel="noopener noreferrer">My Profile</a></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+                                    <template x-if="unreadNotificationCount == 0">
+                                        <div class="my-4 flex items-center justify-center">
+                                            <span class="text-sm text-gray-600 dark:text-gray-300">No Unread
+                                                Notifications</span>
+                                        </div>
+                                    </template>
+                                    <template
+                                        x-if="notificationCount > 5 || (notificationCount > 0 && unreadNotificationCount == 0)">
+                                        <div
+                                            class="flex items-center justify-center border-t border-gray-200 p-1 dark:border-gray-600">
+                                            <a class="rounded-md p-2 text-xs hover:bg-gray-200 dark:hover:bg-gray-600"
+                                                href="{{ route('notifications') }}">Show All</a>
+                                        </div>
+                                    </template>
                                 </div>
-                            </x-dropdown-link>
+                            </div>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+                <div class="relative hidden md:flex md:items-center">
 
-                            <form class="cursor-pointer" method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link hover_bg="hover:bg-red-900"
-                                    class="flex items-center space-x-1.5 rounded-md px-1.5"
-                                    onclick="event.preventDefault();
-                                            this.closest('form').submit();">
+                    <x-dropdown align="right" width="46">
+                        <x-slot name="trigger">
+                            <button
+                                class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                                <div>
+                                    {{ Auth::user()->role == 'instructor' ? 'Trainer ' . Auth::user()->fname . ' ' . Auth::user()->lname : (Auth::user()->role == 'superadmin' ? 'Administrator' : Auth::user()->fname . ' ' . Auth::user()->lname) }}
+                                </div>
+
+                                <div class="ms-1">
+                                    <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd"
+                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </x-slot>
+
+                        <x-slot name="content">
+                            <div class="m-1.5">
+
+                                <x-dropdown-link :href="'#'" id="installButtonHolder"
+                                    class="hidden items-center space-x-1.5 rounded-md bg-sky-700 px-1.5 hover:bg-sky-600">
+                                    <button id="installButton" class="hidden w-full rounded-lg text-center text-white">
+                                        <div class="flex items-center justify-center">
+                                            <span>
+                                                <svg class="h-4 w-4 text-white" fill="currentColor"
+                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                    <title>download-circle-outline</title>
+                                                    <path
+                                                        d="M8 17V15H16V17H8M16 10L12 14L8 10H10.5V6H13.5V10H16M12 2C17.5 2 22 6.5 22 12C22 17.5 17.5 22 12 22C6.5 22 2 17.5 2 12C2 6.5 6.5 2 12 2M12 4C7.58 4 4 7.58 4 12C4 16.42 7.58 20 12 20C16.42 20 20 16.42 20 12C20 7.58 16.42 4 12 4Z" />
+                                                </svg>
+                                            </span>
+                                            <span class="ms-2">
+                                                Install App
+                                            </span>
+                                        </div>
+                                    </button>
+                                </x-dropdown-link>
+                                <x-dropdown-link :href="route('profile.edit')"
+                                    class="flex items-center space-x-1.5 rounded-md px-1.5">
                                     <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                         <path fill="currentColor"
-                                            d="M14.08,15.59L16.67,13H7V11H16.67L14.08,8.41L15.5,7L20.5,12L15.5,17L14.08,15.59M19,3A2,2 0 0,1 21,5V9.67L19,7.67V5H5V19H19V16.33L21,14.33V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19Z" />
+                                            d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
                                     </svg>
                                     <div>
-                                        Log Out
+                                        Profile
                                     </div>
                                 </x-dropdown-link>
-                            </form>
 
-                        </div>
-                    </x-slot>
-                </x-dropdown>
-            </div>
+                                <form class="cursor-pointer" method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <x-dropdown-link hover_bg="hover:bg-red-900"
+                                        class="flex items-center space-x-1.5 rounded-md px-1.5"
+                                        onclick="event.preventDefault();
+                                                    this.closest('form').submit();">
+                                        <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <path fill="currentColor"
+                                                d="M14.08,15.59L16.67,13H7V11H16.67L14.08,8.41L15.5,7L20.5,12L15.5,17L14.08,15.59M19,3A2,2 0 0,1 21,5V9.67L19,7.67V5H5V19H19V16.33L21,14.33V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19Z" />
+                                        </svg>
+                                        <div>
+                                            Log Out
+                                        </div>
+                                    </x-dropdown-link>
+                                </form>
 
-            <!-- Menu Hamburger -->
-            <div class="-me-2 flex items-center md:hidden">
-                <button @click="open = ! open"
-                    class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none dark:text-gray-500 dark:hover:bg-gray-900 dark:hover:text-gray-400 dark:focus:bg-gray-900 dark:focus:text-gray-400">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                            </div>
+                        </x-slot>
+                    </x-dropdown>
+                </div>
+
+                <!-- Menu Hamburger -->
+                <div class="me-2 flex items-center md:hidden">
+                    <button @click="open = !open"
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none dark:text-gray-500 dark:hover:bg-gray-900 dark:hover:text-gray-400 dark:focus:bg-gray-900 dark:focus:text-gray-400">
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path :class="{ 'hidden': open, 'inline-flex': !open }" class="inline-flex"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                            <path :class="{ 'hidden': !open, 'inline-flex': open }" class="hidden"
+                                stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -157,8 +234,8 @@
                             onclick="event.preventDefault();
                                             this.closest('form').submit();">
                             <span class="rounded bg-red-600/50 p-2 hover:bg-red-600">
-                                <svg class="h-6 w-6 text-white" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24">
+                                <svg class="h-6 w-6 text-white" fill="currentColor"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <title>logout</title>
                                     <path
                                         d="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z" />
@@ -367,3 +444,97 @@
         </div>
     </div>
 </nav>
+
+<script>
+    function navigation() {
+        return {
+            open: false,
+            notificationCount: 0,
+            unreadNotificationCount: 0,
+            notifications: [],
+            notificationLoading: false, // Add loading flag for better UX
+            init() {
+                console.log('Navigation initialized');
+                this.websocket();
+                this.getNotifications();
+            },
+            async getNotifications() {
+                const t = this; // Capture the context of `this`
+                t.notificationLoading = true;
+                try {
+                    const response = await $.ajax({
+                        url: '{{ route('get_notifications') }}',
+                        method: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        }
+                    });
+                    t.notifications = response.notifications;
+                    t.unreadNotificationCount = response.unread;
+                    t.notificationCount = response.all; // Update the notification data
+                } catch (error) {
+                    t.notifications = []; // Handle empty notification in case of error
+                    console.error('Error getting notification', error);
+                } finally {
+                    t.notificationLoading = false; // Reset loading state
+                    console.log(t.unreadNotificationCount);
+                    console.log(t.notificationCount);
+
+                }
+            },
+            async markRead() {
+                const t = this
+                try {
+                    const notificationIds = t.notifications.map(n => n.id)
+                    const response = await $.ajax({
+                        url: '{{ route('mark_read') }}',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                        },
+                        data: {
+                            notif_ids: notificationIds
+                        }
+                    });
+                    t.notifications = t.notifications.map(n => {
+                        n.read_at = moment().format(); // Set `read_at` to the current timestamp
+                        return n; // Return the updated notification object
+                    });
+                } catch (error) {
+                    console.error('Error getting notification', error);
+                }
+            },
+            websocket() {
+                if (!ws || ws.readyState === WebSocket.CLOSED) {
+                    console.log('WebSocket connection not available');
+                    return;
+                }
+
+                ws.onopen = () => {
+                    console.log('Connected to WebSocket server');
+                    ws.send(JSON.stringify({
+                        action: 'register',
+                        userId: {{ auth()->user()->id }}
+                    }));
+                };
+
+                ws.onmessage = (event) => {
+                    const message = JSON.parse(event.data);
+                    if (message.message === 'notify') {
+                        console.log('got notified');
+                        // Handle new notification here
+                        this.getNotifications()
+                    }
+                    console.log(message);
+                };
+
+                ws.onclose = () => {
+                    console.log('Disconnected from WebSocket server');
+                    setTimeout(() => { // Adding delay before reconnecting
+                        this.websocket();
+                    }, 1000); // 1 second delay before retrying
+                };
+            },
+        }
+    }
+</script>

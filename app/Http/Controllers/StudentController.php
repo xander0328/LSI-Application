@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Carbon;
 use App\Models\User;
 use App\Models\Enrollee;
@@ -891,11 +892,11 @@ class StudentController extends Controller
     }
 
     public function id_card($id){
-        return view('student.id_card');
+        return view('student.id_card', compact('id'));
     }
     
-    public function show_id_card(){
-        $enrollee = Enrollee::where('user_id', auth()->user()->id)
+    public function show_id_card($id){
+        $enrollee = Enrollee::where('id', $id)
         ->whereNotNull('batch_id')
         ->whereHas('batch', function($query) {
             $query->whereNull('completed_at')
@@ -917,6 +918,7 @@ class StudentController extends Controller
         'qr_code' => $qr_code,
         'batch' => $enrollee->course->code.'-'.$enrollee->batch->name,
         'id_path' => $id_path, 
+        'enrollee' => $enrollee
         ];
         $pdf = Pdf::loadView('idcard', $data);
         $pdf->setPaper('A5');
@@ -999,5 +1001,29 @@ class StudentController extends Controller
         }
         return redirect()->back()->with(['status' => 'error', 'message' => 'Enrollment not found. Please check the enrollment details and try again.']);
 
+    }
+
+    public function notifications(){
+        return view('notifications');
+    }
+
+    public function get_notifications(){
+        $user = User::find(auth()->id());
+        $notifications = $user->unreadNotifications()->take(5)->get();
+        $unread = $user->unreadNotifications()->count();
+        $all = $user->notifications()->count();
+        // dd($user);
+        return response()->json(['notifications' => $notifications, 'unread' => $unread, 'all' => $all]);
+    }
+
+    public function mark_read(Request $request){
+        $user = User::find(auth()->id());
+
+        if (is_array($request->notif_ids) && count($request->notif_ids) > 0) {
+            $user->unreadNotifications()->whereIn('id', $request->notif_ids)
+            ->get()
+            ->each
+            ->markAsRead();
+        }
     }
 }

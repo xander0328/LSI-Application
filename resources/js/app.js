@@ -285,4 +285,7 @@ window.addEventListener("beforeinstallpromptresponsive", (e) => {
     }
 });
 
+const ws = new WebSocket('ws://lsi-websocket.glitch.me');
+window.ws = ws;
+
 Alpine.start();

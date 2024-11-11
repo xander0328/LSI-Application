@@ -15,64 +15,72 @@
     </x-slot>
     <div x-data="enrollmentList()" id="course_list" class="mx-4 mt-2 pb-4 pt-36 text-black dark:text-white">
         <div class="mb-4 text-sm">
-            <template x-for="enrollment in enrollment" :key="enrollment.id">
-                <div class="my-2 rounded-md bg-white p-4 dark:bg-gray-800">
-                    <div class="flex justify-between">
-                        <div>
-                            <span class="text-lg font-bold" x-text="enrollment.course.name"></span>
-                            <div class="flex">
-                                <span class="me-2 font-bold">Submitted at:</span>
-                                <span class="" x-text="moment(enrollment.created_at).format('lll')"></span>
-                            </div>
-                            <template x-if="enrollment.batch_id !== null">
+            <template x-if="enrollment.length > 0">
+                <template x-for="enrollment in enrollment" :key="enrollment.id">
+                    <div class="my-2 rounded-md bg-white p-4 dark:bg-gray-800">
+                        <div class="flex justify-between">
+                            <div>
+                                <span class="text-lg font-bold" x-text="enrollment.course.name"></span>
                                 <div class="flex">
-                                    <span class="me-2 font-bold">Batch:</span>
-                                    <span class=""
-                                        x-text="`${enrollment.course.code}-${enrollment.batch.name}`"></span>
+                                    <span class="me-2 font-bold">Submitted at:</span>
+                                    <span class="" x-text="moment(enrollment.created_at).format('lll')"></span>
                                 </div>
-                            </template>
-                            <div class="mt-2 flex">
-                                <a @click="showProfile(enrollment)"
-                                    class="flex cursor-pointer items-center justify-center rounded bg-gray-300 px-3 py-1 text-black hover:bg-gray-200">
-                                    <span>
-                                        <svg class="h-4 w-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24">
-                                            <title x-text="enrollment.id"></title>
-                                            <path
-                                                d="M14 2H6C4.89 2 4 2.9 4 4V20C4 21.11 4.89 22 6 22H18C19.11 22 20 21.11 20 20V8L14 2M18 20H6V4H13V9H18V20M13 13C13 14.1 12.1 15 11 15S9 14.1 9 13 9.9 11 11 11 13 11.9 13 13M15 18V19H7V18C7 16.67 9.67 16 11 16S15 16.67 15 18Z" />
-                                        </svg>
-                                    </span>
-                                    <span>
-                                        Submitted Profile
-                                    </span>
-                                </a>
+                                <template x-if="enrollment.batch_id !== null">
+                                    <div class="flex">
+                                        <span class="me-2 font-bold">Batch:</span>
+                                        <span class=""
+                                            x-text="`${enrollment.course.code}-${enrollment.batch.name}`"></span>
+                                    </div>
+                                </template>
+                                <div class="mt-2 flex">
+                                    <a @click="showProfile(enrollment)"
+                                        class="flex cursor-pointer items-center justify-center rounded bg-gray-300 px-3 py-1 text-black hover:bg-gray-200">
+                                        <span>
+                                            <svg class="h-4 w-4" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24">
+                                                <title x-text="enrollment.id"></title>
+                                                <path
+                                                    d="M14 2H6C4.89 2 4 2.9 4 4V20C4 21.11 4.89 22 6 22H18C19.11 22 20 21.11 20 20V8L14 2M18 20H6V4H13V9H18V20M13 13C13 14.1 12.1 15 11 15S9 14.1 9 13 9.9 11 11 11 13 11.9 13 13M15 18V19H7V18C7 16.67 9.67 16 11 16S15 16.67 15 18Z" />
+                                            </svg>
+                                        </span>
+                                        <span>
+                                            Submitted Profile
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="items-center">
+                                <span
+                                    :class="{
+                                        'bg-sky-500': enrollment.batch_id !== null,
+                                        'bg-red-500': enrollment.deleted_at !== null,
+                                        'bg-orange-500': enrollment.batch_id == null
+                                    }"
+                                    class="rounded bg-sky-500 px-3 py-1 font-medium uppercase text-white"
+                                    x-text="enrollment.batch_id !== null ? enrollment.deleted_at !== null ? 'Removed' : 'Accepted'  : 
+                                    enrollment.deleted_at !== null ? 'Cancelled' : 'Pending'"></span>
                             </div>
                         </div>
-                        <div class="items-center">
-                            <span
-                                :class="{
-                                    'bg-sky-500': enrollment.batch_id !== null,
-                                    'bg-red-500': enrollment.deleted_at !== null,
-                                    'bg-orange-500': enrollment.batch_id == null
-                                }"
-                                class="rounded bg-sky-500 px-3 py-1 font-medium uppercase text-white"
-                                x-text="enrollment.batch_id !== null ? enrollment.deleted_at !== null ? 'Removed' : 'Accepted'  : 
-                                enrollment.deleted_at !== null ? 'Cancelled' : 'Pending'"></span>
-                        </div>
+                        <template x-if="enrollment.batch_id === null && enrollment.deleted_at === null">
+                            <div class="mt-2">
+                                <form action="{{ route('cancel_enrollment') }}"
+                                    @submit.prevent="confirmDelete('Cancel Enrollment', 'Are you sure you want to cancel your enrollment? This action cannot be undone.', 'Confirm', false)"
+                                    method="post">
+                                    @csrf
+                                    <input type="hidden" name="enrollee_id" :value="enrollment.id">
+                                    <button
+                                        class="w-full rounded bg-red-500 py-1.5 text-sm font-medium uppercase text-white hover:bg-red-600"
+                                        type="submit">Cancel</button>
+                                </form>
+                            </div>
+                        </template>
                     </div>
-                    <template x-if="enrollment.batch_id === null && enrollment.deleted_at === null">
-                        <div class="mt-2">
-                            <form action="{{ route('cancel_enrollment') }}"
-                                @submit.prevent="confirmDelete('Cancel Enrollment', 'Are you sure you want to cancel your enrollment? This action cannot be undone.', 'Confirm', false)"
-                                method="post">
-                                @csrf
-                                <input type="hidden" name="enrollee_id" :value="enrollment.id">
-                                <button
-                                    class="w-full rounded bg-red-500 py-1.5 text-sm font-medium uppercase text-white hover:bg-red-600"
-                                    type="submit">Cancel</button>
-                            </form>
-                        </div>
-                    </template>
+                </template>
+            </template>
+            <template x-if="enrollment.length == 0">
+                <div class="rounded-lg bg-white p-4 text-center dark:bg-gray-800">
+                    <div class="text-xl font-bold">Nothing Here Yet</div>
+                    <div>Enroll in our available courses to elevate your skills!</div>
                 </div>
             </template>
         </div>

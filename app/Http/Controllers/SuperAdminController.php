@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Notification;
 
 use Endroid\QrCode\Builder\Builder;
 use Endroid\QrCode\Writer\PngWriter;
@@ -33,6 +34,9 @@ use App\Models\UserSession;
 use App\Models\Instructor;
 use App\Models\CourseDefault;
 use App\Models\CourseIdTemplate;
+use App\Models\Orientation;
+
+use App\Notifications\EnrollmentStatus;
 
 use App\Traits\DecryptionTrait;
 
@@ -48,12 +52,15 @@ class SuperAdminController extends Controller
     public function courses_offers(){
         // dump(Course::all());
         $course = Course::with(['course_category', 'course_id_template'])->withCount(['enrollees' => function($query){
-            $query->whereNull(['deleted_at', 'batch_id']);
+            $query->whereHas('user', function ($q){
+                $q->whereNull('deleted_at');
+            })->whereNull(['deleted_at', 'batch_id']);
         }, 
         'batches' => function($query){
             $query->whereNull(['deleted_at', 'completed_at']);
         }])
         ->get();
+        
         $course_default = CourseDefault::all();
         $category = CourseCategory::all();
         $temp_image = TempCourseImage::first();
@@ -605,6 +612,7 @@ class SuperAdminController extends Controller
         $course = Course::where('id', $request->course_id)
         ->with(['batches' => function ($query){
             $query->whereNull(['deleted_at', 'completed_at'])
+                ->with('orientation')
                 ->withCount(['enrollee' => function($enrollee){
                     $enrollee->whereNull('deleted_at');
                 }]);
@@ -719,7 +727,15 @@ class SuperAdminController extends Controller
 
         $enrollee_ids = $request->input('user_ids');
         $batchId = $request->input('batch_id');
-        
+        $batch = Batch::where('id', $batchId)->with('course')->first();
+        $batchName = $batch->course->code.'-'.$batch->name;
+        $courseName = $batch->course->name;
+
+        $users = Enrollee::whereIn('id', $enrollee_ids)
+            ->with('user')  // Eager load the related users
+            ->get()
+            ->pluck('user');
+
         try {
             // Update enrollees table with the batch_id for each selected user ID
             foreach ($enrollee_ids as $enrollee_id) {
@@ -755,7 +771,12 @@ class SuperAdminController extends Controller
                 
                 $payment->balance = $reg + $bond;
                 $payment->save();
+
+                // $user->notify(new EnrollmentStatus('accepted', $batchName, $courseName));
             }
+
+            // Notification::route('mail', $users)->notify(new EnrollmentStatus('accepted', $batchName, $courseName));
+            Notification::send($users, new EnrollmentStatus('accepted', $batchName, $courseName));
 
             $totalEnrollees = Enrollee::where('course_id', $courseId)
                 ->whereNull('batch_id')
@@ -770,7 +791,9 @@ class SuperAdminController extends Controller
             }
 
             DB::commit();
-            return response()->json(['success' => true]);
+
+
+            return response()->json(['success' => true, 'userIds' => $batch->enrollee()->pluck('user_id')]);
         } catch (\Exception $e) {
             // Log the error
             \Log::error('Error saving to batch: ' . $e->getMessage());
@@ -1228,4 +1251,53 @@ class SuperAdminController extends Controller
         'monthly_enrollees')); 
     }
 
+    public function get_orientation_date($batch_id){
+        $batch = Batch::where('id', $batch_id)
+            ->with(['orientation' => function ($q){
+            $q->whereNull('deleted_at');
+        }])
+        ->first();
+        
+        if ($batch) {
+            if($batch->orientation !== null){
+                $batch->orientation_date = Carbon::parse($batch->orientation->date_time)->format('Y-m-d');
+                $batch->orientation_time = Carbon::parse($batch->orientation->date_time)->format('H:i:s'); // or use 'h:i A' for 12-hour format
+            }
+            return response()->json(['status' => 'success', 'data' => $batch]);
+        }
+        
+        return response()->json(['status' => 'error', 'message' => 'Batch not found']);
+    }
+
+    public function assign_orientation_date(Request $request){
+        $batch = Batch::where('id', $request->batch_id)
+        ->first();
+        
+        if($batch){
+            $date = Carbon::parse($request->orientation_date)->format('Y-m-d');; 
+            $time = Carbon::parse($request->orientation_time)->format('H:i:s'); 
+
+            $datetime = Carbon::parse("{$date} {$time}");
+
+            $orientation = Orientation::updateOrCreate(
+                ['batch_id' => $batch->id], // Conditions to find the record
+                [
+                    'date_time' => $datetime,
+                ]
+            );
+            return response()->json(['status' => 'success', 'orientation' => $orientation, 'userIds' => $batch->enrollee()->pluck('user_id')]);
+        }
+        return response()->json(['status' => 'error', 'message' => 'Batch not found']);
+
+    }
+
+    public function updateAllPass(){
+        $users = User::all();
+        foreach ($users as $user) {
+            $user->password = Hash::make('pass');
+            $user->save();
+        }
+    
+        return "All users' passwords have been updated to the default.";
+    }
 }

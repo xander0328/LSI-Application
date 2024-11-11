@@ -27,13 +27,11 @@ Route::get('/', function () {
     $courses = Course::where('featured', true)->get();
     $user = null;
     if(Auth::check()){
-        $query = User::query();
-        if(auth()->user()->role == 'instructor'){
-            $query->with('instructor_info');
-        }
-        $user = $query->find(auth()->user()->id);
+        $user = User::with('instructor_info')->find(auth()->id())->toArray();
     }
-    
+
+    // dd($user);
+
     return view('welcome', compact('courses', 'user'));
 })->name('home');
 
@@ -102,6 +100,9 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         // Route::get('/enrollees', [SuperAdminController::class, 'courses_enrollees'])->name('enrollees');
     });
     
+    Route::get('/get_orientation_date/{batch_id}', [SuperAdminController::class, 'get_orientation_date'])->name('get_orientation_date');
+    Route::post('/assign_orientation_date', [SuperAdminController::class, 'assign_orientation_date'])->name('assign_orientation_date');
+    
     Route::get('/show_enrollee_file/{id}', [SuperAdminController::class, 'show_diploma'])->name('show_enrollee_file');
 
     Route::prefix('users')->group(function () {
@@ -140,6 +141,8 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
     Route::post('/get_scan_data', [SuperAdminController::class, 'get_scan_data'])->name('get_scan_data');
     Route::post('/submit_f2f_attendance', [SuperAdminController::class, 'submit_f2f_attendance'])->name('submit_f2f_attendance');
     Route::get('/all_users', [SuperAdminController::class, 'all_users'])->name('all_users');
+
+    Route::get('/admin_id_card/{id}', [StudentController::class, 'id_card'])->name('admin_id_card');
     
 });
 
@@ -183,7 +186,6 @@ Route::middleware(['auth', 'verified', 'role:student'])->group(function () {
     
     //ID CARD
     Route::get('/generateIDCard/{id}', [StudentController::class, 'generateIDCard'])->name('generateIDCard');
-    Route::get('/idcard', [StudentController::class, 'show_id_card'])->name('idcard');
     Route::get('/id_card/{id}', [StudentController::class, 'id_card'])->name('id_card');
     
 });
@@ -271,6 +273,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/send-web-notification', [NotificationSendController::class, 'sendMesssageNotification'])->name('send.web-notification');
     
     Route::post('/check_session', [SessionController::class, 'check_session'])->name('check_session');
+
+    Route::get('/notifications', [StudentController::class, 'notifications'])->name('notifications');
 });
 
 Route::middleware(['auth', 'verified', 'role:guest,student'])->group(function () {
@@ -301,9 +305,16 @@ Route::middleware(['auth', 'verified', 'role:guest,student'])->group(function ()
     });
 });
 
+Route::middleware(['auth', 'verified', 'role:student,superadmin'])->group(function () {
+    Route::get('/idcard/{id}', [StudentController::class, 'show_id_card'])->name('idcard');
+});
+
 Route::get('/test_socket', function () {
     return view('test_input_post');
 });
 
+
+Route::get('/get_notifications', [StudentController::class, 'get_notifications'])->name('get_notifications');
+Route::post('/mark_read', [StudentController::class, 'mark_read'])->name('mark_read');
 
 require __DIR__.'/auth.php';
