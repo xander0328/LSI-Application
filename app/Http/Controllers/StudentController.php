@@ -1016,6 +1016,15 @@ class StudentController extends Controller
         return response()->json(['notifications' => $notifications, 'unread' => $unread, 'all' => $all]);
     }
 
+    public function get_all_notifications(){
+        $user = User::find(auth()->id());
+        $notifications = $user->notifications()->get();
+        $unread = $user->unreadNotifications()->count();
+        $all = $user->notifications()->count();
+        // dd($user);
+        return response()->json(['notifications' => $notifications, 'unread' => $unread, 'all' => $all]);
+    }
+
     public function mark_read(Request $request){
         $user = User::find(auth()->id());
 

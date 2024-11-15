@@ -85,29 +85,63 @@
         [x-cloak] {
             display: none !important;
         }
-
-        @yield('style')
     </style>
-    @yield('style-links')
 
 </head>
 
-<body class="bg-gray-200 font-sans antialiased dark:bg-gray-900">
+<body class="font-sans antialiased bg-gray-200 dark:bg-gray-900">
 
     <div>
         @extends('layouts.navigation')
-        <div class="fixed left-0 right-0 top-16 z-10 shadow-lg">
+        <div class="fixed left-0 right-0 z-10 shadow-lg top-16">
             <div class="z-10 flex items-center bg-white shadow-lg">
                 <span class="px-4 py-6 text-2xl font-bold">
                     Notifications
                 </span>
             </div>
         </div>
-        <div x-data="notifList class ="mx-4 pt-40 md:mx-8">
+        <div x-data="notifList" class="pt-40 mx-2">
             <template x-for="notif in  notifications" :key="notif.id">
-                <div class="mb-1 rounded-lg">
-                    <span x-text="notif.data."></span>
-                </div>
+
+                <template x-if="notif.data.subject === 'enrollment'">
+                    <div class="flex items-center p-2 mb-1 bg-white rounded-lg hover:bg-sky-50"">
+                        <div class="me-1.5 flex items-center">
+                            <span class="w-10 h-10 me-1">
+                                <template x-if="notif.data.status === 'accepted'">
+                                    <img width="48" height="48"
+                                        src="https://img.icons8.com/color/48/check-file.png"
+                                        alt="check-file" />
+                                </template>
+                                <template x-if="notif.data.status !== 'accepted'">
+                                    <img width="48" height="48"
+                                        src="https://img.icons8.com/color/48/file-delete--v1.png"
+                                        alt="file-delete--v1" />
+                                </template>
+                            </span>
+                        </div>
+                        <div>
+                            <div>
+                                <span :class="{
+                                    'border-lime-500 bg-lime-300' : notif.data.status === 'accepted',
+                                    'border-red-500 bg-red-300' : notif.data.status !== 'accepted'
+                                }" class="px-2 border rounded">
+                                    <span>Status:</span>
+                                    <span class="capitalize" x-text="notif.data.status"></span>
+                                </span>
+                            </div>
+                            <div>
+                                <span class="text-sm" x-text="notif.data.message"></span>
+                            </div>
+                            <template x-if="notif.data.status === 'accepted'">
+                                <div class="mt-2 text-sm">
+                                    <span>Download your ID Card here: </span>
+                                    <span class="px-2 py-1 text-center rounded whitespace-nowrap bg-sky-400 hover:bg-sky-500"><a :href="notif.data.id_card_link">My Profile</a></span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
             </template>
         </div>
     </div>
@@ -118,7 +152,7 @@
         return {
             notifications: [],
             unreadNotificationCount: 0,
-            notificationCount 0,
+            notificationCount: 0,
             notificationLoading: false,
             init() {
                 this.getNotifications()
@@ -128,7 +162,7 @@
                 t.notificationLoading = true;
                 try {
                     const response = await $.ajax({
-                        url: '{{ route('get_notifications') }}',
+                        url: '{{ route('get_all_notifications') }}',
                         method: 'GET',
                         headers: {
                             'X-CSRF-TOKEN': "{{ csrf_token() }}"

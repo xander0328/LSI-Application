@@ -14,44 +14,44 @@
         </div>
 
     </x-slot>
-    <div x-data="dashboard" id="main-div" class="mx-4 pb-4 pt-40 text-black dark:text-white md:mx-8">
-        <div class="mb-6 grid grid-cols-3 gap-3">
-            <div class="col-span-full flex flex-col md:col-span-1">
-                <div class="mb-3 flex basis-2/3 items-center justify-center rounded-lg bg-sky-600 p-2 text-white">
+    <div x-data="dashboard" id="main-div" class="pt-40 pb-4 mx-4 text-black dark:text-white md:mx-8">
+        <div class="grid grid-cols-3 gap-3 mb-6">
+            <div class="flex flex-col col-span-full md:col-span-1">
+                <div class="flex items-center justify-center p-2 mb-3 text-white rounded-lg basis-2/3 bg-sky-600">
                     <div>
                         <div class="py-2 text-center">PLATFORM USERS</div>
                         <canvas id="web-users-chart"></canvas>
                     </div>
                 </div>
-                <div class="flex basis-1/3 flex-col rounded-lg bg-white p-4 dark:bg-gray-700">
+                <div class="flex flex-col p-4 bg-white rounded-lg basis-1/3 dark:bg-gray-700">
                     <div class="mb-2">
                         <span>
                             NEW USERS
                         </span>
                     </div>
                     <div class="grid h-full grid-cols-3 gap-2">
-                        <div class="flex flex-col rounded bg-gray-800/25 p-2">
-                            <div class="text-center text-sm text-slate-600 dark:text-white/50">Today</div>
-                            <div class="flex h-full items-center justify-center text-xl">{{ $today_enrollees }}</div>
+                        <div class="flex flex-col p-2 rounded bg-gray-800/25">
+                            <div class="text-sm text-center text-slate-600 dark:text-white/50">Today</div>
+                            <div class="flex items-center justify-center h-full text-xl">{{ $today_enrollees }}</div>
                         </div>
-                        <div class="flex flex-col rounded bg-gray-800/25 p-2">
-                            <div class="text-center text-sm text-slate-600 dark:text-white/50">This Month</div>
-                            <div class="flex h-full items-center justify-center text-xl">{{ $month_enrollees }}</div>
+                        <div class="flex flex-col p-2 rounded bg-gray-800/25">
+                            <div class="text-sm text-center text-slate-600 dark:text-white/50">This Month</div>
+                            <div class="flex items-center justify-center h-full text-xl">{{ $month_enrollees }}</div>
                         </div>
-                        <div class="flex flex-col rounded bg-gray-800/25 p-2">
-                            <div class="text-center text-sm text-slate-600 dark:text-white/50">This Year</div>
-                            <div class="flex h-full items-center justify-center text-xl">{{ $year_enrollees }}</div>
+                        <div class="flex flex-col p-2 rounded bg-gray-800/25">
+                            <div class="text-sm text-center text-slate-600 dark:text-white/50">This Year</div>
+                            <div class="flex items-center justify-center h-full text-xl">{{ $year_enrollees }}</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-span-full gap-3 md:col-span-2">
-                <div class="mb-3 rounded-lg bg-white p-4 dark:bg-gray-700">
-                    <div class="mb-2 flex items-center justify-between">
+            <div class="gap-3 col-span-full md:col-span-2">
+                <div class="p-4 mb-3 bg-white rounded-lg dark:bg-gray-700">
+                    <div class="flex items-center justify-between mb-2">
                         <span>
                             COURSES / PROGRAMS
                         </span>
-                        <span class="cursor-pointer text-white/75 hover:text-sky-500">
+                        <span class="text-gray-700 cursor-pointer dark:text-white/75 hover:text-sky-500">
                             View
                         </span>
                     </div>
@@ -59,7 +59,7 @@
                         <div
                             class="flex items-center justify-between rounded-md border border-gray-800/25 bg-gray-800/25 px-1.5 py-2 hover:border-sky-500">
                             <div class="flex items-center justify-center space-x-2">
-                                <span class="rounded-full bg-sky-700 p-2 text-white">
+                                <span class="p-2 text-white rounded-full bg-sky-700">
                                     <svg class="h-7 w-7" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24">
                                         <title>archive-clock</title>
@@ -80,7 +80,7 @@
                         <div
                             class="flex items-center justify-between rounded-md border border-gray-800/25 bg-gray-800/25 px-1.5 py-2 hover:border-sky-500">
                             <div class="flex items-center justify-center space-x-2">
-                                <span class="rounded-full bg-sky-700 p-2 text-white">
+                                <span class="p-2 text-white rounded-full bg-sky-700">
                                     <svg class="h-7 w-7" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24">
                                         <title>bookshelf</title>
@@ -101,7 +101,7 @@
                         <div
                             class="flex items-center justify-between rounded-md border border-gray-800/25 bg-gray-800/25 px-1.5 py-2 hover:border-sky-500">
                             <div class="flex items-center justify-center space-x-2">
-                                <span class="rounded-full bg-sky-700 p-2 text-white">
+                                <span class="p-2 text-white rounded-full bg-sky-700">
                                     <svg class="h-7 w-7" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24">
                                         <title>bookshelf</title>
@@ -122,7 +122,7 @@
                         <div
                             class="flex items-center justify-between rounded-md border border-gray-800/25 bg-gray-800/25 px-1.5 py-2 hover:border-sky-500">
                             <div class="flex items-center justify-center space-x-2">
-                                <span class="rounded-full bg-sky-700 p-2 text-white">
+                                <span class="p-2 text-white rounded-full bg-sky-700">
                                     <svg class="h-7 w-7" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24">
                                         <title>crowd</title>
@@ -143,48 +143,81 @@
                     </div>
 
                 </div>
-                <div class="col-span-2 row-span-1 rounded-lg bg-white p-4 dark:bg-gray-700">
-                    <div class="col-span-2 flex items-center justify-between">
+                <div class="col-span-2 row-span-1 p-4 bg-white rounded-lg dark:bg-gray-700">
+                    <div class="flex items-center justify-between col-span-2">
                         <span>
                             ENROLLMENT
                         </span>
-                        <span class="w-1/3">
-                            <select name="enrollment_mode" id="enrollment_mode"
-                                class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-                                <option selected="yearly" selected>Yearly</option>
-                                <option selected="monthly">Monthly</option>
-                            </select>
-                        </span>
+                        <div :class="enrollmentMode === 'monthly' ? 'flex' : ''" class="w-1/3 ">
+                            <span class="w-1/2">
+                                <select name="enrollment_mode" id="enrollment_mode" x-model="enrollmentMode"
+                                    @change="enrollmentModeChanged"
+                                    class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    <option value="yearly">Yearly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </span>
+                            <span class="w-1/2 ms-1" x-cloak x-show="enrollmentMode === 'monthly'">
+                                <select name="enrollment_mode" id="enrollment_mode" x-model="selectedYear"
+                                    @change="selectedYearChanged"
+                                    class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    <template x-for="year in Object.keys(monthlyEnrolleesGrouped)">
+                                        <option :value="year" x-text="year"></option>
+                                    </template>
+                                </select>
+                            </span>
+                        </div>
                     </div>
                     <canvas id="enrollment-tracking"></canvas>
                 </div>
-
             </div>
         </div>
-        <div class="col-span-4 mb-2">
+        <div class="grid grid-cols-3 gap-3 col-span-full ">
+            <div class="col-span-2 p-4 bg-white rounded-lg dark:bg-gray-700">
+                <div class="flex items-center justify-between col-span-1">
+                    <span>
+                        TRAINEES
+                    </span>
+                </div>
+                {{-- <canvas id="enrollees-count"></canvas> --}}
+            </div>
+
+            <div class="col-span-1 p-4 bg-white rounded-lg dark:bg-gray-700">
+                <div class="flex items-center justify-center col-span-1 mb-2">
+                    <span>
+                        CURRENT TRAINEES
+                    </span>
+                </div>
+                <canvas id="enrollees-count"></canvas>
+            </div>
+        </div>
+        <div class="col-span-4 my-2">
             CURRENT TRAINEES PER COURSE
         </div>
         <div class="grid grid-cols-4 gap-3">
 
             <template x-for="course in courses" :key="course.id">
-                <div
-                    class="col-span-4 flex items-center justify-between space-x-4 rounded-lg bg-white p-4 dark:bg-gray-600 md:col-span-1">
-                    <div class="flex items-center space-x-2">
-                        <span><svg class="h-8 w-8 text-sky-500" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
-                                viewBox="0 0 24 24">
-                                <title>book-outline</title>
-                                <path
-                                    d="M18,2A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H18M18,4H13V12L10.5,9.75L8,12V4H6V20H18V4Z" />
-                            </svg></span>
-                        <div>
-                            <div class="font-bold uppercase" x-text="course.code">BELL</div>
-                            <div class="text-xs" x-text="course.name">Basic English Language Learning</div>
+                <a :href="`{{ route('dashboard_course', ':id') }}`.replace(':id', course.id)"
+                    class="flex col-span-4 md:col-span-1">
+                    <div
+                        class="flex items-center justify-between w-full p-4 space-x-4 bg-white rounded-lg dark:bg-gray-600 ">
+                        <div class="flex items-center space-x-2">
+                            <span><svg class="w-8 h-8 text-sky-500" fill="currentColor"
+                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <title>book-outline</title>
+                                    <path
+                                        d="M18,2A2,2 0 0,1 20,4V20A2,2 0 0,1 18,22H6A2,2 0 0,1 4,20V4A2,2 0 0,1 6,2H18M18,4H13V12L10.5,9.75L8,12V4H6V20H18V4Z" />
+                                </svg></span>
+                            <div>
+                                <div class="font-bold uppercase" x-text="course.code"></div>
+                                <div class="text-xs" x-text="course.name"></div>
+                            </div>
+                        </div>
+                        <div class="p-2 text-white rounded bg-sky-600" x-text="course.enrollees_count">
                         </div>
                     </div>
-                    <div class="rounded bg-sky-600 p-2 text-white" x-text="course.enrollees_count">
-                        48
-                    </div>
-                </div>
+                </a>
+
             </template>
         </div>
     </div>
@@ -194,16 +227,36 @@
             function dashboard() {
                 return {
                     webUsers: @json($web_users ?? ''),
+
                     yearlyEnrollees: @json($yearly_enrollees ?? ''),
                     monthlyEnrollees: @json($monthly_enrollees ?? ''),
+
+                    enrollmentMode: 'yearly',
+                    selectedYear: null,
+                    monthlyEnrolleesGrouped: null,
+                    enrollmentChart: null,
+
                     courses: @json($courses ?? ''),
                     init() {
                         console.log(this.monthlyEnrollees);
                         console.log(this.yearlyEnrollees);
 
+                        this.groupMonthlyEnrollees();
+                        console.log(this.monthlyEnrolleesGrouped);
+
+
                         this.showWebUsers()
-                        this.showYearlyEnrollments();
+                        this.showEnrollments();
+                        this.showAllTraineesCount();
                     },
+                    convertMonthToWord(monthNumber) {
+                        const months = [
+                            "January", "February", "March", "April", "May", "June",
+                            "July", "August", "September", "October", "November", "December"
+                        ];
+                        return months[monthNumber - 1]; // Subtract 1 to align with 0-indexed array
+                    },
+
                     showWebUsers() {
                         var ctx = document.getElementById('web-users-chart').getContext('2d');
 
@@ -247,13 +300,28 @@
                         });
 
                     },
-                    showYearlyEnrollments() {
+                    showEnrollments() {
                         var ctx = document.getElementById('enrollment-tracking').getContext('2d');
 
-                        // Extract the years and counts from the data
-                        var years = this.yearlyEnrollees.all.map(item => item.year);
-                        var allCounts = this.yearlyEnrollees.all.map(item => item.count);
-                        var acceptedCounts = this.yearlyEnrollees.accepted.map(item => item.count);
+                        if (this.chart) {
+                            this.chart.destroy();
+                        }
+
+                        let labels, allCounts, acceptedCounts;
+
+                        if (this.enrollmentMode === 'yearly') {
+                            // Set yearly data
+                            labels = this.yearlyEnrollees.all.map(item => item.year);
+                            allCounts = this.yearlyEnrollees.all.map(item => item.count);
+                            acceptedCounts = this.yearlyEnrollees.accepted.map(item => item.count);
+                        } else if (this.enrollmentMode === 'monthly' && this.selectedYear) {
+                            // Set monthly data for the selected year
+                            const monthlyData = this.monthlyEnrolleesGrouped[this.selectedYear] || [];
+                            labels = monthlyData.map(item => this.convertMonthToWord(item.month));
+                            allCounts = monthlyData.map(item => item.count);
+                            acceptedCounts = []; // Placeholder if you need another dataset for monthly
+                        }
+
 
 
                         function isDarkMode() {
@@ -264,10 +332,10 @@
                         const textColor = isDarkMode() ? 'white' : 'black';
                         const gridColor = isDarkMode() ? 'rgba(255, 255, 255, 0.36)' : 'rgba(0, 0, 0, 0.1)';
 
-                        new Chart(ctx, {
+                        this.chart = new Chart(ctx, {
                             type: 'line',
                             data: {
-                                labels: years, // X-axis (years)
+                                labels: labels, // X-axis (years)
                                 datasets: [{
                                         label: 'All',
                                         data: allCounts, // Y-axis (counts)
@@ -289,27 +357,27 @@
                                     x: {
                                         title: {
                                             display: true,
-                                            text: 'Year',
-                                            color: textColor,
+                                            text: this.enrollmentMode === 'yearly' ? 'Year' : 'Month',
+                                            color: textColor
                                         },
                                         ticks: {
-                                            color: textColor // X-axis label color
+                                            color: textColor
                                         },
                                         grid: {
-                                            color: gridColor // X-axis grid line color
+                                            color: gridColor
                                         }
                                     },
                                     y: {
                                         title: {
                                             display: true,
                                             text: 'Enrollees',
-                                            color: textColor,
+                                            color: textColor
                                         },
                                         ticks: {
-                                            color: textColor // Y-axis label color
+                                            color: textColor
                                         },
                                         grid: {
-                                            color: gridColor // Y-axis grid line color
+                                            color: gridColor
                                         }
                                     }
                                 },
@@ -317,17 +385,97 @@
                                     legend: {
                                         position: 'bottom',
                                         labels: {
-                                            color: textColor,
+                                            color: textColor
                                         }
                                     },
                                     tooltip: {
-                                        titleColor: 'white', // Tooltip title color
-                                        bodyColor: 'white' // Tooltip body text color
+                                        titleColor: 'white',
+                                        bodyColor: 'white'
                                     }
                                 }
                             }
                         });
-                    }
+                    },
+                    showAllTraineesCount() {
+                        var ctx = document.getElementById('enrollees-count').getContext('2d');
+
+                        function isDarkMode() {
+                            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        }
+
+                        // Set colors based on theme
+                        const textColor = isDarkMode() ? 'white' : 'black';
+
+                        const config = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: this.courses.map(course => course.code.toUpperCase()),
+                                datasets: [{
+                                    label: 'Count',
+                                    data: this.courses.map(course => course.enrollees_count),
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132)',
+                                        'rgba(54, 162, 235)',
+                                        'rgba(255, 206, 86)',
+                                        'rgba(75, 192, 192)',
+                                        'rgba(153, 102, 255)',
+                                        'rgba(255, 159, 64)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            color: textColor,
+                                        }
+                                    },
+                                }
+                            },
+                        });
+                    },
+                    groupMonthlyEnrollees() {
+                        this.monthlyEnrolleesGrouped = this.monthlyEnrollees.reduce((acc, entry) => {
+                            const {
+                                year,
+                                month,
+                                count
+                            } = entry;
+
+                            // Initialize array for the year if it doesn't exist
+                            if (!acc[year]) {
+                                acc[year] = [];
+                            }
+
+                            // Add the month and count for that year
+                            acc[year].push({
+                                month,
+                                count
+                            });
+
+                            return acc;
+                        }, {});
+
+                    },
+                    enrollmentModeChanged() {
+                        const years = Object.keys(this.monthlyEnrolleesGrouped);
+                        this.selectedYear = years.length ? years[0] : null;
+                        this.showEnrollments()
+                    },
+                    selectedYearChanged() {
+                        this.showEnrollments();
+                    },
                 }
             }
         </script>
