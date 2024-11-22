@@ -98,7 +98,7 @@
                         this.showSexPerBatches();
 
                         this.getEmploymentCountBatch();
-                        this.showEmploymentPerBatches();
+                        // this.showEmploymentPerBatches();
                         console.log(this.sexPerBatch);
 
 
@@ -308,40 +308,51 @@
 
                     // Employment
                     getEmploymentCountBatch() {
-                        Object.keys(this.batches).map(batchId => {
-
+                        Object.keys(this.batches).forEach(batchId => {
                             const enrollees = this.batches[batchId];
 
-                            this.sexPerBatch[batchId] = enrollees.reduce((acc, enrollee) => {
-                                enrollee.map(enrollee => {
+                            // Reduce to calculate employment type counts for each batch
+                            this.employmentPerBatch[batchId] = enrollees.reduce((acc, enrollee) => {
+                                // Initialize employment types in the accumulator
+                                if (!acc['unemployed']) {
+                                    acc['unemployed'] = 0;
+                                }
+                                if (!acc['employed']) {
+                                    acc['employed'] = 0;
+                                }
+                                if (!acc['self-employed']) {
+                                    acc['self-employed'] = 0;
+                                }
 
-                                    switch (enrollee.employment_type) {
-                                        case "unemployed":
-                                        case "trainee":
-                                            acc.unemployed += 1
-                                            break;
-                                        case "employed":
-                                            acc.employed += 1
-                                            break;
-                                        case "self-employed":
-                                            acc.self - employed += 1
-                                            break;
+                                // Count the employment types
+                                switch (enrollee.employment_type) {
+                                    case "unemployed":
+                                    case "trainee": // Assuming 'trainee' is equivalent to 'unemployed'
+                                        acc['unemployed'] += 1;
+                                        break;
+                                    case "employed":
+                                        acc['employed'] += 1;
+                                        break;
+                                    case "self-employed":
+                                        acc['self-employed'] += 1;
+                                        break;
+                                    default:
+                                        break;
+                                }
 
-                                        default:
-                                            break;
-                                    }
-                                })
                                 return acc;
                             }, {
-                                male: 0,
-                                female: 0
+                                unemployed: 0,
+                                employed: 0,
+                                'self-employed': 0
                             });
-
                         });
 
 
-                        this.sexSelectedBatch = Object.keys(this.sexPerBatch)[0] ?? ''
-                        console.log(this.sexSelectedBatch);
+
+                        this.employmentSelectedBatch = Object.keys(this.employmentPerBatch)[0] ?? ''
+                        console.log(this.employmentPerBatch);
+
                     }
                 }
             }

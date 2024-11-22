@@ -41,7 +41,7 @@
                 <div @click="markRead()" class="me-2 md:me-4">
                     <x-dropdown align="right" width="80" marginRight="md:me-32 me-10 ">
                         <x-slot name="trigger">
-                            <span class="relative inline-flex">
+                            <span class="relative inline-flex cursor-pointer ">
                                 <svg class="text-gray-500 w-7 h-7 dark:text-white/50" fill="currentColor"
                                     xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <title>notification</title>

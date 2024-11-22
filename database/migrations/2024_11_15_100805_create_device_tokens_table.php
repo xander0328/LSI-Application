@@ -11,13 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('comments', function (Blueprint $table) {
+        Schema::create('device_tokens', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('post_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->text('comment');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Link to the User model
+            $table->string('device_token'); // Store the device token for each device
+            $table->timestamp('last_used_at')->nullable();
             $table->timestamps();
-            $table->softDeletes();
+
+            $table->unique(['user_id', 'device_token']);
         });
     }
 
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('comments');
+        Schema::dropIfExists('device_tokens');
     }
 };

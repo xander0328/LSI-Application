@@ -23,26 +23,77 @@
                         <canvas id="web-users-chart"></canvas>
                     </div>
                 </div>
-                <div class="flex flex-col p-4 bg-white rounded-lg basis-1/3 dark:bg-gray-700">
-                    <div class="mb-2">
-                        <span>
-                            NEW USERS
-                        </span>
+                <div class="flex flex-col gap-3 basis-1/3 ">
+                    <div class="flex flex-col h-full p-4 bg-white rounded-lg dark:bg-gray-700">
+                        <div class="mb-2">
+                            <span>
+                                NEW USERS
+                            </span>
+                            <span>
+
+                            </span>
+                        </div>
+                        <div class="grid h-full grid-cols-3 gap-2">
+                            <div class="flex flex-col p-2 rounded bg-gray-800/25">
+                                <div class="text-sm text-center text-slate-600 dark:text-white/50">Today</div>
+                                <div class="flex items-center justify-center h-full text-xl font-bold lg:text-2xl">
+                                    {{ $today_users }}</div>
+                            </div>
+                            <div class="flex flex-col p-2 rounded bg-gray-800/25">
+                                <div class="text-sm text-center text-slate-600 dark:text-white/50">This Month</div>
+                                <div class="flex items-center justify-center h-full text-xl font-bold lg:text-2xl">
+                                    {{ $month_users }}</div>
+                            </div>
+                            <div class="flex flex-col p-2 rounded bg-gray-800/25">
+                                <div class="text-sm text-center text-slate-600 dark:text-white/50">This Year</div>
+                                <div class="flex items-center justify-center h-full text-xl font-bold lg:text-2xl">
+                                    {{ $year_users }}</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="grid h-full grid-cols-3 gap-2">
-                        <div class="flex flex-col p-2 rounded bg-gray-800/25">
-                            <div class="text-sm text-center text-slate-600 dark:text-white/50">Today</div>
-                            <div class="flex items-center justify-center h-full text-xl">{{ $today_enrollees }}</div>
+                    {{-- <div class="flex flex-col p-4 bg-white rounded-lg basis-1/2 dark:bg-gray-700">
+                        <div class="">
+                            <span>
+                                ENROLLEES
+                            </span>
                         </div>
-                        <div class="flex flex-col p-2 rounded bg-gray-800/25">
-                            <div class="text-sm text-center text-slate-600 dark:text-white/50">This Month</div>
-                            <div class="flex items-center justify-center h-full text-xl">{{ $month_enrollees }}</div>
+                        <div class="my-1">
+                            <span class="mb-2">
+                                <select name="enrollment_mode" id="enrollment_mode" x-model="enrollmentMode"
+                                    @change="enrollmentModeChanged"
+                                    class="block w-full px-2 py-1 text-xs text-gray-900 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 bg-gray-50 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    <option value="yearly">Yearly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </span>
+                            <span>
+                                <select name="enrollment_mode" id="enrollment_mode" x-model="enrollmentMode"
+                                    @change="enrollmentModeChanged"
+                                    class="block w-full px-2 py-1 text-xs text-gray-900 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 bg-gray-50 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                    <option value="yearly">Yearly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </span>
                         </div>
-                        <div class="flex flex-col p-2 rounded bg-gray-800/25">
-                            <div class="text-sm text-center text-slate-600 dark:text-white/50">This Year</div>
-                            <div class="flex items-center justify-center h-full text-xl">{{ $year_enrollees }}</div>
+                        <div class="grid h-full grid-cols-3 gap-2">
+                            <div class="flex flex-col p-2 rounded bg-gray-800/25">
+                                <div class="text-sm text-center text-slate-600 dark:text-white/50">Today</div>
+                                <div class="flex items-center justify-center h-full text-xl font-bold lg:text-2xl">
+                                    {{ $enrollees['today']->count() }}</div>
+                            </div>
+                            <div class="flex flex-col p-2 rounded bg-gray-800/25">
+                                <div class="text-sm text-center text-slate-600 dark:text-white/50">This Month</div>
+                                <div class="flex items-center justify-center h-full text-xl font-bold lg:text-2xl">
+                                    {{ $enrollees['month']->count() }}</div>
+                            </div>
+                            <div class="flex flex-col p-2 rounded bg-gray-800/25">
+                                <div class="text-sm text-center text-slate-600 dark:text-white/50">This Year</div>
+                                <div class="flex items-center justify-center h-full text-xl font-bold lg:text-2xl">
+                                    {{ $enrollees['year']->count() }}</div>
+                            </div>
                         </div>
-                    </div>
+
+                    </div> --}}
                 </div>
             </div>
             <div class="gap-3 col-span-full md:col-span-2">
@@ -50,9 +101,6 @@
                     <div class="flex items-center justify-between mb-2">
                         <span>
                             COURSES / PROGRAMS
-                        </span>
-                        <span class="text-gray-700 cursor-pointer dark:text-white/75 hover:text-sky-500">
-                            View
                         </span>
                     </div>
                     <div class="grid grid-cols-2 gap-2">
@@ -159,7 +207,7 @@
                             </span>
                             <span class="w-1/2 ms-1" x-cloak x-show="enrollmentMode === 'monthly'">
                                 <select name="enrollment_mode" id="enrollment_mode" x-model="selectedYear"
-                                    @change="selectedYearChanged"
+                                    @change="showEnrollments"
                                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                     <template x-for="year in Object.keys(monthlyEnrolleesGrouped)">
                                         <option :value="year" x-text="year"></option>
@@ -173,22 +221,65 @@
             </div>
         </div>
         <div class="grid grid-cols-3 gap-3 col-span-full ">
-            <div class="col-span-2 p-4 bg-white rounded-lg dark:bg-gray-700">
-                <div class="flex items-center justify-between col-span-1">
-                    <span>
-                        TRAINEES
+            <div class="col-span-3 p-4 bg-white rounded-lg md:col-span-2 dark:bg-gray-700">
+                <div class="col-span-2">
+                    <span class="">
+                        TRAINEES LOCATIONS
                     </span>
+                    <div class="flex w-full my-2">
+                        <span class="w-full ms-1">
+                            <select name="enrollment_mode" id="enrollment_mode" x-model="selectedCourseLocation"
+                                @change="showTraineesLocation"
+                                class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                <template x-for="course in Object.keys(groupTraineesLocation)" :key="course">
+                                    <option :value="course" x-text="course"></option>
+                                </template>
+                            </select>
+                        </span>
+                        <span class="w-full ms-1">
+                            <select name="enrollment_mode" id="enrollment_mode" x-model="selectedBatchLocation"
+                                @change="showTraineesLocation"
+                                class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                <template x-for="batch in Object.keys(groupTraineesLocation[selectedCourseLocation])"
+                                    :key="batch">
+                                    <option :value="batch" x-text="batch"></option>
+                                </template>
+                            </select>
+                        </span>
+                        <span class="w-full ms-1">
+                            <select name="enrollment_mode" id="enrollment_mode" x-model="selectedLocationMode"
+                                @change="showTraineesLocation"
+                                class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                <option value="city">By City</option>
+                                <option value="barangay">By Barangay</option>
+                            </select>
+                        </span>
+                        <span x-cloak x-show="selectedLocationMode === 'barangay'" class="w-full ms-1">
+                            <select name="enrollment_mode" id="enrollment_mode" x-model="selectedCityLocation"
+                                @change="showTraineesLocation"
+                                class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                                <template
+                                    x-for="(city, cityId) in groupTraineesLocation[selectedCourseLocation][selectedBatchLocation]"
+                                    :key="cityId">
+                                    <option :value="cityId" x-text="city.cityName">
+                                    </option>
+                                </template>
+                            </select>
+                        </span>
+                    </div>
                 </div>
-                {{-- <canvas id="enrollees-count"></canvas> --}}
+                <canvas id="locations-count"></canvas>
             </div>
 
-            <div class="col-span-1 p-4 bg-white rounded-lg dark:bg-gray-700">
+            <div class="col-span-3 p-4 bg-white rounded-lg md:col-span-1 dark:bg-gray-700">
                 <div class="flex items-center justify-center col-span-1 mb-2">
-                    <span>
-                        CURRENT TRAINEES
-                    </span>
+                    <div>
+                        <div class="py-2 text-center">
+                            CURRENT TRAINEES
+                        </div>
+                        <canvas id="enrollees-count"></canvas>
+                    </div>
                 </div>
-                <canvas id="enrollees-count"></canvas>
             </div>
         </div>
         <div class="col-span-4 my-2">
@@ -227,6 +318,7 @@
             function dashboard() {
                 return {
                     webUsers: @json($web_users ?? ''),
+                    trainees: @json($trainees ?? ''),
 
                     yearlyEnrollees: @json($yearly_enrollees ?? ''),
                     monthlyEnrollees: @json($monthly_enrollees ?? ''),
@@ -236,18 +328,32 @@
                     monthlyEnrolleesGrouped: null,
                     enrollmentChart: null,
 
+                    groupTraineesLocation: {},
+                    selectedLocationMode: 'city',
+                    selectedCourseLocation: null,
+                    selectedBatchLocation: null,
+                    selectedCityLocation: null,
+                    locationsChart: null,
+
                     courses: @json($courses ?? ''),
                     init() {
-                        console.log(this.monthlyEnrollees);
-                        console.log(this.yearlyEnrollees);
-
                         this.groupMonthlyEnrollees();
-                        console.log(this.monthlyEnrolleesGrouped);
-
 
                         this.showWebUsers()
                         this.showEnrollments();
                         this.showAllTraineesCount();
+
+                        this.getGroupTraineesLocation();
+                        // this.showTraineesLocation();
+
+
+
+                        // this.groupTraineesByBarangay();
+                        // this.groupTraineesByCity();
+                        // this.selectedCourseLocation = Object.keys(this.groupTraineesLocation[this.selectedLocationMode])[0];
+
+
+
                     },
                     convertMonthToWord(monthNumber) {
                         const months = [
@@ -301,10 +407,12 @@
 
                     },
                     showEnrollments() {
+                        console.log(this.monthlyEnrollees);
+
                         var ctx = document.getElementById('enrollment-tracking').getContext('2d');
 
-                        if (this.chart) {
-                            this.chart.destroy();
+                        if (this.enrollmentChart) {
+                            this.enrollmentChart.destroy();
                         }
 
                         let labels, allCounts, acceptedCounts;
@@ -319,7 +427,11 @@
                             const monthlyData = this.monthlyEnrolleesGrouped[this.selectedYear] || [];
                             labels = monthlyData.map(item => this.convertMonthToWord(item.month));
                             allCounts = monthlyData.map(item => item.count);
-                            acceptedCounts = []; // Placeholder if you need another dataset for monthly
+                            acceptedCounts = monthlyData.map(item => item
+                                .accepted); // Placeholder if you need another dataset for monthly
+
+                            console.log(labels);
+
                         }
 
 
@@ -332,7 +444,7 @@
                         const textColor = isDarkMode() ? 'white' : 'black';
                         const gridColor = isDarkMode() ? 'rgba(255, 255, 255, 0.36)' : 'rgba(0, 0, 0, 0.1)';
 
-                        this.chart = new Chart(ctx, {
+                        this.enrollmentChart = new Chart(ctx, {
                             type: 'line',
                             data: {
                                 labels: labels, // X-axis (years)
@@ -368,6 +480,7 @@
                                         }
                                     },
                                     y: {
+                                        beginAtZero: true,
                                         title: {
                                             display: true,
                                             text: 'Enrollees',
@@ -450,7 +563,8 @@
                             const {
                                 year,
                                 month,
-                                count
+                                count,
+                                accepted
                             } = entry;
 
                             // Initialize array for the year if it doesn't exist
@@ -461,21 +575,254 @@
                             // Add the month and count for that year
                             acc[year].push({
                                 month,
-                                count
+                                count,
+                                accepted
                             });
 
                             return acc;
                         }, {});
 
+                        // console.log(this.monthlyEnrollees);
                     },
                     enrollmentModeChanged() {
                         const years = Object.keys(this.monthlyEnrolleesGrouped);
                         this.selectedYear = years.length ? years[0] : null;
                         this.showEnrollments()
                     },
-                    selectedYearChanged() {
-                        this.showEnrollments();
+
+                    async getGroupTraineesLocation() {
+                        this.groupTraineesLocation = {}
+                        for (const trainee of this.trainees) {
+                            const {
+                                batch,
+                                course,
+                                barangay,
+                                city
+                            } = trainee;
+
+                            if (!this.groupTraineesLocation[course['code']]) {
+                                this.groupTraineesLocation[course['code']] = {};
+                            }
+
+                            // Ensure batch exists under the course
+                            if (!this.groupTraineesLocation[course['code']][batch['name']]) {
+                                this.groupTraineesLocation[course['code']][batch['name']] = {};
+                            }
+
+                            // Handle city
+                            // var cityName;
+                            if (!this.groupTraineesLocation[course['code']][batch['name']][city]) {
+                                const cityName = await this.getCityName(city); // Await async call
+                                this.groupTraineesLocation[course['code']][batch['name']][city] = {
+                                    cityName: cityName || city, // Fallback to city code if API fails
+                                    barangay: {},
+                                    count: 0
+                                };
+                            }
+
+                            // Handle barangay
+                            if (!this.groupTraineesLocation[course['code']][batch['name']][city]['barangay'][barangay]) {
+                                const barangayName = await this.getBarangayName(barangay); // Await async call
+                                this.groupTraineesLocation[course['code']][batch['name']][city]['barangay'][barangay] = {
+                                    barangayName: barangayName || barangay, // Fallback to barangay code if API fails
+                                    count: 0
+                                };
+                            }
+
+                            // Increment counts
+                            this.groupTraineesLocation[course['code']][batch['name']][city]['barangay'][barangay][
+                                'count'
+                            ] += 1;
+                            this.groupTraineesLocation[course['code']][batch['name']][city]['count'] += 1;
+                        }
+
+                        // this.groupTraineesLocation = this.groupTraineesLocation;
+
+                        // Set the default selected course and batch locations
+                        // console.log(this.groupTraineesLocation);
+
+                        this.selectedCourseLocation = Object.keys(this.groupTraineesLocation)[0] || null;
+                        this.selectedBatchLocation = this.selectedCourseLocation ?
+                            Object.keys(this.groupTraineesLocation[this.selectedCourseLocation])[0] || null : null;
+                        this.selectedCityLocation = this.selectedBatchLocation ?
+                            Object.keys(this.groupTraineesLocation[this.selectedCourseLocation][this
+                                .selectedBatchLocation
+                            ])[0] || null : null;
+                        console.log(this.groupTraineesLocation[this.selectedCourseLocation][this
+                            .selectedBatchLocation
+                        ]);
+
+
+                        // console.log(Object.values(this.groupTraineesLocation[this.selectedCourseLocation][this
+                        //     .selectedBatchLocation
+                        // ]).map(item => item.cityName));
+
+                        this.showTraineesLocation();
+
+
                     },
+                    showTraineesLocation() {
+                        var courseData = this.groupTraineesLocation[this.selectedCourseLocation][this
+                            .selectedBatchLocation
+                        ]
+
+                        const labels = [];
+
+                        if (this.selectedLocationMode === "city") {
+                            // Collect all city names
+                            Object.values(courseData).forEach(location => {
+                                if (location.cityName) {
+                                    labels.push(location.cityName);
+                                }
+                            });
+                        } else if (this.selectedLocationMode === "barangay" && this.selectedCityLocation) {
+                            // Collect barangay names for the selected city
+                            const cityData = Object.values(courseData[this.selectedCityLocation])
+                            console.log(cityData);
+
+
+                            if (cityData && cityData[1]) {
+                                Object.values(cityData[1]).forEach(barangay => {
+                                    if (barangay.barangayName) {
+                                        labels.push(barangay.barangayName);
+                                    }
+                                });
+                            }
+                        }
+
+                        if (this.locationsChart) {
+                            this.locationsChart.destroy();
+                        }
+
+
+                        const dataPoints = this.selectedLocationMode === "city" ? Object.values(courseData).map(entry => entry
+                            .count) : Object.values(courseData[this.selectedCityLocation]['barangay']).map(entry => entry
+                            .count);
+
+                        // Destroy previous chart instance if it exists
+
+
+                        const datasets = labels.map((label, index) => ({
+                            label: label, // Each label becomes the label of its dataset
+                            data: [dataPoints[index]], // Each dataset has one data point
+                            borderColor: this.getColors(1)[0], // Get one color per dataset
+                            backgroundColor: this.getColors(1)[0], // Get one color per dataset
+                            borderWidth: 3
+                        }));
+
+                        console.log(dataPoints);
+
+
+
+                        const ctx = document.getElementById('locations-count').getContext('2d');
+                        this.locationsChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: [''],
+                                datasets: datasets
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        display: true // Show the legend for the bar labels
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                return `${context.dataset.label}: ${context.raw}`;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        title: {
+                                            display: true,
+                                            text: 'Number of Trainees'
+                                        }
+                                    },
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: this.selectedLocationMode === 'city' ? 'City' : 'Barangay'
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    getColors(count) {
+                        const colors = {
+                            bg: [],
+                            border: []
+                        };
+                        for (let i = 0; i < count; i++) {
+                            const randomColor =
+                                `#${Math.floor(Math.random() * 167772).toString(16).padStart(6, '0')}`;
+                            colors.bg.push(randomColor + '99');
+                            colors.border.push(randomColor);
+                        }
+                        return colors;
+                    },
+                    async getCityName(code) {
+                        const apiUrl = `https://psgc.gitlab.io/api/cities-municipalities/${code}`;
+
+                        try {
+
+                            if (localStorage.getItem(`city_${code}`)) {
+                                return localStorage.getItem(`city_${code}`);
+                            }
+
+                            const response = await fetch(apiUrl);
+                            if (!response.ok) {
+                                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+                            }
+
+                            const data = await response.json();
+
+                            // Assuming you want the name of the city/municipality
+                            localStorage.setItem(`city_${code}`, data.name);
+                            const city = data.name
+
+                            return city;
+                        } catch (error) {
+                            console.error("Failed to fetch location data:", error);
+                            return null;
+                        }
+
+                    },
+                    async getBarangayName(code) {
+                        const apiUrl = `https://psgc.gitlab.io/api//barangays/${code}`;
+
+                        try {
+                            if (localStorage.getItem(`barangay_${code}`)) {
+                                return localStorage.getItem(`barangay_${code}`);
+                            }
+
+                            const response = await fetch(apiUrl);
+                            if (!response.ok) {
+                                throw new Error(`Error: ${response.status} - ${response.statusText}`);
+                            }
+
+                            const data = await response.json();
+
+                            // Assuming you want the name of the city/municipality
+                            localStorage.setItem(`barangay_${code}`, data.name);
+                            const barangay = data.name
+
+                            return barangay;
+
+                        } catch (error) {
+                            console.error("Failed to fetch location data:", error);
+                            return null;
+                        }
+
+                    }
+
+
+
                 }
             }
         </script>

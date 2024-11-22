@@ -1261,7 +1261,7 @@ class SuperAdminController extends Controller
 
         $year = $request->input('year', Carbon::now()->year);
 
-        $monthly_enrollees = Enrollee::select(\DB::raw('YEAR(created_at) as year'), \DB::raw('MONTH(created_at) as month'), \DB::raw('COUNT(*) as count'))
+        $monthly_enrollees = Enrollee::select(\DB::raw('YEAR(created_at) as year'), \DB::raw('MONTH(created_at) as month'), \DB::raw('COUNT(*) as count'), \DB::raw('COUNT(batch_id) as accepted'))
             ->whereYear('created_at', $year)
             ->groupBy('year', 'month')
             ->get();
@@ -1271,33 +1271,48 @@ class SuperAdminController extends Controller
         $active_batches = Batch::whereNull('completed_at')->count();
         $all_batches = Batch::count();
 
-        $today_enrollees = User::where('created_at', Carbon::today())->whereNotNull('email_verified_at')->count();
-        $month_enrollees = User::whereMonth('created_at', Carbon::now()->month)
+        $today_users = User::where('created_at', Carbon::today())->whereNotNull('email_verified_at')->count();
+        $month_users = User::whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->whereNotNull('email_verified_at')->count();
+        $year_users = User::whereNotNull('email_verified_at')->count();
 
-        $year_enrollees = User::whereYear('created_at', Carbon::now()->year)->whereNotNull('email_verified_at')->count();
+        $enrollees['today'] = Enrollee::where('created_at', Carbon::today())->with('course')->get();
+        $enrollees['month'] = Enrollee::whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->with('course')->get();
+        $enrollees['year'] = Enrollee::whereYear('created_at', Carbon::now()->year)->with('course')->get();
+
         // dd($ongoing_courses); 
         // dd($web_users);
         // Enrollees per course
         $courses = Course::withCount('enrollees')->get();
 
+        $trainees = Enrollee::whereNotNull('batch_id')
+            ->whereHas('course', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->whereHas('batch', function ($q) {
+                $q->whereNull('deleted_at');
+            })
+            ->with(['course', 'batch'])->get();
+
         // $trainees = Enrollee::whereHas('batch_id')->whereNull(['deleted_at', 'completed_at'])->with('batch.course');
-        // dd($courses);
+        // dd($trainees[0]);
         return view(
             'dashboard',
             compact(
                 'courses',
-                'today_enrollees',
-                'month_enrollees',
-                'year_enrollees',
+                'today_users',
+                'month_users',
+                'year_users',
                 'all_courses',
                 'ongoing_courses',
                 'active_batches',
                 'all_batches',
                 'web_users',
                 'yearly_enrollees',
-                'monthly_enrollees'
+                'monthly_enrollees',
+                'enrollees',
+                'trainees'
             )
         );
     }

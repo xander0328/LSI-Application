@@ -59,10 +59,9 @@ self.addEventListener("fetch", (event) => {
     );
 });
 
-importScripts("https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js");
-importScripts(
-    "https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"
-);
+// Import Firebase app and messaging modules
+importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
+importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js");
 
 // Initialize Firebase using your configuration
 firebase.initializeApp({
@@ -78,16 +77,16 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 // Handle background messages
-messaging.onBackgroundMessage(function (payload) {
+messaging.onBackgroundMessage((payload) => {
     console.log(
-        "[firebase-messaging-sw.js] Received background message ",
+        "[sw.js] Received background message ",
         payload
     );
     // Customize notification here
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
         body: payload.notification.body,
-        icon: payload.notification.icon || "/firebase-logo.png",
+        icon: "/images/icons/icon-72x72.png"
     };
 
     self.registration.showNotification(notificationTitle, notificationOptions);

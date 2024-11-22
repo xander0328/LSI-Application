@@ -87,25 +87,27 @@
 
 <body class="antialiased">
     <div x-data="welcomePage"
-        class="bg-dots-darker dark:bg-dots-lighter relative bg-gray-900 bg-center selection:bg-white selection:text-sky-400 dark:bg-gray-950 sm:items-center sm:justify-center">
+        class="relative bg-gray-900 bg-center bg-dots-darker dark:bg-dots-lighter selection:bg-white selection:text-sky-400 dark:bg-gray-950 sm:items-center sm:justify-center">
 
         {{-- Temporary Comment --}}
         <div style="background-image: url('{{ asset('images/elements/ekonek_bg.png') }}');"
-            class="flex flex-col bg-cover bg-center">
-            <div class="bg-dots-darker flex items-center justify-between px-4 py-4">
+            class="flex flex-col bg-center bg-cover">
+            <div class="flex items-center justify-between px-4 py-4 bg-dots-darker">
                 <div class="flex">
-                    <a href="/" class="mr-9 items-center">
-                        <!-- <img src="images/icons/lsi-logo.png" alt="LSI" class="h-16 w-auto rounded-full dark:bg-gray-900" /> -->
+                    <a href="/" class="items-center mr-9">
+                        <!-- <img src="images/icons/lsi-logo.png" alt="LSI" class="w-auto h-16 rounded-full dark:bg-gray-900" /> -->
                         <div class="text-lg font-black text-cyan-500 md:text-3xl">Language Skills Institute</div>
-                        <div class="bg-gradient-to-r from-gray-900 px-1 text-xs font-light text-cyan-300">Oriental
+                        <div class="px-1 text-xs font-light bg-gradient-to-r from-gray-900 text-cyan-300">Oriental
                             Mindoro
                         </div>
                     </a>
 
-                    <nav class="hidden items-center justify-center space-x-4 md:flex">
-                        <a href="#courses" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">Courses</a>
-                        <a href="#" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">Community</a>
-                        <a href="#" class="rounded-md px-3 py-2 text-white/50 hover:text-sky-500">About</a>
+                    <nav class="items-center justify-center hidden space-x-4 md:flex">
+                        <a href="#courses" class="px-3 py-2 rounded-md text-white/50 hover:text-sky-500">Courses</a>
+                        <a href="{{ route('updates') }}"
+                            class="px-3 py-2 rounded-md text-white/50 hover:text-sky-500">Updates</a>
+                        <a href="#" class="px-3 py-2 rounded-md text-white/50 hover:text-sky-500">About Us</a>
+                        <a href="#" class="px-3 py-2 rounded-md text-white/50 hover:text-sky-500">Contact</a>
                     </nav>
                 </div>
                 @php
@@ -130,20 +132,20 @@
                         @auth
 
                             <a href="{{ $dashboardLink }}"
-                                class="hidden rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-gray-600 hover:bg-gradient-to-l focus:rounded-md focus:outline-none md:inline-flex">
-                                <img class="h-5 w-auto" src="{{ asset('/images/icons/lsi-logo.png') }}" alt="">
+                                class="hidden p-2 font-semibold text-gray-600 bg-gray-900 rounded-md from-sky-800 hover:bg-gradient-to-l focus:rounded-md focus:outline-none md:inline-flex">
+                                <img class="w-auto h-5" src="{{ asset('/images/icons/lsi-logo.png') }}" alt="">
                             </a>
                             <div class="relative hidden md:inline-flex">
                                 <x-dropdown align="right" width="46">
                                     <x-slot name="trigger">
                                         <button
-                                            class="cg-white inline-flex items-center rounded-md border border-transparent px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
+                                            class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out border border-transparent rounded-md cg-white hover:text-gray-700 focus:outline-none dark:bg-gray-800 dark:text-gray-400 dark:hover:text-gray-300">
                                             <div>
                                                 {{ Auth::user()->role == 'instructor' ? 'Trainer ' : '' }}{{ Auth::user()->fname }}
                                                 {{ Auth::user()->lname }}</div>
 
                                             <div class="ms-1">
-                                                <svg class="h-4 w-4 fill-current" xmlns="http://www.w3.org/2000/svg"
+                                                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20">
                                                     <path fill-rule="evenodd"
                                                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
@@ -159,7 +161,7 @@
 
                                             <x-dropdown-link :href="route('profile.edit')"
                                                 class="flex items-center space-x-1.5 rounded-md px-1.5">
-                                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 24 24">
                                                     <path fill="currentColor"
                                                         d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
@@ -175,7 +177,7 @@
                                                     class="flex items-center space-x-1.5 rounded-md px-1.5"
                                                     onclick="event.preventDefault();
                                                             this.closest('form').submit();">
-                                                    <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg"
                                                         viewBox="0 0 24 24">
                                                         <path fill="currentColor"
                                                             d="M14.08,15.59L16.67,13H7V11H16.67L14.08,8.41L15.5,7L20.5,12L15.5,17L14.08,15.59M19,3A2,2 0 0,1 21,5V9.67L19,7.67V5H5V19H19V16.33L21,14.33V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19Z" />
@@ -191,12 +193,12 @@
                             </div>
                         @else
                             <a href="{{ route('login') }}"
-                                class="hidden rounded-md border border-cyan-500 px-3 py-2 font-semibold text-sky-300 md:inline-flex">Log
+                                class="hidden px-3 py-2 font-semibold border rounded-md border-cyan-500 text-sky-300 md:inline-flex">Log
                                 in</a>
 
                             @if (Route::has('register'))
                                 <a href="{{ route('register') }}"
-                                    class="ml-4 hidden rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-2 font-semibold text-black md:inline-flex">Register</a>
+                                    class="hidden px-3 py-2 ml-4 font-semibold text-black rounded-md bg-gradient-to-r from-cyan-500 to-blue-500 md:inline-flex">Register</a>
                             @endif
                         @endauth
                     </div>
@@ -205,7 +207,7 @@
                 <button class="text-white md:hidden" aria-controls="drawer-navigation"
                     data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation"
                     data-drawer-placement="right">
-                    <svg class="h-6 w-6 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                         <title>menu</title>
                         <path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
                     </svg>
@@ -213,45 +215,45 @@
 
                 <!-- drawer component -->
                 <div id="drawer-navigation"
-                    class="fixed right-0 top-0 z-40 h-screen w-80 translate-x-full overflow-y-auto bg-gray-800 p-4 transition-transform md:hidden"
+                    class="fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform translate-x-full bg-gray-800 w-80 md:hidden"
                     tabindex="-1" aria-labelledby="drawer-navigation-label">
                     <h5 id="drawer-navigation-label"
-                        class="ms-2 text-base font-semibold uppercase text-gray-500 dark:text-gray-400">Menu</h5>
+                        class="text-base font-semibold text-gray-500 uppercase ms-2 dark:text-gray-400">Menu</h5>
                     <button type="button" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation"
                         class="absolute end-2.5 top-2.5 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
-                        <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                             viewBox="0 0 14 14">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                 stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                         </svg>
                         <span class="sr-only">Close menu</span>
                     </button>
-                    <div class="overflow-y-auto py-4">
+                    <div class="py-4 overflow-y-auto">
                         <ul class="space-y-2 font-medium text-white">
 
                             <li>
                                 <a href="#"
-                                    class="group flex items-center rounded-lg p-2 text-white hover:text-sky-500">
+                                    class="flex items-center p-2 text-white rounded-lg group hover:text-sky-500">
                                     <span class="flex-1 whitespace-nowrap">Courses</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="#"
-                                    class="group flex items-center rounded-lg p-2 text-white hover:text-sky-500">
+                                <a href="{{ route('updates') }}"
+                                    class="flex items-center p-2 text-white rounded-lg group hover:text-sky-500">
 
                                     <span class="flex-1 whitespace-nowrap">Updates</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#"
-                                    class="group flex items-center rounded-lg p-2 text-white hover:text-sky-500">
+                                    class="flex items-center p-2 text-white rounded-lg group hover:text-sky-500">
 
                                     <span class="flex-1 whitespace-nowrap">About Us</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#"
-                                    class="group flex items-center rounded-lg p-2 text-white hover:text-sky-500">
+                                    class="flex items-center p-2 text-white rounded-lg group hover:text-sky-500">
 
                                     <span class="flex-1 whitespace-nowrap">Contact</span>
                                 </a>
@@ -260,24 +262,24 @@
                                 @auth
                                     <li class="">
                                         <a href="{{ $dashboardLink }}"
-                                            class="flex rounded-md bg-gray-900 from-sky-800 p-2 font-semibold text-white hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
-                                            <img class="h-5 w-auto" src="{{ asset('/images/icons/lsi-logo.png') }}"
+                                            class="flex p-2 font-semibold text-white bg-gray-900 rounded-md from-sky-800 hover:bg-gradient-to-l focus:rounded-md focus:outline-none">
+                                            <img class="w-auto h-5" src="{{ asset('/images/icons/lsi-logo.png') }}"
                                                 alt="">
                                         </a>
                                     </li>
                                     <hr class="border-sky-800/50">
                                     <li>
                                         <div class="py-2">
-                                            <div class="text-center font-bold text-white">
+                                            <div class="font-bold text-center text-white">
                                                 {{ Auth::user()->role == 'instructor' ? 'Trainer ' : '' }}{{ Auth::user()->fname }}
                                                 {{ Auth::user()->lname }}</div>
-                                            <div class="text-center text-xs text-white/50">{{ Auth::user()->email }}</div>
+                                            <div class="text-xs text-center text-white/50">{{ Auth::user()->email }}</div>
                                         </div>
                                     </li>
                                     <li>
                                         <a href="{{ route('profile.edit') }}"
                                             class="flex items-center space-x-1.5 rounded-md p-2 px-1.5 text-white hover:bg-gray-600">
-                                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                            <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                                 <path fill="currentColor"
                                                     d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M7.07,18.28C7.5,17.38 10.12,16.5 12,16.5C13.88,16.5 16.5,17.38 16.93,18.28C15.57,19.36 13.86,20 12,20C10.14,20 8.43,19.36 7.07,18.28M18.36,16.83C16.93,15.09 13.46,14.5 12,14.5C10.54,14.5 7.07,15.09 5.64,16.83C4.62,15.5 4,13.82 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,13.82 19.38,15.5 18.36,16.83M12,6C10.06,6 8.5,7.56 8.5,9.5C8.5,11.44 10.06,13 12,13C13.94,13 15.5,11.44 15.5,9.5C15.5,7.56 13.94,6 12,6M12,11A1.5,1.5 0 0,1 10.5,9.5A1.5,1.5 0 0,1 12,8A1.5,1.5 0 0,1 13.5,9.5A1.5,1.5 0 0,1 12,11Z" />
                                             </svg>
@@ -292,7 +294,7 @@
                                             <a class="flex items-center space-x-1.5 rounded-md bg-red-800/50 p-2 px-1.5 hover:bg-red-900/50 hover:text-red-500"
                                                 onclick="event.preventDefault();
                                                                 this.closest('form').submit();">
-                                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg"
+                                                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 24 24">
                                                     <path fill="currentColor"
                                                         d="M14.08,15.59L16.67,13H7V11H16.67L14.08,8.41L15.5,7L20.5,12L15.5,17L14.08,15.59M19,3A2,2 0 0,1 21,5V9.67L19,7.67V5H5V19H19V16.33L21,14.33V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19Z" />
@@ -307,14 +309,14 @@
                                     <li>
 
                                         <a href="{{ route('login') }}"
-                                            class="rouned-md group flex items-center rounded-lg border-2 border-sky-500 p-2 text-white hover:border-sky-700 hover:bg-sky-700">
+                                            class="flex items-center p-2 text-white border-2 rounded-lg rouned-md group border-sky-500 hover:border-sky-700 hover:bg-sky-700">
 
                                             <span class="flex-1 whitespace-nowrap">Log In</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('register') }}"
-                                            class="rouned-md group flex items-center rounded-lg border-2 border-sky-500 bg-sky-500 p-2 text-white hover:border-sky-700 hover:bg-sky-700">
+                                            class="flex items-center p-2 text-white border-2 rounded-lg rouned-md group border-sky-500 bg-sky-500 hover:border-sky-700 hover:bg-sky-700">
 
                                             <span class="flex-1 whitespace-nowrap">Register</span>
                                         </a>
@@ -327,11 +329,11 @@
 
             </div>
 
-            <div class="flex-col items-center space-y-4 p-4">
+            <div class="flex-col items-center p-4 space-y-4">
                 <div class="">
                     <div x-data="{ show: false }" x-intersect:enter="show = true"
                         :class="{ 'opacity-100 translate-x-0': show, 'opacity-0 translate-x-full': !show }"
-                        class="mb-2 flex w-full flex-1 translate-x-full transform items-center opacity-0 transition-opacity transition-transform duration-500 ease-out md:w-1/2">
+                        class="flex items-center flex-1 w-full mb-2 transition-opacity transition-transform duration-500 ease-out transform translate-x-full opacity-0 md:w-1/2">
 
                         <div class="flex-col">
                             <h3 class="text-xl font-bold text-white">Unlock Your Future with Language Skills Institute
@@ -366,29 +368,29 @@
                             <!-- Item 1 -->
                             <div class="hidden duration-700 ease-in-out" data-carousel-item>
                                 <img src="{{ asset('images/carousel/image1-test.jpg') }}"
-                                    class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
+                                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
                                     alt="...">
                             </div>
                             <!-- Item 2 -->
                             <div class="hidden duration-700 ease-in-out" data-carousel-item="active">
                                 <img src="{{ asset('images/carousel/image2.jpg') }}"
-                                    class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
+                                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
                                     alt="...">
                             </div>
                             <!-- Item 3 -->
                             <div class="hidden duration-700 ease-in-out" data-carousel-item>
                                 <img src="{{ asset('images/carousel/image3.jpg') }}"
-                                    class="absolute left-1/2 top-1/2 block w-full -translate-x-1/2 -translate-y-1/2"
+                                    class="absolute block w-full -translate-x-1/2 -translate-y-1/2 left-1/2 top-1/2"
                                     alt="...">
                             </div>
                         </div>
                         <!-- Slider controls -->
                         <button type="button"
-                            class="group absolute start-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
+                            class="absolute top-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group start-0 focus:outline-none"
                             data-carousel-prev>
                             <span
-                                class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
-                                <svg class="h-4 w-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
+                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
+                                <svg class="w-4 h-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2" d="M5 1 1 5l4 4" />
@@ -397,11 +399,11 @@
                             </span>
                         </button>
                         <button type="button"
-                            class="group absolute end-0 top-0 z-30 flex h-full cursor-pointer items-center justify-center px-4 focus:outline-none"
+                            class="absolute top-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group end-0 focus:outline-none"
                             data-carousel-next>
                             <span
-                                class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
-                                <svg class="h-4 w-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
+                                class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 group-hover:bg-white/50 group-focus:outline-none group-focus:ring-4 group-focus:ring-white dark:bg-gray-800/30 dark:group-hover:bg-gray-800/60 dark:group-focus:ring-gray-800/70">
+                                <svg class="w-4 h-4 text-white rtl:rotate-180 dark:text-gray-800" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                         stroke-width="2" d="m1 9 4-4-4-4" />
@@ -416,9 +418,9 @@
         </div>
 
         <h1
-            class="my-4 text-center text-2xl font-extrabold leading-none tracking-tight text-white md:text-5xl lg:text-6xl">
+            class="my-4 text-2xl font-extrabold leading-none tracking-tight text-center text-white md:text-5xl lg:text-6xl">
             Welcome to Language Skills Institute </h1>
-        <div class="mx-4 mb-10 text-center text-sm text-white md:mx-20">At LSI, we're dedicated to empowering
+        <div class="mx-4 mb-10 text-sm text-center text-white md:mx-20">At LSI, we're dedicated to empowering
             individuals
             with the
             essential
@@ -426,8 +428,8 @@
             to enhance your communication abilities or boost your computer literacy,
             LSI is here to guide you on your learning journey.</div>
 
-        <div id="courses" class="bg-gradient-to-b from-blue-600 p-10 text-white">
-            <h2 class="my-4 mb-8 text-center text-4xl font-bold">Featured Courses</h2>
+        <div id="courses" class="p-10 text-white bg-gradient-to-b from-blue-600">
+            <h2 class="my-4 mb-8 text-4xl font-bold text-center">Featured Courses</h2>
 
             <div class="flex items-center justify-center">
                 <div :class="{
@@ -438,9 +440,9 @@
                     class="grid gap-8">
                     <template x-for="course in featuredCourses" :key="course.id">
                         <div x-data="{ show: false }" x-intersect="show = true" :class="{ 'opacity-100 ': show }"
-                            class="col-span-1 max-w-sm rounded-xl border-8 border-gray-800 bg-gray-800 opacity-0 shadow transition-opacity duration-700 ease-out">
-                            <div class="h-44 w-full overflow-hidden rounded-t-lg">
-                                <img class="h-full w-full object-cover object-center"
+                            class="max-w-sm col-span-1 transition-opacity duration-700 ease-out bg-gray-800 border-8 border-gray-800 shadow opacity-0 rounded-xl">
+                            <div class="w-full overflow-hidden rounded-t-lg h-44">
+                                <img class="object-cover object-center w-full h-full"
                                     :src="'{{ asset('storage/website/course_image/:course_id/:folder_name/:filename') }}'
                                     .replace(':course_id', course.id)
                                         .replace(':folder_name', course.folder)
@@ -452,10 +454,10 @@
                                     <h5 class="mb-2 text-lg font-bold tracking-tight text-white" x-text="course.name">
                                     </h5>
                                 </a>
-                                <p class="mb-3 line-clamp-3 text-sm font-normal text-gray-400"
+                                <p class="mb-3 text-sm font-normal text-gray-400 line-clamp-3"
                                     x-text="course.description"></p>
                                 <a :href="'{{ route('enroll', ':id') }}'.replace(':id', course.id)"
-                                    class="inline-flex items-center rounded-lg text-center text-sm font-semibold text-white hover:text-sky-500 focus:outline-none">
+                                    class="inline-flex items-center text-sm font-semibold text-center text-white rounded-lg hover:text-sky-500 focus:outline-none">
                                     Learn more
                                     <svg class="ms-2 h-3.5 w-3.5 rtl:rotate-180" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -469,22 +471,23 @@
                 </div>
             </div>
             <div class="mt-5 text-center text-white">
-                <a href="#" class="rounded-md px-3 py-2 text-sky-500 hover:text-sky-200">See All
+                <a href="#" class="px-3 py-2 rounded-md text-sky-500 hover:text-sky-200">See All
                     Courses</a>
             </div>
         </div>
 
         @if (auth()->user() && auth()->user()->role == 'student')
-            <div x-data="notificationComponent" x-init="checkPermission" id="toast-interactive"
-                class="shado-lg fixed bottom-5 right-5 flex w-full max-w-xs items-center space-x-4 divide-x divide-gray-200 rounded-lg bg-white p-4 text-gray-500 rtl:divide-x-reverse dark:divide-gray-700 dark:bg-gray-800 dark:text-gray-400"
+            <div x-show="!permissionAnswered" x-data="notificationComponent" x-cloak x-init="initialize"
+                id="toast-interactive"
+                class="fixed flex items-center w-full max-w-xs p-4 space-x-4 text-gray-500 bg-white divide-x divide-gray-200 rounded-lg shado-lg bottom-5 right-5 rtl:divide-x-reverse dark:divide-gray-700 dark:bg-gray-800 dark:text-gray-400"
                 role="alert">
 
-                <div class="w-full max-w-xs rounded-lg bg-white p-4 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+                <div class="w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg dark:bg-gray-800 dark:text-gray-400"
                     role="alert">
                     <div class="flex">
                         <div
-                            class="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-500 dark:bg-blue-900 dark:text-blue-300">
-                            <svg class="h-4 w-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-blue-500 bg-blue-100 rounded-lg dark:bg-blue-900 dark:text-blue-300">
+                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 18 20">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2"
@@ -492,14 +495,32 @@
                             </svg>
                             <span class="sr-only">Refresh icon</span>
                         </div>
-                        <div class="ms-3 text-sm font-normal">
+                        <div class="text-sm font-normal ms-3">
                             <span class="mb-1 text-sm font-semibold text-gray-900 dark:text-white">Notification</span>
                             <div class="mb-2 text-sm font-normal">Receive updates from LSI Admin and Trainers
                             </div>
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <a href="#" @click="requestPermission()"
-                                        class="inline-flex w-full justify-center rounded-lg bg-blue-600 px-2 py-1.5 text-center text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">Update</a>
+                                        class="inline-flex w-full justify-center rounded-lg bg-blue-600 px-2 py-1.5 text-center text-xs font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800">
+                                        <span :class="registeringLoading ? 'hidden' : ''">
+                                            Accept
+                                        </span>
+                                        <span :class="!registeringLoading ? 'hidden' : ''">
+                                            <svg aria-hidden="true"
+                                                class="w-4 h-4 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                                                viewBox="0 0 100 101" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                    fill="currentColor" />
+                                                <path
+                                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                    fill="currentFill" />
+                                            </svg>
+                                            <span class="sr-only">Loading...</span>
+                                        </span>
+                                    </a>
                                 </div>
                                 <div>
                                     <a href="#"
@@ -512,7 +533,7 @@
                             class="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-white p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-900 focus:ring-2 focus:ring-gray-300 dark:bg-gray-800 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-white"
                             data-dismiss-target="#toast-interactive" aria-label="Close">
                             <span class="sr-only">Close</span>
-                            <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                                 fill="none" viewBox="0 0 14 14">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
                                     stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
@@ -529,31 +550,31 @@
             x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
             x-transition:leave="transition ease-in duration-75" x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95" tabindex="-1" aria-hidden="true"
-            class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-gray-800 bg-opacity-50 pb-5">
-            <div class="relative max-h-full w-full max-w-xl p-4">
+            class="fixed inset-0 z-50 flex items-center justify-center pb-5 overflow-x-hidden overflow-y-auto bg-gray-800 bg-opacity-50">
+            <div class="relative w-full max-w-xl max-h-full p-4">
                 <!-- Modal content -->
-                <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
+                <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
                     <!-- Modal header -->
-                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                    <div class="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600 md:p-5">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Instructor Information</h3>
                     </div>
                     <!-- Modal body -->
                     <form id="courseModalForm" class="p-4 pb-2 md:p-5" method="POST"
                         action="{{ route('record_instructor') }}">
                         @csrf
-                        <div class="mb-2 grid grid-cols-2 gap-4">
+                        <div class="grid grid-cols-2 gap-4 mb-2">
                             <input type="hidden" id="course_id" name="course_id">
                             <input type="hidden" id="edit" name="edit" x-model="edit">
                             <div class="col-span-2">
                                 <div class="flex justify-center">
                                     <input id="id_picture" required
-                                        class="block h-3 w-1/2 cursor-pointer rounded-lg border border-gray-300 bg-gray-50 text-sm text-gray-900 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
+                                        class="block w-1/2 h-3 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-gray-400 dark:placeholder-gray-400"
                                         type="file" name="id_picture" accept="image/*">
                                 </div>
                             </div>
                             <div class="col-span-2">
                                 <label for="sex"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Sex</label>
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sex</label>
                                 <select name="sex" id="sex" required
                                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
                                     <option value="">Select</option>
@@ -563,7 +584,7 @@
                             </div>
                             <div class="col-span-2">
                                 <label for="region"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Region
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Region
                                     <span x-cloak x-show="errors.region" class="text-xs text-red-500"
                                         x-text="errors.region"></span></label>
 
@@ -580,7 +601,7 @@
 
                             <div class="col-span-2">
                                 <label for="province"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Province</label>
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Province</label>
 
                                 <select x-model="form.province" name="province" id="province"
                                     @change="provinceSelect"
@@ -595,7 +616,7 @@
 
                             <div class="col-span-2">
                                 <label for="district"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">District</label>
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">District</label>
 
                                 <select x-model="form.district" name="district" id="district"
                                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -610,7 +631,7 @@
 
                             <div class="col-span-2">
                                 <label for="city"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">City/Municipality</label>
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">City/Municipality</label>
 
                                 <select x-model="form.city" name="city" id="city" @change="citySelect"
                                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -624,7 +645,7 @@
 
                             <div class="col-span-2">
                                 <label for="barangay"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Barangay</label>
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Barangay</label>
 
                                 <select x-model="form.barangay" name="barangay" id="barangay"
                                     class="focus:ring-primary-500 focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
@@ -638,7 +659,7 @@
 
                             <div class="col-span-2">
                                 <label for="street"
-                                    class="mb-2 block text-sm font-medium text-gray-900 dark:text-white">Street</label>
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Street</label>
                                 <input x-model="form.street" type="text" name="street" id="street"
                                     class="focus:ring-primary-600 focus:border-primary-600 dark:focus:ring-primary-500 dark:focus:border-primary-500 block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
                                     placeholder="" required="">
@@ -649,7 +670,7 @@
                         </div>
                         <button type="submit"
                             class="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                            <svg class="-ms-1 me-1 h-5 w-5" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                            <svg class="w-5 h-5 -ms-1 me-1" fill="currentColor" xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24">
                                 <title>check-circle-outline</title>
                                 <path
@@ -659,13 +680,13 @@
                         </button>
                     </form>
                     <form
-                        class="mb-5 inline-flex w-full cursor-pointer justify-center text-sm text-white/50 hover:text-sky-500"
+                        class="inline-flex justify-center w-full mb-5 text-sm cursor-pointer text-white/50 hover:text-sky-500"
                         method="POST" action="{{ route('logout') }}">
                         @csrf
                         <a class="flex items-center space-x-1.5 rounded-md px-1.5"
                             onclick="event.preventDefault();
                                     this.closest('form').submit();">
-                            <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path fill="currentColor"
                                     d="M14.08,15.59L16.67,13H7V11H16.67L14.08,8.41L15.5,7L20.5,12L15.5,17L14.08,15.59M19,3A2,2 0 0,1 21,5V9.67L19,7.67V5H5V19H19V16.33L21,14.33V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19Z" />
                             </svg>
@@ -680,11 +701,11 @@
     </div>
 
     <footer
-        class="w-full border-t border-gray-600 bg-gray-800 p-4 shadow md:flex md:items-center md:justify-between md:p-6">
+        class="w-full p-4 bg-gray-800 border-t border-gray-600 shadow md:flex md:items-center md:justify-between md:p-6">
         <span class="text-sm text-gray-400 sm:text-center">© 2024 <a href="/" class="hover:underline">Language
                 Skills Institute</a>. All Rights Reserved.
         </span>
-        <ul class="mt-3 flex flex-wrap items-center text-sm font-medium text-gray-400 sm:mt-0">
+        <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-400 sm:mt-0">
             <li>
                 <a href="#" class="me-4 hover:underline md:me-6">About</a>
             </li>

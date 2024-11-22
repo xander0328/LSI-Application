@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DeviceTokenController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\StudentController;
@@ -30,10 +31,12 @@ Route::get('/', function () {
         $user = User::with('instructor_info')->find(auth()->id())->toArray();
     }
 
-    // dd($user);
-
     return view('welcome', compact('courses', 'user'));
 })->name('home');
+
+Route::get('/updates', function () {
+    return view('updates');
+})->name('updates');
 
 Route::get('/unavailable', function () {
     return view('unauthorized');
@@ -131,7 +134,7 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
     });
 
     //For testing only
-    Route::get('/updateAllPass', [SuperAdminController::class, 'updateAllPass'])->name('updateAllPass');
+    // Route::get('/updateAllPass', [SuperAdminController::class, 'updateAllPass'])->name('updateAllPass');
 
 
 
@@ -264,7 +267,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::post('/store-token', [NotificationSendController::class, 'updateDeviceToken'])->name('store.token');
+    Route::post('/store-device-token', [DeviceTokenController::class, 'store'])->name('device.store');
     Route::post('/send-web-notification', [NotificationSendController::class, 'sendMesssageNotification'])->name('send.web-notification');
 
     Route::post('/check_session', [SessionController::class, 'check_session'])->name('check_session');

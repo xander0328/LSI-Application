@@ -34,4 +34,8 @@ return [
     'firebase' => [
         'server_key' => env('FIREBASE_SERVER_KEY'),
     ],
+    'google' => [
+        'key_file_path' => storage_path('google/lsi-app-541ad-5b3fce919445.json'), // Path to the JSON key file
+        'project_id' => env('GOOGLE_PROJECT_ID'), // Your GCP project ID
+    ],
 ];

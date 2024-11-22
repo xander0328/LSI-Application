@@ -106,67 +106,95 @@ if ("serviceWorker" in navigator) {
 }
 
 import { initializeApp } from "firebase/app";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
-
-// Your Firebase configuration
-const firebaseConfig = {
-    apiKey: "AIzaSyBi4oNVlyHAk6hdk42V7XugS_eR8_ianVw", // Replace with your actual API key
-    authDomain: "lsi-app-541ad.firebaseapp.com",
-    projectId: "lsi-app-541ad",
-    storageBucket: "lsi-app-541ad.appspot.com",
-    messagingSenderId: "740784195857",
-    appId: "1:740784195857:web:01c322ecbcf6cc18bda4b0",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+import { getMessaging, getToken } from "firebase/messaging";
 
 document.addEventListener("alpine:init", () => {
     Alpine.data("notificationComponent", () => ({
+        messaging: null,
+        deviceToken: '',
+        registeringLoading: false,
+        permissionAnswered: false,
+
+
+        // Initialize Firebase and Messaging
+        initialize() {
+            const firebaseConfig = {
+                apiKey: "AIzaSyBi4oNVlyHAk6hdk42V7XugS_eR8_ianVw",
+                authDomain: "lsi-app-541ad.firebaseapp.com",
+                projectId: "lsi-app-541ad",
+                storageBucket: "lsi-app-541ad.firebasestorage.app",
+                messagingSenderId: "740784195857",
+                appId: "1:740784195857:web:01c322ecbcf6cc18bda4b0"
+              };
+
+            // Initialize Firebase
+            const app = initializeApp(firebaseConfig);
+            this.messaging = getMessaging(app);
+
+            // Check permission on load
+            this.checkPermission();
+        },
+
+        // Check if notification permission has been granted
         async checkPermission() {
             const permission = await Notification.permission;
             if (permission === "granted") {
-                $("#toast-interactive").addClass("hidden");
+                console.log("Notification permission granted.");
+                this.permissionAnswered = true
+            } else {
+                console.log("Notification permission not granted.");
             }
+            
         },
+
+        // Request notification permission and get the FCM token
         async requestPermission() {
             try {
-                // Request notification permission from the user
+                this.registeringLoading = true;
                 const permission = await Notification.requestPermission();
-
                 if (permission === "granted") {
                     console.log("Notification permission granted.");
 
-                    // Get the FCM token
-                    const token = await getToken(messaging, {
-                        vapidKey:
-                            "BKIPwy0AfIkgcxZH_iGfH5AySmDRl-gLdWxqof-mC7SIOoYB06y9FlsXhForjmiL4E_cG-zehV-pyMA_zC4nsTk",
-                    });
+                    // Get the FCM token from Firebase
+                    const token = await this.getDeviceToken();
 
                     if (token) {
                         console.log("FCM Token:", token);
+                        this.deviceToken = token;
                         this.sendTokenToServer(token);
                     } else {
-                        console.log(
-                            "No registration token available. Request permission to generate one."
-                        );
+                        console.log("No registration token available.");
                     }
                 } else {
                     console.log("Notification permission not granted.");
                 }
-
-                this.checkPermission();
             } catch (error) {
                 console.error("Error getting permission or token:", error);
             }
+
+            // After requesting permission, check again
+            this.checkPermission();
         },
-        async sendTokenToServer(token) {
+
+        // Get the device token from Firebase Cloud Messaging
+        async getDeviceToken() {
             try {
-                const csrfToken = document
-                    .querySelector('meta[name="csrf-token"]')
-                    .getAttribute("content");
-                const response = await fetch("/store-token", {
+                const token = await getToken(this.messaging, {
+                    vapidKey: "BKIPwy0AfIkgcxZH_iGfH5AySmDRl-gLdWxqof-mC7SIOoYB06y9FlsXhForjmiL4E_cG-zehV-pyMA_zC4nsTk",
+                });
+                return token;
+            } catch (error) {
+                console.error("Error getting FCM token:", error);
+                return null;
+            }
+        },
+
+        // Send the device token to the server (Laravel)
+        async sendTokenToServer(token) {
+            // this.registeringLoading = true;
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const response = await fetch("/store-device-token", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -178,50 +206,15 @@ document.addEventListener("alpine:init", () => {
                 console.log("Token sent to server:", data);
             } catch (error) {
                 console.error("Error sending token to server:", error);
+                toastr.error(message, 'Enabling Notification')
+            } finally{
+                this.registeringLoading = false;
+                toastr.success('Success! You will updated to our latest anouncements', 'Enabling Notification')
             }
-        },
+        }
     }));
 });
-// Handle incoming messages
-onMessage(messaging, (payload) => {
-    console.log("Message received: ", payload);
-    const notificationTitle = payload.notification.title;
-    const notificationOptions = {
-        body: payload.notification.body,
-        icon: payload.notification.icon,
-    };
 
-    new Notification(notificationTitle, notificationOptions);
-});
-
-// Request permission when the script is loaded
-// requestPermission();
-
-// async function sendTokenToServer(token) {
-//     try {
-//         const response = await fetch("/api/device-token", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json",
-//                 "X-CSRF-Token": document
-//                     .querySelector('meta[name="csrf-token"]')
-//                     .getAttribute("content"), // If using CSRF protection
-//             },
-//             body: JSON.stringify({
-//                 token: token,
-//                 user_id: yourUserId, // Replace with actual user ID
-//             }),
-//         });
-
-//         const data = await response.json();
-//         console.log(data.message);
-//     } catch (error) {
-//         console.error("Error sending token to server:", error);
-//     }
-// }
-
-// requestNotificationPermission();
-// sendTokenToServer(deviceToken);
 
 // PWA Installation
 let deferredPrompt;
