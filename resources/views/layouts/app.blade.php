@@ -116,17 +116,6 @@
                                 </x-nav-link>
                             </li>
                             <li>
-                                <x-nav-link :href="route('website')" :active="request()->is('website*')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
-                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <path stroke="currentColor" stroke-width="2"
-                                            d="M3 11h18m-9 0v8m-8 0h16c.6 0 1-.4 1-1V6c0-.6-.4-1-1-1H4a1 1 0 0 0-1 1v12c0 .6.4 1 1 1Z" />
-                                    </svg>
-                                    <span class="ms-3">Website</span>
-                                </x-nav-link>
-                            </li>
-                            <li>
                                 <x-nav-link :href="route('courses')" :active="request()->is('courses*')"
                                     class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
                                     <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
@@ -215,7 +204,8 @@
                         </div>
                         <ul class="space-y-2 font-medium">
                             <li>
-                                <x-nav-link :href="route('enrolled_course')" :active="request()->is('course*') && !request()->is('course_completed')"
+                                <x-nav-link :href="route('enrolled_course')" :active="(request()->is('course*') && !request()->is('course_completed')) ||
+                                    request()->is('enrolled_course_attendance')"
                                     class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
                                     <svg class="h-6 w-6 flex-shrink-0 transition duration-75" aria-hidden="true"
                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -249,18 +239,6 @@
                                             d="M21 11.11V5C21 3.9 20.11 3 19 3H14.82C14.4 1.84 13.3 1 12 1S9.6 1.84 9.18 3H5C3.9 3 3 3.9 3 5V19C3 20.11 3.9 21 5 21H11.11C12.37 22.24 14.09 23 16 23C19.87 23 23 19.87 23 16C23 14.09 22.24 12.37 21 11.11M12 3C12.55 3 13 3.45 13 4S12.55 5 12 5 11 4.55 11 4 11.45 3 12 3M5 19V5H7V7H17V5H19V9.68C18.09 9.25 17.08 9 16 9C12.13 9 9 12.13 9 16C9 17.08 9.25 18.09 9.68 19H5M16 21C13.24 21 11 18.76 11 16S13.24 11 16 11 21 13.24 21 16 18.76 21 16 21M16.5 16.25L19.36 17.94L18.61 19.16L15 17V12H16.5V16.25Z" />
                                     </svg>
                                     <span class="ms-3">Enrollment</span>
-                                </x-nav-link>
-                            </li>
-                            <li>
-                                <x-nav-link :href="route('message_list')" :active="request()->routeIs('message_list')"
-                                    class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 hover:text-black dark:text-white dark:hover:bg-gray-700 dark:hover:text-white">
-                                    <svg class="h-6 w-6 flex-shrink-0 transition duration-75" fill="currentColor"
-                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                                        <title>message-processing-outline</title>
-                                        <path
-                                            d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2M20 16H5.2L4 17.2V4H20V16M17 11H15V9H17M13 11H11V9H13M9 11H7V9H9" />
-                                    </svg>
-                                    <span class="ms-3">Message</span>
                                 </x-nav-link>
                             </li>
                         </ul>

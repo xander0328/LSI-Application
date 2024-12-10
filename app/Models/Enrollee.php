@@ -15,7 +15,7 @@ class Enrollee extends Model
     protected $dates = ['birth_date','preferred_start', 'preferred_finish'];
 
     protected $fillable = [
-        'user_id', 
+        'user_id',
         'course_id',
         'batch_id',
         'completed_at',
@@ -85,7 +85,7 @@ class Enrollee extends Model
 
     public function enrollee_education()
     {
-        return $this->hasMany(Education::class);        
+        return $this->hasMany(Education::class);
     }
 
     public function enrollee_grades(){
@@ -100,13 +100,17 @@ class Enrollee extends Model
     public function turn_ins() {
         return $this->hasMany(TurnIn::class);
     }
-    
+
     public function enrollee_turn_in() {
         return $this->hasOne(TurnIn::class);
     }
 
     public function payments() {
         return $this->hasMany(Payment::class);
+    }
+
+    public function payment() {
+        return $this->hasOne(Payment::class);
     }
 
     public function assignment(){
@@ -135,7 +139,7 @@ class Enrollee extends Model
 
         // Calculate assignment completion rate
         $totalAssignments = $this->batch->assignment()->count();
-        
+
         $completedAssignments = StudentGrade::where('batch_id', $this->batch->id)
         ->where('enrollee_id', $this->id)
         ->whereNotNull('grade')
@@ -184,6 +188,14 @@ class Enrollee extends Model
         return round($overallRating, 2); // Round to two decimal places
     }
 
-    
+    public function is_paid()
+    {
+        $balance = Payment::where('enrollee_id', $this->id)->pluck('balance')->first();
+        return $balance <= 0;
+    }
+
+
+
+
 
 }

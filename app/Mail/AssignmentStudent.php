@@ -9,14 +9,15 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class Assignment extends Mailable
+class AssignmentStudent extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public $data;
+    protected $data;
+
     public function __construct($data)
     {
         $this->data = $data;
@@ -38,7 +39,7 @@ class Assignment extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'emails.assignment',
+            markdown: 'emails.assignment_student',
             with: ['data' => $this->data]
         );
     }

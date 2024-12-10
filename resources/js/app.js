@@ -144,7 +144,7 @@ document.addEventListener("alpine:init", () => {
             } else {
                 console.log("Notification permission not granted.");
             }
-            
+
         },
 
         // Request notification permission and get the FCM token
@@ -280,5 +280,30 @@ window.addEventListener("beforeinstallpromptresponsive", (e) => {
 
 const ws = new WebSocket('ws://lsi-websocket.glitch.me');
 window.ws = ws;
+
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+
+// var pusher = new Pusher( import.meta.env.VITE_PUSHER_APP_KEY,
+//     {cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER});
+// window.pusher = pusher;
+window.Pusher = Pusher;
+
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    forceTLS: true
+});
+
+document.addEventListener('alpine:init', () => {
+    Alpine.store('sharedState', {
+        postUpdate: false,
+        assignmentUpdate:false,
+        attendanceUpdate:false,
+    });
+});
+
 
 Alpine.start();

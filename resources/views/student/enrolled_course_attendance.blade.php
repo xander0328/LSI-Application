@@ -48,6 +48,13 @@
 
     </x-slot>
     <div x-data="studentData()" id="course_list" class="mx-8 mt-2 pb-4 pt-44 text-black dark:text-white md:pt-48">
+        <div x-cloak x-show="$store.sharedState.attendanceUpdate"
+            class="p-4 mb-4 flex bg-white/80 rounded-lg items-center justify-between text-sm">
+            <span>New Update</span>
+            <span class="px-2 py-1 bg-sky-600 hover:bg-sky-700 rounded text-white">
+                <a class="cursor-pointer" @click="location.reload()">REFRESH</a>
+            </span>
+        </div>
         <div class="mb-4 text-sm">
             <div class="mr-3 grid w-full grid-cols-1 items-center gap-2 text-xs md:grid-cols-3">
                 <div class="flex w-full items-center">

@@ -179,6 +179,13 @@
                     No Post
                 </div>
             </template>
+            <div x-cloak x-show="$store.sharedState.postUpdate"
+                class="p-4 flex bg-white/80 rounded-lg items-center justify-between text-sm">
+                <span>New Update</span>
+                <span class="px-2 py-1 bg-sky-600 hover:bg-sky-700 rounded text-white">
+                    <a class="cursor-pointer" @click="location.reload()">REFRESH</a>
+                </span>
+            </div>
         @endisset
 
         <template x-if="!batch || batch.length == 0">
@@ -201,6 +208,7 @@
                     @section('enrollee')
                         @json($enrollee ?? '')
                     @endsection
+                    postUpdate: false,
                     posts: @json($posts ?? ''),
                     batch: @json($batch ?? ''),
                     imageExtensions: ['jpeg', 'jpg', 'png', 'jfif'],
@@ -235,8 +243,6 @@
                         this.$nextTick(() => {
                             this.formatLinks();
                         })
-
-
                     },
                     formatDate(createdAtText) {
                         var createdAtMoment = moment(createdAtText, 'YYYY-MM-DD HH:mm');
@@ -290,6 +296,7 @@
                         )
                         $('.description p').addClass(' break-words')
                     },
+
                 }
             }
         </script>

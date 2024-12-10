@@ -344,15 +344,8 @@
                         this.showAllTraineesCount();
 
                         this.getGroupTraineesLocation();
-                        // this.showTraineesLocation();
 
-
-
-                        // this.groupTraineesByBarangay();
-                        // this.groupTraineesByCity();
-                        // this.selectedCourseLocation = Object.keys(this.groupTraineesLocation[this.selectedLocationMode])[0];
-
-
+                        
 
                     },
                     convertMonthToWord(monthNumber) {

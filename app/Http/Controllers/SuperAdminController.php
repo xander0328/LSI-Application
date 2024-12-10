@@ -1281,7 +1281,7 @@ class SuperAdminController extends Controller
         $enrollees['month'] = Enrollee::whereMonth('created_at', Carbon::now()->month)->whereYear('created_at', Carbon::now()->year)->with('course')->get();
         $enrollees['year'] = Enrollee::whereYear('created_at', Carbon::now()->year)->with('course')->get();
 
-        // dd($ongoing_courses); 
+        // dd($ongoing_courses);
         // dd($web_users);
         // Enrollees per course
         $courses = Course::withCount('enrollees')->get();
@@ -1325,6 +1325,13 @@ class SuperAdminController extends Controller
                 $q->withCount('enrollee');
             }])
             ->first();
+
+            foreach ($course->batches as $batch) {
+                foreach ($batch->enrollee as $enrollee) {
+                    $enrollee->is_paid = $enrollee->is_paid();  // Add the is_paid value dynamically
+                }
+            }
+
 
         // dd($course);
 

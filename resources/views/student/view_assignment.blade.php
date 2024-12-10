@@ -52,6 +52,13 @@
     </x-slot>
     <div x-data="assignmentComponent()" id="course_list" class="mx-8 pb-4 pt-44 text-black dark:text-white md:pt-48">
 
+        <div x-cloak x-show="$store.sharedState.assignmentUpdate"
+            class="p-4 flex bg-white/80 rounded-lg items-center justify-between text-sm">
+            <span>New Update</span>
+            <span class="px-2 py-1 bg-sky-600 hover:bg-sky-700 rounded text-white">
+                <a class="cursor-pointer" @click="location.reload()">REFRESH</a>
+            </span>
+        </div>
         <div class="my-4">
             <div x-cloak id="status"
                 :class="{
@@ -260,7 +267,7 @@
                         <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
                             Attachments
                         </h3>
-                        {{-- <button type="button" 
+                        {{-- <button type="button"
                             class="ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg bg-transparent text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900 dark:hover:bg-gray-600 dark:hover:text-white">
                             <svg class="h-3 w-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                 viewBox="0 0 14 14">

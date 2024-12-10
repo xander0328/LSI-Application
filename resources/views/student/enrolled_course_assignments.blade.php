@@ -189,6 +189,13 @@
                 No Assignment
             </div>
         @endif --}}
+        <div x-cloak x-show="$store.sharedState.assignmentUpdate"
+            class="p-4 flex bg-white/80 rounded-lg items-center justify-between text-sm">
+            <span>New Update</span>
+            <span class="px-2 py-1 bg-sky-600 hover:bg-sky-700 rounded text-white">
+                <a class="cursor-pointer" @click="location.reload()">REFRESH</a>
+            </span>
+        </div>
     </div>
     @section('script')
         <script>
@@ -235,7 +242,8 @@
                         }
 
                         return '';
-                    }
+                    },
+
                 }
             }
         </script>

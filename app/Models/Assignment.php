@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 class Assignment extends Model
-{    
+{
     use SoftDeletes;
 
     protected $appends = ['formattedDue'];
@@ -34,10 +34,10 @@ class Assignment extends Model
         if ($this->due_date === null || $this->due_hour === null) {
             return null; // Return null if either due_date or due_hour is null
         }
-    
+
         // Parse the due_date and due_hour together into a Carbon instance
         $dueDateTime = Carbon::parse($this->due_date . ' ' . $this->due_hour);
-    
+
         // Format and return the datetime as a string
         return $dueDateTime->format('Y-m-d H:i:s');
     }
@@ -62,6 +62,10 @@ class Assignment extends Model
 
     public function student_grade(){
         return $this->hasOne(StudentGrade::class);
+    }
+
+    public function student_grades(){
+        return $this->hasMany(StudentGrade::class);
     }
 
     public function turn_ins(){

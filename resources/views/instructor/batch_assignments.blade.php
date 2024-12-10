@@ -512,7 +512,7 @@
                             {{-- <button data-dropdown-toggle="schedule_assign"
                             class="flex-none items-center bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                             type="button">
-                            <svg class="h-4 w-4 text-gray-800 dark:text-white" 
+                            <svg class="h-4 w-4 text-gray-800 dark:text-white"
                                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
                                 viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
@@ -1099,6 +1099,25 @@
                             </span>
                         </button>
                     </template>
+
+                    <button type="button"
+                        @click="window.location.href = '{{ route('export_grades', ':id') }}'.replace(':id', batch.id) "
+                        class="relative h-[52px] w-[52px] rounded-md bg-white text-gray-500 shadow-sm hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 dark:bg-gray-700 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white dark:focus:ring-gray-400">
+                        <svg class="mx-auto h-5 w-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor" viewBox="0 0 18 20">
+                            <path
+                                d="M5 9V4.13a2.96 2.96 0 0 0-1.293.749L.879 7.707A2.96 2.96 0 0 0 .13 9H5Zm11.066-9H9.829a2.98 2.98 0 0 0-2.122.879L7 1.584A.987.987 0 0 0 6.766 2h4.3A3.972 3.972 0 0 1 15 6v10h1.066A1.97 1.97 0 0 0 18 14V2a1.97 1.97 0 0 0-1.934-2Z" />
+                            <path
+                                d="M11.066 4H7v5a2 2 0 0 1-2 2H0v7a1.969 1.969 0 0 0 1.933 2h9.133A1.97 1.97 0 0 0 13 18V6a1.97 1.97 0 0 0-1.934-2Z" />
+                        </svg>
+                        <span
+                            class="absolute -start-24 top-1/2 mb-px block -translate-y-1/2 text-start text-sm font-medium">
+                            <div>Export</div>
+                            <div>
+                                Records
+                            </div>
+                        </span>
+                    </button>
                 </div>
                 <button type="button" data-dial-toggle="speed-dial-menu-text-outside-button-square"
                     aria-controls="speed-dial-menu-text-outside-button-square" aria-expanded="false"
@@ -1375,10 +1394,7 @@
                         }
 
                         return ''; // Default case, if none of the conditions are met
-                    }
-
-
-
+                    },
                 }
             }
         </script>

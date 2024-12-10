@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:3000'); // Replace with your server URL and port
+const socket = io('https://lsi-socketio.vercel.app/api/socket'); // Replace with your server URL and port
 
 export default socket;

@@ -16,11 +16,25 @@
     </x-slot>
     <div x-data="dashboard" id="main-div" class="pt-40 pb-4 mx-4 text-black dark:text-white md:mx-8">
         <div class="p-4 bg-white rounded-lg shadow-md">
-            <div class="mb-2">
-                <div class="text-2xl font-bold" x-text="course.name"></div>
-                <div>
-                    <span>Category: </span>
-                    <span x-text="course.course_category.name"></span>
+            <div class="mb-2 flex items-center justify-between">
+                <div class="">
+                    <div class="text-2xl font-bold" x-text="course.name"></div>
+                    <div>
+                        <span>Category: </span>
+                        <span x-text="course.course_category.name"></span>
+                    </div>
+                </div>
+                <div class="w-1/2 flex justify-end">
+                    <span class="flex items-center w-1/2 whitespace-nowrap">
+                        <span class="me-1">Batch:</span>
+                        <select name="enrollment_mode" id="enrollment_mode" x-model="selectedBatch"
+                            @change="recomputeGraphs()"
+                            class="focus:ring-primary-500 w-full focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block rounded-lg border border-gray-300 bg-gray-50 px-2.5  text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
+                            <template x-for="batch in Object.keys(sexPerBatch)" :key="batch">
+                                <option :value="batch" x-text="batch"></option>
+                            </template>
+                        </select>
+                    </span>
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
@@ -33,16 +47,6 @@
                 <div class="col-span-1 p-2 bg-gray-100 rounded-md">
                     <div class="flex items-center justify-between mb-2">
                         <span>SEX</span>
-                        <span class="flex items-center w-1/3 text-xs whitespace-nowrap">
-                            <span class="me-1">Batch:</span>
-                            <select name="enrollment_mode" id="enrollment_mode" x-model="sexSelectedBatch"
-                                @change="showSexPerBatches"
-                                class="focus:ring-primary-500 w-full text-xs focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block rounded-lg border border-gray-300 bg-gray-50 px-2.5  text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-                                <template x-for="batch in Object.keys(sexPerBatch)" :key="batch">
-                                    <option :value="batch" x-text="batch"></option>
-                                </template>
-                            </select>
-                        </span>
                     </div>
                     <canvas id="sex-per-batch"></canvas>
                 </div>
@@ -56,18 +60,20 @@
                                 FROM ENROLLMENT
                             </div>
                         </span>
-                        <span class="flex items-center w-1/3 text-xs whitespace-nowrap">
-                            <span class="me-1">Batch:</span>
-                            <select name="enrollment_mode" id="enrollment_mode" x-model="employmentSelectedBatch"
-                                @change="showSexPerBatches"
-                                class="focus:ring-primary-500 text-xs w-full focus:border-primary-500 dark:focus:ring-primary-500 dark:focus:border-primary-500 block rounded-lg border border-gray-300 bg-gray-50 px-2.5  text-gray-900 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400">
-                                <template x-for="batch in Object.keys(sexPerBatch)" :key="batch">
-                                    <option :value="batch" x-text="batch"></option>
-                                </template>
-                            </select>
-                        </span>
+
                     </div>
-                    <canvas id="sex-per-batch"></canvas>
+                    <canvas id="employment-per-batch"></canvas>
+                </div>
+                <div class="col-span-1 p-2 bg-gray-100 rounded-md">
+                    <div class="flex items-center justify-center mb-2">
+                        <div>
+                            <div class="py-2 text-center">
+                                REGISTRATION FEE
+                            </div>
+                            <canvas id="registration-per-batch"></canvas>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,16 +84,19 @@
                 return {
                     course: @json($course ?? ''),
                     batches: null,
+                    selectedBatch: null,
 
                     // Sex
                     sexPerBatch: [],
-                    sexSelectedBatch: null,
                     sexChart: null,
 
                     // Employment
                     employmentPerBatch: [],
-                    employmentSelectedBatch: null,
                     employmentChart: null,
+
+                    // Registration
+                    registrationPerBatch: [],
+                    registrationChart: null,
 
                     init() {
                         this.showBatches()
@@ -98,9 +107,8 @@
                         this.showSexPerBatches();
 
                         this.getEmploymentCountBatch();
-                        // this.showEmploymentPerBatches();
-                        console.log(this.sexPerBatch);
 
+                        this.getRegistrationCountBatch()
 
                     },
 
@@ -200,6 +208,13 @@
 
                     },
 
+                    recomputeGraphs() {
+                        this.showSexPerBatches();
+                        this.showEmploymentPerBatch();
+                        this.showRegistrationPerBatch()
+
+                    },
+
                     // Sex
                     getSexCountBatch() {
                         Object.keys(this.batches).map(batchId => {
@@ -223,8 +238,8 @@
                         });
 
 
-                        this.sexSelectedBatch = Object.keys(this.sexPerBatch)[0] ?? ''
-                        console.log(this.sexSelectedBatch);
+                        this.selectedBatch = Object.keys(this.sexPerBatch)[0] ?? ''
+                        console.log(this.selectedBatch);
 
                     },
                     showSexPerBatches() {
@@ -234,9 +249,9 @@
                             this.sexChart.destroy()
                         }
 
-                        const labels = [this.sexSelectedBatch]
-                        const maleCount = this.sexPerBatch[this.sexSelectedBatch].male
-                        const femaleCount = this.sexPerBatch[this.sexSelectedBatch].female
+                        const labels = [this.selectedBatch]
+                        const maleCount = this.sexPerBatch[this.selectedBatch].male
+                        const femaleCount = this.sexPerBatch[this.selectedBatch].female
 
                         console.log(labels);
                         console.log(maleCount);
@@ -258,11 +273,14 @@
                                     data: [maleCount],
                                     borderColor: 'rgba(75, 192, 192, 1)',
                                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderWidth: 3
+
                                 }, {
                                     label: 'Female',
                                     data: [femaleCount],
                                     borderColor: 'rgba(204,35,52,1)',
                                     backgroundColor: 'rgba(204,35,52, 0.2)',
+                                    borderWidth: 3
                                 }, ]
                             },
                             options: {
@@ -320,39 +338,203 @@
                                 if (!acc['employed']) {
                                     acc['employed'] = 0;
                                 }
+                                if (!acc['student']) {
+                                    acc['student'] = 0;
+                                }
                                 if (!acc['self-employed']) {
                                     acc['self-employed'] = 0;
                                 }
 
-                                // Count the employment types
-                                switch (enrollee.employment_type) {
-                                    case "unemployed":
-                                    case "trainee": // Assuming 'trainee' is equivalent to 'unemployed'
-                                        acc['unemployed'] += 1;
-                                        break;
-                                    case "employed":
-                                        acc['employed'] += 1;
-                                        break;
-                                    case "self-employed":
-                                        acc['self-employed'] += 1;
-                                        break;
-                                    default:
-                                        break;
-                                }
+                                enrollee.map(enrollee => {
+                                    switch (enrollee.employment_type) {
+                                        case "unemployed":
+                                            acc['unemployed'] += 1;
+                                            break;
+                                        case "trainee": // Assuming 'trainee' is equivalent to 'unemployed'
+                                            acc['student'] += 1;
+                                            break;
+                                        case "employed":
+                                            acc['employed'] += 1;
+                                            break;
+                                        case "self-employed":
+                                            acc['self-employed'] += 1;
+                                            break;
+                                        default:
+                                            break;
+                                    }
 
+                                })
                                 return acc;
                             }, {
-                                unemployed: 0,
-                                employed: 0,
-                                'self-employed': 0
+                                'unemployed': 0,
+                                'employed': 0,
+                                'self-employed': 0,
+                                'student': 0
                             });
                         });
 
+                        this.showEmploymentPerBatch()
+
+                    },
+                    showEmploymentPerBatch() {
+                        var ctx = document.getElementById('employment-per-batch').getContext('2d');
+
+                        if (this.employmentChart) {
+                            this.employmentChart.destroy()
+                        }
+
+                        const data = this.employmentPerBatch[this.selectedBatch];
+
+                        function isDarkMode() {
+                            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        }
+
+                        // Set colors based on theme
+                        const textColor = isDarkMode() ? 'white' : 'black';
+                        const gridColor = isDarkMode() ? 'rgba(255, 255, 255, 0.36)' : 'rgba(0, 0, 0, 0.1)';
+
+                        this.employmentChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: ['Unemployed', 'Employed', 'Self-Employed', 'Student'],
+                                datasets: [{
+                                    label: 'Batch Data',
+                                    data: [data.unemployed, data.employed, data['self-employed'], data.student],
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 3
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        ticks: {
+                                            color: textColor
+                                        },
+                                        grid: {
+                                            color: gridColor
+                                        }
+                                    },
+                                    y: {
+                                        title: {
+                                            display: true,
+                                            text: 'Batch',
+                                            color: textColor
+                                        },
+                                        ticks: {
+                                            color: textColor
+                                        },
+                                        grid: {
+                                            color: gridColor
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        position: 'right',
+                                        labels: {
+                                            color: textColor
+                                        }
+                                    },
+                                    tooltip: {
+                                        titleColor: 'white',
+                                        bodyColor: 'white'
+                                    }
+                                }
+                            },
+                        });
+                    },
 
 
-                        this.employmentSelectedBatch = Object.keys(this.employmentPerBatch)[0] ?? ''
-                        console.log(this.employmentPerBatch);
+                    // Registration
+                    getRegistrationCountBatch() {
+                        Object.keys(this.batches).forEach(batchId => {
+                            const enrollees = this.batches[batchId];
 
+                            // Reduce to calculate employment type counts for each batch
+                            this.registrationPerBatch[batchId] = enrollees.reduce((acc, enrollee) => {
+                                // Initialize employment types in the accumulator
+                                if (!acc['paid']) {
+                                    acc['paid'] = 0;
+                                }
+                                if (!acc['unpaid']) {
+                                    acc['unpaid'] = 0;
+                                }
+
+
+                                enrollee.map(enrollee => {
+                                    if (enrollee['is_paid']) {
+                                        acc['paid'] += 1
+                                    }
+                                    if (!enrollee['is_paid']) {
+                                        acc['unpaid'] += 1
+                                    }
+
+                                })
+                                return acc;
+                            }, {
+                                'paid': 0,
+                                'unpaid': 0,
+                            });
+                        });
+                        console.log(this.registrationPerBatch);
+
+                        this.showRegistrationPerBatch()
+                    },
+                    showRegistrationPerBatch() {
+                        var ctx = document.getElementById('registration-per-batch').getContext('2d');
+
+                        if (this.registrationChart) {
+                            this.registrationChart.destroy()
+                        }
+
+                        function isDarkMode() {
+                            return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        }
+
+                        // Set colors based on theme
+                        const textColor = isDarkMode() ? 'white' : 'black';
+
+                        this.registrationChart = new Chart(ctx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['Paid', 'Unpaid'],
+                                datasets: [{
+                                    label: 'Count',
+                                    data: [this.registrationPerBatch[this.selectedBatch].paid, this
+                                        .registrationPerBatch[this.selectedBatch].unpaid
+                                    ],
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132)',
+                                        'rgba(54, 162, 235)',
+                                        'rgba(255, 206, 86)',
+                                        'rgba(75, 192, 192)',
+                                        'rgba(153, 102, 255)',
+                                        'rgba(255, 159, 64)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            color: textColor,
+                                        }
+                                    },
+                                }
+                            },
+                        });
                     }
                 }
             }

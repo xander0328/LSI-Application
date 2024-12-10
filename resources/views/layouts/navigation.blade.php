@@ -38,7 +38,8 @@
 
             <!-- Menu Dropdown -->
             <div class="flex items-center">
-                <div @click="markRead()" class="me-2 md:me-4">
+                <div x-cloak x-show="{{ request()->routeIs('notifications') }} != 1" @click="markRead()"
+                    class="me-2 md:me-4">
                     <x-dropdown align="right" width="80" marginRight="md:me-32 me-10 ">
                         <x-slot name="trigger">
                             <span class="relative inline-flex cursor-pointer ">
@@ -48,12 +49,11 @@
                                     <path
                                         d="M21,19V20H3V19L5,17V11C5,7.9 7.03,5.17 10,4.29C10,4.19 10,4.1 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.1 14,4.19 14,4.29C16.97,5.17 19,7.9 19,11V17L21,19M14,21A2,2 0 0,1 12,23A2,2 0 0,1 10,21" />
                                 </svg>
-                                <template x-if="notificationCount > 0">
-                                    <span class="sr-only">Notifications</span>
-                                    <div x-text="notificationCount > 99 ? '99+' : notificationCount"
-                                        class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
-                                    </div>
-                                </template>
+                                <span class="sr-only">Notifications</span>
+                                <div x-cloak x-show="unreadNotificationCount > 0"
+                                    x-text="unreadNotificationCount > 99 ? '99+' : unreadNotificationCount"
+                                    class="absolute inline-flex items-center justify-center w-6 h-6 text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full -top-2 -end-2 dark:border-gray-900">
+                                </div>
                             </span>
                         </x-slot>
 
@@ -64,40 +64,103 @@
                                     Notifications</div>
                                 <div>
                                     <template x-for="notif in notifications" :key="notif.id">
-                                        <template x-if="notif.data.subject == 'enrollment'">
-                                            <div class="flex p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600">
-                                                <div class="me-1.5 flex">
-                                                    <span class="w-6 h-6 me-1">
-                                                        <template x-if="notif.data.status === 'accepted'">
-                                                            <img width="48" height="48"
-                                                                src="https://img.icons8.com/color/48/check-file.png"
-                                                                alt="check-file" />
-                                                        </template>
-                                                        <template x-if="notif.data.status !== 'accepted'">
-                                                            <img width="48" height="48"
-                                                                src="https://img.icons8.com/color/48/file-delete--v1.png"
-                                                                alt="file-delete--v1" />
-                                                        </template>
-                                                    </span>
-                                                </div>
-                                                <div class="">
-                                                    <div class="flex items-center text-sm">
-                                                        <span class="font-bold">
-                                                            Enrollment
+                                        <div>
+                                            <template x-if="notif.data.subject === 'enrollment'">
+                                                <div class="flex p-1  hover:bg-gray-200 dark:hover:bg-gray-600">
+                                                    <div class="me-1.5 flex">
+                                                        <span class="w-6 h-6 me-1">
+                                                            <template x-if="notif.data.status === 'accepted'">
+                                                                <img width="48" height="48"
+                                                                    src="https://img.icons8.com/color/48/check-file.png"
+                                                                    alt="check-file" />
+                                                            </template>
+                                                            <template x-if="notif.data.status !== 'accepted'">
+                                                                <img width="48" height="48"
+                                                                    src="https://img.icons8.com/color/48/file-delete--v1.png"
+                                                                    alt="file-delete--v1" />
+                                                            </template>
                                                         </span>
                                                     </div>
-                                                    <div class="text-xs">
-                                                        <div x-text="notif.data.message"></div>
-                                                        <div class="mt-1">
-                                                            Download ID Card here: <a
-                                                                class="p-1 rounded bg-black/10 hover:bg-black/20"
-                                                                :href="notif.id_card_link" target="_blank"
-                                                                rel="noopener noreferrer">My Profile</a>
+                                                    <div class="">
+                                                        <div class="flex items-center text-sm">
+                                                            <span class="font-bold">
+                                                                Enrollment
+                                                            </span>
+                                                        </div>
+                                                        <div class="text-xs">
+                                                            <div x-text="notif.data.message"></div>
+                                                            <div class="mt-1">
+                                                                Download ID Card here: <a
+                                                                    class="p-1 rounded bg-black/10 hover:bg-black/20"
+                                                                    :href="notif.id_card_link" target="_blank"
+                                                                    rel="noopener noreferrer">My Profile</a>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </template>
+                                            </template>
+
+                                            <template x-if="notif.data.subject === 'post'">
+                                                <div class="flex p-1  hover:bg-gray-200 dark:hover:bg-gray-600">
+                                                    <div class="me-1.5 flex">
+                                                        <span class="w-6 h-6 me-1">
+                                                            <img width="48" height="48"
+                                                                src="https://img.icons8.com/color/48/check-file.png"
+                                                                alt="check-file" />
+                                                        </span>
+                                                    </div>
+                                                    <a :href="notif.data.link" class="">
+                                                        <div class="flex items-center text-sm">
+                                                            <span class="font-bold"
+                                                                x-text="notif.data.type === 'new' ? 'New Post' : 'Post Updated'">
+                                                            </span>
+                                                        </div>
+                                                        <div class="text-xs">
+                                                            <div x-text="notif.data.message"></div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </template>
+                                            <template x-if="notif.data.subject === 'assignment'">
+                                                <div class="flex p-1  hover:bg-gray-200 dark:hover:bg-gray-600">
+                                                    <div class="me-1.5 flex">
+                                                        <span class="w-6 h-6 me-1">
+                                                            <img width="48" height="48"
+                                                                src="https://img.icons8.com/external-vectorslab-flat-vectorslab/53/external-School-Bag-education-vectorslab-flat-vectorslab.png" />
+                                                        </span>
+                                                    </div>
+                                                    <a :href="notif.data.link" class="">
+                                                        <div class="flex items-center text-sm">
+                                                            <span class="font-bold"
+                                                                x-text="notif.data.type === 'new' ? 'New Assignment' : 'Assignment Updated'">
+                                                            </span>
+                                                        </div>
+                                                        <div class="text-xs">
+                                                            <div x-text="notif.data.message"></div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </template>
+                                            <template x-if="notif.data.subject === 'attendance'">
+                                                <div class="flex p-1  hover:bg-gray-200 dark:hover:bg-gray-600">
+                                                    <div class="me-1.5 flex">
+                                                        <span class="w-6 h-6 me-1">
+                                                            <img width="48" height="48"
+                                                                src="https://img.icons8.com/color/48/check-file.png"
+                                                                alt="check-file" />
+                                                        </span>
+                                                    </div>
+                                                    <a :href="notif.data.link" class="">
+                                                        <div class="flex items-center text-sm">
+                                                            <span class="font-bold">Attendance</span>
+                                                        </div>
+                                                        <div class="text-xs">
+                                                            <div x-text="notif.data.message"></div>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            </template>
+                                        </div>
                                     </template>
                                     <template x-if="unreadNotificationCount == 0">
                                         <div class="flex items-center justify-center my-4">
@@ -144,7 +207,8 @@
 
                                 <x-dropdown-link :href="'#'" id="installButtonHolder"
                                     class="hidden items-center space-x-1.5 rounded-md bg-sky-700 px-1.5 hover:bg-sky-600">
-                                    <button id="installButton" class="hidden w-full text-center text-white rounded-lg">
+                                    <button id="installButton"
+                                        class="hidden w-full text-center text-white rounded-lg">
                                         <div class="flex items-center justify-center">
                                             <span>
                                                 <svg class="w-4 h-4 text-white" fill="currentColor"
@@ -452,7 +516,7 @@
         </div>
     </div>
 </nav>
-
+<script src="https://js.pusher.com/8.0.1/pusher.min.js"></script>
 <script>
     function navigation() {
         return {
@@ -463,8 +527,9 @@
             notificationLoading: false, // Add loading flag for better UX
             init() {
                 console.log('Navigation initialized');
-                this.websocket();
+                // this.websocket();
                 this.getNotifications();
+                this.notify();
             },
             async getNotifications() {
                 const t = this; // Capture the context of `this`
@@ -487,7 +552,7 @@
                     t.notificationLoading = false; // Reset loading state
                     console.log(t.unreadNotificationCount);
                     console.log(t.notificationCount);
-
+                    console.log(t.notifications);
                 }
             },
             async markRead() {
@@ -543,6 +608,19 @@
                     }, 1000); // 1 second delay before retrying
                 };
             },
+            notify() {
+                Echo.private(`App.Models.User.{{ auth()->user()->id }}`)
+                    .notification((data) => {
+                        this.getNotifications();
+                        if (data.notify === 'post_update') {
+                            Alpine.store('sharedState').postUpdate = true;
+                        } else if (data.notify == 'assignment_update') {
+                            Alpine.store('sharedState').assignmentUpdate = true;
+                        } else if (data.notify == 'attendance_update') {
+                            Alpine.store('sharedState').attendanceUpdate = true;
+                        }
+                    })
+            }
         }
     }
 </script>

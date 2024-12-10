@@ -255,11 +255,15 @@ Route::middleware(['auth', 'verified', 'role:instructor'])->group(function () {
     Route::post('/save_attendance', [InstructorController::class, 'save_attendance'])->name('save_attendance');
     Route::post('/get_attendance_data', [InstructorController::class, 'get_attendance_data'])->name('get_attendance_data');
 
-    //Comments 
+    //Comments
     Route::prefix('comments')->group(function () {
         Route::get('/{batch_id}/{post_id}', [InstructorController::class, 'comments'])->name('instructor.comments');
-        Route::post('/add_comment', [InstructorController::class, 'add_comment'])->name('add_comment');
+        // Route::post('/add_comment', [InstructorController::class, 'add_comment'])->name('add_comment');
+        Route::post('/add_comment', [InstructorController::class, 'add_comment'])->name('instructor.add_comment');
+
     });
+
+    Route::get('/export_grades/{id}', [InstructorController::class, 'export_grades'])->name('export_grades');
 });
 
 Route::middleware('auth')->group(function () {

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotifyTrigger;
+use App\Exports\EnrolleesGrade;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -29,10 +31,15 @@ use App\Models\Comment;
 
 // Mailing
 use App\Mail\Assignment as AssignmentMail;
+use App\Mail\Post as MailPost;
+use App\Notifications\AssignmentPost;
+use App\Notifications\AttendanceNotif;
+use App\Notifications\PostNotif;
 use App\Services\FirebaseService;
 use App\Services\NotificationSendService;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Facades\Notification;
+use Maatwebsite\Excel\Facades\Excel;
 // File
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -383,20 +390,31 @@ class InstructorController extends Controller
             $message = null;
         }
 
+        $batch_course_name = $batch->course->code."-".$batch->name;
         if (!$post_id) {
             $post = new Post();
             $post->batch_id = $request->input('batch_id');
             $post->description = $message;
             $post->save();
-            $notifTitle = "New Post";
+            $type = 'new';
+            $notifTitle = "New Post [".$batch_course_name."]";
             $statusMessage = ['status' => 'success', 'message' => 'The post has been uploaded successfully.', 'title' => 'Post Upload'];
         } else {
             $post = Post::find($post_id);
             $post->description = $message;
             $post->touch();
-            $notifTitle = "Post Updated";
+            $type = 'update';
+            $notifTitle = "Post Updated [".$batch_course_name."]";
             $statusMessage = ['status' => 'success', 'message' => 'The post has been updated successfully.', 'title' => 'Post Update'];
         }
+
+        $users = User::whereHas('enrollee', function ($q) use($request){
+            $q->where('batch_id', $request->batch_id)
+            ->whereNull('deleted_at');
+        })
+        ->with('user_enrollee')
+        ->get();
+
 
         $files = $request->file;
         $uploadedFileIds = array();
@@ -448,9 +466,19 @@ class InstructorController extends Controller
             'title' => $batch->course->code . '-' . $batch->name,
             'message' => $notifTitle,
         ];
+
+        $data = [
+            'trainer' => auth()->user()->fname.' '.auth()->user()->lname,
+            'batch' => Batch::where('id', $request->batch_id)->with('course')->first(),
+            'post' => $post,
+            'type' => $type
+        ];
+        $emails = $users->pluck('email')->toArray();
+        Mail::to($emails)->send(new MailPost($data));
+        Notification::send($users, new PostNotif($post->id, $batch, $type));
         $fcm =  new FirebaseService();
         $res = $fcm->sendMulticastNotification($deviceTokens, $notificationData['title'], $notificationData['message']);
-        // dd($res);
+
         return back()->with($statusMessage);
     }
 
@@ -675,10 +703,12 @@ class InstructorController extends Controller
             $assignment = Assignment::where('id', $request->assignment_id)->first();
             $subject = 'Assignment Updated';
             $batch = $batch_name->course->code . '-' . $batch_name->name . ' | Assignment Updated';
+            $type = 'update';
         } else {
             $assignment = new Assignment();
             $subject = 'New Assignment Posted';
             $batch = $batch_name->course->code . '-' . $batch_name->name . ' | New Assignment Posted';
+            $type = 'new';
         }
 
         $assignment->fill($assignment_details);
@@ -712,22 +742,19 @@ class InstructorController extends Controller
             }
         }
 
-        $enrollees = Enrollee::where('batch_id', $request->batch_id)
-            ->with(['user'])->get();
+        $users = User::whereHas('enrollee', function ($q)use($request){
+            $q->where('batch_id', $request->batch_id)
+            ->whereNull('deleted_at');
+        })
+        ->with('user_enrollee')
+        ->get();
+
         $title = $assignment->title;
         $instruction = $assignment->description;
 
-        // Collect all device tokens into an array
-        // $deviceTokens = [];
-        // foreach ($enrollees as $enrollee) {
-        //     foreach ($enrollee->user->device_tokens as $deviceToken) {
-        //         $deviceTokens[] = $deviceToken->device_token; // Assuming 'token' is the field name in device_tokens
-        //     }
-        // }
-
         $emails = [];
-        foreach ($enrollees as $enrollee) {
-            $emails[] = $enrollee->user->email;
+        foreach ($users as $enrollee) {
+            $emails[] = $enrollee->email;
         }
 
         // dd($emails);
@@ -735,17 +762,14 @@ class InstructorController extends Controller
             'subject' => $subject,
             'batch' => $batch,
             'title' => $title,
-            'link' => route('view_assignment', ['id' => $assignment->id])
+            'link' => route('view_assignment', ['id' => $assignment->id]),
+            'type' => $type,
+            'assignment_details' => $assignment_details
         ];
         Mail::to($emails)->send(new AssignmentMail($data));
 
-        // if (!empty($deviceTokens)) {
-        //     // dd($deviceTokens);
-        //     NotificationSendController::sendAppNotification($deviceTokens, $title, $body, null);
-        // } else {
-        //     return response()->json(['message' => 'No device tokens found for this batch.'], 404);
-        // }
-
+        $batch = Batch::where('id', $request->batch_id)->with('course')->first();
+        Notification::send($users, new AssignmentPost($batch, $type, $assignment->id));
 
         return redirect()->back()->with('success', 'Assigned successfully.');;
     }
@@ -840,7 +864,7 @@ class InstructorController extends Controller
     {
         $file = TempAssignment::where('folder', $request->getContent())->first();
         // $turn_in = TurnIn::find($file->turn_in_id);
-        // $assignment = Assignment::find($turn_in->assignment_id);  
+        // $assignment = Assignment::find($turn_in->assignment_id);
 
         if ($file) {
             $path = 'assignments/' . $file->batch_id . '/' . 'temp/' . $file->folder . '/' . $file->filename;
@@ -1119,6 +1143,18 @@ class InstructorController extends Controller
                 }
             }
 
+            $users = User::whereHas('enrollee', function ($q) use($attendance){
+                $q->where('batch_id', $attendance->batch_id)
+                ->whereNull('deleted_at');
+            })
+            ->with('user_enrollee')
+            ->get();
+
+            $batch = Batch::where('id', $attendance->batch_id)
+            ->with('course')
+            ->first();
+
+            Notification::send($users, new AttendanceNotif($batch, 'update', $attendance));
             return response()->json($attendance);
         }
 
@@ -1135,6 +1171,19 @@ class InstructorController extends Controller
             $student_attendance->status = $student['status'];
             $student_attendance->save();
         }
+
+        $users = User::whereHas('enrollee', function ($q) use($attendance){
+            $q->where('batch_id', $attendance->batch_id)
+            ->whereNull('deleted_at');
+        })
+        ->with('user_enrollee')
+        ->get();
+
+        $batch = Batch::where('id', $attendance->batch_id)
+        ->with('course')
+        ->first();
+
+        Notification::send($users, new AttendanceNotif($batch, 'new', $attendance));
         return response()->json($attendance);
     }
 
@@ -1209,5 +1258,54 @@ class InstructorController extends Controller
         } else {
             return back()->with(['status' => 'error', 'message' => 'Post does not exist']);
         }
+    }
+
+    public function export_grades($id) {
+        // return Excel::download(new EnrolleesGrade($id), 'test.xlsx');
+        $grades = UnitOfCompetency::where('batch_id', $id)
+        ->with([
+            'lesson.assignment.student_grades.enrollee.user'
+        ])
+        ->get();
+
+        $result = [];
+
+        // Iterate through each Unit of Competency, Lesson, Assignment, and Grade
+foreach ($grades as $uc) {
+    foreach ($uc->lesson as $lesson) {
+        foreach ($lesson->assignment as $assignment) {
+            foreach ($assignment->student_grades as $grade) {
+                $enrollee = $grade->enrollee;
+
+                // Initialize enrollee data if not already set
+                if (!isset($result[$enrollee->id])) {
+                    $result[$enrollee->id] = [
+                        'enrollee_name' => $enrollee->user->lname . ' ,' . $enrollee->user->fname,
+                        'lessons' => [],
+                    ];
+                }
+
+                // Initialize lesson data if not already set
+                if (!isset($result[$enrollee->id]['lessons'][$lesson->title])) {
+                    $result[$enrollee->id]['lessons'][$lesson->title] = [];
+                }
+
+                // Add assignment grade to the lesson
+                $result[$enrollee->id]['lessons'][$lesson->title][$assignment->title] = ($grade->grade/$assignment->points)*100 ?? 'N/A';
+            }
+        }
+    }
+}
+
+// Reset array keys and sort by enrollee_name (last name)
+$result = collect($result)
+    ->sortBy('enrollee_name')
+    ->values()
+    ->toArray();
+
+// dd($result);
+$batch = Batch::where('id', $id)->with('course')->first();
+                return Excel::download(new EnrolleesGrade($result), $batch->course->code.'-'.$batch->name.'.xlsx');
+
     }
 }

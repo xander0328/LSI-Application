@@ -116,7 +116,7 @@ class FirebaseService
 
             try {
                 $response = $this->messaging->projects_messages->send('projects/lsi-app-541ad', $sendMessageRequest);
-                echo 'Message sent successfully to token: ' . $token . "\n";
+                // echo 'Message sent successfully to token: ' . $token . "\n";
             } catch (Exception $e) {
                 echo 'Error sending message to token: ' . $token . ' - ' . $e->getMessage() . "\n";
             }

@@ -66,7 +66,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsToMany(Conversation::class, 'conversations', 'user1_id', 'user2_id');
     }
-    
+
     public function instructor_info(){
         return $this->hasOne(Instructor::class);
     }
@@ -104,7 +104,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         // Return a default profile picture if not found
-        return asset('images/temporary/profile.png'); 
+        return asset('images/temporary/profile.png');
     }
 
     public function completed_course_count(){
@@ -114,7 +114,4 @@ class User extends Authenticatable implements MustVerifyEmail
         })
         ->count();
     }
-
-
-
 }
