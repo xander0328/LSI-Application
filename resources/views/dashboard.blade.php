@@ -11,6 +11,18 @@
             <div class="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                 {{ __('Dashboard') }}
             </div>
+            <div>
+                <a href="{{route('show_report')}}"
+                        class="flex items-center rounded-lg bg-sky-700 px-3.5 py-2.5 text-center text-xs font-medium text-white hover:bg-blue-800 md:px-5 md:text-sm"
+                        type="button">
+                        {{-- <svg  aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M5 12h14m-7 7V5" />
+                        </svg>  --}}
+                        <svg class="h-4 w-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>file-chart</title><path fill="currentColor" d="M13,9H18.5L13,3.5V9M6,2H14L20,8V20A2,2 0 0,1 18,22H6C4.89,22 4,21.1 4,20V4C4,2.89 4.89,2 6,2M7,20H9V14H7V20M11,20H13V12H11V20M15,20H17V16H15V20Z" /></svg>Reports
+                    </a>
+            </div>
         </div>
 
     </x-slot>
@@ -345,7 +357,7 @@
 
                         this.getGroupTraineesLocation();
 
-                        
+
 
                     },
                     convertMonthToWord(monthNumber) {

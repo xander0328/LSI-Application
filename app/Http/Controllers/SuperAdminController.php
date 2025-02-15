@@ -1379,14 +1379,22 @@ class SuperAdminController extends Controller
         return response()->json(['status' => 'error', 'message' => 'Batch not found']);
     }
 
-    public function updateAllPass()
-    {
-        $users = User::all();
-        foreach ($users as $user) {
-            $user->password = Hash::make('pass');
-            $user->save();
-        }
+    // public function updateAllPass()
+    // {
+    //     $users = User::all();
+    //     foreach ($users as $user) {
+    //         $user->password = Hash::make('pass');
+    //         $user->save();
+    //     }
 
-        return "All users' passwords have been updated to the default.";
+    //     return "All users' passwords have been updated to the default.";
+    // }
+
+    public function show_report(){
+        return view('report');
+    }
+
+    public function show_report_accounts(){
+        return view('report_accounts');
     }
 }

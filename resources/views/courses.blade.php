@@ -117,7 +117,7 @@
 
                                             <div class="flex justify-between align-middle">
                                                 <div
-                                                    class="hidden rounded-lg p-2 hover:bg-slate-300 dark:hover:bg-gray-800 md:flex md:inline-flex">
+                                                    class="hidden rounded-lg p-2 hover:bg-slate-300 md:flex md:inline-flex dark:hover:bg-gray-800">
                                                     <label class="inline-flex w-full cursor-pointer items-center">
                                                         <input @change="courseToggle(course.id)" type="checkbox"
                                                             :checked="course.available"
@@ -146,7 +146,7 @@
                                                         <x-slot name="content">
                                                             <div class="m-1.5">
                                                                 <div
-                                                                    class="flex rounded-lg p-2 hover:bg-slate-300 dark:hover:bg-gray-800 md:hidden">
+                                                                    class="flex rounded-lg p-2 hover:bg-slate-300 md:hidden dark:hover:bg-gray-800">
                                                                     <label
                                                                         class="inline-flex w-full cursor-pointer items-center">
                                                                         <input @change="courseToggle(course.id)"
@@ -306,7 +306,7 @@
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
                     <!-- Modal header -->
-                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                    <div class="flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white" x-text="modalTitle"></h3>
                         <button type="button"
                             @click="courseModal = false; document.body.classList.remove('no-scroll');"
@@ -542,7 +542,7 @@
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
-                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                    <div class="flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             Batches | <span class="text-xs" x-text="selectedCourse.name"></span>
                         </h3>
@@ -689,7 +689,7 @@
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
-                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                    <div class="flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             Batch Information | <span class="text-xs"
                                 x-text="`${selectedCourse.code}-${selectedBatch.name}`"></span>
@@ -955,7 +955,7 @@
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-white dark:bg-gray-700">
                     <!-- Modal header -->
-                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                    <div class="flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             Course Settings
                         </h3>
@@ -975,14 +975,14 @@
                     <div class="relative p-4 md:p-5">
                         <div class="mb-4 grid grid-cols-2 gap-4 text-white">
                             <div class="col-span-2">
-                                <div class="mb-8">
+                                <div class="mb-4">
                                     <div class="mb-1.5 text-sm font-bold text-black dark:text-white/75">Default ID
                                         Template</div>
                                     <div>
                                         <input type="file" name="" id="default_id">
                                     </div>
                                 </div>
-                                <div class="rounded-lg bg-gray-200 p-4 dark:bg-gray-800">
+                                <div class="mb-4 rounded-lg bg-gray-200 p-4 dark:bg-gray-800">
                                     <div
                                         class="mb-4 flex items-center justify-between text-sm text-black dark:text-white/75">
                                         <div class="flex items-center space-x-1">
@@ -1011,6 +1011,67 @@
                                     </div>
                                     <div class="flex-col space-y-2">
                                         <template x-for="category in course_categories" :key="category.id">
+                                            <div
+                                                class="flex items-center justify-between rounded-md bg-gray-600 px-2 py-1 text-sm">
+                                                <div x-text="category.name">
+                                                </div>
+                                                <div class="flex items-center space-x-1">
+                                                    <span
+                                                        @click="categoryName = category.name ; showEditCategory = true; selectedCourseCategoryId = category.id"
+                                                        class="rounded p-1 hover:bg-gray-800">
+                                                        <svg class="h-5 w-5 cursor-pointer text-white"
+                                                            fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24">
+                                                            <title>pencil</title>
+                                                            <path
+                                                                d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z" />
+                                                        </svg>
+                                                    </span>
+                                                    <span @click="deleteCategory(category.id)"
+                                                        class="rounded p-1 hover:bg-red-800">
+                                                        <svg class="h-5 w-5 cursor-pointer text-white"
+                                                            fill="currentColor" xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 24 24">
+                                                            <title>delete</title>
+                                                            <path
+                                                                d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                                                        </svg>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                </div>
+                                <div class="rounded-lg bg-gray-200 p-4 dark:bg-gray-800">
+                                    <div
+                                        class="mb-4 flex items-center justify-between text-sm text-black dark:text-white/75">
+                                        <div class="flex items-center space-x-1">
+                                            <span>
+                                                <svg class="h-6 w-6 text-sky-700 dark:text-white" fill="currentColor"
+                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                    <title>medal</title>
+                                                    <path
+                                                        d="M20,2H4V4L9.81,8.36C6.14,9.57 4.14,13.53 5.35,17.2C6.56,20.87 10.5,22.87 14.19,21.66C17.86,20.45 19.86,16.5 18.65,12.82C17.95,10.71 16.3,9.05 14.19,8.36L20,4V2M14.94,19.5L12,17.78L9.06,19.5L9.84,16.17L7.25,13.93L10.66,13.64L12,10.5L13.34,13.64L16.75,13.93L14.16,16.17L14.94,19.5Z" />
+                                                </svg>
+                                            </span>
+                                            <span class="text-base font-bold uppercase">
+                                                Achievement Awards
+                                            </span>
+                                        </div>
+                                        <span>
+                                            <button @click="showAddCategory = true"
+                                                class="inline-flex items-center rounded-md p-1.5 hover:bg-sky-700">
+                                                <svg class="h-4 w-4 text-black dark:text-white" fill="currentColor"
+                                                    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                                    <title>plus-thick</title>
+                                                    <path d="M20 14H14V20H10V14H4V10H10V4H14V10H20V14Z" />
+                                                </svg>
+                                            </button>
+                                        </span>
+                                    </div>
+                                    <div class="flex-col space-y-2">
+                                        <template x-for="category in awards" :key="category.id">
                                             <div
                                                 class="flex items-center justify-between rounded-md bg-gray-600 px-2 py-1 text-sm">
                                                 <div x-text="category.name">
@@ -1150,7 +1211,7 @@
                 <!-- Modal content -->
                 <div class="relative rounded-lg bg-gray-700">
                     <!-- Modal header -->
-                    <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                    <div class="flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                             ID Template
                         </h3>
@@ -1205,7 +1266,7 @@
             <!-- Modal content -->
             <div class="relative rounded-lg bg-white shadow dark:bg-gray-700">
                 <!-- Modal header -->
-                <div class="flex items-center justify-between rounded-t border-b p-4 dark:border-gray-600 md:p-5">
+                <div class="flex items-center justify-between rounded-t border-b p-4 md:p-5 dark:border-gray-600">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
                         Edit
                     </h3>
@@ -1302,6 +1363,8 @@
                     selectedInstructorId: '',
                     selectedBatchOrientation: '',
                     orientationDate: '',
+
+                    awards: @json($awards ?? ''),
 
                     // Modals
                     showBatchesModal: false,

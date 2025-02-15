@@ -133,6 +133,12 @@ Route::middleware(['auth', 'verified', 'role:superadmin'])->group(function () {
         Route::post('/get_instructor_info', [SuperAdminController::class, 'get_instructor_info'])->name('get_instructor_info');
     });
 
+    Route::prefix('reports')->group(function () {
+        Route::get( '/', [SuperAdminController::class,'show_report'])->name('show_report');
+        Route::get( '/accounts', [SuperAdminController::class,'show_report_accounts'])->name('show_report_accounts');
+        Route::get( '/courses', [SuperAdminController::class,'show_report_courses'])->name('show_report_courses');
+    });
+
     //For testing only
     // Route::get('/updateAllPass', [SuperAdminController::class, 'updateAllPass'])->name('updateAllPass');
 

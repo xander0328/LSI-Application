@@ -108,6 +108,8 @@ if ("serviceWorker" in navigator) {
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken } from "firebase/messaging";
 
+import Iconify from "@iconify/iconify/dist/iconify.js";
+
 document.addEventListener("alpine:init", () => {
     Alpine.data("notificationComponent", () => ({
         messaging: null,

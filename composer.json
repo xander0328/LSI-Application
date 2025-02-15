@@ -10,8 +10,6 @@
         "endroid/qr-code": "^5.0",
         "google/apiclient": "^2.18",
         "khanamiryan/qrcode-detector-decoder": "^2.0",
-        "kreait/firebase-php": "7.13",
-        "kreait/laravel-firebase": "^5.9",
         "laravel/breeze": "^1.0",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
